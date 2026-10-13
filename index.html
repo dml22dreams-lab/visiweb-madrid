@@ -47,14 +47,24 @@
 
     .reveal { opacity: 0; transform: translateY(28px); }
     .reveal.is-in { animation: fade-in-up .8s cubic-bezier(.22, 1, .36, 1) both; }
+    .reveal.settled { animation: none; opacity: 1; transform: none; }
     .stagger > .reveal:nth-child(2).is-in { animation-delay: .08s; }
     .stagger > .reveal:nth-child(3).is-in { animation-delay: .16s; }
     .stagger > .reveal:nth-child(4).is-in { animation-delay: .24s; }
 
-    .plan-pro { animation: glow-pulse 3.4s ease-in-out infinite; }
+    #planes article {
+      transition: transform .3s ease, box-shadow .3s ease, border-color .3s ease;
+    }
+    #planes article:hover {
+      transform: translateY(-12px);
+    }
+
+    .plan-pro { position: relative; animation: glow-pulse 3.4s ease-in-out infinite; }
+    .plan-pro.settled { animation: glow-pulse 3.4s ease-in-out infinite; }
     .plan-pro::after {
       content: "";
       position: absolute;
+      z-index: 1;
       inset: -1px;
       border-radius: inherit;
       padding: 1.5px;
@@ -67,6 +77,11 @@
       mask-composite: exclude;
       pointer-events: none;
     }
+    .plan-badge {
+      z-index: 3;
+      box-shadow: 0 0 0 6px rgb(248 250 252);
+    }
+    .dark .plan-badge { box-shadow: 0 0 0 6px rgb(2 6 23); }
 
     @media (prefers-reduced-motion: reduce) {
       .fade-in-up, .scale-in, .plan-pro, .plan-pro::after, .reveal.is-in { animation: none !important; }
@@ -135,23 +150,36 @@
       <p class="mt-2 text-slate-600 dark:text-slate-400">Sin tecnicismos raros ni cobros sorpresa. Directo al grano.</p>
     </div>
 
-    <div class="stagger grid gap-6 md:grid-cols-3">
-      <article class="reveal rounded-2xl border border-slate-200/80 bg-white/55 p-6 shadow-sm backdrop-blur-md transition-all duration-300 hover:-translate-y-2 hover:border-amber-400/70 hover:shadow-[0_22px_50px_-24px_rgba(251,191,36,.55)] dark:border-white/10 dark:bg-white/5 dark:shadow-none">
-        <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-amber-400/15 text-2xl">📱</div>
+    <div class="group mx-auto flex w-full max-w-sm flex-col items-center gap-6 md:grid md:max-w-none md:min-h-[420px] md:place-items-center">
+      <article class="z-10 w-full max-w-[360px] rounded-3xl border border-slate-200/70 bg-white/70 p-8 text-left shadow-xl backdrop-blur-xl transition-all duration-500 ease-out dark:border-white/10 dark:bg-slate-900/70 dark:shadow-2xl md:col-start-1 md:row-start-1 md:-translate-x-3 md:-rotate-6 md:group-hover:-translate-x-[clamp(8.5rem,calc(50vw-13.5rem),380px)] md:group-hover:-rotate-3 md:group-hover:scale-100">
+        <div class="mb-5 w-fit rounded-2xl bg-amber-100 p-3 dark:bg-amber-500/10">
+          <svg class="h-7 w-7 text-amber-600 dark:text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+            <rect x="7" y="2.5" width="10" height="19" rx="2"></rect>
+            <path stroke-linecap="round" d="M10 6.5h4M10 10h4M10 13.5h2.5"></path>
+          </svg>
+        </div>
         <h3 class="mb-2 text-xl font-bold text-slate-900 dark:text-white">Carta Digital Instantánea</h3>
         <p class="text-sm leading-relaxed text-slate-600 dark:text-slate-400">
           Olvídate de PDFs de 20 megas que nadie puede leer. Una carta adaptada a la pantalla de cualquier móvil que carga en menos de un segundo con código QR.
         </p>
       </article>
-      <article class="reveal rounded-2xl border border-slate-200/80 bg-white/55 p-6 shadow-sm backdrop-blur-md transition-all duration-300 hover:-translate-y-2 hover:border-amber-400/70 hover:shadow-[0_22px_50px_-24px_rgba(251,191,36,.55)] dark:border-white/10 dark:bg-white/5 dark:shadow-none">
-        <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-amber-400/15 text-2xl">📍</div>
+      <article class="z-20 w-full max-w-[360px] rounded-3xl border border-slate-200/70 bg-white/70 p-8 text-left shadow-xl backdrop-blur-xl transition-all duration-500 ease-out dark:border-white/10 dark:bg-slate-900/70 dark:shadow-2xl md:col-start-1 md:row-start-1 md:scale-100 md:group-hover:-translate-y-3 md:group-hover:shadow-2xl">
+        <div class="mb-5 w-fit rounded-2xl bg-amber-100 p-3 dark:bg-amber-500/10">
+          <svg class="h-7 w-7 text-rose-500 dark:text-rose-400" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M12 2.2a6.8 6.8 0 0 0-6.8 6.8c0 5.1 6.8 12.8 6.8 12.8s6.8-7.7 6.8-12.8A6.8 6.8 0 0 0 12 2.2zm0 9.2a2.4 2.4 0 1 1 0-4.8 2.4 2.4 0 0 1 0 4.8z"></path>
+          </svg>
+        </div>
         <h3 class="mb-2 text-xl font-bold text-slate-900 dark:text-white">Posicionamiento en Google Maps</h3>
         <p class="text-sm leading-relaxed text-slate-600 dark:text-slate-400">
           Optimizamos tu ficha de Google Perfil de Empresa para que aparezcas entre los primeros cuando alguien busque tapas, menús o terrazas en tu zona.
         </p>
       </article>
-      <article class="reveal rounded-2xl border border-slate-200/80 bg-white/55 p-6 shadow-sm backdrop-blur-md transition-all duration-300 hover:-translate-y-2 hover:border-amber-400/70 hover:shadow-[0_22px_50px_-24px_rgba(251,191,36,.55)] dark:border-white/10 dark:bg-white/5 dark:shadow-none">
-        <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-amber-400/15 text-2xl">📞</div>
+      <article class="z-10 w-full max-w-[360px] rounded-3xl border border-slate-200/70 bg-white/70 p-8 text-left shadow-xl backdrop-blur-xl transition-all duration-500 ease-out dark:border-white/10 dark:bg-slate-900/70 dark:shadow-2xl md:col-start-1 md:row-start-1 md:translate-x-3 md:rotate-6 md:group-hover:translate-x-[clamp(8.5rem,calc(50vw-13.5rem),380px)] md:group-hover:rotate-3 md:group-hover:scale-100">
+        <div class="mb-5 w-fit rounded-2xl bg-amber-100 p-3 dark:bg-amber-500/10">
+          <svg class="h-7 w-7 text-rose-500 dark:text-rose-400" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M7.4 3.2c.4-.4 1-.5 1.5-.3l2.2.9c.5.2.8.7.8 1.2l-.1 2.1a1.3 1.3 0 0 1-.7 1.1l-1.2.6a10.6 10.6 0 0 0 5.1 5.1l.6-1.2c.2-.4.6-.6 1.1-.7l2.1-.1c.5 0 1 .3 1.2.8l.9 2.2c.2.5.1 1.1-.3 1.5l-1.3 1.3c-.4.4-1 .6-1.6.5C10.8 18.6 5.4 13.2 4.6 6.1c-.1-.6.1-1.2.5-1.6L7.4 3.2z"></path>
+          </svg>
+        </div>
         <h3 class="mb-2 text-xl font-bold text-slate-900 dark:text-white">Reservas a un solo toque</h3>
         <p class="text-sm leading-relaxed text-slate-600 dark:text-slate-400">
           Botones directos para llamar al bar o enviar un WhatsApp con un clic. Menos pasos para el cliente, más mesas reservadas para ti.
@@ -160,7 +188,7 @@
     </div>
   </section>
 
-  <section id="planes" class="scroll-mt-24 relative mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
+  <section class="relative mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
     <div class="reveal mx-auto mb-14 max-w-3xl text-center">
       <p class="mb-3 text-xs font-semibold uppercase tracking-widest text-amber-700 dark:text-amber-400">Planes y tarifas</p>
       <h2 class="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-4xl">Planes transparentes pensados para hostelería</h2>
@@ -169,7 +197,7 @@
       </p>
     </div>
 
-    <div class="stagger grid grid-cols-1 items-stretch gap-5 pt-4 md:grid-cols-2 xl:grid-cols-4">
+    <div id="planes" class="scroll-mt-28 stagger grid grid-cols-1 items-stretch gap-5 pt-4 md:grid-cols-2 xl:grid-cols-4">
       <article class="reveal flex flex-col rounded-2xl border border-slate-200/80 bg-white/55 p-6 backdrop-blur-md transition-all duration-300 hover:-translate-y-2 hover:border-amber-400/70 hover:shadow-[0_22px_50px_-24px_rgba(251,191,36,.5)] dark:border-white/10 dark:bg-white/5">
         <header>
           <h3 class="text-lg font-extrabold tracking-tight text-slate-900 dark:text-white">Básico</h3>
@@ -197,7 +225,7 @@
       </article>
 
       <article class="plan-pro reveal relative flex flex-col rounded-2xl border border-amber-400 bg-white/70 p-6 backdrop-blur-md transition-all duration-300 hover:-translate-y-2 dark:bg-slate-900/70">
-        <span class="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-amber-400 px-3 py-1 text-[11px] font-extrabold uppercase tracking-wider text-slate-950">Más popular</span>
+        <span class="plan-badge absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-amber-400 px-3 py-1 text-[11px] font-extrabold uppercase tracking-wider text-slate-950">Más popular</span>
         <header class="pt-2">
           <h3 class="text-lg font-extrabold tracking-tight text-slate-900 dark:text-white">Pro</h3>
           <p class="mt-1 text-xs text-amber-700 dark:text-amber-300">Menú del día y reservas</p>
@@ -323,6 +351,19 @@
       });
       syncToggle();
 
+      var planesLink = document.querySelector('a[href="#planes"]');
+      if (planesLink) {
+        planesLink.addEventListener('click', function (event) {
+          var target = document.getElementById('planes');
+          if (!target) return;
+          event.preventDefault();
+          var header = document.querySelector('header');
+          var top = target.getBoundingClientRect().top + window.scrollY - (header ? header.offsetHeight : 0) - 20;
+          window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+          history.pushState(null, '', '#planes');
+        });
+      }
+
       var nodes = document.querySelectorAll('.reveal');
       if (!('IntersectionObserver' in window)) {
         nodes.forEach(function (node) { node.classList.add('is-in'); });
@@ -335,7 +376,13 @@
           observer.unobserve(entry.target);
         });
       }, { threshold: 0.14, rootMargin: '0px 0px -8% 0px' });
-      nodes.forEach(function (node) { observer.observe(node); });
+      nodes.forEach(function (node) {
+        node.addEventListener('animationend', function (event) {
+          if (event.target !== node || event.animationName !== 'fade-in-up') return;
+          node.classList.add('settled');
+        });
+        observer.observe(node);
+      });
     })();
   </script>
 </body>
