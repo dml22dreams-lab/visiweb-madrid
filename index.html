@@ -5,241 +5,338 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>VisiWeb Madrid | Digitalización y Webs para Bares y Restaurantes</title>
   <meta name="description" content="Diseño web rápido, cartas digitales QR y posicionamiento en Google Maps para bares y restaurantes en Alcobendas, Sanse y Madrid.">
+  <script>
+    try {
+      if (localStorage.getItem('theme') === 'dark') document.documentElement.classList.add('dark');
+    } catch (e) {}
+  </script>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { darkMode: 'class' };
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
   <style>
+    html { color-scheme: light; }
+    html.dark { color-scheme: dark; }
     body { font-family: 'Plus Jakarta Sans', sans-serif; }
+
+    @keyframes fade-in-up {
+      from { opacity: 0; transform: translateY(28px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes scale-in {
+      from { opacity: 0; transform: scale(.96); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    @keyframes glow-pulse {
+      0%, 100% { box-shadow: 0 0 0 1px rgba(251, 191, 36, .55), 0 0 28px rgba(251, 191, 36, .28); }
+      50% { box-shadow: 0 0 0 1px rgba(251, 191, 36, .95), 0 0 48px rgba(251, 146, 60, .45); }
+    }
+    @keyframes border-flow {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 200% 50%; }
+    }
+
+    .fade-in-up { animation: fade-in-up .85s cubic-bezier(.22, 1, .36, 1) both; }
+    .scale-in { animation: scale-in .7s cubic-bezier(.22, 1, .36, 1) both; }
+    .delay-1 { animation-delay: .12s; }
+    .delay-2 { animation-delay: .24s; }
+    .delay-3 { animation-delay: .36s; }
+
+    .reveal { opacity: 0; transform: translateY(28px); }
+    .reveal.is-in { animation: fade-in-up .8s cubic-bezier(.22, 1, .36, 1) both; }
+    .stagger > .reveal:nth-child(2).is-in { animation-delay: .08s; }
+    .stagger > .reveal:nth-child(3).is-in { animation-delay: .16s; }
+    .stagger > .reveal:nth-child(4).is-in { animation-delay: .24s; }
+
+    .plan-pro { animation: glow-pulse 3.4s ease-in-out infinite; }
+    .plan-pro::after {
+      content: "";
+      position: absolute;
+      inset: -1px;
+      border-radius: inherit;
+      padding: 1.5px;
+      background: linear-gradient(110deg, #fbbf24, #fb923c, #8b5cf6, #fbbf24);
+      background-size: 220% 220%;
+      animation: border-flow 4.5s linear infinite;
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+      mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .fade-in-up, .scale-in, .plan-pro, .plan-pro::after, .reveal.is-in { animation: none !important; }
+      .reveal { opacity: 1; transform: none; }
+    }
   </style>
 </head>
-<body class="bg-slate-950 text-slate-100 antialiased selection:bg-amber-500 selection:text-black">
+<body class="bg-slate-50 text-slate-900 antialiased selection:bg-amber-400 selection:text-slate-950 dark:bg-slate-950 dark:text-slate-100">
 
-  <!-- Navegación -->
-  <header class="border-b border-slate-800/80 sticky top-0 bg-slate-950/90 backdrop-blur z-50">
-    <div class="max-w-6xl mx-auto px-5 py-4 flex items-center justify-between">
+  <header class="sticky top-0 z-50 border-b border-slate-200/80 bg-slate-50/75 backdrop-blur-md dark:border-white/10 dark:bg-slate-950/70">
+    <div class="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3.5 sm:px-6 lg:px-8">
       <div class="flex items-center gap-2">
-        <span class="text-2xl font-extrabold tracking-tight text-white">Visi<span class="text-amber-400">Web</span></span>
-        <span class="text-xs bg-amber-400/10 text-amber-300 font-semibold px-2 py-0.5 rounded-full border border-amber-400/20">Madrid</span>
+        <span class="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">Visi<span class="text-amber-500 dark:text-amber-400">Web</span></span>
+        <span class="hidden rounded-full border border-amber-500/30 bg-amber-400/15 px-2 py-0.5 text-xs font-semibold text-amber-700 sm:inline dark:text-amber-300">Madrid</span>
       </div>
-      <nav class="flex items-center gap-3 sm:gap-5" aria-label="Principal">
-        <a href="#planes" class="text-sm font-semibold text-slate-300 hover:text-amber-400 transition">Planes</a>
-        <a href="#contacto" class="text-sm font-semibold bg-amber-400 hover:bg-amber-300 text-slate-950 px-4 py-2 rounded-lg transition-all shadow-lg shadow-amber-400/20">
+      <nav class="flex items-center gap-2 sm:gap-4" aria-label="Principal">
+        <a href="#planes" class="text-sm font-semibold text-slate-600 transition-colors duration-300 hover:text-amber-600 dark:text-slate-300 dark:hover:text-amber-400">Planes</a>
+        <button type="button" id="theme-toggle" class="grid h-10 w-10 place-items-center rounded-xl border border-slate-200 bg-white/70 text-slate-800 transition-all duration-300 hover:border-amber-400/70 dark:border-white/10 dark:bg-white/5 dark:text-amber-300" aria-label="Activar modo oscuro" aria-pressed="false">
+          <svg class="hidden h-5 w-5 dark:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path stroke-linecap="round" d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path>
+          </svg>
+          <svg class="block h-5 w-5 dark:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+            <path stroke-linejoin="round" d="M21 14.5A8.5 8.5 0 1 1 9.5 3a7 7 0 0 0 11.5 11.5z"></path>
+          </svg>
+        </button>
+        <a href="#contacto" class="shrink-0 whitespace-nowrap rounded-lg bg-amber-400 px-3 py-2 text-xs font-semibold text-slate-950 shadow-lg shadow-amber-400/25 transition-all duration-300 hover:-translate-y-0.5 hover:bg-amber-500 hover:shadow-amber-400/40 sm:px-4 sm:text-sm">
           Pedir Demo Gratis
         </a>
       </nav>
     </div>
   </header>
 
-  <!-- Hero Section -->
-  <section class="max-w-5xl mx-auto px-5 pt-16 pb-20 text-center">
-    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-900 border border-slate-800 text-amber-400 text-xs font-semibold mb-6">
-      <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
-      Especialistas en Hostelería Local
+  <section class="relative overflow-hidden">
+    <div class="pointer-events-none absolute inset-0" aria-hidden="true">
+      <div class="absolute -left-20 -top-24 h-80 w-80 rounded-full bg-amber-400/30 blur-3xl dark:bg-amber-400/20"></div>
+      <div class="absolute -right-16 top-8 h-[28rem] w-[28rem] rounded-full bg-violet-500/25 blur-3xl dark:bg-violet-600/25"></div>
+      <div class="absolute bottom-0 left-1/3 h-72 w-72 rounded-full bg-sky-400/20 blur-3xl dark:bg-sky-500/15"></div>
     </div>
-    <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight text-white leading-tight">
-      Llenamos tus mesas.<br>
-      <span class="bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-500 bg-clip-text text-transparent">
+    <div class="relative mx-auto max-w-5xl px-4 pb-20 pt-16 text-center sm:px-6 lg:px-8 lg:pb-28 lg:pt-24">
+      <div class="scale-in mb-6 inline-flex items-center gap-2 rounded-full border border-slate-200/80 bg-white/60 px-3 py-1.5 text-xs font-semibold text-amber-700 backdrop-blur-md dark:border-white/10 dark:bg-white/5 dark:text-amber-400">
+        <span class="h-2 w-2 animate-pulse rounded-full bg-amber-400"></span>
+        Especialistas en Hostelería Local
+      </div>
+      <h1 class="fade-in-up bg-gradient-to-r from-amber-400 to-orange-600 bg-clip-text text-4xl font-extrabold leading-tight tracking-tight text-transparent sm:text-6xl lg:text-7xl">
+        Llenamos tus mesas.<br>
         Tu bar en el mapa y en el móvil.
-      </span>
-    </h1>
-    <p class="mt-6 text-lg sm:text-xl text-slate-400 max-w-2xl mx-auto leading-relaxed">
-      Creamos webs ultrarrápidas, cartas digitales sin descargas pesadas y optimizamos tu Google Maps para que los vecinos te elijan a ti antes que al de enfrente.
-    </p>
-    <div class="mt-8 flex flex-col sm:flex-row gap-4 justify-center items-center">
-      <a href="#contacto" class="w-full sm:w-auto bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold px-7 py-3.5 rounded-xl transition-all shadow-xl shadow-amber-400/25">
-        Quiero una demo de mi bar
-      </a>
-      <a href="#servicios" class="w-full sm:w-auto border border-slate-800 hover:border-slate-700 bg-slate-900/60 font-semibold px-7 py-3.5 rounded-xl transition-all text-slate-300 hover:text-white">
-        Ver qué incluye
-      </a>
+      </h1>
+      <p class="fade-in-up delay-1 mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-slate-600 dark:text-slate-400 sm:text-xl">
+        Creamos webs ultrarrápidas, cartas digitales sin descargas pesadas y optimizamos tu Google Maps para que los vecinos te elijan a ti antes que al de enfrente.
+      </p>
+      <div class="fade-in-up delay-2 mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
+        <a href="#contacto" class="w-full rounded-xl bg-amber-400 px-7 py-3.5 font-bold text-slate-950 shadow-xl shadow-amber-400/30 transition-all duration-300 hover:-translate-y-2 hover:bg-amber-500 hover:shadow-amber-400/50 sm:w-auto">
+          Quiero una demo de mi bar
+        </a>
+        <a href="#servicios" class="w-full rounded-xl border border-slate-200 bg-white/60 px-7 py-3.5 font-semibold text-slate-700 backdrop-blur-md transition-all duration-300 hover:-translate-y-2 hover:border-amber-400/60 hover:text-slate-900 dark:border-white/10 dark:bg-white/5 dark:text-slate-300 dark:hover:text-white sm:w-auto">
+          Ver qué incluye
+        </a>
+      </div>
     </div>
   </section>
 
-  <!-- Servicios Clave -->
-  <section id="servicios" class="max-w-6xl mx-auto px-5 py-16 border-t border-slate-900">
-    <div class="text-center max-w-xl mx-auto mb-14">
-      <h2 class="text-3xl font-bold text-white tracking-tight">Todo lo que tu local necesita</h2>
-      <p class="text-slate-400 mt-2">Sin tecnicismos raros ni cobros sorpresa. Directo al grano.</p>
+  <section id="servicios" class="scroll-mt-24 mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
+    <div class="reveal mx-auto mb-14 max-w-xl text-center">
+      <h2 class="text-3xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl">Todo lo que tu local necesita</h2>
+      <p class="mt-2 text-slate-600 dark:text-slate-400">Sin tecnicismos raros ni cobros sorpresa. Directo al grano.</p>
     </div>
 
-    <div class="grid md:grid-cols-3 gap-6">
-      <!-- Tarjeta 1 -->
-      <div class="p-6 rounded-2xl bg-slate-900/60 border border-slate-850 hover:border-slate-700 transition">
-        <div class="w-12 h-12 rounded-xl bg-amber-400/10 flex items-center justify-center text-amber-400 text-2xl font-bold mb-4">📱</div>
-        <h3 class="text-xl font-bold text-white mb-2">Carta Digital Instantánea</h3>
-        <p class="text-slate-400 text-sm leading-relaxed">
+    <div class="stagger grid gap-6 md:grid-cols-3">
+      <article class="reveal rounded-2xl border border-slate-200/80 bg-white/55 p-6 shadow-sm backdrop-blur-md transition-all duration-300 hover:-translate-y-2 hover:border-amber-400/70 hover:shadow-[0_22px_50px_-24px_rgba(251,191,36,.55)] dark:border-white/10 dark:bg-white/5 dark:shadow-none">
+        <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-amber-400/15 text-2xl">📱</div>
+        <h3 class="mb-2 text-xl font-bold text-slate-900 dark:text-white">Carta Digital Instantánea</h3>
+        <p class="text-sm leading-relaxed text-slate-600 dark:text-slate-400">
           Olvídate de PDFs de 20 megas que nadie puede leer. Una carta adaptada a la pantalla de cualquier móvil que carga en menos de un segundo con código QR.
         </p>
-      </div>
-
-      <!-- Tarjeta 2 -->
-      <div class="p-6 rounded-2xl bg-slate-900/60 border border-slate-850 hover:border-slate-700 transition">
-        <div class="w-12 h-12 rounded-xl bg-amber-400/10 flex items-center justify-center text-amber-400 text-2xl font-bold mb-4">📍</div>
-        <h3 class="text-xl font-bold text-white mb-2">Posicionamiento en Google Maps</h3>
-        <p class="text-slate-400 text-sm leading-relaxed">
+      </article>
+      <article class="reveal rounded-2xl border border-slate-200/80 bg-white/55 p-6 shadow-sm backdrop-blur-md transition-all duration-300 hover:-translate-y-2 hover:border-amber-400/70 hover:shadow-[0_22px_50px_-24px_rgba(251,191,36,.55)] dark:border-white/10 dark:bg-white/5 dark:shadow-none">
+        <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-amber-400/15 text-2xl">📍</div>
+        <h3 class="mb-2 text-xl font-bold text-slate-900 dark:text-white">Posicionamiento en Google Maps</h3>
+        <p class="text-sm leading-relaxed text-slate-600 dark:text-slate-400">
           Optimizamos tu ficha de Google Perfil de Empresa para que aparezcas entre los primeros cuando alguien busque tapas, menús o terrazas en tu zona.
         </p>
-      </div>
-
-      <!-- Tarjeta 3 -->
-      <div class="p-6 rounded-2xl bg-slate-900/60 border border-slate-850 hover:border-slate-700 transition">
-        <div class="w-12 h-12 rounded-xl bg-amber-400/10 flex items-center justify-center text-amber-400 text-2xl font-bold mb-4">📞</div>
-        <h3 class="text-xl font-bold text-white mb-2">Reservas a un solo toque</h3>
-        <p class="text-slate-400 text-sm leading-relaxed">
+      </article>
+      <article class="reveal rounded-2xl border border-slate-200/80 bg-white/55 p-6 shadow-sm backdrop-blur-md transition-all duration-300 hover:-translate-y-2 hover:border-amber-400/70 hover:shadow-[0_22px_50px_-24px_rgba(251,191,36,.55)] dark:border-white/10 dark:bg-white/5 dark:shadow-none">
+        <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-amber-400/15 text-2xl">📞</div>
+        <h3 class="mb-2 text-xl font-bold text-slate-900 dark:text-white">Reservas a un solo toque</h3>
+        <p class="text-sm leading-relaxed text-slate-600 dark:text-slate-400">
           Botones directos para llamar al bar o enviar un WhatsApp con un clic. Menos pasos para el cliente, más mesas reservadas para ti.
         </p>
-      </div>
+      </article>
     </div>
   </section>
 
-  <!-- Planes y Tarifas -->
-  <section id="planes" class="scroll-mt-20 max-w-6xl mx-auto px-5 py-16 border-t border-slate-900">
-    <div class="text-center max-w-3xl mx-auto mb-14">
-      <p class="text-xs font-semibold uppercase tracking-widest text-amber-400 mb-3">Planes y tarifas</p>
-      <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">Planes transparentes pensados para hostelería</h2>
-      <p class="text-slate-400 mt-4 leading-relaxed">
+  <section id="planes" class="scroll-mt-24 relative mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
+    <div class="reveal mx-auto mb-14 max-w-3xl text-center">
+      <p class="mb-3 text-xs font-semibold uppercase tracking-widest text-amber-700 dark:text-amber-400">Planes y tarifas</p>
+      <h2 class="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-4xl">Planes transparentes pensados para hostelería</h2>
+      <p class="mt-4 leading-relaxed text-slate-600 dark:text-slate-400">
         Sin sorpresas ni letra pequeña. Coste de montaje inicial (50% al inicio y 50% a la entrega) y cuota mensual de mantenimiento con hosting, dominio y soporte incluidos.
       </p>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 items-stretch">
-      <article class="flex flex-col p-6 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-slate-700 transition">
+    <div class="stagger grid grid-cols-1 items-stretch gap-5 pt-4 md:grid-cols-2 xl:grid-cols-4">
+      <article class="reveal flex flex-col rounded-2xl border border-slate-200/80 bg-white/55 p-6 backdrop-blur-md transition-all duration-300 hover:-translate-y-2 hover:border-amber-400/70 hover:shadow-[0_22px_50px_-24px_rgba(251,191,36,.5)] dark:border-white/10 dark:bg-white/5">
         <header>
-          <h3 class="text-lg font-extrabold text-white tracking-tight">Básico</h3>
-          <p class="text-xs text-slate-400 mt-1">Cervecerías y bares de tapas</p>
+          <h3 class="text-lg font-extrabold tracking-tight text-slate-900 dark:text-white">Básico</h3>
+          <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Cervecerías y bares de tapas</p>
         </header>
-        <div class="mt-5 pb-5 border-b border-slate-800">
-          <p class="text-3xl font-extrabold text-white">120&nbsp;€</p>
-          <p class="text-xs text-slate-500 mt-1">Montaje · pago único</p>
-          <p class="mt-3 text-amber-400 font-bold">25&nbsp;€ <span class="text-sm font-semibold text-slate-400">/ mes</span></p>
+        <div class="mt-5 border-b border-slate-200 pb-5 dark:border-white/10">
+          <p class="text-3xl font-extrabold text-slate-900 dark:text-white">120&nbsp;€</p>
+          <p class="mt-1 text-xs text-slate-500">Montaje · pago único</p>
+          <p class="mt-3 font-bold text-amber-700 dark:text-amber-400">25&nbsp;€ <span class="text-sm font-semibold text-slate-500 dark:text-slate-400">/ mes</span></p>
           <p class="text-xs text-slate-500">Mantenimiento</p>
         </div>
-        <ul class="mt-5 space-y-2.5 text-sm text-slate-300 leading-snug flex-1">
-          <li class="flex gap-2"><span class="text-amber-400 shrink-0" aria-hidden="true">✓</span> Web One-Page ultrarrápida para móvil</li>
-          <li class="flex gap-2"><span class="text-amber-400 shrink-0" aria-hidden="true">✓</span> Carta digital por categorías (raciones/bebidas)</li>
-          <li class="flex gap-2"><span class="text-amber-400 shrink-0" aria-hidden="true">✓</span> Código QR oficial de alta resolución</li>
-          <li class="flex gap-2"><span class="text-amber-400 shrink-0" aria-hidden="true">✓</span> Botón de llamada directa</li>
-          <li class="flex gap-2"><span class="text-amber-400 shrink-0" aria-hidden="true">✓</span> Botón «Cómo llegar» a Google Maps</li>
-          <li class="flex gap-2"><span class="text-amber-400 shrink-0" aria-hidden="true">✓</span> Textos legales (RGPD/cookies)</li>
-          <li class="flex gap-2"><span class="text-amber-400 shrink-0" aria-hidden="true">✓</span> Hosting y dominio con 2 cambios al mes</li>
+        <ul class="mt-5 flex-1 space-y-2.5 text-sm leading-snug text-slate-700 dark:text-slate-300">
+          <li class="flex gap-2"><span class="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true">✓</span> Web One-Page ultrarrápida para móvil</li>
+          <li class="flex gap-2"><span class="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true">✓</span> Carta digital por categorías (raciones/bebidas)</li>
+          <li class="flex gap-2"><span class="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true">✓</span> Código QR oficial de alta resolución</li>
+          <li class="flex gap-2"><span class="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true">✓</span> Botón de llamada directa</li>
+          <li class="flex gap-2"><span class="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true">✓</span> Botón «Cómo llegar» a Google Maps</li>
+          <li class="flex gap-2"><span class="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true">✓</span> Textos legales (RGPD/cookies)</li>
+          <li class="flex gap-2"><span class="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true">✓</span> Hosting y dominio con 2 cambios al mes</li>
         </ul>
         <a href="https://wa.me/34XXXXXXXXX?text=Hola%2C%20me%20interesa%20contratar%20el%20Plan%20B%C3%A1sico%20para%20mi%20local"
-           class="mt-6 text-center border border-slate-700 hover:border-slate-500 bg-slate-900 font-semibold text-slate-200 hover:text-white px-4 py-3 rounded-xl transition">
+           class="mt-6 rounded-xl border border-slate-300 bg-white/70 px-4 py-3 text-center font-semibold text-slate-800 transition-all duration-300 hover:-translate-y-1 hover:border-amber-400 hover:shadow-lg hover:shadow-amber-400/20 dark:border-white/15 dark:bg-white/5 dark:text-slate-200 dark:hover:text-white">
           Elegir Plan Básico
         </a>
       </article>
 
-      <article class="relative flex flex-col p-6 rounded-2xl bg-slate-900 border-2 border-amber-400 shadow-xl shadow-amber-400/10 xl:-translate-y-2">
-        <span class="absolute -top-3 left-1/2 -translate-x-1/2 bg-amber-400 text-slate-950 text-[11px] font-extrabold uppercase tracking-wider px-3 py-1 rounded-full">Más popular</span>
+      <article class="plan-pro reveal relative flex flex-col rounded-2xl border border-amber-400 bg-white/70 p-6 backdrop-blur-md transition-all duration-300 hover:-translate-y-2 dark:bg-slate-900/70">
+        <span class="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-amber-400 px-3 py-1 text-[11px] font-extrabold uppercase tracking-wider text-slate-950">Más popular</span>
         <header class="pt-2">
-          <h3 class="text-lg font-extrabold text-white tracking-tight">Pro</h3>
-          <p class="text-xs text-amber-300/90 mt-1">Menú del día y reservas</p>
+          <h3 class="text-lg font-extrabold tracking-tight text-slate-900 dark:text-white">Pro</h3>
+          <p class="mt-1 text-xs text-amber-700 dark:text-amber-300">Menú del día y reservas</p>
         </header>
-        <div class="mt-5 pb-5 border-b border-amber-400/20">
-          <p class="text-3xl font-extrabold text-white">190&nbsp;€</p>
-          <p class="text-xs text-slate-500 mt-1">Montaje · pago único</p>
-          <p class="mt-3 text-amber-400 font-bold">45&nbsp;€ <span class="text-sm font-semibold text-slate-400">/ mes</span></p>
+        <div class="mt-5 border-b border-amber-400/30 pb-5">
+          <p class="text-3xl font-extrabold text-slate-900 dark:text-white">190&nbsp;€</p>
+          <p class="mt-1 text-xs text-slate-500">Montaje · pago único</p>
+          <p class="mt-3 font-bold text-amber-700 dark:text-amber-400">45&nbsp;€ <span class="text-sm font-semibold text-slate-500 dark:text-slate-400">/ mes</span></p>
           <p class="text-xs text-slate-500">Mantenimiento</p>
         </div>
-        <ul class="mt-5 space-y-2.5 text-sm text-slate-300 leading-snug flex-1">
-          <li class="flex gap-2"><span class="text-amber-400 shrink-0" aria-hidden="true">✓</span> Todo lo del Básico</li>
-          <li class="flex gap-2"><span class="text-amber-400 shrink-0" aria-hidden="true">✓</span> Módulo de Menú del Día actualizable</li>
-          <li class="flex gap-2"><span class="text-amber-400 shrink-0" aria-hidden="true">✓</span> Reserva de mesas por WhatsApp</li>
-          <li class="flex gap-2"><span class="text-amber-400 shrink-0" aria-hidden="true">✓</span> SEO local avanzado en Google Maps</li>
-          <li class="flex gap-2"><span class="text-amber-400 shrink-0" aria-hidden="true">✓</span> Subida completa de platos a la ficha de Google</li>
-          <li class="flex gap-2"><span class="text-amber-400 shrink-0" aria-hidden="true">✓</span> Cambios ilimitados de carta y menús</li>
+        <ul class="mt-5 flex-1 space-y-2.5 text-sm leading-snug text-slate-700 dark:text-slate-300">
+          <li class="flex gap-2"><span class="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true">✓</span> Todo lo del Básico</li>
+          <li class="flex gap-2"><span class="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true">✓</span> Módulo de Menú del Día actualizable</li>
+          <li class="flex gap-2"><span class="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true">✓</span> Reserva de mesas por WhatsApp</li>
+          <li class="flex gap-2"><span class="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true">✓</span> SEO local avanzado en Google Maps</li>
+          <li class="flex gap-2"><span class="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true">✓</span> Subida completa de platos a la ficha de Google</li>
+          <li class="flex gap-2"><span class="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true">✓</span> Cambios ilimitados de carta y menús</li>
         </ul>
         <a href="https://wa.me/34XXXXXXXXX?text=Hola%2C%20me%20interesa%20contratar%20el%20Plan%20Pro%20para%20mi%20restaurante"
-           class="mt-6 text-center bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold px-4 py-3 rounded-xl transition shadow-lg shadow-amber-400/25">
+           class="mt-6 rounded-xl bg-amber-400 px-4 py-3 text-center font-bold text-slate-950 shadow-lg shadow-amber-400/30 transition-all duration-300 hover:-translate-y-1 hover:bg-amber-500 hover:shadow-amber-400/50">
           Elegir Plan Pro
         </a>
       </article>
 
-      <article class="flex flex-col p-6 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-slate-700 transition">
+      <article class="reveal flex flex-col rounded-2xl border border-slate-200/80 bg-white/55 p-6 backdrop-blur-md transition-all duration-300 hover:-translate-y-2 hover:border-amber-400/70 hover:shadow-[0_22px_50px_-24px_rgba(251,191,36,.5)] dark:border-white/10 dark:bg-white/5">
         <header>
-          <h3 class="text-lg font-extrabold text-white tracking-tight">Gastro Premium</h3>
-          <p class="text-xs text-slate-400 mt-1">Restaurantes y gastrobares</p>
+          <h3 class="text-lg font-extrabold tracking-tight text-slate-900 dark:text-white">Gastro Premium</h3>
+          <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Restaurantes y gastrobares</p>
         </header>
-        <div class="mt-5 pb-5 border-b border-slate-800">
-          <p class="text-3xl font-extrabold text-white">390&nbsp;€</p>
-          <p class="text-xs text-slate-500 mt-1">Montaje · pago único</p>
-          <p class="mt-3 text-amber-400 font-bold">85&nbsp;€ <span class="text-sm font-semibold text-slate-400">/ mes</span></p>
+        <div class="mt-5 border-b border-slate-200 pb-5 dark:border-white/10">
+          <p class="text-3xl font-extrabold text-slate-900 dark:text-white">390&nbsp;€</p>
+          <p class="mt-1 text-xs text-slate-500">Montaje · pago único</p>
+          <p class="mt-3 font-bold text-amber-700 dark:text-amber-400">85&nbsp;€ <span class="text-sm font-semibold text-slate-500 dark:text-slate-400">/ mes</span></p>
           <p class="text-xs text-slate-500">Mantenimiento</p>
         </div>
-        <ul class="mt-5 space-y-2.5 text-sm text-slate-300 leading-snug flex-1">
-          <li class="flex gap-2"><span class="text-amber-400 shrink-0" aria-hidden="true">✓</span> Web corporativa multipágina (Carta, Salón/Terraza, Historia, Reservas)</li>
-          <li class="flex gap-2"><span class="text-amber-400 shrink-0" aria-hidden="true">✓</span> Carta bilingüe interactiva (ES/EN) con filtros de alérgenos</li>
-          <li class="flex gap-2"><span class="text-amber-400 shrink-0" aria-hidden="true">✓</span> Sesión de fotos básica en el local (6 platos estrella)</li>
-          <li class="flex gap-2"><span class="text-amber-400 shrink-0" aria-hidden="true">✓</span> Motor de reservas integrado</li>
-          <li class="flex gap-2"><span class="text-amber-400 shrink-0" aria-hidden="true">✓</span> 10 fotos al mes en Google Maps</li>
-          <li class="flex gap-2"><span class="text-amber-400 shrink-0" aria-hidden="true">✓</span> Respuestas a reseñas</li>
+        <ul class="mt-5 flex-1 space-y-2.5 text-sm leading-snug text-slate-700 dark:text-slate-300">
+          <li class="flex gap-2"><span class="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true">✓</span> Web corporativa multipágina (Carta, Salón/Terraza, Historia, Reservas)</li>
+          <li class="flex gap-2"><span class="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true">✓</span> Carta bilingüe interactiva (ES/EN) con filtros de alérgenos</li>
+          <li class="flex gap-2"><span class="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true">✓</span> Sesión de fotos básica en el local (6 platos estrella)</li>
+          <li class="flex gap-2"><span class="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true">✓</span> Motor de reservas integrado</li>
+          <li class="flex gap-2"><span class="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true">✓</span> 10 fotos al mes en Google Maps</li>
+          <li class="flex gap-2"><span class="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true">✓</span> Respuestas a reseñas</li>
         </ul>
         <a href="https://wa.me/34XXXXXXXXX?text=Hola%2C%20me%20interesa%20contratar%20el%20Plan%20Gastro%20Premium%20para%20mi%20restaurante"
-           class="mt-6 text-center border border-slate-700 hover:border-slate-500 bg-slate-900 font-semibold text-slate-200 hover:text-white px-4 py-3 rounded-xl transition">
+           class="mt-6 rounded-xl border border-slate-300 bg-white/70 px-4 py-3 text-center font-semibold text-slate-800 transition-all duration-300 hover:-translate-y-1 hover:border-amber-400 hover:shadow-lg hover:shadow-amber-400/20 dark:border-white/15 dark:bg-white/5 dark:text-slate-200 dark:hover:text-white">
           Elegir Gastro Premium
         </a>
       </article>
 
-      <article class="flex flex-col p-6 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-slate-700 transition">
+      <article class="reveal flex flex-col rounded-2xl border border-slate-200/80 bg-white/55 p-6 backdrop-blur-md transition-all duration-300 hover:-translate-y-2 hover:border-amber-400/70 hover:shadow-[0_22px_50px_-24px_rgba(251,191,36,.5)] dark:border-white/10 dark:bg-white/5">
         <header>
-          <h3 class="text-lg font-extrabold text-white tracking-tight">Digitalización Total</h3>
-          <p class="text-xs text-slate-400 mt-1">VIP, grupos y eventos</p>
+          <h3 class="text-lg font-extrabold tracking-tight text-slate-900 dark:text-white">Digitalización Total</h3>
+          <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">VIP, grupos y eventos</p>
         </header>
-        <div class="mt-5 pb-5 border-b border-slate-800">
-          <p class="text-3xl font-extrabold text-white">790&nbsp;€</p>
-          <p class="text-xs text-slate-500 mt-1">Montaje · pago único</p>
-          <p class="mt-3 text-amber-400 font-bold">160&nbsp;€ <span class="text-sm font-semibold text-slate-400">/ mes</span></p>
+        <div class="mt-5 border-b border-slate-200 pb-5 dark:border-white/10">
+          <p class="text-3xl font-extrabold text-slate-900 dark:text-white">790&nbsp;€</p>
+          <p class="mt-1 text-xs text-slate-500">Montaje · pago único</p>
+          <p class="mt-3 font-bold text-amber-700 dark:text-amber-400">160&nbsp;€ <span class="text-sm font-semibold text-slate-500 dark:text-slate-400">/ mes</span></p>
           <p class="text-xs text-slate-500">Mantenimiento</p>
         </div>
-        <ul class="mt-5 space-y-2.5 text-sm text-slate-300 leading-snug flex-1">
-          <li class="flex gap-2"><span class="text-amber-400 shrink-0" aria-hidden="true">✓</span> Web a medida de alto impacto (multisede)</li>
-          <li class="flex gap-2"><span class="text-amber-400 shrink-0" aria-hidden="true">✓</span> Eventos privados, bodas y cenas de empresa</li>
-          <li class="flex gap-2"><span class="text-amber-400 shrink-0" aria-hidden="true">✓</span> Sesión audiovisual completa (foto + vídeo reels)</li>
-          <li class="flex gap-2"><span class="text-amber-400 shrink-0" aria-hidden="true">✓</span> Gestión de reseñas de Google Maps en 48&nbsp;h</li>
-          <li class="flex gap-2"><span class="text-amber-400 shrink-0" aria-hidden="true">✓</span> Publicaciones quincenales en Google</li>
-          <li class="flex gap-2"><span class="text-amber-400 shrink-0" aria-hidden="true">✓</span> Soporte prioritario 7 días a la semana</li>
+        <ul class="mt-5 flex-1 space-y-2.5 text-sm leading-snug text-slate-700 dark:text-slate-300">
+          <li class="flex gap-2"><span class="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true">✓</span> Web a medida de alto impacto (multisede)</li>
+          <li class="flex gap-2"><span class="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true">✓</span> Eventos privados, bodas y cenas de empresa</li>
+          <li class="flex gap-2"><span class="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true">✓</span> Sesión audiovisual completa (foto + vídeo reels)</li>
+          <li class="flex gap-2"><span class="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true">✓</span> Gestión de reseñas de Google Maps en 48&nbsp;h</li>
+          <li class="flex gap-2"><span class="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true">✓</span> Publicaciones quincenales en Google</li>
+          <li class="flex gap-2"><span class="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true">✓</span> Soporte prioritario 7 días a la semana</li>
         </ul>
         <a href="https://wa.me/34XXXXXXXXX?text=Hola%2C%20me%20interesa%20consultar%20el%20Plan%20VIP%20de%20digitalizaci%C3%B3n%20total%20para%20mi%20local"
-           class="mt-6 text-center border border-slate-700 hover:border-slate-500 bg-slate-900 font-semibold text-slate-200 hover:text-white px-4 py-3 rounded-xl transition">
+           class="mt-6 rounded-xl border border-slate-300 bg-white/70 px-4 py-3 text-center font-semibold text-slate-800 transition-all duration-300 hover:-translate-y-1 hover:border-amber-400 hover:shadow-lg hover:shadow-amber-400/20 dark:border-white/15 dark:bg-white/5 dark:text-slate-200 dark:hover:text-white">
           Consultar Plan VIP
         </a>
       </article>
     </div>
 
-    <aside class="mt-8 rounded-2xl border border-slate-800 bg-slate-900/40 px-5 py-5" aria-label="Servicios adicionales">
-      <p class="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-4">Servicios adicionales</p>
+    <aside class="reveal mt-8 rounded-2xl border border-slate-200/80 bg-white/50 px-5 py-5 backdrop-blur-md dark:border-white/10 dark:bg-white/5" aria-label="Servicios adicionales">
+      <p class="mb-4 text-xs font-semibold uppercase tracking-widest text-slate-500">Servicios adicionales</p>
       <ul class="flex flex-wrap gap-2.5">
-        <li class="text-sm text-slate-300 bg-slate-950/70 border border-slate-800 rounded-full px-3.5 py-1.5">Pack soportes físicos QR (metacrilato/madera) <span class="text-amber-400 font-semibold">desde 60&nbsp;€</span></li>
-        <li class="text-sm text-slate-300 bg-slate-950/70 border border-slate-800 rounded-full px-3.5 py-1.5">Sesión fotográfica extra <span class="text-amber-400 font-semibold">60&nbsp;€</span></li>
-        <li class="text-sm text-slate-300 bg-slate-950/70 border border-slate-800 rounded-full px-3.5 py-1.5">Traducción a inglés <span class="text-amber-400 font-semibold">45&nbsp;€</span></li>
-        <li class="text-sm text-slate-300 bg-slate-950/70 border border-slate-800 rounded-full px-3.5 py-1.5">Campaña Google Ads local <span class="text-amber-400 font-semibold">150&nbsp;€</span></li>
-        <li class="text-sm text-slate-300 bg-slate-950/70 border border-slate-800 rounded-full px-3.5 py-1.5">Horas de desarrollo fuera de cuota <span class="text-amber-400 font-semibold">30&nbsp;€/hora</span></li>
+        <li class="rounded-full border border-slate-200 bg-white/80 px-3.5 py-1.5 text-sm text-slate-700 dark:border-white/10 dark:bg-slate-950/60 dark:text-slate-300">Pack soportes físicos QR (metacrilato/madera) <span class="font-semibold text-amber-700 dark:text-amber-400">desde 60&nbsp;€</span></li>
+        <li class="rounded-full border border-slate-200 bg-white/80 px-3.5 py-1.5 text-sm text-slate-700 dark:border-white/10 dark:bg-slate-950/60 dark:text-slate-300">Sesión fotográfica extra <span class="font-semibold text-amber-700 dark:text-amber-400">60&nbsp;€</span></li>
+        <li class="rounded-full border border-slate-200 bg-white/80 px-3.5 py-1.5 text-sm text-slate-700 dark:border-white/10 dark:bg-slate-950/60 dark:text-slate-300">Traducción a inglés <span class="font-semibold text-amber-700 dark:text-amber-400">45&nbsp;€</span></li>
+        <li class="rounded-full border border-slate-200 bg-white/80 px-3.5 py-1.5 text-sm text-slate-700 dark:border-white/10 dark:bg-slate-950/60 dark:text-slate-300">Campaña Google Ads local <span class="font-semibold text-amber-700 dark:text-amber-400">150&nbsp;€</span></li>
+        <li class="rounded-full border border-slate-200 bg-white/80 px-3.5 py-1.5 text-sm text-slate-700 dark:border-white/10 dark:bg-slate-950/60 dark:text-slate-300">Horas de desarrollo fuera de cuota <span class="font-semibold text-amber-700 dark:text-amber-400">30&nbsp;€/hora</span></li>
       </ul>
     </aside>
   </section>
 
-  <!-- Formulario / Contacto -->
-  <section id="contacto" class="max-w-xl mx-auto px-5 py-20">
-    <div class="p-8 rounded-3xl bg-slate-900 border border-slate-800 text-center shadow-2xl">
-      <h2 class="text-2xl sm:text-3xl font-extrabold text-white">¿Tienes un bar o restaurante?</h2>
-      <p class="text-slate-400 text-sm mt-3">
+  <section id="contacto" class="scroll-mt-24 mx-auto max-w-xl px-4 py-20 sm:px-6">
+    <div class="reveal rounded-3xl border border-slate-200/80 bg-white/60 p-8 text-center shadow-2xl shadow-slate-900/5 backdrop-blur-md dark:border-white/10 dark:bg-white/5 dark:shadow-black/40">
+      <h2 class="text-2xl font-extrabold text-slate-900 dark:text-white sm:text-3xl">¿Tienes un bar o restaurante?</h2>
+      <p class="mt-3 text-sm text-slate-600 dark:text-slate-400">
         Te preparamos un borrador gratuito de tu nueva carta y web para que veas cómo quedaría antes de pagar nada.
       </p>
-      <div class="mt-8 space-y-4">
-        <a href="https://wa.me/34XXXXXXXXX?text=Hola,%20tengo%20un%20bar%20y%20quiero%20ver%20una%20demo%20de%20mi%20web" 
-           class="flex items-center justify-center gap-2 w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-3.5 px-6 rounded-xl transition shadow-lg shadow-emerald-500/20">
+      <div class="mt-8">
+        <a href="https://wa.me/34XXXXXXXXX?text=Hola,%20tengo%20un%20bar%20y%20quiero%20ver%20una%20demo%20de%20mi%20web"
+           class="flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-500 px-6 py-3.5 font-bold text-slate-950 shadow-lg shadow-emerald-500/25 transition-all duration-300 hover:-translate-y-2 hover:bg-emerald-400 hover:shadow-emerald-400/40">
           <span>Contactar por WhatsApp</span>
         </a>
       </div>
-      <p class="text-xs text-slate-500 mt-4">Atención directa en Alcobendas, San Sebastián de los Reyes y Madrid norte.</p>
+      <p class="mt-4 text-xs text-slate-500">Atención directa en Alcobendas, San Sebastián de los Reyes y Madrid norte.</p>
     </div>
   </section>
 
-  <!-- Footer -->
-  <footer class="border-t border-slate-900 py-8 text-center text-xs text-slate-500">
+  <footer class="border-t border-slate-200 py-8 text-center text-xs text-slate-500 dark:border-white/10">
     <p>© 2026 VisiWeb Madrid. Todos los derechos reservados.</p>
   </footer>
 
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var toggle = document.getElementById('theme-toggle');
+
+      function syncToggle() {
+        var dark = root.classList.contains('dark');
+        toggle.setAttribute('aria-pressed', dark ? 'true' : 'false');
+        toggle.setAttribute('aria-label', dark ? 'Activar modo claro' : 'Activar modo oscuro');
+      }
+
+      toggle.addEventListener('click', function () {
+        var dark = root.classList.toggle('dark');
+        try { localStorage.setItem('theme', dark ? 'dark' : 'light'); } catch (e) {}
+        syncToggle();
+      });
+      syncToggle();
+
+      var nodes = document.querySelectorAll('.reveal');
+      if (!('IntersectionObserver' in window)) {
+        nodes.forEach(function (node) { node.classList.add('is-in'); });
+        return;
+      }
+      var observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add('is-in');
+          observer.unobserve(entry.target);
+        });
+      }, { threshold: 0.14, rootMargin: '0px 0px -8% 0px' });
+      nodes.forEach(function (node) { observer.observe(node); });
+    })();
+  </script>
 </body>
 </html>
