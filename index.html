@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="scroll-smooth">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -22,9 +22,12 @@
         <span class="text-2xl font-extrabold tracking-tight text-white">Visi<span class="text-amber-400">Web</span></span>
         <span class="text-xs bg-amber-400/10 text-amber-300 font-semibold px-2 py-0.5 rounded-full border border-amber-400/20">Madrid</span>
       </div>
-      <a href="#contacto" class="text-sm font-semibold bg-amber-400 hover:bg-amber-300 text-slate-950 px-4 py-2 rounded-lg transition-all shadow-lg shadow-amber-400/20">
-        Pedir Demo Gratis
-      </a>
+      <nav class="flex items-center gap-3 sm:gap-5" aria-label="Principal">
+        <a href="#planes" class="text-sm font-semibold text-slate-300 hover:text-amber-400 transition">Planes</a>
+        <a href="#contacto" class="text-sm font-semibold bg-amber-400 hover:bg-amber-300 text-slate-950 px-4 py-2 rounded-lg transition-all shadow-lg shadow-amber-400/20">
+          Pedir Demo Gratis
+        </a>
+      </nav>
     </div>
   </header>
 
@@ -88,6 +91,132 @@
         </p>
       </div>
     </div>
+  </section>
+
+  <!-- Planes y Tarifas -->
+  <section id="planes" class="scroll-mt-20 max-w-6xl mx-auto px-5 py-16 border-t border-slate-900">
+    <div class="text-center max-w-3xl mx-auto mb-14">
+      <p class="text-xs font-semibold uppercase tracking-widest text-amber-400 mb-3">Planes y tarifas</p>
+      <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">Planes transparentes pensados para hostelería</h2>
+      <p class="text-slate-400 mt-4 leading-relaxed">
+        Sin sorpresas ni letra pequeña. Coste de montaje inicial (50% al inicio y 50% a la entrega) y cuota mensual de mantenimiento con hosting, dominio y soporte incluidos.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 items-stretch">
+      <article class="flex flex-col p-6 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-slate-700 transition">
+        <header>
+          <h3 class="text-lg font-extrabold text-white tracking-tight">Básico</h3>
+          <p class="text-xs text-slate-400 mt-1">Cervecerías y bares de tapas</p>
+        </header>
+        <div class="mt-5 pb-5 border-b border-slate-800">
+          <p class="text-3xl font-extrabold text-white">120&nbsp;€</p>
+          <p class="text-xs text-slate-500 mt-1">Montaje · pago único</p>
+          <p class="mt-3 text-amber-400 font-bold">25&nbsp;€ <span class="text-sm font-semibold text-slate-400">/ mes</span></p>
+          <p class="text-xs text-slate-500">Mantenimiento</p>
+        </div>
+        <ul class="mt-5 space-y-2.5 text-sm text-slate-300 leading-snug flex-1">
+          <li class="flex gap-2"><span class="text-amber-400 shrink-0" aria-hidden="true">✓</span> Web One-Page ultrarrápida para móvil</li>
+          <li class="flex gap-2"><span class="text-amber-400 shrink-0" aria-hidden="true">✓</span> Carta digital por categorías (raciones/bebidas)</li>
+          <li class="flex gap-2"><span class="text-amber-400 shrink-0" aria-hidden="true">✓</span> Código QR oficial de alta resolución</li>
+          <li class="flex gap-2"><span class="text-amber-400 shrink-0" aria-hidden="true">✓</span> Botón de llamada directa</li>
+          <li class="flex gap-2"><span class="text-amber-400 shrink-0" aria-hidden="true">✓</span> Botón «Cómo llegar» a Google Maps</li>
+          <li class="flex gap-2"><span class="text-amber-400 shrink-0" aria-hidden="true">✓</span> Textos legales (RGPD/cookies)</li>
+          <li class="flex gap-2"><span class="text-amber-400 shrink-0" aria-hidden="true">✓</span> Hosting y dominio con 2 cambios al mes</li>
+        </ul>
+        <a href="https://wa.me/34XXXXXXXXX?text=Hola%2C%20me%20interesa%20contratar%20el%20Plan%20B%C3%A1sico%20para%20mi%20local"
+           class="mt-6 text-center border border-slate-700 hover:border-slate-500 bg-slate-900 font-semibold text-slate-200 hover:text-white px-4 py-3 rounded-xl transition">
+          Elegir Plan Básico
+        </a>
+      </article>
+
+      <article class="relative flex flex-col p-6 rounded-2xl bg-slate-900 border-2 border-amber-400 shadow-xl shadow-amber-400/10 xl:-translate-y-2">
+        <span class="absolute -top-3 left-1/2 -translate-x-1/2 bg-amber-400 text-slate-950 text-[11px] font-extrabold uppercase tracking-wider px-3 py-1 rounded-full">Más popular</span>
+        <header class="pt-2">
+          <h3 class="text-lg font-extrabold text-white tracking-tight">Pro</h3>
+          <p class="text-xs text-amber-300/90 mt-1">Menú del día y reservas</p>
+        </header>
+        <div class="mt-5 pb-5 border-b border-amber-400/20">
+          <p class="text-3xl font-extrabold text-white">190&nbsp;€</p>
+          <p class="text-xs text-slate-500 mt-1">Montaje · pago único</p>
+          <p class="mt-3 text-amber-400 font-bold">45&nbsp;€ <span class="text-sm font-semibold text-slate-400">/ mes</span></p>
+          <p class="text-xs text-slate-500">Mantenimiento</p>
+        </div>
+        <ul class="mt-5 space-y-2.5 text-sm text-slate-300 leading-snug flex-1">
+          <li class="flex gap-2"><span class="text-amber-400 shrink-0" aria-hidden="true">✓</span> Todo lo del Básico</li>
+          <li class="flex gap-2"><span class="text-amber-400 shrink-0" aria-hidden="true">✓</span> Módulo de Menú del Día actualizable</li>
+          <li class="flex gap-2"><span class="text-amber-400 shrink-0" aria-hidden="true">✓</span> Reserva de mesas por WhatsApp</li>
+          <li class="flex gap-2"><span class="text-amber-400 shrink-0" aria-hidden="true">✓</span> SEO local avanzado en Google Maps</li>
+          <li class="flex gap-2"><span class="text-amber-400 shrink-0" aria-hidden="true">✓</span> Subida completa de platos a la ficha de Google</li>
+          <li class="flex gap-2"><span class="text-amber-400 shrink-0" aria-hidden="true">✓</span> Cambios ilimitados de carta y menús</li>
+        </ul>
+        <a href="https://wa.me/34XXXXXXXXX?text=Hola%2C%20me%20interesa%20contratar%20el%20Plan%20Pro%20para%20mi%20restaurante"
+           class="mt-6 text-center bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold px-4 py-3 rounded-xl transition shadow-lg shadow-amber-400/25">
+          Elegir Plan Pro
+        </a>
+      </article>
+
+      <article class="flex flex-col p-6 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-slate-700 transition">
+        <header>
+          <h3 class="text-lg font-extrabold text-white tracking-tight">Gastro Premium</h3>
+          <p class="text-xs text-slate-400 mt-1">Restaurantes y gastrobares</p>
+        </header>
+        <div class="mt-5 pb-5 border-b border-slate-800">
+          <p class="text-3xl font-extrabold text-white">390&nbsp;€</p>
+          <p class="text-xs text-slate-500 mt-1">Montaje · pago único</p>
+          <p class="mt-3 text-amber-400 font-bold">85&nbsp;€ <span class="text-sm font-semibold text-slate-400">/ mes</span></p>
+          <p class="text-xs text-slate-500">Mantenimiento</p>
+        </div>
+        <ul class="mt-5 space-y-2.5 text-sm text-slate-300 leading-snug flex-1">
+          <li class="flex gap-2"><span class="text-amber-400 shrink-0" aria-hidden="true">✓</span> Web corporativa multipágina (Carta, Salón/Terraza, Historia, Reservas)</li>
+          <li class="flex gap-2"><span class="text-amber-400 shrink-0" aria-hidden="true">✓</span> Carta bilingüe interactiva (ES/EN) con filtros de alérgenos</li>
+          <li class="flex gap-2"><span class="text-amber-400 shrink-0" aria-hidden="true">✓</span> Sesión de fotos básica en el local (6 platos estrella)</li>
+          <li class="flex gap-2"><span class="text-amber-400 shrink-0" aria-hidden="true">✓</span> Motor de reservas integrado</li>
+          <li class="flex gap-2"><span class="text-amber-400 shrink-0" aria-hidden="true">✓</span> 10 fotos al mes en Google Maps</li>
+          <li class="flex gap-2"><span class="text-amber-400 shrink-0" aria-hidden="true">✓</span> Respuestas a reseñas</li>
+        </ul>
+        <a href="https://wa.me/34XXXXXXXXX?text=Hola%2C%20me%20interesa%20contratar%20el%20Plan%20Gastro%20Premium%20para%20mi%20restaurante"
+           class="mt-6 text-center border border-slate-700 hover:border-slate-500 bg-slate-900 font-semibold text-slate-200 hover:text-white px-4 py-3 rounded-xl transition">
+          Elegir Gastro Premium
+        </a>
+      </article>
+
+      <article class="flex flex-col p-6 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-slate-700 transition">
+        <header>
+          <h3 class="text-lg font-extrabold text-white tracking-tight">Digitalización Total</h3>
+          <p class="text-xs text-slate-400 mt-1">VIP, grupos y eventos</p>
+        </header>
+        <div class="mt-5 pb-5 border-b border-slate-800">
+          <p class="text-3xl font-extrabold text-white">790&nbsp;€</p>
+          <p class="text-xs text-slate-500 mt-1">Montaje · pago único</p>
+          <p class="mt-3 text-amber-400 font-bold">160&nbsp;€ <span class="text-sm font-semibold text-slate-400">/ mes</span></p>
+          <p class="text-xs text-slate-500">Mantenimiento</p>
+        </div>
+        <ul class="mt-5 space-y-2.5 text-sm text-slate-300 leading-snug flex-1">
+          <li class="flex gap-2"><span class="text-amber-400 shrink-0" aria-hidden="true">✓</span> Web a medida de alto impacto (multisede)</li>
+          <li class="flex gap-2"><span class="text-amber-400 shrink-0" aria-hidden="true">✓</span> Eventos privados, bodas y cenas de empresa</li>
+          <li class="flex gap-2"><span class="text-amber-400 shrink-0" aria-hidden="true">✓</span> Sesión audiovisual completa (foto + vídeo reels)</li>
+          <li class="flex gap-2"><span class="text-amber-400 shrink-0" aria-hidden="true">✓</span> Gestión de reseñas de Google Maps en 48&nbsp;h</li>
+          <li class="flex gap-2"><span class="text-amber-400 shrink-0" aria-hidden="true">✓</span> Publicaciones quincenales en Google</li>
+          <li class="flex gap-2"><span class="text-amber-400 shrink-0" aria-hidden="true">✓</span> Soporte prioritario 7 días a la semana</li>
+        </ul>
+        <a href="https://wa.me/34XXXXXXXXX?text=Hola%2C%20me%20interesa%20consultar%20el%20Plan%20VIP%20de%20digitalizaci%C3%B3n%20total%20para%20mi%20local"
+           class="mt-6 text-center border border-slate-700 hover:border-slate-500 bg-slate-900 font-semibold text-slate-200 hover:text-white px-4 py-3 rounded-xl transition">
+          Consultar Plan VIP
+        </a>
+      </article>
+    </div>
+
+    <aside class="mt-8 rounded-2xl border border-slate-800 bg-slate-900/40 px-5 py-5" aria-label="Servicios adicionales">
+      <p class="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-4">Servicios adicionales</p>
+      <ul class="flex flex-wrap gap-2.5">
+        <li class="text-sm text-slate-300 bg-slate-950/70 border border-slate-800 rounded-full px-3.5 py-1.5">Pack soportes físicos QR (metacrilato/madera) <span class="text-amber-400 font-semibold">desde 60&nbsp;€</span></li>
+        <li class="text-sm text-slate-300 bg-slate-950/70 border border-slate-800 rounded-full px-3.5 py-1.5">Sesión fotográfica extra <span class="text-amber-400 font-semibold">60&nbsp;€</span></li>
+        <li class="text-sm text-slate-300 bg-slate-950/70 border border-slate-800 rounded-full px-3.5 py-1.5">Traducción a inglés <span class="text-amber-400 font-semibold">45&nbsp;€</span></li>
+        <li class="text-sm text-slate-300 bg-slate-950/70 border border-slate-800 rounded-full px-3.5 py-1.5">Campaña Google Ads local <span class="text-amber-400 font-semibold">150&nbsp;€</span></li>
+        <li class="text-sm text-slate-300 bg-slate-950/70 border border-slate-800 rounded-full px-3.5 py-1.5">Horas de desarrollo fuera de cuota <span class="text-amber-400 font-semibold">30&nbsp;€/hora</span></li>
+      </ul>
+    </aside>
   </section>
 
   <!-- Formulario / Contacto -->
