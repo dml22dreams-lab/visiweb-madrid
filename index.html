@@ -17,6 +17,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     html { color-scheme: light; }
     html.dark { color-scheme: dark; }
@@ -83,8 +84,48 @@
     }
     .dark .plan-badge { box-shadow: 0 0 0 6px rgb(2 6 23); }
 
+    .is-picked {
+      border-color: #10b981 !important;
+      background-color: rgba(16, 185, 129, .12);
+    }
+    .dark .is-picked { background-color: rgba(6, 78, 59, .45); }
+    .is-picked-btn {
+      background: #10b981 !important;
+      color: #022c22 !important;
+      border-color: #10b981 !important;
+    }
+
+    @keyframes plan-attention {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0); }
+      45% { box-shadow: 0 0 0 3px rgba(251, 191, 36, .9), 0 16px 36px -10px rgba(251, 191, 36, .65); }
+    }
+    #planes article.plan-attention { position: relative; }
+    #planes article.plan-attention::before {
+      content: "";
+      position: absolute;
+      z-index: 2;
+      inset: -2px;
+      border-radius: inherit;
+      pointer-events: none;
+      animation: plan-attention 1.05s ease-in-out 2;
+    }
+
+    .perspective-1000 { perspective: 1000px; }
+    #card-1, #card-2, #card-3 {
+      position: absolute;
+      left: 50%;
+      top: 54%;
+      width: min(40rem, 86vw);
+      transform-origin: center center;
+      will-change: transform, filter;
+    }
+    #card-1 { z-index: 1; transform: translate3d(-50%, -50%, 0); }
+    #card-2, #card-3 { transform: translate3d(-50%, calc(-50% + 100vh), 0); }
+    #card-2 { z-index: 2; }
+    #card-3 { z-index: 3; }
+
     @media (prefers-reduced-motion: reduce) {
-      .fade-in-up, .scale-in, .plan-pro, .plan-pro::after, .reveal.is-in { animation: none !important; }
+      .fade-in-up, .scale-in, .plan-pro, .plan-pro::after, .reveal.is-in, #planes article.plan-attention::before { animation: none !important; }
       .reveal { opacity: 1; transform: none; }
     }
   </style>
@@ -99,6 +140,32 @@
       </div>
       <nav class="flex items-center gap-2 sm:gap-4" aria-label="Principal">
         <a href="#planes" class="text-sm font-semibold text-slate-600 transition-colors duration-300 hover:text-amber-600 dark:text-slate-300 dark:hover:text-amber-400">Planes</a>
+        <button type="button" id="cart-open" class="relative grid h-10 w-10 place-items-center rounded-xl border border-slate-200 bg-white/70 text-slate-800 transition-all duration-300 hover:border-amber-400/70 dark:border-white/10 dark:bg-white/5 dark:text-amber-300" aria-label="Abrir carrito">
+          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h15l-1.5 9h-12L5 3H2"></path>
+            <circle cx="9" cy="20" r="1.2" fill="currentColor" stroke="none"></circle>
+            <circle cx="18" cy="20" r="1.2" fill="currentColor" stroke="none"></circle>
+          </svg>
+          <span id="cart-count" class="absolute -right-1.5 -top-1.5 hidden min-h-5 min-w-5 place-items-center rounded-full bg-amber-400 px-1 text-[11px] font-bold leading-5 text-slate-950">0</span>
+        </button>
+        <div id="auth-slot" class="relative">
+          <button type="button" id="auth-open" class="inline-flex h-10 items-center gap-1.5 rounded-xl border border-slate-200 bg-white/70 px-3 text-xs font-semibold text-slate-800 transition-all duration-300 hover:border-amber-400/70 sm:text-sm dark:border-white/10 dark:bg-white/5 dark:text-slate-100">
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="8" r="3.2"></circle><path stroke-linecap="round" d="M5 19.2c1.4-2.6 3.8-3.7 7-3.7s5.6 1.1 7 3.7"></path></svg>
+            Acceder
+          </button>
+          <div id="auth-session" class="hidden">
+            <button type="button" id="auth-menu-toggle" class="inline-flex h-10 max-w-[11rem] items-center gap-2 rounded-full border border-slate-200 bg-white/80 py-1 pl-1 pr-2.5 text-slate-800 transition-all duration-300 hover:border-amber-400/70 sm:max-w-[14rem] dark:border-white/10 dark:bg-white/5 dark:text-slate-100" aria-expanded="false" aria-haspopup="menu">
+              <span class="relative shrink-0">
+                <span id="auth-avatar" class="grid h-8 w-8 place-items-center overflow-hidden rounded-full bg-amber-400 text-xs font-bold text-slate-950"></span>
+                <span class="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border-2 border-white bg-emerald-500 dark:border-slate-950" aria-hidden="true"></span>
+              </span>
+              <span id="auth-email" class="truncate text-xs font-semibold"></span>
+            </button>
+            <div id="auth-menu" class="absolute right-0 top-full z-20 mt-2 hidden w-44 rounded-xl border border-slate-200 bg-white p-1 shadow-xl dark:border-white/10 dark:bg-slate-900" role="menu">
+              <button type="button" id="auth-logout" class="w-full rounded-lg px-3 py-2 text-left text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-white/10" role="menuitem">Cerrar sesión</button>
+            </div>
+          </div>
+        </div>
         <button type="button" id="theme-toggle" class="grid h-10 w-10 place-items-center rounded-xl border border-slate-200 bg-white/70 text-slate-800 transition-all duration-300 hover:border-amber-400/70 dark:border-white/10 dark:bg-white/5 dark:text-amber-300" aria-label="Activar modo oscuro" aria-pressed="false">
           <svg class="hidden h-5 w-5 dark:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
             <circle cx="12" cy="12" r="4"></circle>
@@ -108,7 +175,7 @@
             <path stroke-linejoin="round" d="M21 14.5A8.5 8.5 0 1 1 9.5 3a7 7 0 0 0 11.5 11.5z"></path>
           </svg>
         </button>
-        <a href="#contacto" class="shrink-0 whitespace-nowrap rounded-lg bg-amber-400 px-3 py-2 text-xs font-semibold text-slate-950 shadow-lg shadow-amber-400/25 transition-all duration-300 hover:-translate-y-0.5 hover:bg-amber-500 hover:shadow-amber-400/40 sm:px-4 sm:text-sm">
+        <a href="https://wa.me/34000000000?text=%C2%A1Hola!%20Me%20gustar%C3%ADa%20pedir%20una%20demo%20gratuita%20para%20ver%20c%C3%B3mo%20quedar%C3%ADa%20la%20web%20y%20la%20carta%20digital%20de%20mi%20local." target="_blank" rel="noopener noreferrer" class="shrink-0 whitespace-nowrap rounded-lg bg-amber-400 px-3 py-2 text-xs font-semibold text-slate-950 shadow-lg shadow-amber-400/25 transition-all duration-300 hover:-translate-y-0.5 hover:bg-amber-500 hover:shadow-amber-400/40 sm:px-4 sm:text-sm">
           Pedir Demo Gratis
         </a>
       </nav>
@@ -134,7 +201,7 @@
         Webs ultrarrápidas, cartas digitales interactivas y posicionamiento local para que los vecinos elijan tu local cuando busquen dónde comer o tomar algo.
       </p>
       <div class="fade-in-up delay-2 mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
-        <a href="#contacto" class="w-full rounded-xl bg-amber-400 px-7 py-3.5 font-bold text-slate-950 shadow-xl shadow-amber-400/30 transition-all duration-300 hover:-translate-y-2 hover:bg-amber-500 hover:shadow-amber-400/50 sm:w-auto">
+        <a href="https://wa.me/34000000000?text=%C2%A1Hola!%20Me%20gustar%C3%ADa%20pedir%20una%20demo%20gratuita%20para%20ver%20c%C3%B3mo%20quedar%C3%ADa%20la%20web%20y%20la%20carta%20digital%20de%20mi%20local." target="_blank" rel="noopener noreferrer" class="w-full rounded-xl bg-amber-400 px-7 py-3.5 font-bold text-slate-950 shadow-xl shadow-amber-400/30 transition-all duration-300 hover:-translate-y-2 hover:bg-amber-500 hover:shadow-amber-400/50 sm:w-auto">
           Quiero una demo de mi bar
         </a>
         <a href="#servicios" class="w-full rounded-xl border border-slate-200 bg-white/60 px-7 py-3.5 font-semibold text-slate-700 backdrop-blur-md transition-all duration-300 hover:-translate-y-2 hover:border-amber-400/60 hover:text-slate-900 dark:border-white/10 dark:bg-white/5 dark:text-slate-300 dark:hover:text-white sm:w-auto">
@@ -144,14 +211,13 @@
     </div>
   </section>
 
-  <section id="servicios" class="scroll-mt-24 mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
-    <div class="reveal mx-auto mb-14 max-w-xl text-center">
-      <h2 class="text-3xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl">Todo lo que tu local necesita</h2>
-      <p class="mt-2 text-slate-600 dark:text-slate-400">Sin tecnicismos raros ni cobros sorpresa. Directo al grano.</p>
-    </div>
-
-    <div class="group mx-auto flex w-full max-w-sm flex-col items-center gap-6 md:grid md:max-w-none md:min-h-[420px] md:place-items-center">
-      <article class="z-10 w-full max-w-[360px] rounded-3xl border border-slate-200/70 bg-white/70 p-8 text-left shadow-xl backdrop-blur-xl transition-all duration-500 ease-out dark:border-white/10 dark:bg-slate-900/70 dark:shadow-2xl md:col-start-1 md:row-start-1 md:-translate-x-3 md:-rotate-6 md:group-hover:-translate-x-[clamp(8.5rem,calc(50vw-13.5rem),380px)] md:group-hover:-rotate-3 md:group-hover:scale-100">
+  <section id="servicios" class="scroll-mt-24">
+    <div class="mx-auto flex max-w-4xl flex-col gap-6 px-4 py-16 sm:px-6 md:hidden">
+      <div class="mx-auto mb-8 max-w-xl text-center">
+        <h2 class="text-3xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl">Todo lo que tu local necesita</h2>
+        <p class="mt-2 text-slate-600 dark:text-slate-400">Sin tecnicismos raros ni cobros sorpresa. Directo al grano.</p>
+      </div>
+      <article class="w-full rounded-3xl border border-slate-200 bg-white p-8 text-left shadow-2xl dark:border-white/10 dark:bg-slate-900">
         <div class="mb-5 w-fit rounded-2xl bg-amber-100 p-3 dark:bg-amber-500/10">
           <svg class="h-7 w-7 text-amber-600 dark:text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
             <rect x="7" y="2.5" width="10" height="19" rx="2"></rect>
@@ -163,7 +229,7 @@
           Olvídate de PDFs de 20 megas que nadie puede leer. Una carta adaptada a la pantalla de cualquier móvil que carga en menos de un segundo con código QR.
         </p>
       </article>
-      <article class="z-20 w-full max-w-[360px] rounded-3xl border border-slate-200/70 bg-white/70 p-8 text-left shadow-xl backdrop-blur-xl transition-all duration-500 ease-out dark:border-white/10 dark:bg-slate-900/70 dark:shadow-2xl md:col-start-1 md:row-start-1 md:scale-100 md:group-hover:-translate-y-3 md:group-hover:shadow-2xl">
+      <article class="w-full rounded-3xl border border-slate-200 bg-white p-8 text-left shadow-2xl dark:border-white/10 dark:bg-slate-900">
         <div class="mb-5 w-fit rounded-2xl bg-amber-100 p-3 dark:bg-amber-500/10">
           <svg class="h-7 w-7 text-rose-500 dark:text-rose-400" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
             <path d="M12 2.2a6.8 6.8 0 0 0-6.8 6.8c0 5.1 6.8 12.8 6.8 12.8s6.8-7.7 6.8-12.8A6.8 6.8 0 0 0 12 2.2zm0 9.2a2.4 2.4 0 1 1 0-4.8 2.4 2.4 0 0 1 0 4.8z"></path>
@@ -174,7 +240,7 @@
           Optimizamos tu ficha de Google Perfil de Empresa para que aparezcas entre los primeros cuando alguien busque tapas, menús o terrazas en tu zona.
         </p>
       </article>
-      <article class="z-10 w-full max-w-[360px] rounded-3xl border border-slate-200/70 bg-white/70 p-8 text-left shadow-xl backdrop-blur-xl transition-all duration-500 ease-out dark:border-white/10 dark:bg-slate-900/70 dark:shadow-2xl md:col-start-1 md:row-start-1 md:translate-x-3 md:rotate-6 md:group-hover:translate-x-[clamp(8.5rem,calc(50vw-13.5rem),380px)] md:group-hover:rotate-3 md:group-hover:scale-100">
+      <article class="w-full rounded-3xl border border-slate-200 bg-white p-8 text-left shadow-2xl dark:border-white/10 dark:bg-slate-900">
         <div class="mb-5 w-fit rounded-2xl bg-amber-100 p-3 dark:bg-amber-500/10">
           <svg class="h-7 w-7 text-rose-500 dark:text-rose-400" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
             <path d="M7.4 3.2c.4-.4 1-.5 1.5-.3l2.2.9c.5.2.8.7.8 1.2l-.1 2.1a1.3 1.3 0 0 1-.7 1.1l-1.2.6a10.6 10.6 0 0 0 5.1 5.1l.6-1.2c.2-.4.6-.6 1.1-.7l2.1-.1c.5 0 1 .3 1.2.8l.9 2.2c.2.5.1 1.1-.3 1.5l-1.3 1.3c-.4.4-1 .6-1.6.5C10.8 18.6 5.4 13.2 4.6 6.1c-.1-.6.1-1.2.5-1.6L7.4 3.2z"></path>
@@ -186,6 +252,49 @@
         </p>
       </article>
     </div>
+
+    <div id="scroll-wrapper" class="relative h-[250vh] w-full hidden md:block">
+      <div class="sticky top-0 h-screen w-full flex flex-col items-center justify-center overflow-hidden perspective-1000">
+        <div class="absolute inset-x-0 top-24 z-40 px-6 text-center">
+          <h2 class="text-3xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl">Todo lo que tu local necesita</h2>
+          <p class="mt-2 text-slate-600 dark:text-slate-400">Sin tecnicismos raros ni cobros sorpresa. Directo al grano.</p>
+        </div>
+        <article id="card-1" class="rounded-3xl border border-slate-200 bg-white p-8 text-left shadow-2xl dark:border-white/10 dark:bg-slate-900">
+          <div class="mb-5 w-fit rounded-2xl bg-amber-100 p-3 dark:bg-amber-500/10">
+            <svg class="h-7 w-7 text-amber-600 dark:text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+              <rect x="7" y="2.5" width="10" height="19" rx="2"></rect>
+              <path stroke-linecap="round" d="M10 6.5h4M10 10h4M10 13.5h2.5"></path>
+            </svg>
+          </div>
+          <h3 class="mb-2 text-xl font-bold text-slate-900 dark:text-white">Carta Digital Instantánea</h3>
+          <p class="text-sm leading-relaxed text-slate-600 dark:text-slate-400">
+            Olvídate de PDFs de 20 megas que nadie puede leer. Una carta adaptada a la pantalla de cualquier móvil que carga en menos de un segundo con código QR.
+          </p>
+        </article>
+        <article id="card-2" class="rounded-3xl border border-slate-200 bg-white p-8 text-left shadow-2xl dark:border-white/10 dark:bg-slate-900">
+          <div class="mb-5 w-fit rounded-2xl bg-amber-100 p-3 dark:bg-amber-500/10">
+            <svg class="h-7 w-7 text-rose-500 dark:text-rose-400" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M12 2.2a6.8 6.8 0 0 0-6.8 6.8c0 5.1 6.8 12.8 6.8 12.8s6.8-7.7 6.8-12.8A6.8 6.8 0 0 0 12 2.2zm0 9.2a2.4 2.4 0 1 1 0-4.8 2.4 2.4 0 0 1 0 4.8z"></path>
+            </svg>
+          </div>
+          <h3 class="mb-2 text-xl font-bold text-slate-900 dark:text-white">Posicionamiento en Google Maps</h3>
+          <p class="text-sm leading-relaxed text-slate-600 dark:text-slate-400">
+            Optimizamos tu ficha de Google Perfil de Empresa para que aparezcas entre los primeros cuando alguien busque tapas, menús o terrazas en tu zona.
+          </p>
+        </article>
+        <article id="card-3" class="rounded-3xl border border-slate-200 bg-white p-8 text-left shadow-2xl dark:border-white/10 dark:bg-slate-900">
+          <div class="mb-5 w-fit rounded-2xl bg-amber-100 p-3 dark:bg-amber-500/10">
+            <svg class="h-7 w-7 text-rose-500 dark:text-rose-400" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M7.4 3.2c.4-.4 1-.5 1.5-.3l2.2.9c.5.2.8.7.8 1.2l-.1 2.1a1.3 1.3 0 0 1-.7 1.1l-1.2.6a10.6 10.6 0 0 0 5.1 5.1l.6-1.2c.2-.4.6-.6 1.1-.7l2.1-.1c.5 0 1 .3 1.2.8l.9 2.2c.2.5.1 1.1-.3 1.5l-1.3 1.3c-.4.4-1 .6-1.6.5C10.8 18.6 5.4 13.2 4.6 6.1c-.1-.6.1-1.2.5-1.6L7.4 3.2z"></path>
+            </svg>
+          </div>
+          <h3 class="mb-2 text-xl font-bold text-slate-900 dark:text-white">Reservas a un solo toque</h3>
+          <p class="text-sm leading-relaxed text-slate-600 dark:text-slate-400">
+            Botones directos para llamar al bar o enviar un WhatsApp con un clic. Menos pasos para el cliente, más mesas reservadas para ti.
+          </p>
+        </article>
+      </div>
+    </div>
   </section>
 
   <section class="relative mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
@@ -193,63 +302,61 @@
       <p class="mb-3 text-xs font-semibold uppercase tracking-widest text-amber-700 dark:text-amber-400">Planes y tarifas</p>
       <h2 class="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-4xl">Planes transparentes pensados para hostelería</h2>
       <p class="mt-4 leading-relaxed text-slate-600 dark:text-slate-400">
-        Coste de montaje inicial (50% al inicio y 50% a la entrega) y cuota mensual de mantenimiento con hosting, dominio y soporte incluidos.
+        Elige primero el montaje de la web (50% al inicio y 50% a la entrega). El mantenimiento mensual lo confirmas en el paso 2.
       </p>
     </div>
 
     <div id="planes" class="scroll-mt-28 stagger grid grid-cols-1 items-stretch gap-5 pt-4 md:grid-cols-2 xl:grid-cols-4">
-      <article class="reveal flex flex-col rounded-2xl border border-slate-200/80 bg-white/55 p-6 backdrop-blur-md transition-all duration-300 hover:-translate-y-2 hover:border-amber-400/70 hover:shadow-[0_22px_50px_-24px_rgba(251,191,36,.5)] dark:border-white/10 dark:bg-white/5">
+      <article data-web="basico" data-name="Básico" data-price="120" data-plazo="Entrega lista en 48h laborables" data-active="35" class="reveal flex flex-col rounded-2xl border border-slate-200/80 bg-white/55 p-6 backdrop-blur-md transition-all duration-300 hover:-translate-y-2 hover:border-amber-400/70 hover:shadow-[0_22px_50px_-24px_rgba(251,191,36,.5)] dark:border-white/10 dark:bg-white/5">
         <header>
           <h3 class="text-lg font-extrabold tracking-tight text-slate-900 dark:text-white">Básico</h3>
           <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Cervecerías y bares de tapas</p>
         </header>
         <div class="mt-5 border-b border-slate-200 pb-5 dark:border-white/10">
           <p class="text-3xl font-extrabold text-slate-900 dark:text-white">120&nbsp;€</p>
-          <p class="mt-1 text-xs text-slate-500">Montaje · pago único</p>
-          <p class="mt-3 font-bold text-amber-700 dark:text-amber-400">25&nbsp;€ <span class="text-sm font-semibold text-slate-500 dark:text-slate-400">/ mes</span></p>
-          <p class="text-xs text-slate-500">Mantenimiento</p>
+          <p class="mt-2.5 inline-flex items-center gap-1.5 rounded-full border border-amber-400/50 bg-amber-50 px-2.5 py-1 text-[11px] font-semibold leading-tight text-amber-900 dark:border-amber-400/30 dark:bg-amber-400/10 dark:text-amber-200"><span aria-hidden="true">⏱️</span> Entrega lista en 48h laborables*</p>
+          <p class="mt-2 text-xs text-slate-500">Montaje · pago único</p>
+          <p class="mt-3 text-xs text-slate-500 dark:text-slate-400">Mantenimiento a elegir en el Paso 2</p>
         </div>
         <ul class="mt-5 flex-1 space-y-2.5 text-sm leading-snug text-slate-700 dark:text-slate-300">
-          <li class="flex gap-2"><span class="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true">✓</span> Web One-Page ultrarrápida para móvil</li>
-          <li class="flex gap-2"><span class="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true">✓</span> Carta digital por categorías (raciones/bebidas)</li>
-          <li class="flex gap-2"><span class="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true">✓</span> Código QR oficial de alta resolución</li>
-          <li class="flex gap-2"><span class="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true">✓</span> Botón de llamada directa</li>
-          <li class="flex gap-2"><span class="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true">✓</span> Botón «Cómo llegar» a Google Maps</li>
-          <li class="flex gap-2"><span class="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true">✓</span> Textos legales (RGPD/cookies)</li>
-          <li class="flex gap-2"><span class="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true">✓</span> Hosting y dominio con 2 cambios al mes</li>
+          <li class="flex gap-2"><span class="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true">✓</span> Web One-Page ultrarrápida adaptada a móvil</li>
+          <li class="flex gap-2"><span class="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true">✓</span> Digitalización de carta por categorías (raciones/bebidas)</li>
+          <li class="flex gap-2"><span class="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true">✓</span> Código QR oficial de alta resolución listo para imprimir</li>
+          <li class="flex gap-2"><span class="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true">✓</span> Botón de llamada directa y botón «Cómo llegar»</li>
+          <li class="flex gap-2"><span class="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true">✓</span> Textos legales y RGPD integrados</li>
+          <li class="flex gap-2"><span class="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true">✓</span> Vinculación oficial del enlace web en Google Maps</li>
         </ul>
-        <a href="https://wa.me/34XXXXXXXXX?text=Hola%2C%20me%20interesa%20contratar%20el%20Plan%20B%C3%A1sico%20para%20mi%20local"
+        <button type="button" data-select-web aria-pressed="false"
            class="mt-6 rounded-xl border border-slate-300 bg-white/70 px-4 py-3 text-center font-semibold text-slate-800 transition-all duration-300 hover:-translate-y-1 hover:border-amber-400 hover:shadow-lg hover:shadow-amber-400/20 dark:border-white/15 dark:bg-white/5 dark:text-slate-200 dark:hover:text-white">
-          Elegir Plan Básico
-        </a>
+          Seleccionar Web
+        </button>
       </article>
 
-      <article class="reveal flex flex-col rounded-2xl border border-slate-200/80 bg-white/55 p-6 backdrop-blur-md transition-all duration-300 hover:-translate-y-2 hover:border-amber-400/70 hover:shadow-[0_22px_50px_-24px_rgba(251,191,36,.5)] dark:border-white/10 dark:bg-white/5">
+      <article data-web="pro" data-name="Pro" data-price="190" data-plazo="Entrega en 3 a 5 días laborables" data-active="45" class="reveal flex flex-col rounded-2xl border border-slate-200/80 bg-white/55 p-6 backdrop-blur-md transition-all duration-300 hover:-translate-y-2 hover:border-amber-400/70 hover:shadow-[0_22px_50px_-24px_rgba(251,191,36,.5)] dark:border-white/10 dark:bg-white/5">
         <header>
           <h3 class="text-lg font-extrabold tracking-tight text-slate-900 dark:text-white">Pro</h3>
           <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Menú del día y reservas</p>
         </header>
         <div class="mt-5 border-b border-slate-200 pb-5 dark:border-white/10">
           <p class="text-3xl font-extrabold text-slate-900 dark:text-white">190&nbsp;€</p>
-          <p class="mt-1 text-xs text-slate-500">Montaje · pago único</p>
-          <p class="mt-3 font-bold text-amber-700 dark:text-amber-400">45&nbsp;€ <span class="text-sm font-semibold text-slate-500 dark:text-slate-400">/ mes</span></p>
-          <p class="text-xs text-slate-500">Mantenimiento</p>
+          <p class="mt-2.5 inline-flex items-center gap-1.5 rounded-full border border-amber-400/50 bg-amber-50 px-2.5 py-1 text-[11px] font-semibold leading-tight text-amber-900 dark:border-amber-400/30 dark:bg-amber-400/10 dark:text-amber-200"><span aria-hidden="true">⏱️</span> Entrega en 3 a 5 días laborables*</p>
+          <p class="mt-2 text-xs text-slate-500">Montaje · pago único</p>
+          <p class="mt-3 text-xs text-slate-500 dark:text-slate-400">Mantenimiento a elegir en el Paso 2</p>
         </div>
         <ul class="mt-5 flex-1 space-y-2.5 text-sm leading-snug text-slate-700 dark:text-slate-300">
-          <li class="flex gap-2"><span class="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true">✓</span> Todo lo del Básico</li>
+          <li class="flex gap-2"><span class="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true">✓</span> Todo lo incluido en el Plan Básico</li>
           <li class="flex gap-2"><span class="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true">✓</span> Módulo de Menú del Día actualizable</li>
-          <li class="flex gap-2"><span class="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true">✓</span> Reserva de mesas por WhatsApp</li>
-          <li class="flex gap-2"><span class="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true">✓</span> SEO local avanzado en Google Maps</li>
-          <li class="flex gap-2"><span class="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true">✓</span> Subida completa de platos a la ficha de Google</li>
-          <li class="flex gap-2"><span class="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true">✓</span> Hasta 4 actualizaciones de carta o menú al mes</li>
+          <li class="flex gap-2"><span class="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true">✓</span> Botón directo de reserva de mesas por WhatsApp</li>
+          <li class="flex gap-2"><span class="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true">✓</span> Optimización de SEO local en Google Maps</li>
+          <li class="flex gap-2"><span class="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true">✓</span> Subida inicial completa de platos a la ficha de Google</li>
         </ul>
-        <a href="https://wa.me/34XXXXXXXXX?text=Hola%2C%20me%20interesa%20contratar%20el%20Plan%20Pro%20para%20mi%20restaurante"
+        <button type="button" data-select-web aria-pressed="false"
            class="mt-6 rounded-xl border border-slate-300 bg-white/70 px-4 py-3 text-center font-semibold text-slate-800 transition-all duration-300 hover:-translate-y-1 hover:border-amber-400 hover:shadow-lg hover:shadow-amber-400/20 dark:border-white/15 dark:bg-white/5 dark:text-slate-200 dark:hover:text-white">
-          Elegir Plan Pro
-        </a>
+          Seleccionar Web
+        </button>
       </article>
 
-      <article class="reveal relative flex flex-col rounded-2xl border border-amber-400/80 bg-white/70 p-6 shadow-xl shadow-amber-500/10 backdrop-blur-md transition-all duration-300 hover:-translate-y-2 hover:shadow-amber-500/20 dark:bg-slate-900/70">
+      <article data-web="gastro" data-name="Gastro Premium" data-price="390" data-plazo="Entrega en 5 a 7 días laborables" data-active="85" class="reveal relative flex flex-col rounded-2xl border border-amber-400/80 bg-white/70 p-6 shadow-xl shadow-amber-500/10 backdrop-blur-md transition-all duration-300 hover:-translate-y-2 hover:shadow-amber-500/20 dark:bg-slate-900/70">
         <span class="plan-badge absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-amber-400 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-slate-950">Recomendado</span>
         <header class="pt-2">
           <h3 class="text-lg font-extrabold tracking-tight text-slate-900 dark:text-white">Gastro Premium</h3>
@@ -257,64 +364,91 @@
         </header>
         <div class="mt-5 border-b border-slate-200 pb-5 dark:border-white/10">
           <p class="text-3xl font-extrabold text-slate-900 dark:text-white">390&nbsp;€</p>
-          <p class="mt-1 text-xs text-slate-500">Montaje · pago único</p>
-          <p class="mt-3 font-bold text-amber-700 dark:text-amber-400">85&nbsp;€ <span class="text-sm font-semibold text-slate-500 dark:text-slate-400">/ mes</span></p>
-          <p class="text-xs text-slate-500">Mantenimiento</p>
+          <p class="mt-2.5 inline-flex items-center gap-1.5 rounded-full border border-amber-400/50 bg-amber-50 px-2.5 py-1 text-[11px] font-semibold leading-tight text-amber-900 dark:border-amber-400/30 dark:bg-amber-400/10 dark:text-amber-200"><span aria-hidden="true">⏱️</span> Entrega en 5 a 7 días laborables*</p>
+          <p class="mt-2 text-xs text-slate-500">Montaje · pago único</p>
+          <p class="mt-3 text-xs text-slate-500 dark:text-slate-400">Mantenimiento a elegir en el Paso 2</p>
         </div>
         <ul class="mt-5 flex-1 space-y-2.5 text-sm leading-snug text-slate-700 dark:text-slate-300">
           <li class="flex gap-2"><span class="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true">✓</span> Web corporativa multipágina (Carta, Salón/Terraza, Historia, Reservas)</li>
           <li class="flex gap-2"><span class="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true">✓</span> Carta bilingüe interactiva (ES/EN) con filtros de alérgenos</li>
-          <li class="flex gap-2"><span class="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true">✓</span> Sesión de fotos básica en el local (6 platos estrella)</li>
-          <li class="flex gap-2"><span class="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true">✓</span> Motor de reservas integrado</li>
-          <li class="flex gap-2"><span class="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true">✓</span> 10 fotos al mes en Google Maps</li>
-          <li class="flex gap-2"><span class="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true">✓</span> Respuestas a reseñas</li>
-          <li class="flex gap-2"><span class="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true">✓</span> Hasta 8 actualizaciones de carta al mes con respuesta en el mismo día</li>
+          <li class="flex gap-2"><span class="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true">✓</span> Sesión fotográfica básica en el local (fachada, salón y 6 platos)</li>
+          <li class="flex gap-2"><span class="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true">✓</span> Motor de reservas integrado en la web</li>
+          <li class="flex gap-2"><span class="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true">✓</span> Optimización avanzada de la ficha de Google Maps</li>
         </ul>
-        <a href="https://wa.me/34XXXXXXXXX?text=Hola%2C%20me%20interesa%20contratar%20el%20Plan%20Gastro%20Premium%20para%20mi%20restaurante"
+        <button type="button" data-select-web aria-pressed="false"
            class="mt-6 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 px-4 py-3 text-center font-bold text-slate-950 shadow-lg shadow-amber-400/40 transition-all duration-300 hover:-translate-y-1 hover:shadow-amber-400/60">
-          Elegir Gastro Premium
-        </a>
+          Seleccionar Web
+        </button>
       </article>
 
-      <article class="reveal flex flex-col rounded-2xl border border-slate-200/80 bg-white/55 p-6 backdrop-blur-md transition-all duration-300 hover:-translate-y-2 hover:border-amber-400/70 hover:shadow-[0_22px_50px_-24px_rgba(251,191,36,.5)] dark:border-white/10 dark:bg-white/5">
+      <article data-web="vip" data-name="Digitalización Total" data-price="790" data-plazo="Entrega en 10 a 14 días laborables" data-active="220" class="reveal flex flex-col rounded-2xl border border-slate-200/80 bg-white/55 p-6 backdrop-blur-md transition-all duration-300 hover:-translate-y-2 hover:border-amber-400/70 hover:shadow-[0_22px_50px_-24px_rgba(251,191,36,.5)] dark:border-white/10 dark:bg-white/5">
         <header>
           <h3 class="text-lg font-extrabold tracking-tight text-slate-900 dark:text-white">Digitalización Total</h3>
           <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">VIP, grupos y eventos</p>
         </header>
         <div class="mt-5 border-b border-slate-200 pb-5 dark:border-white/10">
           <p class="text-3xl font-extrabold text-slate-900 dark:text-white">790&nbsp;€</p>
-          <p class="mt-1 text-xs text-slate-500">Montaje · pago único</p>
-          <p class="mt-3 font-bold text-amber-700 dark:text-amber-400">220&nbsp;€ <span class="text-sm font-semibold text-slate-500 dark:text-slate-400">/ mes</span></p>
-          <p class="text-xs text-slate-500">Mantenimiento</p>
+          <p class="mt-2.5 inline-flex items-center gap-1.5 rounded-full border border-amber-400/50 bg-amber-50 px-2.5 py-1 text-[11px] font-semibold leading-tight text-amber-900 dark:border-amber-400/30 dark:bg-amber-400/10 dark:text-amber-200"><span aria-hidden="true">⏱️</span> Entrega en 10 a 14 días laborables*</p>
+          <p class="mt-2 text-xs text-slate-500">Montaje · pago único</p>
+          <p class="mt-3 text-xs text-slate-500 dark:text-slate-400">Mantenimiento a elegir en el Paso 2</p>
         </div>
         <ul class="mt-5 flex-1 space-y-2.5 text-sm leading-snug text-slate-700 dark:text-slate-300">
-          <li class="flex gap-2"><span class="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true">✓</span> Web a medida de alto impacto (multisede)</li>
-          <li class="flex gap-2"><span class="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true">✓</span> Eventos privados, bodas y cenas de empresa</li>
-          <li class="flex gap-2"><span class="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true">✓</span> Sesión audiovisual completa (foto + vídeo reels)</li>
-          <li class="flex gap-2"><span class="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true">✓</span> Gestión de reseñas de Google Maps en 48&nbsp;h</li>
-          <li class="flex gap-2"><span class="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true">✓</span> Publicaciones quincenales en Google</li>
-          <li class="flex gap-2"><span class="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true">✓</span> Actualizaciones prioritarias de carta y soporte técnico de lunes a viernes</li>
+          <li class="flex gap-2"><span class="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true">✓</span> Web a medida de alto impacto visual (soporte multisede)</li>
+          <li class="flex gap-2"><span class="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true">✓</span> Sección para eventos privados, bodas y cenas de empresa</li>
+          <li class="flex gap-2"><span class="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true">✓</span> Sesión audiovisual completa (fotografías + clips de vídeo para reels)</li>
+          <li class="flex gap-2"><span class="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true">✓</span> Carta interactiva multi-idioma con fotografías por plato</li>
+          <li class="flex gap-2"><span class="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true">✓</span> Configuración avanzada de reputación online</li>
         </ul>
-        <a href="https://wa.me/34XXXXXXXXX?text=Hola%2C%20me%20interesa%20consultar%20el%20Plan%20VIP%20de%20digitalizaci%C3%B3n%20total%20para%20mi%20local"
+        <button type="button" data-select-web aria-pressed="false"
            class="mt-6 rounded-xl border border-slate-300 bg-white/70 px-4 py-3 text-center font-semibold text-slate-800 transition-all duration-300 hover:-translate-y-1 hover:border-amber-400 hover:shadow-lg hover:shadow-amber-400/20 dark:border-white/15 dark:bg-white/5 dark:text-slate-200 dark:hover:text-white">
-          Consultar Plan VIP
-        </a>
+          Seleccionar Web
+        </button>
       </article>
     </div>
 
-    <p class="reveal mx-auto mt-6 max-w-3xl text-center text-sm leading-relaxed text-slate-600 dark:text-slate-400">
+    <p class="reveal mx-auto mt-6 max-w-3xl text-center text-xs leading-relaxed text-slate-500 dark:text-slate-400">
+      *Plazos de desarrollo contabilizados a partir de la recepción de carta/material y confirmación del anticipo del 50%.
+    </p>
+    <p class="reveal mx-auto mt-2 max-w-3xl text-center text-sm leading-relaxed text-slate-600 dark:text-slate-400">
       *Cuotas mensuales de mantenimiento con compromiso de 12 meses (incluyen hosting de alta velocidad, dominio, seguridad SSL y soporte).
     </p>
 
+    <div id="mantenimiento-step" class="mx-auto mt-10 hidden max-w-5xl scroll-mt-28 opacity-0 transition-opacity duration-500">
+      <h3 id="mantenimiento-titulo" class="text-center text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-3xl">Paso 2: Elige el mantenimiento para tu plan</h3>
+      <div class="mt-8 grid items-stretch gap-5 md:grid-cols-2">
+        <article data-maintenance="base" data-name="Mantenimiento Técnico Base" data-price="25" role="button" tabindex="0" aria-pressed="false" class="group flex cursor-pointer flex-col rounded-2xl border border-slate-200/80 bg-white/55 p-6 text-left backdrop-blur-md transition-all duration-300 hover:-translate-y-2 hover:border-amber-400/70 dark:border-white/10 dark:bg-white/5">
+          <h4 class="text-lg font-extrabold tracking-tight text-slate-900 dark:text-white">Mantenimiento Técnico Base</h4>
+          <p class="mt-3 text-3xl font-extrabold text-slate-900 dark:text-white">25&nbsp;€ <span class="text-sm font-semibold text-slate-500 dark:text-slate-400">/ mes</span></p>
+          <ul class="mt-5 flex-1 space-y-2.5 text-sm leading-snug text-slate-700 dark:text-slate-300">
+            <li class="flex gap-2"><span class="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true">✓</span> Hosting alta velocidad</li>
+            <li class="flex gap-2"><span class="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true">✓</span> Renovación de dominio</li>
+            <li class="flex gap-2"><span class="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true">✓</span> Certificado SSL</li>
+            <li class="flex gap-2"><span class="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true">✓</span> Soporte de incidencias técnicas</li>
+            <li class="flex gap-2"><span class="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true">✓</span> Cambios de carta reflejados en 24 - 48h laborables tras aviso por WhatsApp</li>
+          </ul>
+          <p data-maintenance-status class="mt-6 text-center text-sm font-semibold text-slate-600 transition-colors group-hover:text-black dark:text-slate-300 dark:group-hover:text-white">Seleccionar</p>
+        </article>
+        <article id="mantenimiento-activo" data-maintenance="active" data-name="Gestión Activa + SEO Google Maps" role="button" tabindex="0" aria-pressed="false" class="group flex cursor-pointer flex-col rounded-2xl border border-slate-200/80 bg-white/55 p-6 text-left backdrop-blur-md transition-all duration-300 hover:-translate-y-2 hover:border-amber-400/70 dark:border-white/10 dark:bg-white/5">
+          <h4 class="text-lg font-extrabold tracking-tight text-slate-900 dark:text-white">Gestión Activa + SEO Google Maps</h4>
+          <p class="mt-3 text-3xl font-extrabold text-slate-900 dark:text-white"><span id="mantenimiento-activo-precio">35</span>&nbsp;€ <span class="text-sm font-semibold text-slate-500 dark:text-slate-400">/ mes</span></p>
+          <ul id="mantenimiento-activo-lista" class="mt-5 flex-1 space-y-2.5 text-sm leading-snug text-slate-700 opacity-100 transition-opacity duration-300 dark:text-slate-300"></ul>
+          <p data-maintenance-status class="mt-6 text-center text-sm font-semibold text-slate-600 transition-colors group-hover:text-black dark:text-slate-300 dark:group-hover:text-white">Seleccionar</p>
+        </article>
+      </div>
+      <button type="button" id="add-pack" disabled class="mt-8 flex w-full items-center justify-center rounded-xl bg-amber-400 px-6 py-4 text-center text-lg font-bold text-slate-950 shadow-lg shadow-amber-400/30 transition-all duration-300 enabled:hover:-translate-y-1 enabled:hover:bg-amber-500 disabled:cursor-not-allowed disabled:opacity-40">
+        Añadir pack al carrito
+      </button>
+    </div>
+
     <aside class="reveal mt-8 rounded-2xl border border-slate-200/80 bg-white/50 px-5 py-5 backdrop-blur-md dark:border-white/10 dark:bg-white/5" aria-label="Servicios adicionales">
       <p class="mb-4 text-xs font-semibold uppercase tracking-widest text-slate-500">Servicios adicionales</p>
-      <ul class="flex flex-wrap gap-2.5">
-        <li class="rounded-full border border-slate-200 bg-white/80 px-3.5 py-1.5 text-sm text-slate-700 dark:border-white/10 dark:bg-slate-950/60 dark:text-slate-300">Pack soportes físicos QR (metacrilato/madera) <span class="font-semibold text-amber-700 dark:text-amber-400">desde 60&nbsp;€</span></li>
-        <li class="rounded-full border border-slate-200 bg-white/80 px-3.5 py-1.5 text-sm text-slate-700 dark:border-white/10 dark:bg-slate-950/60 dark:text-slate-300">Sesión fotográfica extra <span class="font-semibold text-amber-700 dark:text-amber-400">60&nbsp;€</span></li>
-        <li class="rounded-full border border-slate-200 bg-white/80 px-3.5 py-1.5 text-sm text-slate-700 dark:border-white/10 dark:bg-slate-950/60 dark:text-slate-300">Traducción a inglés <span class="font-semibold text-amber-700 dark:text-amber-400">45&nbsp;€</span></li>
-        <li class="rounded-full border border-slate-200 bg-white/80 px-3.5 py-1.5 text-sm text-slate-700 dark:border-white/10 dark:bg-slate-950/60 dark:text-slate-300">Campaña Google Ads local <span class="font-semibold text-amber-700 dark:text-amber-400">150&nbsp;€</span></li>
-        <li class="rounded-full border border-slate-200 bg-white/80 px-3.5 py-1.5 text-sm text-slate-700 dark:border-white/10 dark:bg-slate-950/60 dark:text-slate-300">Horas de desarrollo fuera de cuota <span class="font-semibold text-amber-700 dark:text-amber-400">30&nbsp;€/hora</span></li>
-      </ul>
+      <div class="flex flex-wrap gap-2.5 overflow-visible">
+        <button type="button" data-extra="qr" class="relative inline-flex cursor-pointer items-center gap-2 rounded-full border border-slate-200 bg-white/80 px-3.5 py-1.5 text-sm text-slate-700 transition duration-300 hover:z-50 hover:translate-y-1 hover:scale-[0.98] hover:border-amber-400 has-[.is-open]:z-50 dark:border-white/10 dark:bg-slate-950/60 dark:text-slate-300">Pack soportes físicos QR (metacrilato/madera) <span class="font-semibold text-amber-700 dark:text-amber-400">60&nbsp;€</span><span data-extra-info class="group/tooltip relative inline-flex h-5 w-5 shrink-0 items-center justify-center"><span class="grid h-5 w-5 place-items-center rounded-full bg-amber-400 text-xs font-bold text-slate-950" aria-hidden="true">?</span><span role="tooltip" class="pointer-events-none absolute bottom-full right-0 z-50 mb-2 w-72 max-w-[calc(100vw-2rem)] rounded-xl border border-white/10 bg-slate-900/95 p-3 text-xs leading-relaxed text-slate-200 opacity-0 shadow-xl backdrop-blur transition-all duration-200 group-hover/tooltip:opacity-100 group-[.is-open]/tooltip:opacity-100 dark:bg-slate-800/95">Fabricación y entrega de peanas o placas rígidas y resistentes con tu código QR para colocar en mesas y barra, listas para escanear. Plazo de entrega física: 5-7 días laborables.<span class="absolute top-full right-1 border-x-[6px] border-b-0 border-t-[6px] border-x-transparent border-t-slate-900/95 dark:border-t-slate-800/95" aria-hidden="true"></span></span></span></button>
+        <button type="button" data-extra="foto" class="relative inline-flex cursor-pointer items-center gap-2 rounded-full border border-slate-200 bg-white/80 px-3.5 py-1.5 text-sm text-slate-700 transition duration-300 hover:z-50 hover:translate-y-1 hover:scale-[0.98] hover:border-amber-400 has-[.is-open]:z-50 dark:border-white/10 dark:bg-slate-950/60 dark:text-slate-300">Sesión fotográfica extra <span class="font-semibold text-amber-700 dark:text-amber-400">40&nbsp;€</span><span data-extra-info class="group/tooltip relative inline-flex h-5 w-5 shrink-0 items-center justify-center"><span class="grid h-5 w-5 place-items-center rounded-full bg-amber-400 text-xs font-bold text-slate-950" aria-hidden="true">?</span><span role="tooltip" class="pointer-events-none absolute bottom-full right-0 z-50 mb-2 w-72 max-w-[calc(100vw-2rem)] rounded-xl border border-white/10 bg-slate-900/95 p-3 text-xs leading-relaxed text-slate-200 opacity-0 shadow-xl backdrop-blur transition-all duration-200 group-hover/tooltip:opacity-100 group-[.is-open]/tooltip:opacity-100 dark:bg-slate-800/95">Desplazamiento presencial a tu local para tomar fotografías nítidas de nuevos platos, terraza o salón para nutrir la web y Google Maps. Entrega y subida de fotos editadas en 48-72h tras la visita.<span class="absolute top-full right-1 border-x-[6px] border-b-0 border-t-[6px] border-x-transparent border-t-slate-900/95 dark:border-t-slate-800/95" aria-hidden="true"></span></span></span></button>
+        <button type="button" data-extra="idioma" class="relative inline-flex cursor-pointer items-center gap-2 rounded-full border border-slate-200 bg-white/80 px-3.5 py-1.5 text-sm text-slate-700 transition duration-300 hover:z-50 hover:translate-y-1 hover:scale-[0.98] hover:border-amber-400 has-[.is-open]:z-50 dark:border-white/10 dark:bg-slate-950/60 dark:text-slate-300">Idioma adicional <span class="font-semibold text-amber-700 dark:text-amber-400">19,99&nbsp;€</span><span data-extra-info class="group/tooltip relative inline-flex h-5 w-5 shrink-0 items-center justify-center"><span class="grid h-5 w-5 place-items-center rounded-full bg-amber-400 text-xs font-bold text-slate-950" aria-hidden="true">?</span><span role="tooltip" class="pointer-events-none absolute bottom-full right-0 z-50 mb-2 w-72 max-w-[calc(100vw-2rem)] rounded-xl border border-white/10 bg-slate-900/95 p-3 text-xs leading-relaxed text-slate-200 opacity-0 shadow-xl backdrop-blur transition-all duration-200 group-hover/tooltip:opacity-100 group-[.is-open]/tooltip:opacity-100 dark:bg-slate-800/95">Traducción y maquetación completa de toda tu carta digital a un idioma adicional (inglés, francés, alemán, etc.). Traducción integrada en 24-48h laborables.<span class="absolute top-full right-1 border-x-[6px] border-b-0 border-t-[6px] border-x-transparent border-t-slate-900/95 dark:border-t-slate-800/95" aria-hidden="true"></span></span></span></button>
+        <button type="button" data-extra="ads" class="relative inline-flex cursor-pointer items-center gap-2 rounded-full border border-slate-200 bg-white/80 px-3.5 py-1.5 text-sm text-slate-700 transition duration-300 hover:z-50 hover:translate-y-1 hover:scale-[0.98] hover:border-amber-400 has-[.is-open]:z-50 dark:border-white/10 dark:bg-slate-950/60 dark:text-slate-300">Campaña Google Ads local <span class="font-semibold text-amber-700 dark:text-amber-400">150&nbsp;€</span><span data-extra-info class="group/tooltip relative inline-flex h-5 w-5 shrink-0 items-center justify-center"><span class="grid h-5 w-5 place-items-center rounded-full bg-amber-400 text-xs font-bold text-slate-950" aria-hidden="true">?</span><span role="tooltip" class="pointer-events-none absolute bottom-full right-0 z-50 mb-2 w-72 max-w-[calc(100vw-2rem)] rounded-xl border border-white/10 bg-slate-900/95 p-3 text-xs leading-relaxed text-slate-200 opacity-0 shadow-xl backdrop-blur transition-all duration-200 group-hover/tooltip:opacity-100 group-[.is-open]/tooltip:opacity-100 dark:bg-slate-800/95">Configuración técnica de anuncios geolocalizados en Google para que tu restaurante aparezca arriba del todo en búsquedas de tu zona. Campaña configurada y activa en 48h.<span class="absolute top-full right-1 border-x-[6px] border-b-0 border-t-[6px] border-x-transparent border-t-slate-900/95 dark:border-t-slate-800/95" aria-hidden="true"></span></span></span></button>
+        <button type="button" data-extra="horas" class="relative inline-flex cursor-pointer items-center gap-2 rounded-full border border-slate-200 bg-white/80 px-3.5 py-1.5 text-sm text-slate-700 transition duration-300 hover:z-50 hover:translate-y-1 hover:scale-[0.98] hover:border-amber-400 has-[.is-open]:z-50 dark:border-white/10 dark:bg-slate-950/60 dark:text-slate-300">Horas de desarrollo fuera de cuota <span class="font-semibold text-amber-700 dark:text-amber-400">30&nbsp;€/hora</span><span data-extra-info class="group/tooltip relative inline-flex h-5 w-5 shrink-0 items-center justify-center"><span class="grid h-5 w-5 place-items-center rounded-full bg-amber-400 text-xs font-bold text-slate-950" aria-hidden="true">?</span><span role="tooltip" class="pointer-events-none absolute bottom-full right-0 z-50 mb-2 w-72 max-w-[calc(100vw-2rem)] rounded-xl border border-white/10 bg-slate-900/95 p-3 text-xs leading-relaxed text-slate-200 opacity-0 shadow-xl backdrop-blur transition-all duration-200 group-hover/tooltip:opacity-100 group-[.is-open]/tooltip:opacity-100 dark:bg-slate-800/95">Bolsa de horas para modificaciones estructurales grandes o funciones especiales que queden fuera del mantenimiento mensual contratado.<span class="absolute top-full right-1 border-x-[6px] border-b-0 border-t-[6px] border-x-transparent border-t-slate-900/95 dark:border-t-slate-800/95" aria-hidden="true"></span></span></span></button>
+      </div>
     </aside>
   </section>
 
@@ -325,7 +459,7 @@
         Te preparamos un borrador gratuito de tu nueva carta y web para que veas cómo quedaría antes de pagar nada.
       </p>
       <div class="mt-8">
-        <a href="https://wa.me/34XXXXXXXXX?text=Hola,%20tengo%20un%20bar%20y%20quiero%20ver%20una%20demo%20de%20mi%20web"
+        <a href="https://wa.me/34000000000?text=%C2%A1Hola!%20Me%20gustar%C3%ADa%20pedir%20una%20demo%20gratuita%20para%20ver%20c%C3%B3mo%20quedar%C3%ADa%20la%20web%20y%20la%20carta%20digital%20de%20mi%20local." target="_blank" rel="noopener noreferrer"
            class="flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-500 px-6 py-3.5 font-bold text-slate-950 shadow-lg shadow-emerald-500/25 transition-all duration-300 hover:-translate-y-2 hover:bg-emerald-400 hover:shadow-emerald-400/40">
           <span>Contactar por WhatsApp</span>
         </a>
@@ -342,6 +476,7 @@
       </div>
       <nav class="flex flex-col gap-2 text-sm font-semibold" aria-label="Información legal">
         <button type="button" class="w-fit text-left text-slate-700 transition-colors hover:text-amber-600 dark:text-slate-300 dark:hover:text-amber-400" data-open-legal="aviso">Aviso Legal</button>
+        <button type="button" class="w-fit text-left text-slate-700 transition-colors hover:text-amber-600 dark:text-slate-300 dark:hover:text-amber-400" data-open-legal="condiciones">Condiciones del Servicio</button>
         <button type="button" class="w-fit text-left text-slate-700 transition-colors hover:text-amber-600 dark:text-slate-300 dark:hover:text-amber-400" data-open-legal="privacidad">Política de Privacidad</button>
         <button type="button" class="w-fit text-left text-slate-700 transition-colors hover:text-amber-600 dark:text-slate-300 dark:hover:text-amber-400" data-open-legal="cookies">Política de Cookies</button>
       </nav>
@@ -360,6 +495,41 @@
       <p>Los contenidos, textos, diseño y marca de este sitio son titularidad de VisiWeb Madrid. Queda prohibida su reproducción no autorizada.</p>
       <p>Los precios publicados son orientativos de los planes descritos. El montaje se abona al 50% al inicio y al 50% a la entrega. La cuota de mantenimiento incluye hosting, dominio y soporte según el plan, con un compromiso de 12 meses.</p>
       <p>VisiWeb Madrid no se responsabiliza del uso que terceros hagan de los enlaces externos, incluido WhatsApp.</p>
+    </div>
+  </dialog>
+
+  <dialog id="legal-condiciones" class="w-[min(100%-2rem,40rem)] rounded-2xl border border-slate-200 bg-white p-0 text-slate-900 shadow-2xl backdrop:bg-slate-950/60 open:flex open:flex-col dark:border-white/10 dark:bg-slate-900 dark:text-slate-100">
+    <div class="flex items-start justify-between gap-4 border-b border-slate-200 px-6 py-4 dark:border-white/10">
+      <h2 class="text-lg font-extrabold">Condiciones del Servicio y Contratación</h2>
+      <button type="button" class="rounded-lg px-2 py-1 text-sm font-semibold text-slate-500 hover:text-slate-900 dark:hover:text-white" data-close-legal>Cerrar</button>
+    </div>
+    <div class="max-h-[70vh] space-y-4 overflow-y-auto px-6 py-5 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
+      <section class="space-y-2">
+        <h3 class="font-semibold text-slate-900 dark:text-white">1. Formato y condiciones de pago</h3>
+        <p>El desarrollo de cualquier tipo de web requiere un abono del 50% al inicio del proyecto y el 50% restante a la entrega y puesta en marcha del sitio web. La cuota mensual de mantenimiento entra en vigor a partir de la publicación oficial.</p>
+      </section>
+      <section class="space-y-2">
+        <h3 class="font-semibold text-slate-900 dark:text-white">2. Plazos estimados de entrega</h3>
+        <p>Los plazos de desarrollo comienzan a computar tras la recepción completa del material (carta de raciones, precios, fotos y accesos necesarios) y la confirmación del anticipo inicial.</p>
+        <ul class="list-disc space-y-1 pl-5">
+          <li>Plan Básico: 48 horas laborables.</li>
+          <li>Plan Pro: 3 a 5 días laborables.</li>
+          <li>Plan Gastro Premium: 5 a 7 días laborables.</li>
+          <li>Plan Digitalización Total: 10 a 14 días laborables.</li>
+        </ul>
+      </section>
+      <section class="space-y-2">
+        <h3 class="font-semibold text-slate-900 dark:text-white">3. Solicitud y aplicación de cambios de carta</h3>
+        <p>Las peticiones de cambios de precios o platos se tramitan exclusivamente a través de WhatsApp (mediante texto claro o fotografía legible de la carta física). El tiempo de respuesta y aplicación estándar es de 24 a 48 horas laborables (de lunes a viernes), salvo en los planes prémium con soporte prioritario en el mismo día.</p>
+      </section>
+      <section class="space-y-2">
+        <h3 class="font-semibold text-slate-900 dark:text-white">4. Límites de mantenimiento y trabajos extraordinarios</h3>
+        <p>Cada plan incluye el número mensual de actualizaciones de carta especificado en su ficha. Las modificaciones estructurales grandes, rediseños o trabajos no contemplados en la cuota mensual se presupuestarán a una tarifa estándar de 30 €/hora previa aprobación del cliente.</p>
+      </section>
+      <section class="space-y-2">
+        <h3 class="font-semibold text-slate-900 dark:text-white">5. Mantenimiento y permanencia</h3>
+        <p>El servicio de mantenimiento técnico y gestión de Google Maps está sujeto a un compromiso mínimo de 12 meses, garantizando la operatividad del hosting, renovación del dominio, certificados de seguridad y soporte continuo.</p>
+      </section>
     </div>
   </dialog>
 
@@ -390,6 +560,94 @@
     </div>
   </dialog>
 
+  <div id="cart-root" class="pointer-events-none fixed inset-0 z-[80] hidden">
+    <button type="button" id="cart-overlay" class="absolute inset-0 bg-slate-950/60 opacity-0 backdrop-blur-sm transition-opacity duration-300" aria-label="Cerrar carrito"></button>
+    <aside id="cart-drawer" class="absolute inset-y-0 right-0 flex w-full max-w-md translate-x-full flex-col border-l border-slate-200 bg-white/95 shadow-2xl backdrop-blur-xl transition-transform duration-300 dark:border-white/10 dark:bg-slate-950/95" aria-hidden="true" aria-labelledby="cart-title">
+      <div class="flex items-center justify-between border-b border-slate-200 px-5 py-4 dark:border-white/10">
+        <h2 id="cart-title" class="text-lg font-extrabold text-slate-900 dark:text-white">Tu Presupuesto / Pedido</h2>
+        <button type="button" id="cart-close" class="grid h-9 w-9 place-items-center bg-transparent text-2xl leading-none text-slate-500 transition-colors hover:bg-transparent hover:text-black focus:bg-transparent focus:outline-none focus-visible:outline-none dark:hover:text-white" aria-label="Cerrar">×</button>
+      </div>
+      <div class="flex-1 overflow-y-auto px-5 py-5">
+        <p id="cart-empty" class="rounded-2xl border border-dashed border-slate-300 px-4 py-8 text-center text-sm leading-relaxed text-slate-500 dark:border-white/15 dark:text-slate-400">Tu carrito está vacío. Configura tu pack en la sección de planes.</p>
+        <ul id="cart-lines" class="space-y-3"></ul>
+        <div id="cart-extras-wrap" class="mt-6 hidden">
+          <p class="mb-3 text-xs font-semibold uppercase tracking-widest text-slate-500">Extras seleccionados</p>
+          <ul id="cart-extras" class="space-y-3"></ul>
+        </div>
+      </div>
+      <div class="border-t border-slate-200 px-5 py-5 dark:border-white/10">
+        <div id="cart-totals" class="mb-4 hidden space-y-1 text-sm text-slate-700 dark:text-slate-300">
+          <p id="cart-total-web" class="flex justify-between gap-3"></p>
+          <p id="cart-total-extras" class="flex justify-between gap-3"></p>
+          <p id="cart-total-inicial" class="flex justify-between gap-3 font-semibold text-slate-900 dark:text-white"></p>
+          <p id="cart-total-maint"></p>
+          <p class="whitespace-nowrap">(compromiso de 12 meses)</p>
+        </div>
+        <button type="button" id="cart-save" class="mb-2 hidden w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-bold text-slate-900 transition duration-300 hover:border-amber-400 disabled:cursor-not-allowed disabled:opacity-40 dark:border-white/10 dark:bg-slate-900 dark:text-white">💾 Guardar en mi cuenta</button>
+        <div id="cart-validation-container" class="mb-2 flex items-center justify-between gap-2 rounded-lg border border-red-500/20 bg-red-500/10 p-2">
+          <span class="text-xs font-semibold text-red-500 dark:text-red-400">Mínimo un pack web</span>
+          <button id="btn-redirect-planes" type="button" class="rounded-md bg-slate-200 px-2.5 py-1 text-xs font-medium text-slate-800 transition-colors hover:bg-slate-300 dark:bg-slate-700 dark:text-slate-200 dark:hover:bg-slate-600">Redirigir</button>
+        </div>
+        <a id="cart-whatsapp" href="#" aria-disabled="true" class="pointer-events-none flex w-full cursor-not-allowed items-center justify-center gap-2 rounded-xl border border-red-500 bg-slate-700/60 px-4 py-3.5 text-center font-bold text-slate-400 shadow-none dark:bg-slate-800">
+          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.15 6.4 2.15 11.83c0 1.74.46 3.44 1.34 4.94L2 22l5.39-1.41a10 10 0 0 0 4.65 1.16h.01c5.46 0 9.89-4.4 9.89-9.83C21.94 6.4 17.5 2 12.04 2zm5.76 14.04c-.24.68-1.4 1.3-1.94 1.38-.5.08-1.12.11-1.81-.11-.42-.14-.95-.31-1.64-.6-2.88-1.24-4.76-4.14-4.9-4.33-.14-.2-1.16-1.54-1.16-2.94s.73-2.08 1-2.37c.26-.28.58-.35.77-.35h.55c.18 0 .41-.07.64.49.24.58.81 2 .88 2.14.07.14.12.31.02.5-.1.2-.14.31-.28.48-.14.17-.29.37-.42.5-.14.14-.28.28-.12.55.16.27.7 1.16 1.51 1.88 1.04.92 1.91 1.21 2.18 1.35.27.14.43.12.59-.07.16-.2.68-.79.86-1.06.18-.27.36-.22.6-.13.24.08 1.53.72 1.79.85.26.14.43.2.5.31.06.11.06.66-.18 1.34z"></path></svg>
+          Pedir por WhatsApp
+        </a>
+      </div>
+    </aside>
+  </div>
+  <p id="cart-toast" role="status" class="pointer-events-none fixed bottom-6 left-1/2 z-[110] max-w-[calc(100%-2rem)] -translate-x-1/2 translate-y-3 rounded-full bg-slate-900 px-4 py-2.5 text-center text-sm font-semibold text-white opacity-0 shadow-xl transition duration-300 dark:bg-white dark:text-slate-950">Pack añadido al carrito</p>
+
+  <div id="auth-modal" class="pointer-events-none fixed inset-0 z-[100] hidden items-center justify-center p-4" aria-hidden="true">
+    <button type="button" id="auth-backdrop" class="absolute inset-0 bg-slate-950/60 opacity-0 backdrop-blur-sm transition-opacity duration-300" aria-label="Cerrar acceso"></button>
+    <div id="auth-card" role="dialog" aria-modal="true" aria-labelledby="auth-title" class="relative w-full max-w-sm translate-y-2 scale-[0.98] rounded-3xl border border-slate-200 bg-white p-6 opacity-0 shadow-2xl transition duration-300 sm:p-8 dark:border-white/10 dark:bg-slate-900">
+      <div class="mb-6 text-center">
+        <span class="mx-auto mb-3 grid h-12 w-12 place-items-center rounded-2xl bg-amber-400 text-slate-950 shadow-lg shadow-amber-400/30" aria-hidden="true">
+          <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21s7-5.4 7-11a7 7 0 1 0-14 0c0 5.6 7 11 7 11z"></path><circle cx="12" cy="10" r="2.2"></circle></svg>
+        </span>
+        <h2 id="auth-title" class="text-xl font-extrabold tracking-tight text-slate-900 dark:text-white">VisiWeb Madrid</h2>
+        <p class="mt-1 text-sm text-slate-500">Digitalización y Webs para Bares y Restaurantes</p>
+        <button type="button" id="auth-close" class="mt-2 text-sm font-semibold text-amber-700 transition-colors hover:text-amber-600 dark:text-amber-400">Volver a la web</button>
+      </div>
+      <div class="flex rounded-2xl bg-slate-100 p-1 dark:bg-slate-800" role="tablist" aria-label="Acceso">
+        <button type="button" id="auth-tab-login" role="tab" aria-selected="true" class="flex-1 rounded-xl bg-white px-3 py-2 text-sm font-semibold text-slate-900 shadow-sm transition duration-300 dark:bg-slate-700 dark:text-white">Iniciar sesión</button>
+        <button type="button" id="auth-tab-signup" role="tab" aria-selected="false" class="flex-1 rounded-xl px-3 py-2 text-sm font-semibold text-slate-500 transition duration-300 dark:text-slate-400">Crear cuenta</button>
+      </div>
+      <form id="auth-form" class="mt-5 space-y-3" novalidate>
+        <label class="block">
+          <span class="mb-1.5 block text-xs font-semibold text-slate-600 dark:text-slate-300">Correo</span>
+          <span class="relative block">
+            <svg class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16v12H4z"></path><path stroke-linecap="round" stroke-linejoin="round" d="m4 7 8 6 8-6"></path></svg>
+            <input id="auth-email-input" type="email" name="email" autocomplete="email" required placeholder="tuemail@ejemplo.com" class="w-full rounded-xl border border-slate-200 bg-slate-50 py-3 pl-10 pr-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/30 dark:border-white/10 dark:bg-slate-800 dark:text-white">
+          </span>
+        </label>
+        <label id="auth-password-wrap" class="block">
+          <span class="mb-1.5 block text-xs font-semibold text-slate-600 dark:text-slate-300">Contraseña</span>
+          <span class="relative block">
+            <svg class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path stroke-linecap="round" d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg>
+            <input id="auth-password-input" type="password" name="password" autocomplete="current-password" required placeholder="••••••••" class="w-full rounded-xl border border-slate-200 bg-slate-50 py-3 pl-10 pr-11 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/30 dark:border-white/10 dark:bg-slate-800 dark:text-white">
+            <button type="button" id="auth-password-toggle" class="absolute right-2 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-lg text-slate-400 transition-colors hover:text-slate-700 dark:hover:text-slate-200" aria-label="Mostrar contraseña">
+              <svg id="auth-eye" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12z"></path><circle cx="12" cy="12" r="2.5"></circle></svg>
+              <svg id="auth-eye-off" class="hidden h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" d="M3 3l18 18"></path><path stroke-linecap="round" stroke-linejoin="round" d="M10.6 6.2A10.7 10.7 0 0 1 12 6c6.5 0 10 6 10 6a18.4 18.4 0 0 1-3.2 3.8M6.1 6.7C3.6 8.4 2 12 2 12a18.7 18.7 0 0 0 6.4 5.2"></path><path stroke-linecap="round" d="M9.9 9.9a2.5 2.5 0 0 0 3.5 3.5"></path></svg>
+            </button>
+          </span>
+        </label>
+        <button type="button" id="auth-forgot" class="block w-full text-right text-sm font-semibold text-amber-700 transition-colors hover:text-amber-600 dark:text-amber-400">¿Olvidaste tu contraseña?</button>
+        <p id="auth-feedback" class="hidden text-sm leading-relaxed text-red-600 dark:text-red-400" role="status"></p>
+        <button type="submit" id="auth-submit" class="flex w-full items-center justify-center rounded-xl bg-gradient-to-r from-slate-950 to-slate-800 px-4 py-3 text-sm font-bold text-white shadow-lg transition duration-300 hover:-translate-y-0.5 hover:from-slate-900 hover:to-slate-700 disabled:cursor-not-allowed disabled:opacity-50 dark:from-amber-400 dark:to-amber-500 dark:text-slate-950 dark:hover:from-amber-300 dark:hover:to-amber-400">Iniciar sesión</button>
+      </form>
+      <div class="my-5 flex items-center gap-3 text-xs font-semibold uppercase tracking-widest text-slate-400">
+        <span class="h-px flex-1 bg-slate-200 dark:bg-white/10"></span>
+        <span>o</span>
+        <span class="h-px flex-1 bg-slate-200 dark:bg-white/10"></span>
+      </div>
+      <button type="button" id="auth-google" class="flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-800 transition duration-300 hover:border-amber-400 hover:bg-slate-50 dark:border-white/10 dark:bg-slate-950 dark:text-slate-100 dark:hover:bg-slate-800">
+        <svg class="h-5 w-5" viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 8 3.1l5.7-5.7C34.2 6.1 29.4 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.7-.4-3.5z"></path><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 16 19 12 24 12c3.1 0 5.8 1.2 8 3.1l5.7-5.7C34.2 6.1 29.4 4 24 4 16.3 4 9.6 8.3 6.3 14.7z"></path><path fill="#4CAF50" d="M24 44c5.2 0 10-2 13.6-5.2l-6.3-5.3C29.2 35.1 26.7 36 24 36c-5.3 0-9.7-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"></path><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-1.1 3.2-3.5 5.7-6.6 7.2l6.3 5.3C37.4 38.3 44 34 44 24c0-1.3-.1-2.7-.4-3.5z"></path></svg>
+        Continuar con Google
+      </button>
+      <button type="button" id="auth-magic" class="mt-4 w-full text-center text-sm font-semibold text-slate-600 transition-colors hover:text-amber-700 dark:text-slate-300 dark:hover:text-amber-400">Acceder con enlace mágico</button>
+    </div>
+  </div>
+
   <script>
     (function () {
       var root = document.documentElement;
@@ -416,7 +674,7 @@
           event.preventDefault();
           var header = document.querySelector('header');
           var top = target.getBoundingClientRect().top + window.scrollY - (header ? header.offsetHeight : 0) - 20;
-          window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+          window.scrollTo({ top: Math.max(0, top), behavior: 'auto' });
           history.pushState(null, '', '#planes');
         });
       }
@@ -431,6 +689,15 @@
         button.addEventListener('click', function () {
           var dialog = button.closest('dialog');
           if (dialog) dialog.close();
+        });
+      });
+      document.querySelectorAll('dialog[id^="legal-"]').forEach(function (dialog) {
+        dialog.addEventListener('click', function (event) {
+          if (event.target === dialog) dialog.close();
+        });
+        dialog.addEventListener('cancel', function (event) {
+          event.preventDefault();
+          dialog.close();
         });
       });
 
@@ -453,6 +720,862 @@
         });
         observer.observe(node);
       });
+    })();
+  </script>
+  <script>
+    (function () {
+      var selectedWeb = null;
+      var selectedMaintenance = null;
+      var step = document.getElementById('mantenimiento-step');
+      var title = document.getElementById('mantenimiento-titulo');
+      var activePrice = document.getElementById('mantenimiento-activo-precio');
+      var addPack = document.getElementById('add-pack');
+      var cartItems = { webPlan: null, maintenancePlan: null };
+      var cartExtras = [];
+      var extraCatalog = {
+        qr: { id: 'qr', name: 'Pack soportes físicos QR (metacrilato/madera)', price: 60, unit: '€' },
+        foto: { id: 'foto', name: 'Sesión fotográfica extra', price: 40, unit: '€' },
+        idioma: { id: 'idioma', name: 'Idioma adicional', price: 19.99, unit: '€' },
+        ads: { id: 'ads', name: 'Campaña Google Ads local', price: 150, unit: '€' },
+        horas: { id: 'horas', name: 'Horas de desarrollo fuera de cuota', price: 30, unit: '€/hora' }
+      };
+      var cartRoot = document.getElementById('cart-root');
+      var cartDrawer = document.getElementById('cart-drawer');
+      var cartOverlay = document.getElementById('cart-overlay');
+      var cartLines = document.getElementById('cart-lines');
+      var cartExtrasWrap = document.getElementById('cart-extras-wrap');
+      var cartExtrasList = document.getElementById('cart-extras');
+      var cartTotalExtras = document.getElementById('cart-total-extras');
+      var cartTotalInicial = document.getElementById('cart-total-inicial');
+      var cartEmpty = document.getElementById('cart-empty');
+      var cartTotals = document.getElementById('cart-totals');
+      var cartTotalWeb = document.getElementById('cart-total-web');
+      var cartTotalMaint = document.getElementById('cart-total-maint');
+      var cartCount = document.getElementById('cart-count');
+      var cartWhatsapp = document.getElementById('cart-whatsapp');
+      var cartValidationContainer = document.getElementById('cart-validation-container');
+      var cartToast = document.getElementById('cart-toast');
+      var toastTimer = null;
+      var closeTimer = null;
+      var webCards = document.querySelectorAll('[data-web]');
+      var maintenanceCards = document.querySelectorAll('[data-maintenance]');
+      var picked = ['ring-4', 'ring-emerald-500', 'border-emerald-500', 'bg-emerald-50/80', 'dark:bg-emerald-950/40'];
+
+      function paint(card, on) {
+        picked.forEach(function (cls) { card.classList.toggle(cls, on); });
+        card.classList.toggle('is-picked', on);
+      }
+
+      function syncOrder() {
+        addPack.disabled = !(selectedWeb && selectedMaintenance);
+      }
+
+      function money(value) {
+        var rounded = Math.round(value * 100) / 100;
+        if (Math.round(rounded * 100) % 100 === 0) return String(rounded);
+        return rounded.toFixed(2).replace('.', ',');
+      }
+
+      function extraSubtotal(item) {
+        return Math.round(item.price * item.qty * 100) / 100;
+      }
+
+      function extrasTotal() {
+        return cartExtras.reduce(function (sum, item) { return sum + extraSubtotal(item); }, 0);
+      }
+
+      function hasPack() {
+        return !!(cartItems.webPlan && cartItems.maintenancePlan);
+      }
+
+      function itemCount() {
+        var pack = hasPack() ? 1 : 0;
+        var units = cartExtras.reduce(function (sum, item) { return sum + item.qty; }, 0);
+        return pack + units;
+      }
+
+      function whatsappText() {
+        var montaje = hasPack() ? Number(cartItems.webPlan.precioMontaje) : 0;
+        var mensual = hasPack() ? Number(cartItems.maintenancePlan.precioMensual) : 0;
+        var extras = extrasTotal();
+        var lines = [
+          '¡Hola! Me gustaría contratar los servicios de VisiWeb Madrid para mi local.',
+          '',
+          'Mi selección:'
+        ];
+        if (hasPack()) {
+          lines.push('• Tipo de web: ' + cartItems.webPlan.nombre + ' (' + money(montaje) + ' € - pago único)');
+          lines.push('• Mantenimiento: ' + cartItems.maintenancePlan.nombre + ' (' + money(mensual) + ' €/mes)');
+          lines.push('⏱️ Plazo estimado de entrega: ' + cartItems.webPlan.plazo);
+        }
+        if (cartExtras.length) {
+          lines.push('');
+          lines.push('Servicios adicionales:');
+          cartExtras.forEach(function (item) {
+            lines.push('• ' + item.qty + 'x ' + item.name + ' (' + money(extraSubtotal(item)) + ' €)');
+          });
+        }
+        lines.push('');
+        lines.push('Total inicial (pago único): ' + money(montaje + extras) + ' €');
+        lines.push('Cuota mensual: ' + money(mensual) + ' €/mes');
+        lines.push('');
+        lines.push('¿Cómo podemos empezar?');
+        return lines.join('\n');
+      }
+
+      function renderCart() {
+        var count = itemCount();
+        var pack = hasPack();
+        var extras = extrasTotal();
+        cartCount.textContent = String(count);
+        cartCount.classList.toggle('hidden', count === 0);
+        cartCount.classList.toggle('grid', count > 0);
+        cartEmpty.classList.toggle('hidden', count > 0);
+        cartLines.classList.toggle('hidden', !pack);
+        cartExtrasWrap.classList.toggle('hidden', cartExtras.length === 0);
+        cartTotals.classList.toggle('hidden', count === 0);
+        if (!pack) {
+          cartLines.innerHTML = '';
+        } else {
+          var web = cartItems.webPlan;
+          var maint = cartItems.maintenancePlan;
+          cartLines.innerHTML =
+            '<li class="rounded-2xl border border-slate-200/80 bg-white/70 p-4 backdrop-blur-md dark:border-white/10 dark:bg-white/5">' +
+              '<div class="flex items-start justify-between gap-3">' +
+                '<p class="text-sm font-extrabold leading-snug text-slate-900 dark:text-white">Pack Web ' + web.nombre + '</p>' +
+                '<button type="button" data-remove="pack" class="grid h-9 w-9 shrink-0 place-items-center rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10" aria-label="Eliminar pack">' +
+                  '<svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path stroke-linecap="round" d="M9.2 4.8h5.6"></path><path stroke-linecap="round" d="M4.5 7.6h15"></path><path stroke-linecap="round" stroke-linejoin="round" d="M7 7.6 8.15 18.6c.08.7.68 1.2 1.38 1.2h5c.7 0 1.3-.5 1.38-1.2L17 7.6"></path><path stroke-linecap="round" d="M10.2 11v5.2M13.8 11v5.2"></path></svg>' +
+                '</button>' +
+              '</div>' +
+              '<p class="mt-3 text-xs font-semibold uppercase tracking-wide text-slate-500">Tipo de web</p>' +
+              '<p class="mt-0.5 flex items-start gap-2 text-sm font-bold leading-snug text-slate-800 dark:text-slate-100"><span class="mt-[0.45rem] h-1.5 w-1.5 shrink-0 rounded-full bg-current" aria-hidden="true"></span><span>' + web.nombre + ' — ' + web.precioMontaje + ' €</span></p>' +
+              '<p class="mt-3 text-xs font-semibold uppercase tracking-wide text-slate-500">Mantenimiento</p>' +
+              '<p class="mt-0.5 flex items-start gap-2 text-sm font-bold leading-snug text-slate-800 dark:text-slate-100"><span class="mt-[0.45rem] h-1.5 w-1.5 shrink-0 rounded-full bg-current" aria-hidden="true"></span><span>' + maint.nombre + ' — ' + maint.precioMensual + ' €/mes</span></p>' +
+              '<p class="mt-3 flex items-start gap-2 rounded-xl border border-amber-400/40 bg-amber-50 px-3 py-2 text-sm font-semibold leading-snug text-amber-900 dark:border-amber-400/30 dark:bg-amber-400/10 dark:text-amber-200"><span aria-hidden="true">⏱️</span><span>Plazo estimado de entrega: ' + web.plazo + '</span></p>' +
+            '</li>';
+        }
+        cartExtrasList.innerHTML = cartExtras.map(function (item) {
+          var atMax = item.qty >= 5;
+          return '<li class="rounded-2xl border border-slate-200/80 bg-white/70 p-4 backdrop-blur-md dark:border-white/10 dark:bg-white/5">' +
+            '<div class="flex items-start justify-between gap-3">' +
+              '<p class="text-sm font-semibold leading-snug text-slate-900 dark:text-white">' + item.name + '</p>' +
+              '<button type="button" data-remove-extra="' + item.id + '" class="grid h-9 w-9 shrink-0 place-items-center rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10" aria-label="Eliminar ' + item.name + '">' +
+                '<svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path stroke-linecap="round" d="M9.2 4.8h5.6"></path><path stroke-linecap="round" d="M4.5 7.6h15"></path><path stroke-linecap="round" stroke-linejoin="round" d="M7 7.6 8.15 18.6c.08.7.68 1.2 1.38 1.2h5c.7 0 1.3-.5 1.38-1.2L17 7.6"></path><path stroke-linecap="round" d="M10.2 11v5.2M13.8 11v5.2"></path></svg>' +
+              '</button>' +
+            '</div>' +
+            '<p class="mt-2 text-xs text-slate-500">' + money(item.price) + ' ' + item.unit + '</p>' +
+            '<div class="mt-3 flex items-center justify-between gap-3">' +
+              '<div class="inline-flex items-center rounded-full border border-slate-200 bg-white/80 dark:border-white/10 dark:bg-slate-950/60">' +
+                '<button type="button" data-qty="dec" data-id="' + item.id + '" class="grid h-8 w-8 place-items-center text-slate-700 dark:text-slate-200" aria-label="Reducir cantidad">−</button>' +
+                '<span class="min-w-6 text-center text-sm font-bold text-slate-900 dark:text-white">' + item.qty + '</span>' +
+                '<button type="button" data-qty="inc" data-id="' + item.id + '" class="grid h-8 w-8 place-items-center text-slate-700 disabled:cursor-not-allowed disabled:opacity-30 dark:text-slate-200"' + (atMax ? ' disabled' : '') + ' aria-label="Aumentar cantidad">+</button>' +
+              '</div>' +
+              '<p class="text-sm font-semibold text-amber-700 dark:text-amber-400">' + money(extraSubtotal(item)) + ' €</p>' +
+            '</div>' +
+          '</li>';
+        }).join('');
+        var montaje = pack ? Number(cartItems.webPlan.precioMontaje) : 0;
+        var mensual = pack ? Number(cartItems.maintenancePlan.precioMensual) : 0;
+        cartTotalWeb.textContent = 'Tipo de web (pago único): ' + money(montaje) + ' €';
+        cartTotalExtras.textContent = 'Servicios Adicionales / Extras (pago único total): ' + money(extras) + ' €';
+        cartTotalInicial.textContent = 'Total Inicial / Pago Único (Web + Extras): ' + money(montaje + extras) + ' €';
+        cartTotalMaint.textContent = 'Cuota de Mantenimiento Mensual: ' + money(mensual) + ' € / mes';
+        paintWhatsapp();
+      }
+
+      function paintWhatsapp() {
+        var ready = hasPack();
+        var onClasses = ['bg-emerald-500', 'hover:bg-emerald-600', 'text-slate-950', 'shadow-lg', 'shadow-emerald-500/30'];
+        var offClasses = ['bg-slate-700/60', 'dark:bg-slate-800', 'text-slate-400', 'border', 'border-red-500', 'cursor-not-allowed', 'pointer-events-none', 'shadow-none'];
+        onClasses.forEach(function (cls) { cartWhatsapp.classList.toggle(cls, ready); });
+        offClasses.forEach(function (cls) { cartWhatsapp.classList.toggle(cls, !ready); });
+        cartWhatsapp.classList.remove('opacity-40');
+        cartWhatsapp.setAttribute('aria-disabled', ready ? 'false' : 'true');
+        cartValidationContainer.classList.toggle('hidden', ready);
+        cartValidationContainer.classList.toggle('flex', !ready);
+        if (ready) {
+          cartWhatsapp.removeAttribute('disabled');
+          cartWhatsapp.setAttribute('href', 'https://wa.me/34000000000?text=' + encodeURIComponent(whatsappText()));
+        } else {
+          cartWhatsapp.setAttribute('disabled', '');
+          cartWhatsapp.setAttribute('href', '#');
+        }
+        var save = document.getElementById('cart-save');
+        if (save) {
+          var logged = !!(window.visiwebUser);
+          save.classList.toggle('hidden', !logged);
+          save.disabled = !logged || !ready;
+        }
+      }
+
+      window.visiwebGetCart = function () {
+        var pack = hasPack();
+        var montaje = pack ? Number(cartItems.webPlan.precioMontaje) : 0;
+        var mensual = pack ? Number(cartItems.maintenancePlan.precioMensual) : 0;
+        return {
+          webPlan: cartItems.webPlan,
+          maintenancePlan: cartItems.maintenancePlan,
+          extras: cartExtras.map(function (item) {
+            return { id: item.id, name: item.name, price: item.price, unit: item.unit, qty: item.qty };
+          }),
+          totalInicial: Math.round((montaje + extrasTotal()) * 100) / 100,
+          cuotaMensual: mensual
+        };
+      };
+
+      document.addEventListener('visiweb-session', renderCart);
+
+      cartWhatsapp.addEventListener('click', function (event) {
+        if (!hasPack()) event.preventDefault();
+      });
+
+      document.getElementById('btn-redirect-planes').addEventListener('click', function () {
+        closeCart();
+        var planes = document.getElementById('planes');
+        planes.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        planes.querySelectorAll('[data-web]').forEach(function (card) {
+          card.classList.remove('plan-attention');
+          void card.offsetWidth;
+          card.classList.add('plan-attention');
+          card.addEventListener('animationend', function onEnd(event) {
+            if (event.animationName !== 'plan-attention') return;
+            card.classList.remove('plan-attention');
+            card.removeEventListener('animationend', onEnd);
+          });
+        });
+      });
+
+      function openCart() {
+        clearTimeout(closeTimer);
+        cartRoot.classList.remove('hidden');
+        cartRoot.classList.remove('pointer-events-none');
+        cartDrawer.setAttribute('aria-hidden', 'false');
+        document.body.classList.add('overflow-hidden');
+        requestAnimationFrame(function () {
+          cartOverlay.classList.remove('opacity-0');
+          cartOverlay.classList.add('opacity-100');
+          cartDrawer.classList.remove('translate-x-full');
+          cartDrawer.classList.add('translate-x-0');
+        });
+      }
+
+      function closeCart() {
+        cartOverlay.classList.add('opacity-0');
+        cartOverlay.classList.remove('opacity-100');
+        cartDrawer.classList.add('translate-x-full');
+        cartDrawer.classList.remove('translate-x-0');
+        cartDrawer.setAttribute('aria-hidden', 'true');
+        document.body.classList.remove('overflow-hidden');
+        closeTimer = setTimeout(function () {
+          cartRoot.classList.add('hidden', 'pointer-events-none');
+        }, 300);
+      }
+
+      function showToast(message) {
+        cartToast.textContent = message;
+        cartToast.classList.remove('opacity-0', 'translate-y-3');
+        cartToast.classList.add('opacity-100', 'translate-y-0');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(function () {
+          cartToast.classList.add('opacity-0', 'translate-y-3');
+          cartToast.classList.remove('opacity-100', 'translate-y-0');
+        }, 2200);
+      }
+
+      function revealStep() {
+        step.classList.remove('hidden');
+        requestAnimationFrame(function () {
+          requestAnimationFrame(function () {
+            step.classList.remove('opacity-0');
+            step.classList.add('opacity-100');
+          });
+        });
+        var header = document.querySelector('header');
+        var top = step.getBoundingClientRect().top + window.scrollY - (header ? header.offsetHeight : 0) - 16;
+        window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+      }
+
+      var gestionActiva = {
+        basico: {
+          precio: 35,
+          servicios: [
+            'Hasta 2 actualizaciones de carta o precios al mes',
+            'Hosting de alta velocidad y dominio incluido',
+            'Actualización de datos y carta en Google Maps',
+            'Cambios de carta reflejados en 24 - 48h laborables tras aviso por WhatsApp'
+          ]
+        },
+        pro: {
+          precio: 45,
+          servicios: [
+            'Hasta 4 actualizaciones de carta o menú al mes',
+            'Carga y sincronización continua de platos en Google Maps',
+            'Monitorización y optimización de SEO local en Maps',
+            'Hosting de alta velocidad, dominio y certificado SSL',
+            'Cambios de carta reflejados en 24 - 48h laborables tras aviso por WhatsApp'
+          ]
+        },
+        gastro: {
+          precio: 85,
+          servicios: [
+            'Hasta 8 actualizaciones de carta al mes. Actualizaciones de carta prioritarias en el mismo día (máx. 24h).',
+            'Subida mensual de 10 fotografías nuevas a Google Maps',
+            'Redacción y propuesta de respuestas a reseñas de clientes',
+            'Mantenimiento del motor de reservas y carta bilingüe',
+            'Informe mensual de métricas (llamadas, visitas y cómo llegar)',
+            'Hosting prioritario y soporte técnico rápido'
+          ]
+        },
+        vip: {
+          precio: 220,
+          servicios: [
+            'Atención prioritaria y cambios en menos de 24h',
+            'Gestión y respuesta activa al 100% de reseñas en Google Maps en 48 h',
+            'Publicaciones quincenales de eventos, ofertas o menús en Google Maps',
+            'Sesión audiovisual de seguimiento periódico',
+            'Auditoría mensual de posicionamiento y competencia local',
+            'Hosting de máxima disponibilidad y departamento digital externo'
+          ]
+        }
+      };
+
+      function renderActiveIncludes(servicios) {
+        var list = document.getElementById('mantenimiento-activo-lista');
+        list.classList.add('opacity-0');
+        window.setTimeout(function () {
+          list.innerHTML = '';
+          servicios.forEach(function (item) {
+            var li = document.createElement('li');
+            li.className = 'flex gap-2';
+            li.innerHTML = '<span class="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true">✓</span> ' + item;
+            list.appendChild(li);
+          });
+          list.classList.remove('opacity-0');
+        }, 180);
+      }
+
+      function selectWebPlan(card) {
+        webCards.forEach(function (other) {
+          var on = other === card;
+          paint(other, on);
+          var otherButton = other.querySelector('[data-select-web]');
+          otherButton.textContent = on ? 'Seleccionado ✓' : 'Seleccionar Web';
+          otherButton.classList.toggle('is-picked-btn', on);
+          otherButton.setAttribute('aria-pressed', on ? 'true' : 'false');
+        });
+        var planId = card.getAttribute('data-web');
+        var activa = gestionActiva[planId];
+        selectedWeb = {
+          id: planId,
+          name: card.getAttribute('data-name'),
+          price: card.getAttribute('data-price'),
+          plazo: card.getAttribute('data-plazo'),
+          active: activa.precio
+        };
+        title.textContent = 'Paso 2: Elige el mantenimiento para tu ' + selectedWeb.name;
+        activePrice.textContent = String(activa.precio);
+        renderActiveIncludes(activa.servicios);
+        if (selectedMaintenance && selectedMaintenance.id === 'active') {
+          selectedMaintenance.price = activa.precio;
+        }
+        if (cartItems.webPlan) {
+          cartItems.webPlan = { nombre: selectedWeb.name, precioMontaje: Number(selectedWeb.price), plazo: selectedWeb.plazo };
+        }
+        if (cartItems.maintenancePlan && cartItems.maintenancePlan.nombre === 'Gestión Activa + SEO Google Maps') {
+          cartItems.maintenancePlan.precioMensual = activa.precio;
+        }
+        if (cartItems.webPlan || cartItems.maintenancePlan) renderCart();
+        syncOrder();
+        revealStep();
+      }
+
+      webCards.forEach(function (card) {
+        card.querySelector('[data-select-web]').addEventListener('click', function () {
+          selectWebPlan(card);
+        });
+      });
+
+      function chooseMaintenance(card) {
+        maintenanceCards.forEach(function (other) {
+          var on = other === card;
+          paint(other, on);
+          other.setAttribute('aria-pressed', on ? 'true' : 'false');
+          var status = other.querySelector('[data-maintenance-status]');
+          if (status) status.textContent = on ? 'Seleccionado ✓' : 'Seleccionar';
+        });
+        var price = card.getAttribute('data-maintenance') === 'active' ? selectedWeb.active : Number(card.getAttribute('data-price'));
+        selectedMaintenance = {
+          id: card.getAttribute('data-maintenance'),
+          name: card.getAttribute('data-name'),
+          price: price
+        };
+        syncOrder();
+      }
+
+      maintenanceCards.forEach(function (card) {
+        card.addEventListener('click', function () { chooseMaintenance(card); });
+        card.addEventListener('keydown', function (event) {
+          if (event.key !== 'Enter' && event.key !== ' ') return;
+          event.preventDefault();
+          chooseMaintenance(card);
+        });
+      });
+
+      addPack.addEventListener('click', function () {
+        if (!selectedWeb || !selectedMaintenance) return;
+        cartItems.webPlan = { nombre: selectedWeb.name, precioMontaje: Number(selectedWeb.price), plazo: selectedWeb.plazo };
+        cartItems.maintenancePlan = { nombre: selectedMaintenance.name, precioMensual: Number(selectedMaintenance.price) };
+        renderCart();
+        showToast('Pack ' + selectedWeb.name + ' añadido al presupuesto');
+        openCart();
+      });
+
+      cartLines.addEventListener('click', function (event) {
+        var button = event.target.closest('[data-remove]');
+        if (!button || button.getAttribute('data-remove') !== 'pack') return;
+        cartItems.webPlan = null;
+        cartItems.maintenancePlan = null;
+        renderCart();
+      });
+
+      function findExtra(id) {
+        for (var i = 0; i < cartExtras.length; i++) {
+          if (cartExtras[i].id === id) return cartExtras[i];
+        }
+        return null;
+      }
+
+      function addExtra(id) {
+        var source = extraCatalog[id];
+        if (!source) return;
+        var current = findExtra(id);
+        if (current && current.qty >= 5) {
+          showToast('Límite máximo alcanzado (5 unidades)');
+          openCart();
+          return;
+        }
+        if (current) current.qty += 1;
+        else cartExtras.push({ id: source.id, name: source.name, price: source.price, unit: source.unit, qty: 1 });
+        renderCart();
+        showToast('Servicio añadido al presupuesto');
+        openCart();
+      }
+
+      function changeExtraQty(id, delta) {
+        var current = findExtra(id);
+        if (!current) return;
+        var next = current.qty + delta;
+        if (next > 5) {
+          showToast('Límite máximo alcanzado (5 unidades)');
+          return;
+        }
+        if (next <= 0) {
+          cartExtras = cartExtras.filter(function (item) { return item.id !== id; });
+        } else {
+          current.qty = next;
+        }
+        renderCart();
+      }
+
+      document.querySelectorAll('[data-extra-info]').forEach(function (info) {
+        info.addEventListener('click', function (event) {
+          event.stopPropagation();
+          var willOpen = !info.classList.contains('is-open');
+          document.querySelectorAll('[data-extra-info].is-open').forEach(function (el) {
+            el.classList.remove('is-open');
+          });
+          if (willOpen) info.classList.add('is-open');
+        });
+      });
+
+      document.addEventListener('click', function () {
+        document.querySelectorAll('[data-extra-info].is-open').forEach(function (el) {
+          el.classList.remove('is-open');
+        });
+      });
+
+      document.querySelectorAll('[data-extra]').forEach(function (button) {
+        button.addEventListener('click', function (event) {
+          if (event.target.closest('[data-extra-info]')) {
+            event.stopPropagation();
+            return;
+          }
+          addExtra(button.getAttribute('data-extra'));
+        });
+      });
+
+      cartExtrasList.addEventListener('click', function (event) {
+        var remove = event.target.closest('[data-remove-extra]');
+        if (remove) {
+          var removeId = remove.getAttribute('data-remove-extra');
+          cartExtras = cartExtras.filter(function (item) { return item.id !== removeId; });
+          renderCart();
+          return;
+        }
+        var qty = event.target.closest('[data-qty]');
+        if (!qty || qty.disabled) return;
+        changeExtraQty(qty.getAttribute('data-id'), qty.getAttribute('data-qty') === 'inc' ? 1 : -1);
+      });
+
+      document.getElementById('cart-open').addEventListener('click', openCart);
+      document.getElementById('cart-close').addEventListener('click', closeCart);
+      cartOverlay.addEventListener('click', closeCart);
+      document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape' && !cartRoot.classList.contains('hidden')) closeCart();
+      });
+      cartWhatsapp.addEventListener('click', function (event) {
+        if (cartWhatsapp.getAttribute('aria-disabled') === 'true') event.preventDefault();
+      });
+
+      renderCart();
+    })();
+  </script>
+  <script>
+    (function () {
+      const SUPABASE_URL = 'https://atcgrdfzyboqvdvtfymz.supabase.co';
+      const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF0Y2dyZGZ6eWJvcXZkdnRmeW16Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE5OTc1NTksImV4cCI6MjEwNzU3MzU1OX0.LKMVrtcqd_suMUeyWeedPs5yuzTYLVbz7Lel9A0iKY8';
+      const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      window.visiwebSupabase = supabase;
+
+      var mode = 'login';
+      var modal = document.getElementById('auth-modal');
+      var backdrop = document.getElementById('auth-backdrop');
+      var card = document.getElementById('auth-card');
+      var form = document.getElementById('auth-form');
+      var emailInput = document.getElementById('auth-email-input');
+      var passwordInput = document.getElementById('auth-password-input');
+      var forgot = document.getElementById('auth-forgot');
+      var submit = document.getElementById('auth-submit');
+      var feedback = document.getElementById('auth-feedback');
+      var tabLogin = document.getElementById('auth-tab-login');
+      var tabSignup = document.getElementById('auth-tab-signup');
+      var openButton = document.getElementById('auth-open');
+      var sessionBox = document.getElementById('auth-session');
+      var menu = document.getElementById('auth-menu');
+      var menuToggle = document.getElementById('auth-menu-toggle');
+      var avatar = document.getElementById('auth-avatar');
+      var emailLabel = document.getElementById('auth-email');
+      var toast = document.getElementById('cart-toast');
+      var toastTimer = null;
+      var activeTab = ['bg-white', 'text-slate-900', 'shadow-sm', 'dark:bg-slate-700', 'dark:text-white'];
+      var idleTab = ['text-slate-500', 'dark:text-slate-400'];
+
+      function showToast(message) {
+        toast.textContent = message;
+        toast.classList.remove('opacity-0', 'translate-y-3');
+        toast.classList.add('opacity-100', 'translate-y-0');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(function () {
+          toast.classList.add('opacity-0', 'translate-y-3');
+          toast.classList.remove('opacity-100', 'translate-y-0');
+        }, 2600);
+      }
+
+      function setFeedback(message, ok) {
+        feedback.textContent = message || '';
+        feedback.classList.toggle('hidden', !message);
+        feedback.classList.toggle('text-red-600', !ok);
+        feedback.classList.toggle('dark:text-red-400', !ok);
+        feedback.classList.toggle('text-emerald-700', !!ok);
+        feedback.classList.toggle('dark:text-emerald-400', !!ok);
+      }
+
+      function readyClient() {
+        if (!supabase) {
+          setFeedback('No se ha cargado el SDK de Supabase.');
+          return false;
+        }
+        return true;
+      }
+
+      function paintTabs() {
+        var loginOn = mode === 'login';
+        activeTab.forEach(function (cls) {
+          tabLogin.classList.toggle(cls, loginOn);
+          tabSignup.classList.toggle(cls, !loginOn);
+        });
+        idleTab.forEach(function (cls) {
+          tabLogin.classList.toggle(cls, !loginOn);
+          tabSignup.classList.toggle(cls, loginOn);
+        });
+        tabLogin.setAttribute('aria-selected', loginOn ? 'true' : 'false');
+        tabSignup.setAttribute('aria-selected', loginOn ? 'false' : 'true');
+        submit.textContent = loginOn ? 'Iniciar sesión' : 'Crear cuenta';
+        forgot.classList.toggle('hidden', !loginOn);
+        passwordInput.autocomplete = loginOn ? 'current-password' : 'new-password';
+      }
+
+      function setMode(next) {
+        mode = next;
+        setFeedback('');
+        paintTabs();
+      }
+
+      function openModal() {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        modal.classList.remove('pointer-events-none');
+        modal.setAttribute('aria-hidden', 'false');
+        document.body.classList.add('overflow-hidden');
+        requestAnimationFrame(function () {
+          backdrop.classList.add('opacity-100');
+          backdrop.classList.remove('opacity-0');
+          card.classList.remove('opacity-0', 'translate-y-2', 'scale-[0.98]');
+          card.classList.add('opacity-100', 'translate-y-0', 'scale-100');
+        });
+        emailInput.focus();
+      }
+
+      function closeModal() {
+        backdrop.classList.remove('opacity-100');
+        backdrop.classList.add('opacity-0');
+        card.classList.add('opacity-0', 'translate-y-2', 'scale-[0.98]');
+        card.classList.remove('opacity-100', 'translate-y-0', 'scale-100');
+        modal.setAttribute('aria-hidden', 'true');
+        document.body.classList.remove('overflow-hidden');
+        setTimeout(function () {
+          if (modal.getAttribute('aria-hidden') === 'true') {
+            modal.classList.add('hidden', 'pointer-events-none');
+            modal.classList.remove('flex');
+          }
+        }, 280);
+      }
+
+      function closeMenu() {
+        menu.classList.add('hidden');
+        menuToggle.setAttribute('aria-expanded', 'false');
+      }
+
+      function actualizarEstadoUsuario(user) {
+        window.visiwebUser = user || null;
+        var logged = !!user;
+        openButton.classList.toggle('hidden', logged);
+        sessionBox.classList.toggle('hidden', !logged);
+        if (!logged) {
+          closeMenu();
+          document.dispatchEvent(new CustomEvent('visiweb-session'));
+          return;
+        }
+        var email = user.email || 'Cuenta';
+        emailLabel.textContent = email;
+        var photo = user.user_metadata && (user.user_metadata.avatar_url || user.user_metadata.picture);
+        avatar.textContent = '';
+        if (photo) {
+          var img = document.createElement('img');
+          img.src = photo;
+          img.alt = '';
+          img.className = 'h-full w-full object-cover';
+          avatar.appendChild(img);
+        } else {
+          avatar.textContent = email.charAt(0).toUpperCase();
+        }
+        document.dispatchEvent(new CustomEvent('visiweb-session'));
+      }
+
+      function emailValue() {
+        return emailInput.value.trim();
+      }
+
+      tabLogin.addEventListener('click', function () { setMode('login'); });
+      tabSignup.addEventListener('click', function () { setMode('signup'); });
+      openButton.addEventListener('click', function () {
+        setFeedback('');
+        openModal();
+      });
+      document.getElementById('auth-close').addEventListener('click', closeModal);
+      backdrop.addEventListener('click', closeModal);
+      document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape' && modal.getAttribute('aria-hidden') === 'false') closeModal();
+        if (event.key === 'Escape') closeMenu();
+      });
+
+      document.getElementById('auth-password-toggle').addEventListener('click', function () {
+        var show = passwordInput.type === 'password';
+        passwordInput.type = show ? 'text' : 'password';
+        document.getElementById('auth-eye').classList.toggle('hidden', show);
+        document.getElementById('auth-eye-off').classList.toggle('hidden', !show);
+        this.setAttribute('aria-label', show ? 'Ocultar contraseña' : 'Mostrar contraseña');
+      });
+
+      menuToggle.addEventListener('click', function (event) {
+        event.stopPropagation();
+        var open = menu.classList.contains('hidden');
+        menu.classList.toggle('hidden', !open);
+        menuToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      });
+      document.addEventListener('click', function (event) {
+        if (!sessionBox.contains(event.target)) closeMenu();
+      });
+
+      document.getElementById('auth-logout').addEventListener('click', function () {
+        if (!readyClient()) return;
+        supabase.auth.signOut().then(function (result) {
+          if (result.error) setFeedback(result.error.message);
+          closeMenu();
+        });
+      });
+
+      document.getElementById('auth-google').addEventListener('click', function () {
+        if (!readyClient()) {
+          openModal();
+          return;
+        }
+        supabase.auth.signInWithOAuth({
+          provider: 'google',
+          options: { redirectTo: window.location.origin }
+        }).then(function (result) {
+          if (result.error) setFeedback(result.error.message);
+        });
+      });
+
+      document.getElementById('auth-magic').addEventListener('click', function () {
+        if (!readyClient()) return;
+        var email = window.prompt('Escribe tu correo para enviarte el enlace mágico', emailValue());
+        if (!email) return;
+        email = email.trim();
+        if (!email) return;
+        supabase.auth.signInWithOtp({
+          email: email,
+          options: { emailRedirectTo: window.location.origin }
+        }).then(function (result) {
+          if (result.error) setFeedback(result.error.message);
+          else setFeedback('Te hemos enviado un enlace mágico a ' + email + '.', true);
+        });
+      });
+
+      forgot.addEventListener('click', function () {
+        if (!readyClient()) return;
+        var email = emailValue();
+        if (!email) {
+          setFeedback('Escribe tu correo para restablecer la contraseña.');
+          emailInput.focus();
+          return;
+        }
+        supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: window.location.origin
+        }).then(function (result) {
+          if (result.error) setFeedback(result.error.message);
+          else setFeedback('Te hemos enviado un correo para restablecer la contraseña.', true);
+        });
+      });
+
+      form.addEventListener('submit', function (event) {
+        event.preventDefault();
+        if (!readyClient()) return;
+        var email = emailValue();
+        var password = passwordInput.value;
+        if (!email || !password) {
+          setFeedback('Completa el correo y la contraseña.');
+          return;
+        }
+        if (password.length < 6) {
+          setFeedback('La contraseña debe tener al menos 6 caracteres.');
+          return;
+        }
+        submit.disabled = true;
+        var request = mode === 'signup'
+          ? supabase.auth.signUp({ email: email, password: password, options: { emailRedirectTo: window.location.origin } })
+          : supabase.auth.signInWithPassword({ email: email, password: password });
+        request.then(function (result) {
+          submit.disabled = false;
+          if (result.error) {
+            setFeedback(result.error.message);
+            return;
+          }
+          if (mode === 'signup' && result.data && result.data.user && !result.data.session) {
+            setFeedback('Cuenta creada. Revisa tu correo para confirmarla.', true);
+          }
+        }).catch(function () {
+          submit.disabled = false;
+          setFeedback('No se ha podido conectar con Supabase.');
+        });
+      });
+
+      document.getElementById('cart-save').addEventListener('click', function () {
+        if (!window.visiwebUser || !readyClient() || typeof window.visiwebGetCart !== 'function') return;
+        var cart = window.visiwebGetCart();
+        if (!cart.webPlan || !cart.maintenancePlan) return;
+        var button = document.getElementById('cart-save');
+        button.disabled = true;
+        supabase.from('presupuestos').insert({
+          user_id: window.visiwebUser.id,
+          carrito: cart
+        }).then(function (result) {
+          button.disabled = false;
+          if (result.error) showToast(result.error.message);
+          else showToast('Presupuesto guardado en tu cuenta');
+        }).catch(function () {
+          button.disabled = false;
+          showToast('No se ha podido guardar el presupuesto');
+        });
+      });
+
+      if (supabase) {
+        supabase.auth.onAuthStateChange(function (event, session) {
+          var user = session && session.user ? session.user : null;
+          actualizarEstadoUsuario(user);
+          if (event === 'SIGNED_IN' && user) {
+            closeModal();
+            showToast('Sesión iniciada como ' + user.email);
+          }
+          if (event === 'SIGNED_OUT') showToast('Sesión cerrada');
+        });
+      }
+
+      paintTabs();
+    })();
+  </script>
+  <script>
+    (function () {
+      var wrapper = document.getElementById('scroll-wrapper');
+      var card1 = document.getElementById('card-1');
+      var card2 = document.getElementById('card-2');
+      var card3 = document.getElementById('card-3');
+      if (!wrapper || !card1 || !card2 || !card3) return;
+
+      var targetProgress = 0;
+      var currentProgress = 0;
+      var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      function clamp(value, min, max) {
+        return Math.min(max, Math.max(min, value));
+      }
+
+      function segment(progress, start, end) {
+        return clamp((progress - start) / (end - start), 0, 1);
+      }
+
+      function onScroll() {
+        var scrollable = wrapper.offsetHeight - window.innerHeight;
+        var scrolled = -wrapper.getBoundingClientRect().top;
+        targetProgress = scrollable > 0 ? clamp(scrolled / scrollable, 0, 1) : 0;
+      }
+
+      function paintCard(card, y, scale, brightness) {
+        var shift = y * (100 / 150);
+        card.style.transform = 'translate3d(-50%, calc(-50% + ' + shift + 'vh), 0) scale(' + scale + ')';
+        card.style.filter = 'brightness(' + brightness + ')';
+      }
+
+      function frame() {
+        var lerp = reduceMotion ? 1 : 0.15;
+        currentProgress += (targetProgress - currentProgress) * lerp;
+        if (Math.abs(targetProgress - currentProgress) < 0.0005) currentProgress = targetProgress;
+
+        var rise2 = segment(currentProgress, 0.33, 0.66);
+        var rise3 = segment(currentProgress, 0.66, 1);
+
+        paintCard(card1, 0, 1 - rise2 * 0.08 - rise3 * 0.07, 1 - rise2 * 0.22 - rise3 * 0.1);
+        paintCard(card2, 150 * (1 - rise2), 1 - rise3 * 0.08, 1 - rise3 * 0.16);
+        paintCard(card3, 150 * (1 - rise3), 1, 1);
+
+        requestAnimationFrame(frame);
+      }
+
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', onScroll, { passive: true });
+      onScroll();
+      requestAnimationFrame(frame);
     })();
   </script>
 </body>
