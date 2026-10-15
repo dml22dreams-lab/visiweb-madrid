@@ -1,0 +1,273 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Taberna El Norte Â· CervecerÃ­a y raciones en Alcobendas</title>
+  <meta name="description" content="Taberna El Norte, cervecerÃ­a y raciones caseras en Alcobendas (Madrid). Carta digital con alÃ©rgenos, menÃº del dÃ­a por 13,50 â‚¬ y reserva por WhatsApp.">
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#020617" media="(prefers-color-scheme: dark)">
+
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/favicon.svg">
+
+  <!-- demo-app.js convierte estos href en URLs absolutas del dominio real -->
+  <link id="alt-es" rel="alternate" hreflang="es" href="demo.html">
+  <link id="alt-en" rel="alternate" hreflang="en" href="demo.html?lang=en">
+  <link id="alt-default" rel="alternate" hreflang="x-default" href="demo.html">
+
+  <!-- Open Graph / Twitter -->
+  <meta property="og:type" content="restaurant.restaurant">
+  <meta property="og:locale" content="es_ES">
+  <meta property="og:locale:alternate" content="en_GB">
+  <meta property="og:site_name" content="Taberna El Norte">
+  <meta property="og:title" content="Taberna El Norte Â· CervecerÃ­a y raciones en Alcobendas">
+  <meta property="og:description" content="Carta digital con alÃ©rgenos, menÃº del dÃ­a por 13,50 â‚¬ y reserva por WhatsApp. CervecerÃ­a tradicional en Alcobendas (Madrid).">
+  <!-- Pendiente: sustituir por la foto real del local (1200x630 .webp o .jpg)
+  <meta property="og:image" content="https://ejemplo.com/assets/og-taberna.jpg"> -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Taberna El Norte Â· CervecerÃ­a y raciones en Alcobendas">
+  <meta name="twitter:description" content="Carta digital con alÃ©rgenos, menÃº del dÃ­a por 13,50 â‚¬ y reserva por WhatsApp.">
+
+  <link rel="preload" href="assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/cormorant-garamond-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="assets/demo.css">
+</head>
+<body class="bg-white text-slate-900 dark:bg-slate-950 dark:text-slate-100">
+
+  <a href="#carta" class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[80] focus:rounded-full focus:bg-slate-900 focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white dark:focus:bg-slate-100 dark:focus:text-slate-900" data-i18n="skipToMenu">Ir a la carta</a>
+
+  <!-- ============================ CABECERA ============================ -->
+  <header class="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur dark:border-slate-800 dark:bg-slate-950/95">
+    <div class="mx-auto flex max-w-3xl items-center justify-between gap-3 px-5 py-3">
+      <div class="min-w-0">
+        <p class="font-serif text-lg font-semibold leading-tight tracking-tight sm:text-xl">Taberna El Norte</p>
+        <p id="status" class="mt-0.5 flex items-center gap-1.5 text-xs font-medium text-slate-600 dark:text-slate-400">
+          <span id="status-dot" class="live-dot h-1.5 w-1.5 shrink-0 rounded-full bg-slate-400"></span>
+          <span id="status-text">&nbsp;</span>
+        </p>
+      </div>
+
+      <div class="flex shrink-0 items-center gap-2">
+        <div class="flex items-center rounded-full border border-slate-300 p-0.5 dark:border-slate-700" role="group" aria-label="Idioma" data-i18n-aria-label="langLabel">
+          <button type="button" data-lang="es" class="min-h-11 rounded-full px-2.5 text-xs font-semibold" aria-pressed="true" lang="es">ES</button>
+          <button type="button" data-lang="en" class="min-h-11 rounded-full px-2.5 text-xs font-semibold" aria-pressed="false" lang="en">EN</button>
+        </div>
+
+        <a id="header-call" href="tel:+34910000000" class="btn-outline px-4" data-i18n-aria-label="callLong">
+          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6.6 10.8a12.8 12.8 0 0 0 5.6 5.6l2-2a1 1 0 0 1 1-.2 9.6 9.6 0 0 0 3.5.6 1 1 0 0 1 1 1V19a1 1 0 0 1-1 1A17 17 0 0 1 4 6a1 1 0 0 1 1-1h3.2a1 1 0 0 1 1 1 9.6 9.6 0 0 0 .6 3.5 1 1 0 0 1-.2 1l-2 2z"/></svg>
+          <span data-i18n="call">Llamar</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============================== PORTADA ============================== -->
+  <section class="mx-auto max-w-3xl px-5 pb-12 pt-12 sm:pb-16 sm:pt-16">
+    <p class="text-center text-[11px] font-semibold uppercase tracking-[.28em] text-slate-600 dark:text-slate-400" data-i18n="heroEyebrow">Alcobendas Â· Desde 1998</p>
+
+    <h1 class="mt-5 text-center font-serif text-5xl font-semibold leading-[1.05] tracking-tight sm:text-7xl" data-i18n="heroTitle">El sabor de siempre.</h1>
+
+    <p class="mx-auto mt-5 max-w-sm text-center text-base leading-relaxed text-slate-600 dark:text-slate-400 sm:text-lg" data-i18n="heroSubtitle">Raciones caseras en el corazÃ³n de Alcobendas.</p>
+
+    <div class="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
+      <a id="hero-whatsapp" href="#" class="btn-primary w-full sm:w-auto" data-i18n="reserve">Reservar mesa</a>
+      <a id="hero-directions" href="#" class="btn-outline w-full sm:w-auto" target="_blank" rel="noopener" data-i18n="directions">CÃ³mo llegar</a>
+    </div>
+
+    <!-- Foto del local. Cambiar en demo-data.js -> images.hero -->
+    <figure id="hero-media" class="mt-12 overflow-hidden rounded-xl bg-slate-100 dark:bg-slate-900" style="aspect-ratio:16/9"></figure>
+
+    <dl class="mt-10 grid grid-cols-2 gap-x-8 gap-y-6 sm:grid-cols-3">
+      <div>
+        <dt class="text-[10px] font-semibold uppercase tracking-[.18em] text-slate-600 dark:text-slate-400" data-i18n="labelAddress">DirecciÃ³n</dt>
+        <dd id="info-address" class="mt-1.5 text-sm leading-snug"></dd>
+      </div>
+      <div>
+        <dt class="text-[10px] font-semibold uppercase tracking-[.18em] text-slate-600 dark:text-slate-400" data-i18n="labelToday">Horario de hoy</dt>
+        <dd class="mt-1.5 text-sm leading-snug">
+          <span id="info-today" class="tabular"></span>
+          <a href="#horarios" class="mt-1 block text-xs text-slate-600 underline underline-offset-4 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100" data-i18n="allHours">Ver todos los horarios</a>
+        </dd>
+      </div>
+      <div class="col-span-2 sm:col-span-1">
+        <dt class="text-[10px] font-semibold uppercase tracking-[.18em] text-slate-600 dark:text-slate-400" data-i18n="labelMenuDay">MenÃº del dÃ­a</dt>
+        <dd id="info-menu-price" class="mt-1.5 text-sm leading-snug tabular">13,50 â‚¬</dd>
+      </div>
+    </dl>
+  </section>
+
+  <!-- =============================== CARTA =============================== -->
+  <main id="carta" class="mx-auto max-w-3xl scroll-mt-24 px-5">
+    <div class="border-t border-slate-200 pt-12 text-center dark:border-slate-800">
+      <h2 class="font-serif text-3xl font-semibold tracking-tight sm:text-4xl" data-i18n="menuTitle">La carta</h2>
+      <p class="mt-3 text-sm text-slate-600 dark:text-slate-400" data-i18n="menuSubtitle">Elaborada cada maÃ±ana con producto de mercado.</p>
+    </div>
+
+    <div class="sticky top-[69px] z-30 -mx-5 mt-8 border-b border-slate-200 bg-white/95 px-5 py-2 backdrop-blur dark:border-slate-800 dark:bg-slate-950/95">
+      <div id="tabs" class="no-scrollbar flex gap-2 overflow-x-auto" role="tablist" aria-label="CategorÃ­as de la carta" data-i18n-aria-label="menuTabsLabel"></div>
+    </div>
+
+    <div id="panels" class="mt-6"></div>
+
+    <!-- Leyenda de alÃ©rgenos -->
+    <section class="mt-14 border-t border-slate-200 pt-8 dark:border-slate-800" aria-labelledby="allergen-key-title">
+      <h2 id="allergen-key-title" class="font-serif text-2xl font-semibold tracking-tight" data-i18n="allergenKey">Leyenda de alÃ©rgenos</h2>
+      <ul id="allergen-key" class="mt-5 grid grid-cols-2 gap-x-6 gap-y-3 sm:grid-cols-3"></ul>
+
+      <div class="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">
+        <button type="button" id="open-allergen-table" class="btn-outline w-full sm:w-auto" data-i18n="allergenTableLink">Ver tabla completa de alÃ©rgenos</button>
+      </div>
+
+      <p class="mt-6 text-sm leading-relaxed text-slate-600 dark:text-slate-400" data-i18n="staffNotice">Consulta a nuestro personal la informaciÃ³n completa de los catorce alÃ©rgenos de declaraciÃ³n obligatoria.</p>
+      <p class="mt-2 text-xs leading-relaxed text-slate-600 dark:text-slate-400" data-i18n="vatNotice">Precios con IVA incluido. Pan y aceite, 1,20 â‚¬ por persona.</p>
+    </section>
+
+    <!-- Opiniones -->
+    <section class="mt-14 border-t border-slate-200 pt-12 dark:border-slate-800" aria-labelledby="reviews-title">
+      <div class="flex flex-wrap items-baseline justify-between gap-3">
+        <h2 id="reviews-title" class="font-serif text-3xl font-semibold tracking-tight" data-i18n="reviewsTitle">Opiniones</h2>
+        <span class="rounded-full border border-slate-300 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-slate-700 dark:border-slate-600 dark:text-slate-300" data-i18n="reviewsDemo">ReseÃ±as de demostraciÃ³n</span>
+      </div>
+      <p id="reviews-score" class="mt-3 flex flex-wrap items-center gap-2 text-sm text-slate-600 dark:text-slate-400"></p>
+      <ul id="reviews-list" class="mt-7 divide-y divide-slate-200 dark:divide-slate-800"></ul>
+    </section>
+
+    <!-- Mapa -->
+    <section id="ubicacion" class="mt-14 scroll-mt-24 border-t border-slate-200 pt-12 dark:border-slate-800" aria-labelledby="map-title">
+      <h2 id="map-title" class="font-serif text-3xl font-semibold tracking-tight" data-i18n="mapTitle">DÃ³nde estamos</h2>
+      <p id="map-address" class="mt-3 text-sm leading-relaxed text-slate-600 dark:text-slate-400"></p>
+
+      <div id="map-wrap" class="mt-6 overflow-hidden rounded-xl border border-slate-200 bg-slate-100 dark:border-slate-800 dark:bg-slate-900" style="aspect-ratio:16/10">
+        <div id="map-consent" class="flex h-full flex-col items-center justify-center gap-4 px-6 text-center">
+          <p class="max-w-sm text-sm text-slate-700 dark:text-slate-300" data-i18n="mapConsentText">El mapa se carga desde Google Maps. Acepta las cookies de terceros para verlo aquÃ­.</p>
+          <button type="button" id="map-consent-btn" class="btn-primary" data-i18n="mapConsentBtn">Cargar el mapa</button>
+        </div>
+      </div>
+
+      <a id="map-directions" href="#" target="_blank" rel="noopener" class="btn-outline mt-5 w-full sm:w-auto" data-i18n="directions">CÃ³mo llegar</a>
+    </section>
+  </main>
+
+  <!-- ================================ PIE ================================ -->
+  <footer class="mt-16 border-t border-slate-200 bg-slate-50 dark:border-slate-800 dark:bg-slate-900">
+    <div class="mx-auto max-w-3xl px-5 py-14">
+      <p class="font-serif text-2xl font-semibold tracking-tight">Taberna El Norte</p>
+      <p id="footer-type" class="mt-1 text-sm text-slate-600 dark:text-slate-400"></p>
+
+      <div class="mt-9 grid gap-10 sm:grid-cols-2">
+        <section id="horarios" class="scroll-mt-24" aria-labelledby="hours-title">
+          <h2 id="hours-title" class="text-[10px] font-semibold uppercase tracking-[.18em] text-slate-600 dark:text-slate-400" data-i18n="kitchenHours">Horario de cocina</h2>
+          <dl id="hours-list" class="mt-3 space-y-2 text-sm"></dl>
+        </section>
+
+        <section aria-labelledby="contact-title">
+          <h2 id="contact-title" class="text-[10px] font-semibold uppercase tracking-[.18em] text-slate-600 dark:text-slate-400" data-i18n="contact">Reservas y contacto</h2>
+          <address id="footer-address" class="mt-3 text-sm not-italic leading-relaxed text-slate-600 dark:text-slate-400"></address>
+          <div class="mt-4 flex flex-col items-start gap-2 text-sm">
+            <a id="footer-phone" href="tel:+34910000000" class="link-underline">910 000 000</a>
+            <a id="footer-whatsapp" href="#" target="_blank" rel="noopener" class="link-underline" data-i18n="reserveWhatsApp">Reservar por WhatsApp</a>
+          </div>
+          <p class="mt-4 text-xs leading-relaxed text-slate-600 dark:text-slate-400" data-i18n="groupsNotice">Grupos de mÃ¡s de diez personas: reserva con veinticuatro horas de antelaciÃ³n.</p>
+        </section>
+      </div>
+
+      <section class="mt-12 border-t border-slate-200 pt-7 dark:border-slate-800" aria-labelledby="legal-title">
+        <h2 id="legal-title" class="text-[10px] font-semibold uppercase tracking-[.18em] text-slate-600 dark:text-slate-400" data-i18n="legalTitle">InformaciÃ³n legal</h2>
+        <nav class="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
+          <a href="aviso-legal.html" class="link-underline" data-i18n="legalNotice">Aviso legal</a>
+          <a href="politica-privacidad.html" class="link-underline" data-i18n="privacy">PolÃ­tica de privacidad</a>
+          <a href="politica-cookies.html" class="link-underline" data-i18n="cookies">PolÃ­tica de cookies</a>
+          <button type="button" id="open-cookie-settings" class="text-left font-medium text-slate-900 underline decoration-slate-400 underline-offset-4 hover:decoration-slate-900 dark:text-slate-100 dark:decoration-slate-500" data-i18n="cookieSettings">Configurar cookies</button>
+        </nav>
+      </section>
+
+      <p id="demo-notice" class="mt-10 rounded-lg border border-slate-300 px-4 py-3 text-xs leading-relaxed text-slate-700 dark:border-slate-700 dark:text-slate-300" data-i18n="demoNotice">Maqueta de ejemplo de VisiWeb Madrid. El negocio, los precios, los horarios y las reseÃ±as son ficticios.</p>
+    </div>
+
+    <div class="border-t border-slate-200 px-5 py-6 dark:border-slate-800">
+      <p class="mx-auto max-w-3xl text-center text-xs text-slate-600 dark:text-slate-400">
+        <span data-i18n="developedBy">Web desarrollada por</span>
+        <a id="credit-link" href="https://visiwebmadrid.com/#planes" target="_blank" rel="noopener" class="link-underline">VisiWeb Madrid</a>
+        Â· <span data-i18n="tagline">Carta digital ultrarrÃ¡pida</span>
+      </p>
+    </div>
+
+    <div class="h-24 md:h-0" aria-hidden="true"></div>
+  </footer>
+
+  <!-- ====================== BARRA FIJA (SOLO MÃ“VIL) ====================== -->
+  <nav class="fixed inset-x-0 bottom-0 z-40 grid grid-cols-2 gap-3 border-t border-slate-200 bg-white px-5 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] md:hidden dark:border-slate-800 dark:bg-slate-950" aria-label="Acciones rÃ¡pidas" data-i18n-aria-label="quickActions">
+    <a id="bar-call" href="tel:+34910000000" class="btn-outline px-4">
+      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6.6 10.8a12.8 12.8 0 0 0 5.6 5.6l2-2a1 1 0 0 1 1-.2 9.6 9.6 0 0 0 3.5.6 1 1 0 0 1 1 1V19a1 1 0 0 1-1 1A17 17 0 0 1 4 6a1 1 0 0 1 1-1h3.2a1 1 0 0 1 1 1 9.6 9.6 0 0 0 .6 3.5 1 1 0 0 1-.2 1l-2 2z"/></svg>
+      <span data-i18n="call">Llamar</span>
+    </a>
+    <a id="bar-whatsapp" href="#" target="_blank" rel="noopener" class="btn-primary px-4">
+      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm5.2 14c-.2.6-1.2 1.2-1.8 1.2-.5 0-1.1 0-2.4-.6a11 11 0 0 1-4.4-3.9c-.7-1.1-.8-2-.6-2.6.2-.5.8-1.1 1.2-1.2.3-.1.7 0 .9.4l.7 1.5c.1.3 0 .5-.2.7l-.4.5c-.1.2-.2.4 0 .7.4.7 1.4 1.8 2.5 2.3.3.1.5.1.7-.1l.5-.6c.2-.2.4-.2.7-.1l1.5.7c.3.2.5.5.4.9Z"/></svg>
+      <span>WhatsApp</span>
+    </a>
+  </nav>
+
+  <!-- Cinta de demostraciÃ³n -->
+  <p class="pointer-events-none fixed left-0 top-1/2 z-30 hidden -translate-y-1/2 rounded-r bg-slate-900 px-1.5 py-3 text-[10px] font-semibold uppercase tracking-[.2em] text-white [writing-mode:vertical-rl] md:block dark:bg-slate-100 dark:text-slate-900" data-i18n="demoRibbon">Web de demostraciÃ³n</p>
+
+  <!-- ====================== TABLA DE ALÃ‰RGENOS (MODAL) ====================== -->
+  <dialog id="allergen-dialog" class="w-[min(60rem,calc(100vw-1.5rem))] rounded-xl bg-white p-0 text-slate-900 backdrop:bg-slate-900/60 dark:bg-slate-900 dark:text-slate-100">
+    <div class="flex items-start justify-between gap-4 border-b border-slate-200 px-5 py-4 dark:border-slate-800">
+      <div>
+        <h2 class="font-serif text-xl font-semibold tracking-tight" data-i18n="allergenTableTitle">Tabla de alÃ©rgenos por plato</h2>
+        <p class="mt-1 text-xs text-slate-600 dark:text-slate-400" data-i18n="allergenTableHint">Desplaza la tabla en horizontal para ver los catorce alÃ©rgenos.</p>
+      </div>
+      <button type="button" id="close-allergen-dialog" class="btn-outline min-h-11 px-4" data-i18n="close">Cerrar</button>
+    </div>
+    <div class="max-h-[70vh] overflow-auto px-5 py-4">
+      <table id="allergen-table" class="w-full border-collapse text-left text-sm"></table>
+    </div>
+    <div class="border-t border-slate-200 px-5 py-4 dark:border-slate-800">
+      <p class="text-xs leading-relaxed text-slate-600 dark:text-slate-400" data-i18n="staffNotice">Consulta a nuestro personal la informaciÃ³n completa de los catorce alÃ©rgenos de declaraciÃ³n obligatoria.</p>
+    </div>
+  </dialog>
+
+  <!-- ========================== BANNER DE COOKIES ========================== -->
+  <section id="cookie-banner" class="fixed inset-x-0 bottom-0 z-50 border-t border-slate-200 bg-white px-5 pb-[max(1rem,env(safe-area-inset-bottom))] pt-4 shadow-[0_-8px_24px_-12px_rgba(15,23,42,0.25)] dark:border-slate-800 dark:bg-slate-900" aria-labelledby="cookie-title" hidden>
+    <div class="mx-auto max-w-3xl">
+      <h2 id="cookie-title" class="text-sm font-semibold" data-i18n="cookieTitle">Cookies en esta web</h2>
+      <p class="mt-1.5 text-xs leading-relaxed text-slate-700 dark:text-slate-300" data-i18n="cookieText">Usamos cookies propias necesarias y, si lo aceptas, servicios de terceros como el mapa de Google Maps. Sin tu consentimiento no se carga ningÃºn contenido externo.</p>
+
+      <div id="cookie-detail" class="mt-4 space-y-3 border-t border-slate-200 pt-4 dark:border-slate-800" hidden>
+        <label class="flex items-start gap-3 text-xs">
+          <input type="checkbox" checked disabled class="mt-0.5 h-4 w-4 rounded border-slate-400">
+          <span>
+            <strong class="block text-sm font-semibold" data-i18n="cookieNecessary">Necesarias (siempre activas)</strong>
+            <span class="text-slate-700 dark:text-slate-300" data-i18n="cookieNecessaryHelp">Imprescindibles para recordar el idioma y tus preferencias de cookies.</span>
+          </span>
+        </label>
+        <label class="flex items-start gap-3 text-xs">
+          <input type="checkbox" id="cookie-map-opt" class="mt-0.5 h-4 w-4 rounded border-slate-400">
+          <span>
+            <strong class="block text-sm font-semibold" data-i18n="cookieMap">Mapa de Google Maps</strong>
+            <span class="text-slate-700 dark:text-slate-300" data-i18n="cookieMapHelp">Permite mostrar el mapa incrustado con nuestra ubicaciÃ³n.</span>
+          </span>
+        </label>
+        <label class="flex items-start gap-3 text-xs">
+          <input type="checkbox" id="cookie-analytics-opt" class="mt-0.5 h-4 w-4 rounded border-slate-400">
+          <span>
+            <strong class="block text-sm font-semibold" data-i18n="cookieAnalytics">EstadÃ­sticas</strong>
+            <span class="text-slate-700 dark:text-slate-300" data-i18n="cookieAnalyticsHelp">MediciÃ³n anÃ³nima de visitas. En esta demo no se carga ninguna herramienta.</span>
+          </span>
+        </label>
+      </div>
+
+      <div class="mt-4 flex flex-col gap-2 sm:flex-row sm:justify-end">
+        <button type="button" id="cookie-configure" class="btn-outline sm:px-5" data-i18n="cookieConfigure">Configurar</button>
+        <button type="button" id="cookie-reject" class="btn-outline sm:px-5" data-i18n="cookieReject">Rechazar</button>
+        <button type="button" id="cookie-accept" class="btn-primary sm:px-5" data-i18n="cookieAccept">Aceptar</button>
+        <button type="button" id="cookie-save" class="btn-primary sm:px-5" data-i18n="cookieSave" hidden>Guardar preferencias</button>
+      </div>
+    </div>
+  </section>
+
+  <script src="demo-data.js"></script>
+  <script src="demo-app.js"></script>
+</body>
+</html>
