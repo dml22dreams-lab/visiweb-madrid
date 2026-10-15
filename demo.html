@@ -1,10 +1,10 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Taberna El Norte Â· CervecerÃ­a y raciones en Alcobendas</title>
-  <meta name="description" content="Taberna El Norte, cervecerÃ­a y raciones caseras en Alcobendas (Madrid). Carta digital con alÃ©rgenos, menÃº del dÃ­a por 13,50 â‚¬ y reserva por WhatsApp.">
+  <title>Taberna El Norte · Cervecería y raciones en Alcobendas</title>
+  <meta name="description" content="Taberna El Norte, cervecería y raciones en Alcobendas. Carta bilingüe con alérgenos, salón y terraza, historia del local y reservas online.">
   <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#020617" media="(prefers-color-scheme: dark)">
 
@@ -21,210 +21,781 @@
   <meta property="og:locale" content="es_ES">
   <meta property="og:locale:alternate" content="en_GB">
   <meta property="og:site_name" content="Taberna El Norte">
-  <meta property="og:title" content="Taberna El Norte Â· CervecerÃ­a y raciones en Alcobendas">
-  <meta property="og:description" content="Carta digital con alÃ©rgenos, menÃº del dÃ­a por 13,50 â‚¬ y reserva por WhatsApp. CervecerÃ­a tradicional en Alcobendas (Madrid).">
-  <!-- Pendiente: sustituir por la foto real del local (1200x630 .webp o .jpg)
-  <meta property="og:image" content="https://ejemplo.com/assets/og-taberna.jpg"> -->
+  <meta property="og:title" content="Taberna El Norte · Cervecería y raciones en Alcobendas">
+  <meta property="og:description" content="Carta bilingüe con alérgenos, salón y terraza, historia del local y reservas online. Cervecería tradicional en Alcobendas (Madrid).">
+  <meta property="og:image" content="assets/demo/hero.jpg">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Taberna El Norte Â· CervecerÃ­a y raciones en Alcobendas">
-  <meta name="twitter:description" content="Carta digital con alÃ©rgenos, menÃº del dÃ­a por 13,50 â‚¬ y reserva por WhatsApp.">
+  <meta name="twitter:image" content="assets/demo/hero.jpg">
+  <meta name="twitter:title" content="Taberna El Norte · Cervecería y raciones en Alcobendas">
+  <meta name="twitter:description" content="Carta bilingüe con alérgenos, salón y terraza, historia del local y reservas online.">
 
   <link rel="preload" href="assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/cormorant-garamond-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="assets/demo.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
+  <style>
+    .flatpickr-calendar {
+      z-index: 80;
+      width: 320px;
+      padding: 0.75rem 0.85rem 0.9rem;
+      overflow: hidden;
+      border: 1px solid #e7e5e4;
+      border-radius: 1rem;
+      background: #fafaf9;
+      box-shadow: 0 25px 50px -12px rgb(15 23 42 / 0.18);
+      font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+    }
+    .flatpickr-calendar.arrowTop:before,
+    .flatpickr-calendar.arrowTop:after,
+    .flatpickr-calendar.arrowBottom:before,
+    .flatpickr-calendar.arrowBottom:after {
+      display: none;
+    }
+    .flatpickr-months {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.15rem;
+      padding: 0.15rem 0 0.35rem;
+      position: relative;
+    }
+    .flatpickr-months .flatpickr-month {
+      flex: 0 0 auto;
+      width: auto;
+      height: 32px;
+      overflow: visible;
+      color: #1c1917;
+    }
+    .flatpickr-current-month {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: static;
+      left: auto;
+      width: auto;
+      height: 32px;
+      padding: 0;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0;
+    }
+    .flatpickr-current-month span.cur-month,
+    .flatpickr-current-month .flatpickr-monthDropdown-months,
+    .flatpickr-current-month input.cur-year {
+      font-size: 13px;
+      font-weight: 500;
+      color: #1c1917;
+    }
+    .flatpickr-current-month .numInputWrapper {
+      width: 3.4em;
+    }
+    .flatpickr-current-month .numInputWrapper:hover {
+      background: transparent;
+    }
+    .flatpickr-current-month .numInputWrapper span.arrowUp,
+    .flatpickr-current-month .numInputWrapper span.arrowDown {
+      display: none;
+    }
+    .flatpickr-current-month input.cur-year {
+      background: transparent;
+    }
+    .flatpickr-current-month span.cur-month:hover {
+      background: transparent;
+    }
+    .flatpickr-months .flatpickr-prev-month,
+    .flatpickr-months .flatpickr-next-month {
+      position: static;
+      top: auto;
+      left: auto;
+      right: auto;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      padding: 0 2px;
+      color: #1c1917;
+      fill: #1c1917;
+      background: transparent;
+      border-radius: 0;
+    }
+    .flatpickr-months .flatpickr-prev-month.flatpickr-disabled,
+    .flatpickr-months .flatpickr-next-month.flatpickr-disabled {
+      display: none;
+    }
+    .flatpickr-months .flatpickr-prev-month svg,
+    .flatpickr-months .flatpickr-next-month svg {
+      width: 12px;
+      height: 12px;
+      fill: #1c1917;
+    }
+    .flatpickr-months .flatpickr-prev-month:hover,
+    .flatpickr-months .flatpickr-next-month:hover {
+      background: transparent;
+      color: #d6d3d1;
+    }
+    .flatpickr-months .flatpickr-prev-month:hover svg,
+    .flatpickr-months .flatpickr-next-month:hover svg {
+      fill: #d6d3d1;
+    }
+    .flatpickr-weekdays {
+      height: 28px;
+      margin-top: 0.15rem;
+    }
+    span.flatpickr-weekday {
+      color: #a8a29e;
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .flatpickr-days {
+      width: 100%;
+    }
+    .dayContainer {
+      width: 100%;
+      min-width: 100%;
+      max-width: 100%;
+    }
+    .flatpickr-day {
+      height: 38px;
+      line-height: 38px;
+      margin: 2px 0;
+      border: 0;
+      border-radius: 999px;
+      color: #1c1917;
+      font-weight: 500;
+      transition: background-color 0.15s ease, color 0.15s ease;
+    }
+    .flatpickr-day:hover,
+    .flatpickr-day:focus {
+      background: #f5f5f4;
+      border-color: transparent;
+      color: #1c1917;
+    }
+    .flatpickr-day.today {
+      border: 1px solid #d6d3d1;
+      background: transparent;
+      font-weight: 600;
+    }
+    .flatpickr-day.today:hover,
+    .flatpickr-day.today:focus {
+      background: #f5f5f4;
+      border-color: #d6d3d1;
+      color: #1c1917;
+    }
+    .flatpickr-day.selected,
+    .flatpickr-day.selected:hover,
+    .flatpickr-day.selected:focus,
+    .flatpickr-day.selected.today {
+      background: #1c1917;
+      border-color: #1c1917;
+      color: #fff;
+      font-weight: 600;
+    }
+    .flatpickr-day.flatpickr-disabled,
+    .flatpickr-day.flatpickr-disabled:hover {
+      color: #e7e5e4;
+      background: transparent;
+      cursor: not-allowed;
+    }
+    .flatpickr-day.prevMonthDay,
+    .flatpickr-day.nextMonthDay {
+      color: #d6d3d1;
+    }
+    @media (prefers-color-scheme: dark) {
+      .flatpickr-calendar {
+        border-color: #44403c;
+        background: #1c1917;
+        box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.45);
+      }
+      .flatpickr-months .flatpickr-month,
+      .flatpickr-current-month span.cur-month,
+      .flatpickr-current-month .flatpickr-monthDropdown-months,
+      .flatpickr-current-month input.cur-year,
+      .flatpickr-day {
+        color: #fafaf9;
+      }
+      .flatpickr-months .flatpickr-prev-month,
+      .flatpickr-months .flatpickr-next-month,
+      .flatpickr-months .flatpickr-prev-month svg,
+      .flatpickr-months .flatpickr-next-month svg {
+        color: #fafaf9;
+        fill: #fafaf9;
+        background: transparent;
+      }
+      .flatpickr-months .flatpickr-prev-month:hover,
+      .flatpickr-months .flatpickr-next-month:hover {
+        background: transparent;
+        color: #a8a29e;
+      }
+      .flatpickr-months .flatpickr-prev-month:hover svg,
+      .flatpickr-months .flatpickr-next-month:hover svg {
+        fill: #a8a29e;
+      }
+      .flatpickr-day:hover,
+      .flatpickr-day:focus {
+        background: #292524;
+        color: #fafaf9;
+      }
+      .flatpickr-day.today {
+        border-color: #57534e;
+      }
+      .flatpickr-day.selected,
+      .flatpickr-day.selected:hover,
+      .flatpickr-day.selected:focus,
+      .flatpickr-day.selected.today {
+        background: #fafaf9;
+        border-color: #fafaf9;
+        color: #1c1917;
+      }
+      .flatpickr-day.flatpickr-disabled,
+      .flatpickr-day.flatpickr-disabled:hover {
+        color: #44403c;
+        background: transparent;
+      }
+    }
+
+    #btn-lang-toggle.lang-btn {
+      position: relative;
+      height: 36px;
+      width: max-content;
+      padding: 0 10px;
+      box-sizing: border-box;
+      border-radius: 9999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 13px;
+      letter-spacing: 0.5px;
+      background: rgba(245, 246, 248, 0.8);
+      background-image: none;
+      -webkit-backdrop-filter: blur(18px) saturate(180%);
+      backdrop-filter: blur(18px) saturate(180%);
+      border: 1px solid rgba(255, 255, 255, 0.7);
+      box-shadow: none;
+    }
+    #btn-lang-toggle .lang-text-wrapper {
+      position: relative;
+      display: grid;
+      place-items: center;
+      height: 100%;
+      overflow: hidden;
+    }
+    #btn-lang-toggle .lang-text-sizer {
+      grid-area: 1 / 1;
+      visibility: hidden;
+      pointer-events: none;
+      white-space: nowrap;
+      line-height: 1;
+      user-select: none;
+    }
+    #btn-lang-toggle .lang-text {
+      grid-area: 1 / 1;
+      display: inline-block;
+      white-space: nowrap;
+      line-height: 1;
+      color: #4b5563;
+      transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    #btn-lang-toggle .lang-text.slide-out-up {
+      transform: translateY(-100%);
+      opacity: 0;
+    }
+    #btn-lang-toggle .lang-text.slide-in-bottom {
+      transform: translateY(100%);
+      opacity: 0;
+    }
+    #btn-lang-toggle:hover .lang-text:not(.slide-out-up):not(.slide-in-bottom) {
+      transform: translateY(-3px);
+    }
+    .call-icon {
+      position: relative;
+      display: inline-flex;
+      width: 1rem;
+      height: 1rem;
+    }
+    .call-phone {
+      transform-origin: center;
+    }
+    .call-waves {
+      position: absolute;
+      left: 62%;
+      top: -3px;
+      width: 12px;
+      height: 12px;
+      pointer-events: none;
+    }
+    .call-waves span {
+      position: absolute;
+      left: 0;
+      bottom: 2px;
+      border-top: 1.5px solid currentColor;
+      border-right: 1.5px solid currentColor;
+      border-radius: 0 8px 0 0;
+      opacity: 0;
+      transform: scale(.3);
+      transform-origin: left bottom;
+    }
+    .call-waves span:nth-child(1) { width: 4px; height: 4px; }
+    .call-waves span:nth-child(2) { width: 7px; height: 7px; }
+    .call-waves span:nth-child(3) { width: 10px; height: 10px; }
+    #header-call:hover .call-phone,
+    #bar-call:hover .call-phone {
+      animation: phone-ring .5s ease-in-out infinite;
+    }
+    #header-call:hover .call-waves span,
+    #bar-call:hover .call-waves span {
+      animation: wave-out .7s ease-out infinite;
+    }
+    #header-call:hover .call-waves span:nth-child(2),
+    #bar-call:hover .call-waves span:nth-child(2) { animation-delay: .12s; }
+    #header-call:hover .call-waves span:nth-child(3),
+    #bar-call:hover .call-waves span:nth-child(3) { animation-delay: .24s; }
+    @keyframes phone-ring {
+      0%, 100% { transform: rotate(0deg); }
+      20% { transform: rotate(-14deg); }
+      40% { transform: rotate(12deg); }
+      60% { transform: rotate(-8deg); }
+      80% { transform: rotate(6deg); }
+    }
+    @keyframes wave-out {
+      0% { opacity: 0; transform: scale(.3); }
+      40% { opacity: 1; }
+      100% { opacity: 0; transform: scale(1); }
+    }
+    html {
+      scrollbar-gutter: stable;
+    }
+    .btn-primary {
+      transition: transform .55s cubic-bezier(.22, 1, .36, 1), box-shadow .55s cubic-bezier(.22, 1, .36, 1), background-color .55s cubic-bezier(.22, 1, .36, 1);
+    }
+    .btn-primary:hover:not(:disabled) {
+      transform: translateY(2px) scale(.985);
+      box-shadow: inset 0 3px 6px rgba(12, 10, 9, .45);
+      background-color: #0f172a;
+    }
+    @media (prefers-color-scheme: dark) {
+      .btn-primary:hover:not(:disabled) {
+        background-color: #f1f5f9;
+      }
+    }
+    .btn-whatsapp {
+      transition: transform .22s ease, box-shadow .22s ease, background-color .22s ease;
+    }
+    .btn-whatsapp:hover {
+      transform: translateY(2px) scale(.985);
+      box-shadow: inset 0 3px 6px rgba(6, 78, 59, .45);
+    }
+    @media (prefers-color-scheme: dark) {
+      #btn-lang-toggle.lang-btn {
+        background: rgba(30, 41, 59, 0.8);
+        border-color: rgba(255, 255, 255, 0.12);
+      }
+      #btn-lang-toggle .lang-text {
+        color: #ffffff;
+      }
+    }
+  </style>
 </head>
 <body class="bg-white text-slate-900 dark:bg-slate-950 dark:text-slate-100">
 
-  <a href="#carta" class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[80] focus:rounded-full focus:bg-slate-900 focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white dark:focus:bg-slate-100 dark:focus:text-slate-900" data-i18n="skipToMenu">Ir a la carta</a>
+  <a href="#contenido" class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[80] focus:rounded-full focus:bg-slate-900 focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white dark:focus:bg-slate-100 dark:focus:text-slate-900" data-i18n="skipToContent">Ir al contenido</a>
 
   <!-- ============================ CABECERA ============================ -->
-  <header class="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur dark:border-slate-800 dark:bg-slate-950/95">
-    <div class="mx-auto flex max-w-3xl items-center justify-between gap-3 px-5 py-3">
-      <div class="min-w-0">
-        <p class="font-serif text-lg font-semibold leading-tight tracking-tight sm:text-xl">Taberna El Norte</p>
-        <p id="status" class="mt-0.5 flex items-center gap-1.5 text-xs font-medium text-slate-600 dark:text-slate-400">
-          <span id="status-dot" class="live-dot h-1.5 w-1.5 shrink-0 rounded-full bg-slate-400"></span>
-          <span id="status-text">&nbsp;</span>
-        </p>
-      </div>
-
-      <div class="flex shrink-0 items-center gap-2">
-        <div class="flex items-center rounded-full border border-slate-300 p-0.5 dark:border-slate-700" role="group" aria-label="Idioma" data-i18n-aria-label="langLabel">
-          <button type="button" data-lang="es" class="min-h-11 rounded-full px-2.5 text-xs font-semibold" aria-pressed="true" lang="es">ES</button>
-          <button type="button" data-lang="en" class="min-h-11 rounded-full px-2.5 text-xs font-semibold" aria-pressed="false" lang="en">EN</button>
-        </div>
-
-        <a id="header-call" href="tel:+34910000000" class="btn-outline px-4" data-i18n-aria-label="callLong">
-          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6.6 10.8a12.8 12.8 0 0 0 5.6 5.6l2-2a1 1 0 0 1 1-.2 9.6 9.6 0 0 0 3.5.6 1 1 0 0 1 1 1V19a1 1 0 0 1-1 1A17 17 0 0 1 4 6a1 1 0 0 1 1-1h3.2a1 1 0 0 1 1 1 9.6 9.6 0 0 0 .6 3.5 1 1 0 0 1-.2 1l-2 2z"/></svg>
-          <span data-i18n="call">Llamar</span>
+  <div class="sticky top-0 z-50">
+  <div class="flex w-full flex-wrap items-center justify-between gap-x-4 gap-y-1 bg-stone-900 px-4 py-2 text-xs text-stone-200 shadow-sm">
+    <div class="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1">
+      <span class="rounded-full bg-amber-400 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-stone-950" data-i18n="planBadge">Plan Gastro Premium</span>
+      <span data-i18n="planBanner">Esta demo interactiva incluye todas las características del Plan Gastro Premium (390 € - pago único).</span>
+    </div>
+    <a href="https://visiwebmadrid.com/#planes" target="_blank" rel="noopener" class="shrink-0 whitespace-nowrap underline transition-colors hover:text-amber-400" data-i18n="planCta">Ver planes y contratar ↗</a>
+  </div>
+  <header class="border-b border-slate-200 bg-white/95 backdrop-blur dark:border-slate-800 dark:bg-slate-950/95">
+    <div class="mx-auto max-w-3xl px-5">
+      <div class="flex items-center justify-between gap-3 py-3">
+        <a href="#inicio" class="min-w-0 rounded-sm no-underline">
+          <p class="font-serif text-lg font-semibold leading-tight tracking-tight text-slate-900 dark:text-slate-100 sm:text-xl">Taberna El Norte</p>
+          <p id="status" class="mt-0.5 flex items-center gap-1.5 text-xs font-medium text-slate-600 dark:text-slate-400">
+            <span id="status-dot" class="live-dot h-1.5 w-1.5 shrink-0 rounded-full bg-slate-400"></span>
+            <span id="status-text">&nbsp;</span>
+          </p>
         </a>
+
+        <div class="flex shrink-0 items-center gap-2">
+          <button type="button" id="btn-lang-toggle" class="lang-btn" data-i18n-aria-label="langLabel" aria-label="Idioma">
+            <div class="lang-text-wrapper">
+              <span class="lang-text-sizer" aria-hidden="true">Hello</span>
+              <span id="lang-text" class="lang-text">ES</span>
+            </div>
+          </button>
+
+          <a id="header-call" href="tel:+34910000000" class="btn-outline px-3 sm:px-4" data-i18n-aria-label="callLong">
+            <span class="call-icon">
+              <svg class="call-phone h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6.6 10.8a12.8 12.8 0 0 0 5.6 5.6l2-2a1 1 0 0 1 1-.2 9.6 9.6 0 0 0 3.5.6 1 1 0 0 1 1 1V19a1 1 0 0 1-1 1A17 17 0 0 1 4 6a1 1 0 0 1 1-1h3.2a1 1 0 0 1 1 1 9.6 9.6 0 0 0 .6 3.5 1 1 0 0 1-.2 1l-2 2z"/></svg>
+              <span class="call-waves" aria-hidden="true"><span></span><span></span><span></span></span>
+            </span>
+            <span class="hidden sm:inline" data-i18n="call">Llamar</span>
+          </a>
+        </div>
       </div>
+
+      <nav class="site-nav no-scrollbar -mx-5 flex gap-1 overflow-x-auto border-t border-slate-200 px-5 dark:border-slate-800" aria-label="Secciones" data-i18n-aria-label="navLabel">
+        <a href="#inicio" data-nav="inicio" class="site-nav-link" aria-current="page" data-i18n="navHome">Inicio</a>
+        <a href="#carta" data-nav="carta" class="site-nav-link" data-i18n="navMenu">Carta</a>
+        <a href="#local" data-nav="local" class="site-nav-link" data-i18n="navLocal">El local</a>
+        <a href="#historia" data-nav="historia" class="site-nav-link" data-i18n="navHistory">Historia</a>
+        <a href="#reservas" data-nav="reservas" class="site-nav-link" data-i18n="navBook">Reservas</a>
+      </nav>
     </div>
   </header>
+  </div>
 
-  <!-- ============================== PORTADA ============================== -->
-  <section class="mx-auto max-w-3xl px-5 pb-12 pt-12 sm:pb-16 sm:pt-16">
-    <p class="text-center text-[11px] font-semibold uppercase tracking-[.28em] text-slate-600 dark:text-slate-400" data-i18n="heroEyebrow">Alcobendas Â· Desde 1998</p>
+  <main id="contenido">
 
-    <h1 class="mt-5 text-center font-serif text-5xl font-semibold leading-[1.05] tracking-tight sm:text-7xl" data-i18n="heroTitle">El sabor de siempre.</h1>
+    <!-- ============================== INICIO ============================== -->
+    <div data-page="inicio">
+      <section class="mx-auto max-w-3xl px-5 pb-12 pt-12 sm:pb-16 sm:pt-16">
+        <p class="text-center text-[11px] font-semibold uppercase tracking-[.28em] text-slate-600 dark:text-slate-400" data-i18n="heroEyebrow">Alcobendas · Desde 1998</p>
 
-    <p class="mx-auto mt-5 max-w-sm text-center text-base leading-relaxed text-slate-600 dark:text-slate-400 sm:text-lg" data-i18n="heroSubtitle">Raciones caseras en el corazÃ³n de Alcobendas.</p>
+        <p class="mt-4 text-center">
+          <span class="inline-flex items-center gap-1.5 rounded-full border border-stone-200 bg-stone-100 px-3 py-1 text-xs font-medium text-stone-700 dark:border-stone-700 dark:bg-stone-800 dark:text-stone-200" data-i18n="planHero">Demo Carta Digital · Nivel Gastro Premium</span>
+        </p>
 
-    <div class="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
-      <a id="hero-whatsapp" href="#" class="btn-primary w-full sm:w-auto" data-i18n="reserve">Reservar mesa</a>
-      <a id="hero-directions" href="#" class="btn-outline w-full sm:w-auto" target="_blank" rel="noopener" data-i18n="directions">CÃ³mo llegar</a>
+        <h1 class="mt-5 text-center font-serif text-5xl font-semibold leading-[1.05] tracking-tight sm:text-7xl" data-i18n="heroTitle">El sabor de siempre.</h1>
+
+        <p class="mx-auto mt-5 max-w-sm text-center text-base leading-relaxed text-slate-600 dark:text-slate-400 sm:text-lg" data-i18n="heroSubtitle">Raciones caseras en el corazón de Alcobendas.</p>
+
+        <div class="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
+          <a href="#reservas" class="btn-primary w-full sm:w-auto" data-i18n="reserve">Reservar mesa</a>
+          <a href="#carta" class="btn-outline w-full sm:w-auto" data-i18n="featuredCta">Ver la carta completa</a>
+        </div>
+
+        <figure id="hero-media" class="mt-12 overflow-hidden rounded-xl bg-slate-100 dark:bg-slate-900" style="aspect-ratio:16/9"></figure>
+
+        <dl class="mt-10 grid grid-cols-2 gap-x-8 gap-y-6 sm:grid-cols-3">
+          <div>
+            <dt class="text-[10px] font-semibold uppercase tracking-[.18em] text-slate-600 dark:text-slate-400" data-i18n="labelAddress">Dirección</dt>
+            <dd id="info-address" class="mt-1.5 text-sm leading-snug"></dd>
+          </div>
+          <div>
+            <dt class="text-[10px] font-semibold uppercase tracking-[.18em] text-slate-600 dark:text-slate-400" data-i18n="labelToday">Horario de hoy</dt>
+            <dd class="mt-1.5 text-sm leading-snug">
+              <span id="info-today" class="tabular"></span>
+              <a href="#horarios" class="mt-1 block text-xs text-slate-600 underline underline-offset-4 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100" data-i18n="allHours">Ver todos los horarios</a>
+            </dd>
+          </div>
+          <div class="col-span-2 sm:col-span-1">
+            <dt class="text-[10px] font-semibold uppercase tracking-[.18em] text-slate-600 dark:text-slate-400" data-i18n="labelMenuDay">Menú del día</dt>
+            <dd id="info-menu-price" class="mt-1.5 text-sm leading-snug tabular">13,50 €</dd>
+          </div>
+        </dl>
+      </section>
+
+      <section class="mx-auto max-w-3xl px-5 pb-16" aria-labelledby="featured-title">
+        <div class="border-t border-slate-200 pt-12 dark:border-slate-800">
+          <h2 id="featured-title" class="text-center font-serif text-3xl font-semibold tracking-tight sm:text-4xl" data-i18n="featuredTitle">De la casa</h2>
+        </div>
+        <ul id="featured-list" class="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2"></ul>
+        <div class="mt-8 flex justify-center">
+          <a href="#carta" class="btn-outline" data-i18n="featuredCta">Ver la carta completa</a>
+        </div>
+      </section>
     </div>
 
-    <!-- Foto del local. Cambiar en demo-data.js -> images.hero -->
-    <figure id="hero-media" class="mt-12 overflow-hidden rounded-xl bg-slate-100 dark:bg-slate-900" style="aspect-ratio:16/9"></figure>
+    <!-- =============================== CARTA =============================== -->
+    <div data-page="carta" hidden>
+      <div class="mx-auto max-w-3xl px-5 pb-4 pt-12">
+        <div class="text-center">
+          <h1 class="font-serif text-3xl font-semibold tracking-tight sm:text-4xl" data-i18n="menuTitle">La carta</h1>
+          <p class="mt-3 text-sm text-slate-600 dark:text-slate-400" data-i18n="menuSubtitle">Elaborada cada mañana con producto de mercado.</p>
+        </div>
 
-    <dl class="mt-10 grid grid-cols-2 gap-x-8 gap-y-6 sm:grid-cols-3">
-      <div>
-        <dt class="text-[10px] font-semibold uppercase tracking-[.18em] text-slate-600 dark:text-slate-400" data-i18n="labelAddress">DirecciÃ³n</dt>
-        <dd id="info-address" class="mt-1.5 text-sm leading-snug"></dd>
-      </div>
-      <div>
-        <dt class="text-[10px] font-semibold uppercase tracking-[.18em] text-slate-600 dark:text-slate-400" data-i18n="labelToday">Horario de hoy</dt>
-        <dd class="mt-1.5 text-sm leading-snug">
-          <span id="info-today" class="tabular"></span>
-          <a href="#horarios" class="mt-1 block text-xs text-slate-600 underline underline-offset-4 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100" data-i18n="allHours">Ver todos los horarios</a>
-        </dd>
-      </div>
-      <div class="col-span-2 sm:col-span-1">
-        <dt class="text-[10px] font-semibold uppercase tracking-[.18em] text-slate-600 dark:text-slate-400" data-i18n="labelMenuDay">MenÃº del dÃ­a</dt>
-        <dd id="info-menu-price" class="mt-1.5 text-sm leading-snug tabular">13,50 â‚¬</dd>
-      </div>
-    </dl>
-  </section>
-
-  <!-- =============================== CARTA =============================== -->
-  <main id="carta" class="mx-auto max-w-3xl scroll-mt-24 px-5">
-    <div class="border-t border-slate-200 pt-12 text-center dark:border-slate-800">
-      <h2 class="font-serif text-3xl font-semibold tracking-tight sm:text-4xl" data-i18n="menuTitle">La carta</h2>
-      <p class="mt-3 text-sm text-slate-600 dark:text-slate-400" data-i18n="menuSubtitle">Elaborada cada maÃ±ana con producto de mercado.</p>
-    </div>
-
-    <div class="sticky top-[69px] z-30 -mx-5 mt-8 border-b border-slate-200 bg-white/95 px-5 py-2 backdrop-blur dark:border-slate-800 dark:bg-slate-950/95">
-      <div id="tabs" class="no-scrollbar flex gap-2 overflow-x-auto" role="tablist" aria-label="CategorÃ­as de la carta" data-i18n-aria-label="menuTabsLabel"></div>
-    </div>
-
-    <div id="panels" class="mt-6"></div>
-
-    <!-- Leyenda de alÃ©rgenos -->
-    <section class="mt-14 border-t border-slate-200 pt-8 dark:border-slate-800" aria-labelledby="allergen-key-title">
-      <h2 id="allergen-key-title" class="font-serif text-2xl font-semibold tracking-tight" data-i18n="allergenKey">Leyenda de alÃ©rgenos</h2>
-      <ul id="allergen-key" class="mt-5 grid grid-cols-2 gap-x-6 gap-y-3 sm:grid-cols-3"></ul>
-
-      <div class="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">
-        <button type="button" id="open-allergen-table" class="btn-outline w-full sm:w-auto" data-i18n="allergenTableLink">Ver tabla completa de alÃ©rgenos</button>
-      </div>
-
-      <p class="mt-6 text-sm leading-relaxed text-slate-600 dark:text-slate-400" data-i18n="staffNotice">Consulta a nuestro personal la informaciÃ³n completa de los catorce alÃ©rgenos de declaraciÃ³n obligatoria.</p>
-      <p class="mt-2 text-xs leading-relaxed text-slate-600 dark:text-slate-400" data-i18n="vatNotice">Precios con IVA incluido. Pan y aceite, 1,20 â‚¬ por persona.</p>
-    </section>
-
-    <!-- Opiniones -->
-    <section class="mt-14 border-t border-slate-200 pt-12 dark:border-slate-800" aria-labelledby="reviews-title">
-      <div class="flex flex-wrap items-baseline justify-between gap-3">
-        <h2 id="reviews-title" class="font-serif text-3xl font-semibold tracking-tight" data-i18n="reviewsTitle">Opiniones</h2>
-        <span class="rounded-full border border-slate-300 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-slate-700 dark:border-slate-600 dark:text-slate-300" data-i18n="reviewsDemo">ReseÃ±as de demostraciÃ³n</span>
-      </div>
-      <p id="reviews-score" class="mt-3 flex flex-wrap items-center gap-2 text-sm text-slate-600 dark:text-slate-400"></p>
-      <ul id="reviews-list" class="mt-7 divide-y divide-slate-200 dark:divide-slate-800"></ul>
-    </section>
-
-    <!-- Mapa -->
-    <section id="ubicacion" class="mt-14 scroll-mt-24 border-t border-slate-200 pt-12 dark:border-slate-800" aria-labelledby="map-title">
-      <h2 id="map-title" class="font-serif text-3xl font-semibold tracking-tight" data-i18n="mapTitle">DÃ³nde estamos</h2>
-      <p id="map-address" class="mt-3 text-sm leading-relaxed text-slate-600 dark:text-slate-400"></p>
-
-      <div id="map-wrap" class="mt-6 overflow-hidden rounded-xl border border-slate-200 bg-slate-100 dark:border-slate-800 dark:bg-slate-900" style="aspect-ratio:16/10">
-        <div id="map-consent" class="flex h-full flex-col items-center justify-center gap-4 px-6 text-center">
-          <p class="max-w-sm text-sm text-slate-700 dark:text-slate-300" data-i18n="mapConsentText">El mapa se carga desde Google Maps. Acepta las cookies de terceros para verlo aquÃ­.</p>
-          <button type="button" id="map-consent-btn" class="btn-primary" data-i18n="mapConsentBtn">Cargar el mapa</button>
+        <div class="mt-8">
+          <p class="text-[10px] font-semibold uppercase tracking-[.18em] text-slate-600 dark:text-slate-400" data-i18n="allergenFilter">Filtrar por alérgenos</p>
+          <p class="mt-1 text-xs text-slate-500 dark:text-slate-400" data-i18n="allergenFilterHint">Oculta los platos que contienen el alérgeno seleccionado.</p>
+          <div id="allergen-filters" class="mt-3 flex flex-wrap gap-1.5"></div>
+          <button type="button" id="clear-allergen-filters" class="mt-3 text-xs font-medium text-slate-600 underline underline-offset-4 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100" hidden data-i18n="allergenFilterClear">Quitar filtros</button>
         </div>
       </div>
 
-      <a id="map-directions" href="#" target="_blank" rel="noopener" class="btn-outline mt-5 w-full sm:w-auto" data-i18n="directions">CÃ³mo llegar</a>
-    </section>
+      <div class="sticky top-[6.75rem] z-30 border-b border-slate-200 bg-white/95 py-2 backdrop-blur dark:border-slate-800 dark:bg-slate-950/95">
+        <div class="mx-auto max-w-3xl px-5">
+          <div id="tabs" class="no-scrollbar flex gap-2 overflow-x-auto" role="tablist" aria-label="Categorías de la carta" data-i18n-aria-label="menuTabsLabel"></div>
+        </div>
+      </div>
+
+      <div class="mx-auto max-w-3xl px-5">
+        <div id="panels" class="mt-6"></div>
+        <p id="filter-empty" class="mt-10 hidden text-center text-sm text-slate-600 dark:text-slate-400" data-i18n="allergenFilterEmpty">Ningún plato coincide con el filtro.</p>
+
+        <section class="mt-14 border-t border-slate-200 pt-8 dark:border-slate-800" aria-labelledby="allergen-key-title">
+          <h2 id="allergen-key-title" class="font-serif text-2xl font-semibold tracking-tight" data-i18n="allergenKey">Leyenda de alérgenos</h2>
+          <ul id="allergen-key" class="mt-5 grid grid-cols-2 gap-x-6 gap-y-3 sm:grid-cols-3"></ul>
+
+          <div class="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">
+            <button type="button" id="open-allergen-table" class="btn-outline w-full sm:w-auto" data-i18n="allergenTableLink">Ver tabla completa de alérgenos</button>
+          </div>
+
+          <p class="mt-6 text-sm leading-relaxed text-slate-600 dark:text-slate-400" data-i18n="staffNotice">Consulta a nuestro personal la información completa de los catorce alérgenos de declaración obligatoria.</p>
+          <p class="mt-2 text-xs leading-relaxed text-slate-600 dark:text-slate-400" data-i18n="vatNotice">Precios con IVA incluido. Pan y aceite, 1,20 € por persona.</p>
+        </section>
+
+        <section class="mt-14 border-t border-slate-200 pt-12 dark:border-slate-800" aria-labelledby="reviews-title">
+          <div class="flex flex-wrap items-baseline justify-between gap-3">
+            <h2 id="reviews-title" class="font-serif text-3xl font-semibold tracking-tight" data-i18n="reviewsTitle">Opiniones</h2>
+            <span class="rounded-full border border-slate-300 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-slate-700 dark:border-slate-600 dark:text-slate-300" data-i18n="reviewsDemo">Reseñas de demostración</span>
+          </div>
+          <p id="reviews-score" class="mt-3 flex flex-wrap items-center gap-2 text-sm text-slate-600 dark:text-slate-400"></p>
+          <ul id="reviews-list" class="mt-7 divide-y divide-slate-200 dark:divide-slate-800"></ul>
+        </section>
+      </div>
+    </div>
+
+    <!-- ============================ EL LOCAL ============================ -->
+    <div data-page="local" hidden>
+      <section class="mx-auto max-w-3xl px-5 pb-16 pt-12">
+        <div class="text-center">
+          <h1 class="font-serif text-3xl font-semibold tracking-tight sm:text-4xl" data-i18n="localTitle">El local</h1>
+          <p class="mx-auto mt-3 max-w-md text-sm leading-relaxed text-slate-600 dark:text-slate-400" data-i18n="localSubtitle">Salón, barra y terraza. Como una taberna de barrio, con mesa para quedarse.</p>
+        </div>
+
+        <dl id="local-stats" class="mt-10 grid grid-cols-3 gap-4"></dl>
+        <div id="local-gallery" class="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2"></div>
+
+        <section class="mt-16 border-t border-slate-200 pt-12 dark:border-slate-800" aria-labelledby="gbp-title">
+          <h2 id="gbp-title" class="font-serif text-3xl font-semibold tracking-tight" data-i18n="gbpTitle">Ficha de Google</h2>
+          <p class="mt-3 text-sm leading-relaxed text-slate-600 dark:text-slate-400" data-i18n="gbpSubtitle">Así aparece el local en búsquedas de tapas y menú del día en Alcobendas.</p>
+
+          <article class="contact-card mt-8">
+            <p class="font-serif text-2xl font-semibold tracking-tight">Taberna El Norte</p>
+            <p id="gbp-category" class="mt-1 text-sm text-slate-600 dark:text-slate-400"></p>
+            <p id="gbp-score" class="mt-3 flex flex-wrap items-center gap-2 text-sm text-slate-600 dark:text-slate-400"></p>
+            <ul id="gbp-attrs" class="mt-5 flex flex-wrap gap-1.5"></ul>
+            <p class="mt-6 text-[10px] font-semibold uppercase tracking-[.18em] text-slate-600 dark:text-slate-400" data-i18n="gbpPhotos">Fotos del local</p>
+            <div id="gbp-photos" class="no-scrollbar mt-3 flex gap-2 overflow-x-auto"></div>
+          </article>
+        </section>
+
+        <section id="ubicacion" class="mt-14 scroll-mt-28 border-t border-slate-200 pt-12 dark:border-slate-800" aria-labelledby="map-title">
+          <h2 id="map-title" class="font-serif text-3xl font-semibold tracking-tight" data-i18n="mapTitle">Dónde estamos</h2>
+          <p id="map-address" class="mt-3 text-sm leading-relaxed text-slate-600 dark:text-slate-400"></p>
+
+          <div id="map-wrap" class="mt-6 overflow-hidden rounded-xl border border-slate-200 bg-slate-100 dark:border-slate-800 dark:bg-slate-900" style="aspect-ratio:16/10">
+            <div id="map-consent" class="flex h-full flex-col items-center justify-center gap-4 px-6 text-center">
+              <p class="max-w-sm text-sm text-slate-700 dark:text-slate-300" data-i18n="mapConsentText">El mapa se carga desde Google Maps. Acepta las cookies de terceros para verlo aquí.</p>
+              <button type="button" id="map-consent-btn" class="btn-primary" data-i18n="mapConsentBtn">Cargar el mapa</button>
+            </div>
+          </div>
+
+          <div class="mt-5 flex flex-col gap-3 sm:flex-row">
+            <a id="map-directions" href="#" target="_blank" rel="noopener" class="btn-outline w-full sm:w-auto" data-i18n="directions">Cómo llegar</a>
+            <a href="#reservas" class="btn-primary w-full sm:w-auto" data-i18n="reserve">Reservar mesa</a>
+          </div>
+        </section>
+      </section>
+    </div>
+
+    <!-- ============================== HISTORIA ============================== -->
+    <div data-page="historia" hidden>
+      <section class="mx-auto max-w-3xl px-5 pb-16 pt-12">
+        <div class="text-center">
+          <h1 class="font-serif text-3xl font-semibold tracking-tight sm:text-4xl" data-i18n="historyTitle">Nuestra historia</h1>
+          <p id="history-lead" class="mx-auto mt-4 max-w-md text-sm leading-relaxed text-slate-600 dark:text-slate-400"></p>
+        </div>
+        <ol id="history-list" class="mt-12 space-y-10"></ol>
+      </section>
+    </div>
+
+    <!-- ============================== RESERVAS ============================== -->
+    <div data-page="reservas" hidden>
+      <section class="mx-auto max-w-3xl px-5 pb-16 pt-12">
+        <div class="text-center">
+          <h1 class="font-serif text-3xl font-semibold tracking-tight sm:text-4xl" data-i18n="bookTitle">Reservar mesa</h1>
+          <p class="mx-auto mt-3 max-w-md text-sm leading-relaxed text-slate-600 dark:text-slate-400" data-i18n="bookSubtitle">Elige día, hora y comensales. Recibirás la confirmación al instante (demostración).</p>
+        </div>
+
+        <form id="booking-form" class="contact-card mx-auto mt-10 max-w-lg" novalidate>
+          <div class="grid gap-4 sm:grid-cols-2">
+            <label class="book-field sm:col-span-2">
+              <span data-i18n="bookName">Nombre</span>
+              <input id="book-name" name="name" type="text" autocomplete="name" required maxlength="80">
+            </label>
+            <label class="book-field sm:col-span-2">
+              <span data-i18n="bookPhone">Teléfono</span>
+              <input id="book-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" required maxlength="20">
+            </label>
+            <label class="book-field">
+              <span id="book-date-label" data-i18n="bookDate">Fecha</span>
+              <div class="book-date-wrap">
+                <input type="text" id="fecha-reserva" placeholder="Selecciona una fecha" readonly required data-i18n-placeholder="bookDatePlaceholder" aria-labelledby="book-date-label">
+                <svg class="book-date-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M7 3.5v2M17 3.5v2M4.75 8.25h14.5M6.5 5.25h11A1.75 1.75 0 0 1 19.25 7v12A1.75 1.75 0 0 1 17.5 20.75h-11A1.75 1.75 0 0 1 4.75 19V7A1.75 1.75 0 0 1 6.5 5.25Z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M8 16h.01M12 16h.01"/>
+                </svg>
+                <input type="hidden" id="book-date" name="date" required>
+              </div>
+            </label>
+            <div class="book-field">
+              <span id="book-time-label" data-i18n="bookTime">Hora</span>
+              <div class="book-select">
+                <select id="book-time" name="time" required tabindex="-1" aria-labelledby="book-time-label"></select>
+                <button type="button" class="book-select-trigger" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="book-time-label">
+                  <span class="book-select-value"></span>
+                  <svg class="book-select-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5.5 15.5 12 9 18.5"/></svg>
+                </button>
+                <ul class="book-select-menu" role="listbox" hidden></ul>
+              </div>
+            </div>
+            <div class="book-field">
+              <span id="book-guests-label" data-i18n="bookGuests">Comensales</span>
+              <div class="book-select">
+                <select id="book-guests" name="guests" required tabindex="-1" aria-labelledby="book-guests-label"></select>
+                <button type="button" class="book-select-trigger" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="book-guests-label">
+                  <span class="book-select-value"></span>
+                  <svg class="book-select-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5.5 15.5 12 9 18.5"/></svg>
+                </button>
+                <ul class="book-select-menu" role="listbox" hidden></ul>
+              </div>
+            </div>
+            <div class="book-field">
+              <span id="book-area-label" data-i18n="bookArea">Zona</span>
+              <div class="book-select">
+                <select id="book-area" name="area" tabindex="-1" aria-labelledby="book-area-label">
+                  <option value="any" data-i18n="bookAreaAny">Sin preferencia</option>
+                  <option value="salon" data-i18n="bookAreaSalon">Salón</option>
+                  <option value="terrace" data-i18n="bookAreaTerrace">Terraza</option>
+                  <option value="bar" data-i18n="bookAreaBar">Barra</option>
+                </select>
+                <button type="button" class="book-select-trigger" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="book-area-label">
+                  <span class="book-select-value"></span>
+                  <svg class="book-select-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5.5 15.5 12 9 18.5"/></svg>
+                </button>
+                <ul class="book-select-menu" role="listbox" hidden></ul>
+              </div>
+            </div>
+            <label class="book-field sm:col-span-2">
+              <span data-i18n="bookNotes">Comentario (opcional)</span>
+              <textarea id="book-notes" name="notes" rows="3" maxlength="280"></textarea>
+            </label>
+          </div>
+          <p id="book-feedback" class="mt-4 text-sm text-rose-600 dark:text-rose-300" role="status" hidden></p>
+          <button type="submit" class="btn-primary mt-6 w-full" data-i18n="bookSubmit">Confirmar reserva</button>
+          <p class="mt-4 text-xs leading-relaxed text-slate-500" data-i18n="bookDemoNote">Motor de reservas de demostración. En un local real la petición llega a caja.</p>
+          <p class="mt-2 text-xs leading-relaxed text-slate-500" data-i18n="groupsNotice">Mesas de más de 8 personas con reserva previa de 24h.</p>
+        </form>
+
+        <div id="booking-success" class="contact-card mx-auto mt-10 hidden max-w-lg scroll-mt-28 text-center" hidden>
+          <h2 class="font-serif text-2xl font-semibold tracking-tight" data-i18n="bookSuccessTitle">Reserva solicitada</h2>
+          <p id="booking-success-text" class="mt-3 text-sm leading-relaxed text-slate-600 dark:text-slate-400"></p>
+          <div class="mt-6 flex flex-col gap-3">
+            <button type="button" id="booking-another" class="btn-primary w-full" data-i18n="bookAnother">Hacer otra reserva</button>
+            <a id="booking-whatsapp" href="#" target="_blank" rel="noopener" class="btn-whatsapp" data-i18n="bookWhatsAppAlt">También por WhatsApp</a>
+          </div>
+        </div>
+      </section>
+    </div>
+
   </main>
 
   <!-- ================================ PIE ================================ -->
-  <footer class="mt-16 border-t border-slate-200 bg-slate-50 dark:border-slate-800 dark:bg-slate-900">
-    <div class="mx-auto max-w-3xl px-5 py-14">
-      <p class="font-serif text-2xl font-semibold tracking-tight">Taberna El Norte</p>
-      <p id="footer-type" class="mt-1 text-sm text-slate-600 dark:text-slate-400"></p>
+  <footer class="mt-16 border-t border-slate-200/80 bg-slate-50/80 dark:border-slate-800 dark:bg-slate-950">
+    <div class="mx-auto max-w-4xl px-6 py-16">
 
-      <div class="mt-9 grid gap-10 sm:grid-cols-2">
-        <section id="horarios" class="scroll-mt-24" aria-labelledby="hours-title">
-          <h2 id="hours-title" class="text-[10px] font-semibold uppercase tracking-[.18em] text-slate-600 dark:text-slate-400" data-i18n="kitchenHours">Horario de cocina</h2>
-          <dl id="hours-list" class="mt-3 space-y-2 text-sm"></dl>
+      <div class="grid gap-8 md:grid-cols-2">
+
+        <section id="horarios" class="contact-card scroll-mt-24" aria-labelledby="hours-title">
+          <div class="flex items-center gap-2">
+            <svg class="h-4 w-4 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" d="M12 7.5V12l3 1.8"/></svg>
+            <h2 id="hours-title" class="contact-kicker" data-i18n="kitchenHours">Horario de cocina</h2>
+          </div>
+          <dl id="hours-list" class="mt-5"></dl>
         </section>
 
-        <section aria-labelledby="contact-title">
-          <h2 id="contact-title" class="text-[10px] font-semibold uppercase tracking-[.18em] text-slate-600 dark:text-slate-400" data-i18n="contact">Reservas y contacto</h2>
-          <address id="footer-address" class="mt-3 text-sm not-italic leading-relaxed text-slate-600 dark:text-slate-400"></address>
-          <div class="mt-4 flex flex-col items-start gap-2 text-sm">
-            <a id="footer-phone" href="tel:+34910000000" class="link-underline">910 000 000</a>
-            <a id="footer-whatsapp" href="#" target="_blank" rel="noopener" class="link-underline" data-i18n="reserveWhatsApp">Reservar por WhatsApp</a>
+        <section class="contact-card" aria-labelledby="contact-title">
+          <div class="flex items-center gap-2">
+            <svg class="h-4 w-4 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 20 3 21.5V5.5L9 4m0 16 6 1.5m-6-1.5V4m6 17.5 6-1.5V4l-6 1.5m0 16v-16m0 0L9 4"/></svg>
+            <h2 id="contact-title" class="contact-kicker" data-i18n="locationTitle">Ubicación y reservas</h2>
           </div>
-          <p class="mt-4 text-xs leading-relaxed text-slate-600 dark:text-slate-400" data-i18n="groupsNotice">Grupos de mÃ¡s de diez personas: reserva con veinticuatro horas de antelaciÃ³n.</p>
+
+          <div class="mt-5 flex items-start gap-2.5">
+            <svg class="mt-0.5 h-4 w-4 shrink-0 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21.5c3.9-4.6 6.5-8 6.5-11.4A6.5 6.5 0 0 0 5.5 10c0 3.4 2.6 6.8 6.5 11.5Z"/><circle cx="12" cy="10" r="2.3"/></svg>
+            <div class="min-w-0">
+              <address id="footer-address" class="text-sm not-italic leading-relaxed text-slate-800 dark:text-slate-200"></address>
+              <a id="footer-map" href="#" target="_blank" rel="noopener" class="mt-1.5 inline-flex items-center gap-1 text-sm font-medium text-slate-900 transition-colors hover:text-slate-600 dark:text-slate-100 dark:hover:text-slate-300">
+                <span data-i18n="viewOnMap">Ver en mapa</span>
+                <span aria-hidden="true">↗</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="mt-6 flex flex-col gap-3">
+            <a href="#reservas" class="btn-primary w-full" data-i18n="reserve">Reservar mesa</a>
+            <a id="footer-phone" href="tel:+34910000000" class="btn-call">
+              <svg class="h-4 w-4 shrink-0 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6.6 10.8a12.8 12.8 0 0 0 5.6 5.6l2-2a1 1 0 0 1 1-.2 9.6 9.6 0 0 0 3.5.6 1 1 0 0 1 1 1V19a1 1 0 0 1-1 1A17 17 0 0 1 4 6a1 1 0 0 1 1-1h3.2a1 1 0 0 1 1 1 9.6 9.6 0 0 0 .6 3.5 1 1 0 0 1-.2 1l-2 2z"/></svg>
+              <span id="footer-phone-number" class="tabular">910 000 000</span>
+            </a>
+
+            <a id="footer-whatsapp" href="#" target="_blank" rel="noopener" class="btn-whatsapp">
+              <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm5.2 14c-.2.6-1.2 1.2-1.8 1.2-.5 0-1.1 0-2.4-.6a11 11 0 0 1-4.4-3.9c-.7-1.1-.8-2-.6-2.6.2-.5.8-1.1 1.2-1.2.3-.1.7 0 .9.4l.7 1.5c.1.3 0 .5-.2.7l-.4.5c-.1.2-.2.4 0 .7.4.7 1.4 1.8 2.5 2.3.3.1.5.1.7-.1l.5-.6c.2-.2.4-.2.7-.1l1.5.7c.3.2.5.5.4.9Z"/></svg>
+              <span data-i18n="reserveWhatsApp">Reservar mesa por WhatsApp</span>
+            </a>
+          </div>
+
+          <p class="mt-auto pt-5 text-xs leading-relaxed text-slate-500" data-i18n="groupsNotice">Mesas de más de 8 personas con reserva previa de 24h.</p>
         </section>
       </div>
 
-      <section class="mt-12 border-t border-slate-200 pt-7 dark:border-slate-800" aria-labelledby="legal-title">
-        <h2 id="legal-title" class="text-[10px] font-semibold uppercase tracking-[.18em] text-slate-600 dark:text-slate-400" data-i18n="legalTitle">InformaciÃ³n legal</h2>
-        <nav class="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
-          <a href="aviso-legal.html" class="link-underline" data-i18n="legalNotice">Aviso legal</a>
-          <a href="politica-privacidad.html" class="link-underline" data-i18n="privacy">PolÃ­tica de privacidad</a>
-          <a href="politica-cookies.html" class="link-underline" data-i18n="cookies">PolÃ­tica de cookies</a>
-          <button type="button" id="open-cookie-settings" class="text-left font-medium text-slate-900 underline decoration-slate-400 underline-offset-4 hover:decoration-slate-900 dark:text-slate-100 dark:decoration-slate-500" data-i18n="cookieSettings">Configurar cookies</button>
-        </nav>
-      </section>
+      <nav class="mt-12 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs" aria-label="Información legal" data-i18n-aria-label="legalTitle">
+        <a href="aviso-legal.html" class="text-slate-400 transition-colors hover:text-slate-700 dark:hover:text-slate-200" data-i18n="legalNotice">Aviso legal</a>
+        <a href="politica-privacidad.html" class="text-slate-400 transition-colors hover:text-slate-700 dark:hover:text-slate-200" data-i18n="privacy">Política de privacidad</a>
+        <a href="politica-cookies.html" class="text-slate-400 transition-colors hover:text-slate-700 dark:hover:text-slate-200" data-i18n="cookies">Política de cookies</a>
+        <button type="button" id="open-cookie-settings" class="text-slate-400 transition-colors hover:text-slate-700 dark:hover:text-slate-200" data-i18n="cookieSettings">Configurar cookies</button>
+      </nav>
 
-      <p id="demo-notice" class="mt-10 rounded-lg border border-slate-300 px-4 py-3 text-xs leading-relaxed text-slate-700 dark:border-slate-700 dark:text-slate-300" data-i18n="demoNotice">Maqueta de ejemplo de VisiWeb Madrid. El negocio, los precios, los horarios y las reseÃ±as son ficticios.</p>
-    </div>
+      <p id="demo-notice" class="sr-only" data-i18n="demoNotice">Maqueta de ejemplo de VisiWeb Madrid. El negocio, los precios, los horarios y las reseñas son ficticios.</p>
 
-    <div class="border-t border-slate-200 px-5 py-6 dark:border-slate-800">
-      <p class="mx-auto max-w-3xl text-center text-xs text-slate-600 dark:text-slate-400">
-        <span data-i18n="developedBy">Web desarrollada por</span>
-        <a id="credit-link" href="https://visiwebmadrid.com/#planes" target="_blank" rel="noopener" class="link-underline">VisiWeb Madrid</a>
-        Â· <span data-i18n="tagline">Carta digital ultrarrÃ¡pida</span>
+      <p class="mt-6 text-center text-xs text-slate-400">
+        <span data-i18n="demoCreditLead">Web demo desarrollada por</span>
+        <a href="https://visiwebmadrid.com" target="_blank" rel="noopener" class="underline transition-colors hover:text-slate-700 dark:hover:text-slate-200">VisiWeb Madrid</a>
+        <span data-i18n="demoCreditPlan">· Realizada con el Plan Gastro Premium</span>
       </p>
     </div>
 
     <div class="h-24 md:h-0" aria-hidden="true"></div>
   </footer>
 
-  <!-- ====================== BARRA FIJA (SOLO MÃ“VIL) ====================== -->
-  <nav class="fixed inset-x-0 bottom-0 z-40 grid grid-cols-2 gap-3 border-t border-slate-200 bg-white px-5 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] md:hidden dark:border-slate-800 dark:bg-slate-950" aria-label="Acciones rÃ¡pidas" data-i18n-aria-label="quickActions">
+  <!-- ====================== BARRA FIJA (SOLO MÓVIL) ====================== -->
+  <nav class="fixed inset-x-0 bottom-0 z-40 grid grid-cols-2 gap-3 border-t border-slate-200 bg-white px-5 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] md:hidden dark:border-slate-800 dark:bg-slate-950" aria-label="Acciones rápidas" data-i18n-aria-label="quickActions">
     <a id="bar-call" href="tel:+34910000000" class="btn-outline px-4">
-      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6.6 10.8a12.8 12.8 0 0 0 5.6 5.6l2-2a1 1 0 0 1 1-.2 9.6 9.6 0 0 0 3.5.6 1 1 0 0 1 1 1V19a1 1 0 0 1-1 1A17 17 0 0 1 4 6a1 1 0 0 1 1-1h3.2a1 1 0 0 1 1 1 9.6 9.6 0 0 0 .6 3.5 1 1 0 0 1-.2 1l-2 2z"/></svg>
+      <span class="call-icon">
+        <svg class="call-phone h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6.6 10.8a12.8 12.8 0 0 0 5.6 5.6l2-2a1 1 0 0 1 1-.2 9.6 9.6 0 0 0 3.5.6 1 1 0 0 1 1 1V19a1 1 0 0 1-1 1A17 17 0 0 1 4 6a1 1 0 0 1 1-1h3.2a1 1 0 0 1 1 1 9.6 9.6 0 0 0 .6 3.5 1 1 0 0 1-.2 1l-2 2z"/></svg>
+        <span class="call-waves" aria-hidden="true"><span></span><span></span><span></span></span>
+      </span>
       <span data-i18n="call">Llamar</span>
     </a>
-    <a id="bar-whatsapp" href="#" target="_blank" rel="noopener" class="btn-primary px-4">
-      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm5.2 14c-.2.6-1.2 1.2-1.8 1.2-.5 0-1.1 0-2.4-.6a11 11 0 0 1-4.4-3.9c-.7-1.1-.8-2-.6-2.6.2-.5.8-1.1 1.2-1.2.3-.1.7 0 .9.4l.7 1.5c.1.3 0 .5-.2.7l-.4.5c-.1.2-.2.4 0 .7.4.7 1.4 1.8 2.5 2.3.3.1.5.1.7-.1l.5-.6c.2-.2.4-.2.7-.1l1.5.7c.3.2.5.5.4.9Z"/></svg>
-      <span>WhatsApp</span>
-    </a>
+    <a href="#reservas" class="btn-primary px-4" data-i18n="reserve">Reservar mesa</a>
   </nav>
 
-  <!-- Cinta de demostraciÃ³n -->
-  <p class="pointer-events-none fixed left-0 top-1/2 z-30 hidden -translate-y-1/2 rounded-r bg-slate-900 px-1.5 py-3 text-[10px] font-semibold uppercase tracking-[.2em] text-white [writing-mode:vertical-rl] md:block dark:bg-slate-100 dark:text-slate-900" data-i18n="demoRibbon">Web de demostraciÃ³n</p>
-
-  <!-- ====================== TABLA DE ALÃ‰RGENOS (MODAL) ====================== -->
-  <dialog id="allergen-dialog" class="w-[min(60rem,calc(100vw-1.5rem))] rounded-xl bg-white p-0 text-slate-900 backdrop:bg-slate-900/60 dark:bg-slate-900 dark:text-slate-100">
-    <div class="flex items-start justify-between gap-4 border-b border-slate-200 px-5 py-4 dark:border-slate-800">
+  <!-- ====================== TABLA DE ALÉRGENOS (MODAL) ====================== -->
+  <dialog id="allergen-dialog" class="max-h-[90vh] w-[min(60rem,calc(100vw-1.5rem))] overflow-hidden rounded-xl bg-white p-0 text-slate-900 backdrop:bg-slate-900/60 open:flex open:flex-col dark:bg-slate-900 dark:text-slate-100">
+    <div class="flex shrink-0 items-start justify-between gap-4 border-b border-slate-200 px-5 py-4 dark:border-slate-800">
       <div>
-        <h2 class="font-serif text-xl font-semibold tracking-tight" data-i18n="allergenTableTitle">Tabla de alÃ©rgenos por plato</h2>
-        <p class="mt-1 text-xs text-slate-600 dark:text-slate-400" data-i18n="allergenTableHint">Desplaza la tabla en horizontal para ver los catorce alÃ©rgenos.</p>
+        <h2 class="font-serif text-xl font-semibold tracking-tight" data-i18n="allergenTableTitle">Tabla de alérgenos por plato</h2>
+        <p class="mt-1 text-xs text-slate-600 dark:text-slate-400" data-i18n="allergenTableHint">Desplaza la tabla en horizontal para ver los catorce alérgenos.</p>
       </div>
-      <button type="button" id="close-allergen-dialog" class="btn-outline min-h-11 px-4" data-i18n="close">Cerrar</button>
+      <button type="button" id="close-allergen-dialog" class="grid h-11 w-11 shrink-0 place-items-center text-slate-900 transition-opacity hover:opacity-50 dark:text-white" data-i18n-aria-label="close" aria-label="Cerrar">
+        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+      </button>
     </div>
-    <div class="max-h-[70vh] overflow-auto px-5 py-4">
+    <div class="thin-scroll min-h-0 flex-1 overflow-auto overscroll-contain px-5 py-4">
       <table id="allergen-table" class="w-full border-collapse text-left text-sm"></table>
     </div>
-    <div class="border-t border-slate-200 px-5 py-4 dark:border-slate-800">
-      <p class="text-xs leading-relaxed text-slate-600 dark:text-slate-400" data-i18n="staffNotice">Consulta a nuestro personal la informaciÃ³n completa de los catorce alÃ©rgenos de declaraciÃ³n obligatoria.</p>
+    <div class="shrink-0 border-t border-slate-200 px-5 py-4 dark:border-slate-800">
+      <p class="text-xs leading-relaxed text-slate-600 dark:text-slate-400" data-i18n="staffNotice">Consulta a nuestro personal la información completa de los catorce alérgenos de declaración obligatoria.</p>
     </div>
   </dialog>
 
@@ -232,7 +803,7 @@
   <section id="cookie-banner" class="fixed inset-x-0 bottom-0 z-50 border-t border-slate-200 bg-white px-5 pb-[max(1rem,env(safe-area-inset-bottom))] pt-4 shadow-[0_-8px_24px_-12px_rgba(15,23,42,0.25)] dark:border-slate-800 dark:bg-slate-900" aria-labelledby="cookie-title" hidden>
     <div class="mx-auto max-w-3xl">
       <h2 id="cookie-title" class="text-sm font-semibold" data-i18n="cookieTitle">Cookies en esta web</h2>
-      <p class="mt-1.5 text-xs leading-relaxed text-slate-700 dark:text-slate-300" data-i18n="cookieText">Usamos cookies propias necesarias y, si lo aceptas, servicios de terceros como el mapa de Google Maps. Sin tu consentimiento no se carga ningÃºn contenido externo.</p>
+      <p class="mt-1.5 text-xs leading-relaxed text-slate-700 dark:text-slate-300" data-i18n="cookieText">Usamos cookies propias necesarias y, si lo aceptas, servicios de terceros como el mapa de Google Maps. Sin tu consentimiento no se carga ningún contenido externo.</p>
 
       <div id="cookie-detail" class="mt-4 space-y-3 border-t border-slate-200 pt-4 dark:border-slate-800" hidden>
         <label class="flex items-start gap-3 text-xs">
@@ -246,14 +817,14 @@
           <input type="checkbox" id="cookie-map-opt" class="mt-0.5 h-4 w-4 rounded border-slate-400">
           <span>
             <strong class="block text-sm font-semibold" data-i18n="cookieMap">Mapa de Google Maps</strong>
-            <span class="text-slate-700 dark:text-slate-300" data-i18n="cookieMapHelp">Permite mostrar el mapa incrustado con nuestra ubicaciÃ³n.</span>
+            <span class="text-slate-700 dark:text-slate-300" data-i18n="cookieMapHelp">Permite mostrar el mapa incrustado con nuestra ubicación.</span>
           </span>
         </label>
         <label class="flex items-start gap-3 text-xs">
           <input type="checkbox" id="cookie-analytics-opt" class="mt-0.5 h-4 w-4 rounded border-slate-400">
           <span>
-            <strong class="block text-sm font-semibold" data-i18n="cookieAnalytics">EstadÃ­sticas</strong>
-            <span class="text-slate-700 dark:text-slate-300" data-i18n="cookieAnalyticsHelp">MediciÃ³n anÃ³nima de visitas. En esta demo no se carga ninguna herramienta.</span>
+            <strong class="block text-sm font-semibold" data-i18n="cookieAnalytics">Estadísticas</strong>
+            <span class="text-slate-700 dark:text-slate-300" data-i18n="cookieAnalyticsHelp">Medición anónima de visitas. En esta demo no se carga ninguna herramienta.</span>
           </span>
         </label>
       </div>
