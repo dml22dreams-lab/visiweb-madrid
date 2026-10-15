@@ -1,0 +1,609 @@
+/* =====================================================================
+   VisiWeb Madrid · Plantilla de carta digital
+   ---------------------------------------------------------------------
+   FUENTE ÚNICA DE DATOS. Para reutilizar la plantilla con otro cliente
+   solo hay que editar este archivo (nombre, dirección, teléfono,
+   horarios, carta, fotos y reseñas). demo.html no contiene datos.
+
+   Datos actuales: FICTICIOS (web de demostración).
+   ===================================================================== */
+window.VISIWEB_DEMO = (function () {
+  'use strict';
+
+  /* --- Créditos del desarrollador ---------------------------------- */
+  const DEVELOPER = {
+    name: 'VisiWeb Madrid',
+    plansUrl: 'https://visiwebmadrid.com/#planes'
+  };
+
+  /* --- Negocio ------------------------------------------------------ */
+  const BUSINESS = {
+    name: 'Taberna El Norte',
+    type: { es: 'Cervecería y raciones', en: 'Beer house & sharing plates' },
+    since: 1998,
+    timezone: 'Europe/Madrid',
+    priceRange: '€€',
+    cuisine: ['Spanish', 'Tapas'],
+    // Teléfono ficticio reservado para ficción (prefijo 910 000 000)
+    phone: '+34910000000',
+    phoneDisplay: '910 000 000',
+    // WhatsApp ficticio
+    whatsapp: '34600000000',
+    address: {
+      street: { es: 'Calle del Olmo Viejo (sin número)', en: 'Calle del Olmo Viejo (no number)' },
+      postalCode: '28100',
+      city: 'Alcobendas',
+      region: 'Madrid',
+      country: 'ES'
+    },
+    // Centro aproximado de Alcobendas: no corresponde a ningún local real
+    geo: { lat: 40.5411, lng: -3.6417 },
+    mapQuery: 'Alcobendas, Madrid, España'
+  };
+
+  /* --- Imágenes ------------------------------------------------------
+     Pon aquí la ruta de la foto real (preferiblemente .webp).
+     Si el valor es null se dibuja un marcador de posición neutro.
+     Cada plato admite además su propio campo `image`.
+  ------------------------------------------------------------------- */
+  const IMAGES = {
+    hero: null,       // ej: 'assets/local.webp'  (1600x900 recomendado)
+    heroAlt: {
+      es: 'Interior de la taberna con la barra de madera y las mesas preparadas',
+      en: 'Inside the tavern, with the wooden bar and tables set for service'
+    }
+  };
+
+  /* --- Horarios: FUENTE ÚNICA ----------------------------------------
+     Clave = día de la semana JS (0 domingo … 6 sábado).
+     Valor = lista de tramos [apertura, cierre] en formato 24 h.
+     '24:00' significa medianoche del día siguiente.
+     Lista vacía = cerrado.
+  ------------------------------------------------------------------- */
+  const HOURS = {
+    0: [['12:00', '17:00']],
+    1: [],
+    2: [['12:00', '16:00'], ['19:30', '23:30']],
+    3: [['12:00', '16:00'], ['19:30', '23:30']],
+    4: [['12:00', '16:00'], ['19:30', '23:30']],
+    5: [['12:00', '24:00']],
+    6: [['12:00', '24:00']]
+  };
+
+  /* --- Los 14 alérgenos de declaración obligatoria (UE 1169/2011) ----
+     `icon` es el contenido de un <svg viewBox="0 0 24 24"> con
+     stroke="currentColor". Nombres oficiales.
+  ------------------------------------------------------------------- */
+  const ALLERGENS = {
+    gluten: {
+      short: 'GLU',
+      name: { es: 'Cereales con gluten', en: 'Cereals containing gluten' },
+      icon: '<path d="M12 21v-8"/><path d="M12 13c-2.2 0-3.6-1.5-3.6-3.8 2.2 0 3.6 1.5 3.6 3.8Zm0 0c2.2 0 3.6-1.5 3.6-3.8-2.2 0-3.6 1.5-3.6 3.8Z"/><path d="M12 8.6c-2.2 0-3.6-1.5-3.6-3.8 2.2 0 3.6 1.5 3.6 3.8Zm0 0c2.2 0 3.6-1.5 3.6-3.8-2.2 0-3.6 1.5-3.6 3.8Z"/>'
+    },
+    crustaceos: {
+      short: 'CRU',
+      name: { es: 'Crustáceos', en: 'Crustaceans' },
+      icon: '<path d="M7 14a5 5 0 0 1 10 0v2a3 3 0 0 1-3 3h-4a3 3 0 0 1-3-3Z"/><path d="M9 9 6.5 5.5M15 9l2.5-3.5M5 13H3M21 13h-2"/>'
+    },
+    huevos: {
+      short: 'HUE',
+      name: { es: 'Huevos', en: 'Eggs' },
+      icon: '<path d="M12 3c3.3 0 6 4.6 6 8.6S15.3 19 12 19s-6-3.4-6-7.4S8.7 3 12 3Z"/>'
+    },
+    pescado: {
+      short: 'PES',
+      name: { es: 'Pescado', en: 'Fish' },
+      icon: '<path d="M3 12c3-4 6.5-5 9.5-5 3.6 0 6.5 2.3 8.5 5-2 2.7-4.9 5-8.5 5-3 0-6.5-1-9.5-5Z"/><circle cx="16.5" cy="10.5" r=".6" fill="currentColor"/><path d="M8 7.5 6 5M8 16.5 6 19"/>'
+    },
+    cacahuetes: {
+      short: 'CAC',
+      name: { es: 'Cacahuetes', en: 'Peanuts' },
+      icon: '<path d="M12 3c2.5 0 4.2 1.7 4.2 4 0 1.4-.7 2.3-.7 3.4 0 1.2.9 2 .9 3.6 0 3.3-2.2 6-5.4 6-2.9 0-5.1-2.2-5.1-5.2 0-1.6.8-2.5.8-3.7 0-1.2-.8-2.1-.8-3.6C5.9 4.9 8.2 3 12 3Z"/><path d="M7.4 11.6h8.6"/>'
+    },
+    soja: {
+      short: 'SOJ',
+      name: { es: 'Soja', en: 'Soybeans' },
+      icon: '<path d="M6 17c-2-3-1.6-7.7 1.3-10C10.6 4.4 15.5 5 18 8c2.2 2.6 1.6 7.4-1.4 9.6C13.4 20 8.2 20 6 17Z"/><circle cx="10" cy="11" r="1.1"/><circle cx="14.5" cy="14" r="1.1"/>'
+    },
+    lacteos: {
+      short: 'LAC',
+      name: { es: 'Leche y derivados', en: 'Milk and dairy' },
+      icon: '<path d="M9 3h6l-.8 3.2L17 10v9a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2v-9l2.8-3.8Z"/><path d="M7 13h10"/>'
+    },
+    frutos_cascara: {
+      short: 'FRU',
+      name: { es: 'Frutos de cáscara', en: 'Tree nuts' },
+      icon: '<path d="M12 3c4.4 0 8 3.4 8 7.8 0 5-3.8 10.2-8 10.2S4 15.8 4 10.8C4 6.4 7.6 3 12 3Z"/><path d="M12 6v12M9 9.5l6 5M15 9.5l-6 5"/>'
+    },
+    apio: {
+      short: 'API',
+      name: { es: 'Apio', en: 'Celery' },
+      icon: '<path d="M8 21c-1-5-1.3-11 .6-18M12 21c0-6 .3-12 1-18M16 21c1-5 1.6-10.5 0-18"/><path d="M6 8h12"/>'
+    },
+    mostaza: {
+      short: 'MOS',
+      name: { es: 'Mostaza', en: 'Mustard' },
+      icon: '<path d="M10 3h4v2.5l2.5 2.5V19a2 2 0 0 1-2 2h-5a2 2 0 0 1-2-2V8l2.5-2.5Z"/><path d="M9.5 12h5"/>'
+    },
+    sesamo: {
+      short: 'SES',
+      name: { es: 'Granos de sésamo', en: 'Sesame seeds' },
+      icon: '<ellipse cx="8.5" cy="9" rx="2.2" ry="3.4" transform="rotate(-25 8.5 9)"/><ellipse cx="15.5" cy="11" rx="2.2" ry="3.4" transform="rotate(20 15.5 11)"/><ellipse cx="11" cy="16.5" rx="2.2" ry="3.4" transform="rotate(-10 11 16.5)"/>'
+    },
+    sulfitos: {
+      short: 'SUL',
+      name: { es: 'Dióxido de azufre y sulfitos', en: 'Sulphur dioxide and sulphites' },
+      icon: '<circle cx="9" cy="13" r="2.4"/><circle cx="15" cy="13" r="2.4"/><circle cx="12" cy="17.6" r="2.4"/><path d="M12 10.6V5c0-1.1.9-2 2-2"/>'
+    },
+    altramuces: {
+      short: 'ALT',
+      name: { es: 'Altramuces', en: 'Lupin' },
+      icon: '<path d="M12 21V12"/><path d="M12 12c-2.4 0-4-1.7-4-4.2 0-2.6 1.8-4.8 4-4.8s4 2.2 4 4.8C16 10.3 14.4 12 12 12Z"/><path d="M9.5 16.5H6M18 16.5h-3.5"/>'
+    },
+    moluscos: {
+      short: 'MOL',
+      name: { es: 'Moluscos', en: 'Molluscs' },
+      icon: '<path d="M12 20c-4.4 0-8-3.3-8-7.4C4 8.2 7.6 5 12 5s8 3.2 8 7.6c0 4.1-3.6 7.4-8 7.4Z"/><path d="M12 20V5M12 20 7 7.5M12 20l5-12.5"/>'
+    }
+  };
+
+  /* --- Etiquetas informativas (NO son alérgenos) -------------------- */
+  const DIET_TAGS = {
+    recomendado: { name: { es: 'Recomendado', en: 'Recommended' } },
+    picante: { name: { es: 'Picante', en: 'Spicy' } },
+    vegetariano: { name: { es: 'Vegetariano', en: 'Vegetarian' } }
+  };
+
+  /* --- Carta ---------------------------------------------------------
+     anchor: permite abrir una pestaña con la URL (#menu-del-dia).
+     allergens: claves de ALLERGENS · tags: claves de DIET_TAGS.
+     image: null = marcador de posición neutro.
+  ------------------------------------------------------------------- */
+  const MENU = [
+    {
+      id: 'raciones',
+      anchor: 'raciones',
+      name: { es: 'Raciones clásicas', en: 'Classic sharing plates' },
+      desc: {
+        es: 'Para compartir en el centro de la mesa. Como debe ser.',
+        en: 'Made to share in the middle of the table, the way it should be.'
+      },
+      items: [
+        {
+          id: 'bravas',
+          name: { es: 'Patatas bravas caseras con alioli', en: 'Homemade patatas bravas with aioli' },
+          desc: {
+            es: 'Patata frita en dos tiempos, salsa brava de la casa y alioli montado al mortero.',
+            en: 'Double-fried potatoes, our house brava sauce and aioli pounded in a mortar.'
+          },
+          price: '7,50 €',
+          priceEn: '€7.50',
+          allergens: ['huevos'],
+          tags: ['recomendado', 'picante', 'vegetariano'],
+          image: null
+        },
+        {
+          id: 'croquetas',
+          name: { es: 'Croquetas cremosas de jamón ibérico', en: 'Creamy Ibérico ham croquettes' },
+          desc: {
+            es: 'Seis unidades de bechamel fundente con jamón picado a cuchillo y rebozado crujiente.',
+            en: 'Six pieces of silky béchamel with hand-cut ham in a crisp coating.'
+          },
+          price: '9,20 €',
+          priceEn: '€9.20',
+          allergens: ['gluten', 'lacteos', 'huevos'],
+          tags: ['recomendado'],
+          image: null
+        },
+        {
+          id: 'calamares',
+          name: { es: 'Calamares a la andaluza', en: 'Andalusian-style fried squid' },
+          desc: {
+            es: 'Anillas de calamar fresco enharinadas al momento y fritas en aceite limpio, con limón.',
+            en: 'Fresh squid rings floured to order and fried in clean oil, served with lemon.'
+          },
+          price: '12,90 €',
+          priceEn: '€12.90',
+          allergens: ['gluten', 'moluscos'],
+          tags: [],
+          image: null
+        },
+        {
+          id: 'huevos-rotos',
+          name: { es: 'Huevos rotos con jamón', en: 'Broken eggs with cured ham' },
+          desc: {
+            es: 'Patatas en bastones, dos huevos camperos rotos en mesa y virutas de jamón curado.',
+            en: 'Thick-cut potatoes, two free-range eggs broken at the table and cured ham shavings.'
+          },
+          price: '13,80 €',
+          priceEn: '€13.80',
+          allergens: ['huevos'],
+          tags: ['recomendado'],
+          image: null
+        }
+      ]
+    },
+    {
+      id: 'tostas',
+      anchor: 'tostas',
+      name: { es: 'Tostas y montados', en: 'Toasts & rolls' },
+      desc: {
+        es: 'Pan de hogaza tostado en plancha. Para la caña de media tarde.',
+        en: 'Sourdough toasted on the griddle. Perfect with an afternoon beer.'
+      },
+      items: [
+        {
+          id: 'tosta-solomillo',
+          name: { es: 'Tosta de solomillo con brie', en: 'Beef tenderloin and brie toast' },
+          desc: {
+            es: 'Medallones de solomillo a la plancha, brie fundido y cebolla caramelizada.',
+            en: 'Griddled tenderloin medallions, melted brie and caramelised onion.'
+          },
+          price: '8,90 €',
+          priceEn: '€8.90',
+          allergens: ['gluten', 'lacteos'],
+          tags: ['recomendado'],
+          image: null
+        },
+        {
+          id: 'tosta-gulas',
+          name: { es: 'Tosta de gulas al ajillo', en: 'Garlic baby-eel-style toast' },
+          desc: {
+            es: 'Gulas (sucedáneo de angula) salteadas con ajo laminado, guindilla y aceite de oliva.',
+            en: 'Surimi baby eels sautéed with sliced garlic, chilli and olive oil.'
+          },
+          price: '7,60 €',
+          priceEn: '€7.60',
+          allergens: ['gluten', 'pescado', 'soja'],
+          tags: ['picante'],
+          image: null
+        },
+        {
+          id: 'montado-lomo',
+          name: { es: 'Montado de lomo de orza', en: 'Confit pork loin roll' },
+          desc: {
+            es: 'Lomo de cerdo confitado a baja temperatura, pimiento verde asado y sal en escamas.',
+            en: 'Pork loin confit at low temperature, roasted green pepper and sea salt flakes.'
+          },
+          price: '6,40 €',
+          priceEn: '€6.40',
+          allergens: ['gluten'],
+          tags: [],
+          image: null
+        }
+      ]
+    },
+    {
+      id: 'menu-del-dia',
+      anchor: 'menu-del-dia',
+      name: { es: 'Menú del día', en: 'Menu of the day' },
+      desc: {
+        es: 'De martes a viernes, de 12:00 a 16:00. Alérgenos según el plato elegido.',
+        en: 'Tuesday to Friday, 12:00 to 16:00. Allergens depend on the dishes you choose.'
+      },
+      items: [
+        {
+          id: 'primeros',
+          name: { es: 'Primeros a elegir', en: 'Starters (choose one)' },
+          desc: {
+            es: 'Sopa castellana con huevo, lentejas estofadas, ensalada de la casa o macarrones boloñesa.',
+            en: 'Castilian garlic soup with egg, stewed lentils, house salad or macaroni bolognese.'
+          },
+          price: 'Incluido',
+          priceEn: 'Included',
+          allergens: ['gluten', 'huevos', 'apio', 'lacteos'],
+          tags: [],
+          image: null
+        },
+        {
+          id: 'segundos',
+          name: { es: 'Segundos a elegir', en: 'Mains (choose one)' },
+          desc: {
+            es: 'Merluza a la plancha, pollo asado al limón, estofado de ternera o tortilla de patatas.',
+            en: 'Griddled hake, roast lemon chicken, beef stew or Spanish potato omelette.'
+          },
+          price: 'Incluido',
+          priceEn: 'Included',
+          allergens: ['pescado', 'huevos', 'gluten', 'apio'],
+          tags: [],
+          image: null
+        },
+        {
+          id: 'postres',
+          name: { es: 'Postre casero o café', en: 'Homemade dessert or coffee' },
+          desc: {
+            es: 'Flan de huevo, arroz con leche, natillas o fruta de temporada.',
+            en: 'Crème caramel, rice pudding, custard or seasonal fruit.'
+          },
+          price: 'Incluido',
+          priceEn: 'Included',
+          allergens: ['lacteos', 'huevos'],
+          tags: ['vegetariano'],
+          image: null
+        },
+        {
+          id: 'menu-completo',
+          name: { es: 'Menú completo', en: 'Full set menu' },
+          desc: {
+            es: 'Primero, segundo, postre, pan de hogaza y bebida incluidos. Café, 1,00 € aparte.',
+            en: 'Starter, main, dessert, sourdough bread and a drink included. Coffee €1.00 extra.'
+          },
+          price: '13,50 €',
+          priceEn: '€13.50',
+          allergens: ['gluten'],
+          tags: ['recomendado'],
+          image: null
+        }
+      ]
+    },
+    {
+      id: 'bebidas',
+      anchor: 'vinos-y-cervezas',
+      name: { es: 'Vinos y cervezas', en: 'Wines & beers' },
+      desc: {
+        es: 'Tirador limpio cada mañana y bodega servida a su temperatura.',
+        en: 'Beer lines cleaned every morning and wines served at the right temperature.'
+      },
+      items: [
+        {
+          id: 'cana-doble',
+          name: { es: 'Caña doble bien fría', en: 'Ice-cold double draught beer' },
+          desc: {
+            es: 'Tirada en copa helada con dos dedos de corona. La referencia del barrio.',
+            en: 'Poured into a frosted glass with two fingers of head. The neighbourhood benchmark.'
+          },
+          price: '2,80 €',
+          priceEn: '€2.80',
+          allergens: ['gluten'],
+          tags: ['recomendado'],
+          image: null
+        },
+        {
+          id: 'rioja',
+          name: { es: 'Copa de Rioja crianza (D.O.)', en: 'Glass of Rioja Crianza (D.O.)' },
+          desc: {
+            es: 'Tempranillo con catorce meses en barrica. Fruta roja madura y final especiado.',
+            en: 'Tempranillo aged fourteen months in oak. Ripe red fruit and a spiced finish.'
+          },
+          price: '3,20 €',
+          priceEn: '€3.20',
+          allergens: ['sulfitos'],
+          tags: [],
+          image: null
+        },
+        {
+          id: 'ribera',
+          name: { es: 'Copa de Ribera del Duero (D.O.)', en: 'Glass of Ribera del Duero (D.O.)' },
+          desc: {
+            es: 'Potente y aterciopelado. Nuestro imprescindible con los huevos rotos.',
+            en: 'Bold and velvety. Our must-have with the broken eggs.'
+          },
+          price: '3,60 €',
+          priceEn: '€3.60',
+          allergens: ['sulfitos'],
+          tags: ['recomendado'],
+          image: null
+        },
+        {
+          id: 'vermut',
+          name: { es: 'Vermut rojo de grifo', en: 'Red vermouth on tap' },
+          desc: {
+            es: 'Servido con hielo, rodaja de naranja y aceituna rellena.',
+            en: 'Served over ice with an orange slice and a stuffed olive.'
+          },
+          price: '2,90 €',
+          priceEn: '€2.90',
+          allergens: ['sulfitos'],
+          tags: [],
+          image: null
+        }
+      ]
+    }
+  ];
+
+  /* --- Reseñas (DATOS DE DEMOSTRACIÓN) ------------------------------ */
+  const REVIEWS = {
+    score: 4.8,
+    count: 128,
+    items: [
+      {
+        author: 'Marta G.',
+        rating: 5,
+        text: {
+          es: 'Las croquetas son de las mejores que he probado en la zona y la caña entra helada. Trato cercano desde que cruzas la puerta.',
+          en: 'The croquettes are among the best I have tried nearby and the beer arrives ice-cold. Warm welcome from the moment you walk in.'
+        }
+      },
+      {
+        author: 'Javier R.',
+        rating: 5,
+        text: {
+          es: 'Vamos cada jueves al menú del día: raciones generosas, casero de verdad y sales por menos de quince euros.',
+          en: 'We come every Thursday for the set menu: generous portions, genuinely homemade and under fifteen euros.'
+        }
+      },
+      {
+        author: 'Lucía P.',
+        rating: 4,
+        text: {
+          es: 'Los huevos rotos, espectaculares. Los findes se llena, así que mejor reservar mesa con antelación.',
+          en: 'The broken eggs are spectacular. It fills up at weekends, so it is better to book a table in advance.'
+        }
+      }
+    ]
+  };
+
+  /* --- Textos de interfaz ------------------------------------------- */
+  const I18N = {
+    es: {
+      htmlLang: 'es',
+      locale: 'es-ES',
+      metaTitle: 'Taberna El Norte · Cervecería y raciones en Alcobendas',
+      metaDescription: 'Taberna El Norte, cervecería y raciones caseras en Alcobendas (Madrid). Carta digital con alérgenos, menú del día por 13,50 € y reserva por WhatsApp.',
+      days: ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'],
+      statusOpen: 'Abierto ahora',
+      statusClosed: 'Cerrado ahora',
+      statusOpensAt: 'Abre a las {time}',
+      statusOpensDay: 'Abre el {day} a las {time}',
+      call: 'Llamar',
+      callLong: 'Llamar al restaurante',
+      langLabel: 'Idioma',
+      skipToMenu: 'Ir a la carta',
+      quickActions: 'Acciones rápidas',
+      heroEyebrow: 'Alcobendas · Desde 1998',
+      heroTitle: 'El sabor de siempre.',
+      heroSubtitle: 'Raciones caseras en el corazón de Alcobendas.',
+      reserve: 'Reservar mesa',
+      reserveWhatsApp: 'Reservar por WhatsApp',
+      directions: 'Cómo llegar',
+      labelAddress: 'Dirección',
+      labelToday: 'Horario de hoy',
+      labelMenuDay: 'Menú del día',
+      closedToday: 'Hoy cerrado',
+      allHours: 'Ver todos los horarios',
+      menuTitle: 'La carta',
+      menuSubtitle: 'Elaborada cada mañana con producto de mercado.',
+      menuTabsLabel: 'Categorías de la carta',
+      allergensInDish: 'Alérgenos:',
+      noAllergens: 'Sin alérgenos de declaración obligatoria',
+      allergenKey: 'Leyenda de alérgenos',
+      allergenTableLink: 'Ver tabla completa de alérgenos',
+      allergenTableTitle: 'Tabla de alérgenos por plato',
+      allergenTableHint: 'Desplaza la tabla en horizontal para ver los catorce alérgenos.',
+      close: 'Cerrar',
+      dish: 'Plato',
+      staffNotice: 'Consulta a nuestro personal la información completa de los catorce alérgenos de declaración obligatoria.',
+      vatNotice: 'Precios con IVA incluido. Pan y aceite, 1,20 € por persona.',
+      reviewsTitle: 'Opiniones',
+      reviewsDemo: 'Reseñas de demostración',
+      reviewsScore: '{score} sobre 5 · {count} opiniones',
+      ratingOf: '{rating} de 5 estrellas',
+      mapTitle: 'Dónde estamos',
+      mapConsentText: 'El mapa se carga desde Google Maps. Acepta las cookies de terceros para verlo aquí.',
+      mapConsentBtn: 'Cargar el mapa',
+      mapFrameTitle: 'Mapa de la ubicación de Taberna El Norte en Alcobendas',
+      kitchenHours: 'Horario de cocina',
+      closed: 'Cerrado',
+      contact: 'Reservas y contacto',
+      groupsNotice: 'Grupos de más de diez personas: reserva con veinticuatro horas de antelación.',
+      legalTitle: 'Información legal',
+      legalNotice: 'Aviso legal',
+      privacy: 'Política de privacidad',
+      cookies: 'Política de cookies',
+      cookieSettings: 'Configurar cookies',
+      developedBy: 'Web desarrollada por',
+      tagline: 'Carta digital ultrarrápida',
+      demoRibbon: 'Web de demostración',
+      demoNotice: 'Maqueta de ejemplo de VisiWeb Madrid. El negocio, los precios, los horarios y las reseñas son ficticios.',
+      cookieTitle: 'Cookies en esta web',
+      cookieText: 'Usamos cookies propias necesarias y, si lo aceptas, servicios de terceros como el mapa de Google Maps. Sin tu consentimiento no se carga ningún contenido externo.',
+      cookieAccept: 'Aceptar',
+      cookieReject: 'Rechazar',
+      cookieConfigure: 'Configurar',
+      cookieSave: 'Guardar preferencias',
+      cookieNecessary: 'Necesarias (siempre activas)',
+      cookieNecessaryHelp: 'Imprescindibles para recordar el idioma y tus preferencias de cookies.',
+      cookieMap: 'Mapa de Google Maps',
+      cookieMapHelp: 'Permite mostrar el mapa incrustado con nuestra ubicación.',
+      cookieAnalytics: 'Estadísticas',
+      cookieAnalyticsHelp: 'Medición anónima de visitas. En esta demo no se carga ninguna herramienta.'
+    },
+    en: {
+      htmlLang: 'en',
+      locale: 'en-GB',
+      metaTitle: 'Taberna El Norte · Beer house and tapas in Alcobendas',
+      metaDescription: 'Taberna El Norte, a traditional beer house serving homemade tapas in Alcobendas (Madrid). Digital menu with allergens, €13.50 set lunch and WhatsApp booking.',
+      days: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+      statusOpen: 'Open now',
+      statusClosed: 'Closed now',
+      statusOpensAt: 'Opens at {time}',
+      statusOpensDay: 'Opens {day} at {time}',
+      call: 'Call',
+      callLong: 'Call the restaurant',
+      langLabel: 'Language',
+      skipToMenu: 'Skip to the menu',
+      quickActions: 'Quick actions',
+      heroEyebrow: 'Alcobendas · Since 1998',
+      heroTitle: 'The flavour you remember.',
+      heroSubtitle: 'Homemade tapas in the heart of Alcobendas.',
+      reserve: 'Book a table',
+      reserveWhatsApp: 'Book on WhatsApp',
+      directions: 'Get directions',
+      labelAddress: 'Address',
+      labelToday: "Today's hours",
+      labelMenuDay: 'Set lunch',
+      closedToday: 'Closed today',
+      allHours: 'See all opening hours',
+      menuTitle: 'The menu',
+      menuSubtitle: 'Cooked every morning with market produce.',
+      menuTabsLabel: 'Menu categories',
+      allergensInDish: 'Allergens:',
+      noAllergens: 'No declarable allergens',
+      allergenKey: 'Allergen key',
+      allergenTableLink: 'View the full allergen table',
+      allergenTableTitle: 'Allergen table by dish',
+      allergenTableHint: 'Scroll the table sideways to see all fourteen allergens.',
+      close: 'Close',
+      dish: 'Dish',
+      staffNotice: 'Ask our staff for the complete information on the fourteen declarable allergens.',
+      vatNotice: 'Prices include VAT. Bread and olive oil, €1.20 per person.',
+      reviewsTitle: 'Reviews',
+      reviewsDemo: 'Sample reviews',
+      reviewsScore: '{score} out of 5 · {count} reviews',
+      ratingOf: '{rating} out of 5 stars',
+      mapTitle: 'Where we are',
+      mapConsentText: 'The map is loaded from Google Maps. Accept third-party cookies to see it here.',
+      mapConsentBtn: 'Load the map',
+      mapFrameTitle: 'Map showing the location of Taberna El Norte in Alcobendas',
+      kitchenHours: 'Kitchen hours',
+      closed: 'Closed',
+      contact: 'Bookings and contact',
+      groupsNotice: 'Groups of more than ten people: please book twenty-four hours in advance.',
+      legalTitle: 'Legal information',
+      legalNotice: 'Legal notice',
+      privacy: 'Privacy policy',
+      cookies: 'Cookie policy',
+      cookieSettings: 'Cookie settings',
+      developedBy: 'Website built by',
+      tagline: 'Ultra-fast digital menu',
+      demoRibbon: 'Demo website',
+      demoNotice: 'Sample website by VisiWeb Madrid. The business, prices, opening hours and reviews are fictional.',
+      cookieTitle: 'Cookies on this site',
+      cookieText: 'We use necessary first-party cookies and, with your consent, third-party services such as the Google Maps embed. No external content loads without your permission.',
+      cookieAccept: 'Accept',
+      cookieReject: 'Reject',
+      cookieConfigure: 'Configure',
+      cookieSave: 'Save preferences',
+      cookieNecessary: 'Necessary (always on)',
+      cookieNecessaryHelp: 'Required to remember your language and cookie choices.',
+      cookieMap: 'Google Maps embed',
+      cookieMapHelp: 'Allows the embedded map with our location to be displayed.',
+      cookieAnalytics: 'Analytics',
+      cookieAnalyticsHelp: 'Anonymous visit measurement. No analytics tool is loaded in this demo.'
+    }
+  };
+
+  /* --- Mensajes de WhatsApp ----------------------------------------- */
+  const WHATSAPP_TEXT = {
+    es: 'Hola, me gustaría reservar mesa en Taberna El Norte. Seríamos [nº de comensales] el [día] a las [hora]. Gracias.',
+    en: 'Hello, I would like to book a table at Taberna El Norte for [number of guests] on [day] at [time]. Thank you.'
+  };
+
+  return {
+    developer: DEVELOPER,
+    business: BUSINESS,
+    images: IMAGES,
+    hours: HOURS,
+    allergens: ALLERGENS,
+    dietTags: DIET_TAGS,
+    menu: MENU,
+    reviews: REVIEWS,
+    i18n: I18N,
+    whatsappText: WHATSAPP_TEXT,
+    legalPages: {
+      notice: 'aviso-legal.html',
+      privacy: 'politica-privacidad.html',
+      cookies: 'politica-cookies.html'
+    }
+  };
+})();
