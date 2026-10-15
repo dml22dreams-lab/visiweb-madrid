@@ -39,6 +39,13 @@
     font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
+    padding-bottom: max(5.5rem, calc(4.5rem + env(safe-area-inset-bottom)));
+  }
+
+  @media (min-width: 768px) {
+    body {
+      padding-bottom: 0;
+    }
   }
 
   .font-serif {
@@ -91,7 +98,7 @@
   }
 
   .btn-primary {
-    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-slate-900 px-7 text-sm font-semibold text-white transition-colors hover:bg-slate-700 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-white;
+    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-slate-900 px-7 text-sm font-semibold text-white transition-colors dark:bg-slate-100 dark:text-slate-900;
   }
 
   .btn-outline {
@@ -114,6 +121,148 @@
     @apply font-medium text-slate-900 underline decoration-slate-400 underline-offset-4 transition-colors hover:decoration-slate-900 dark:text-slate-100 dark:decoration-slate-500 dark:hover:decoration-slate-100;
   }
 
+  .contact-card {
+    @apply flex flex-col rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-950;
+  }
+
+  .contact-kicker {
+    @apply text-xs font-semibold uppercase tracking-wider text-slate-400;
+  }
+
+  .hours-row {
+    @apply flex items-center justify-between gap-4 border-b border-dashed border-slate-200 py-3 text-sm last:border-b-0 dark:border-slate-800;
+  }
+
+  .hours-day {
+    @apply text-slate-600 dark:text-slate-400;
+  }
+
+  .hours-time {
+    @apply text-right font-medium tabular text-slate-900 dark:text-slate-100;
+  }
+
+  .hours-closed {
+    @apply rounded-full bg-rose-50 px-2 py-0.5 text-xs font-medium text-rose-600 dark:bg-rose-950/60 dark:text-rose-300;
+  }
+
+  .btn-call {
+    @apply flex min-h-11 items-center gap-2 rounded-xl border border-slate-200 bg-white p-3 font-medium text-slate-800 shadow-sm transition-all hover:border-slate-300 hover:shadow dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:hover:border-slate-600;
+  }
+
+  .btn-whatsapp {
+    @apply flex min-h-11 items-center justify-center gap-2 rounded-xl bg-[#25D366] p-3 text-sm font-semibold text-white shadow-sm shadow-emerald-600/20 transition-all hover:bg-[#1ebe57] hover:shadow-md;
+  }
+
+  .dish-price {
+    @apply shrink-0 font-serif text-xl font-semibold tracking-tight text-slate-900 dark:text-slate-100;
+    font-variant-numeric: lining-nums;
+  }
+
+  .site-nav-link {
+    @apply inline-flex min-h-11 shrink-0 items-center whitespace-nowrap px-2.5 text-[13px] font-medium text-slate-600 transition-colors hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100;
+  }
+
+  .site-nav-link[aria-current='page'] {
+    @apply text-slate-900 dark:text-slate-100;
+    box-shadow: inset 0 -2px 0 0 theme('colors.slate.900');
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .site-nav-link[aria-current='page'] {
+      box-shadow: inset 0 -2px 0 0 theme('colors.slate.100');
+    }
+  }
+
+  .filter-chip {
+    @apply inline-flex min-h-9 items-center rounded-full border border-slate-300 px-3 text-[11px] font-medium text-slate-700 transition-colors hover:border-slate-900 dark:border-slate-600 dark:text-slate-300 dark:hover:border-slate-300;
+  }
+
+  .filter-chip[aria-pressed='true'] {
+    @apply border-slate-900 bg-slate-900 text-white dark:border-slate-100 dark:bg-slate-100 dark:text-slate-900;
+  }
+
+  .book-field {
+    @apply flex flex-col gap-1.5 text-[11px] font-semibold uppercase tracking-[.16em] text-slate-500;
+  }
+
+  .book-field input,
+  .book-field textarea {
+    @apply min-h-11 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-medium normal-case tracking-normal text-slate-900 shadow-sm outline-none transition-colors focus:border-slate-200 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 dark:focus:border-slate-700;
+  }
+
+  .book-date-wrap {
+    @apply relative;
+  }
+
+  .book-date-wrap #fecha-reserva {
+    @apply cursor-pointer pr-12;
+  }
+
+  .book-date-icon {
+    @apply pointer-events-none absolute right-5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400;
+  }
+
+  .book-field textarea {
+    @apply min-h-[5.5rem] resize-y font-normal;
+  }
+
+  .book-select {
+    @apply relative;
+  }
+
+  .book-select select {
+    @apply pointer-events-none absolute h-px w-px overflow-hidden opacity-0;
+  }
+
+  .book-select-trigger {
+    @apply relative flex min-h-11 w-full items-center rounded-xl border border-slate-200 bg-white py-2.5 pl-3 pr-14 text-left text-sm font-medium normal-case tracking-normal text-slate-900 shadow-sm outline-none dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100;
+  }
+
+  .book-select-trigger:hover,
+  .book-select-trigger:focus,
+  .book-select-trigger:focus-visible,
+  .book-select-trigger[aria-expanded='true'] {
+    @apply border-slate-200 outline-none dark:border-slate-700;
+    box-shadow: 0 0 0 0 transparent;
+    outline: none;
+  }
+
+  .book-select-trigger:disabled {
+    @apply cursor-not-allowed text-slate-400;
+  }
+
+  .book-select-caret {
+    @apply pointer-events-none absolute right-7 top-1/2 h-4 w-4 text-slate-400;
+    transform: translateY(-50%) rotate(0deg);
+    transition: transform 0.2s ease;
+  }
+
+  .book-select.is-open .book-select-caret,
+  .book-select-trigger[aria-expanded='true'] .book-select-caret {
+    transform: translateY(-50%) rotate(90deg);
+  }
+
+  .book-select-menu {
+    @apply absolute z-30 mt-1.5 w-full rounded-2xl border border-slate-100 bg-white p-1.5 shadow-[0_12px_32px_-12px_rgba(15,23,42,0.18)] dark:border-slate-800 dark:bg-slate-950;
+  }
+
+  .book-select-option {
+    @apply cursor-pointer rounded-xl px-3 py-2.5 text-sm font-medium normal-case tracking-normal text-slate-800 dark:text-slate-200;
+  }
+
+  .book-select-option:hover,
+  .book-select-option[aria-selected='true'] {
+    @apply bg-slate-100 dark:bg-slate-800;
+  }
+
+  .gallery-card {
+    @apply overflow-hidden rounded-xl border border-slate-200/80 bg-white dark:border-slate-800 dark:bg-slate-950;
+  }
+
+  .gbp-chip {
+    @apply inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-[11px] font-medium text-slate-700 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300;
+  }
+
   .no-scrollbar {
     -ms-overflow-style: none;
     scrollbar-width: none;
@@ -121,6 +270,63 @@
 
   .no-scrollbar::-webkit-scrollbar {
     display: none;
+  }
+
+  /* flex en <dialog> cerrado lo saca del overlay y lo pinta al pie de la página */
+  #allergen-dialog {
+    margin: auto;
+    border: 0;
+  }
+
+  #allergen-dialog[open] {
+    display: flex;
+    flex-direction: column;
+  }
+
+  html.dialog-open,
+  html.dialog-open body {
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
+
+  html.dialog-open body {
+    position: fixed;
+    left: 0;
+    right: 0;
+    width: 100%;
+  }
+
+  .thin-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+  }
+
+  .thin-scroll::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .thin-scroll::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .thin-scroll::-webkit-scrollbar-thumb {
+    background-color: #cbd5e1;
+    border-radius: 999px;
+  }
+
+  .thin-scroll::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .thin-scroll {
+      scrollbar-color: #475569 transparent;
+    }
+
+    .thin-scroll::-webkit-scrollbar-thumb {
+      background-color: #475569;
+    }
   }
 }
 

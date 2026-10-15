@@ -30,7 +30,7 @@ window.VISIWEB_DEMO = (function () {
     // WhatsApp ficticio
     whatsapp: '34600000000',
     address: {
-      street: { es: 'Calle del Olmo Viejo (sin número)', en: 'Calle del Olmo Viejo (no number)' },
+      street: { es: 'C. del Marqués de la Valdavia', en: 'C. del Marqués de la Valdavia' },
       postalCode: '28100',
       city: 'Alcobendas',
       region: 'Madrid',
@@ -46,13 +46,109 @@ window.VISIWEB_DEMO = (function () {
      Si el valor es null se dibuja un marcador de posición neutro.
      Cada plato admite además su propio campo `image`.
   ------------------------------------------------------------------- */
+  const photo = (file) => 'assets/demo/' + file;
+
   const IMAGES = {
-    hero: null,       // ej: 'assets/local.webp'  (1600x900 recomendado)
+    hero: photo('hero.jpg'),
     heroAlt: {
       es: 'Interior de la taberna con la barra de madera y las mesas preparadas',
       en: 'Inside the tavern, with the wooden bar and tables set for service'
-    }
+    },
+    facade: photo('fachada.jpg'),
+    salon: photo('salon.jpg'),
+    salon2: photo('salon-2.jpg'),
+    terrace: photo('terraza.jpg'),
+    bar: photo('barra.jpg')
   };
+
+  const LOCAL = {
+    rooms: [
+      {
+        id: 'fachada',
+        image: photo('fachada.jpg'),
+        title: { es: 'Fachada', en: 'Façade' },
+        desc: { es: 'En el corazón de Alcobendas, con la puerta abierta al barrio.', en: 'In the heart of Alcobendas, with the door open to the neighbourhood.' }
+      },
+      {
+        id: 'salon',
+        image: photo('salon.jpg'),
+        title: { es: 'El salón', en: 'The dining room' },
+        desc: { es: 'Madera, luz baja y mesas para quedarse. 42 cubiertos en sala.', en: 'Wood, low light and tables you want to linger at. 42 covers inside.' }
+      },
+      {
+        id: 'barra',
+        image: photo('barra.jpg'),
+        title: { es: 'La barra', en: 'The bar' },
+        desc: { es: 'Caña doble bien fría y el vermut de grifo. El sitio de siempre.', en: 'An ice-cold double draught and vermouth on tap. The usual spot.' }
+      },
+      {
+        id: 'terraza',
+        image: photo('terraza.jpg'),
+        title: { es: 'Terraza', en: 'Terrace' },
+        desc: { es: '16 plazas al aire. Reservas de terraza, preferencia al mediodía.', en: '16 seats outdoors. Terrace bookings are easiest at lunchtime.' }
+      }
+    ],
+    stats: [
+      { label: { es: 'Sala', en: 'Inside' }, value: '42' },
+      { label: { es: 'Terraza', en: 'Terrace' }, value: '16' },
+      { label: { es: 'Desde', en: 'Since' }, value: '1998' }
+    ]
+  };
+
+  const HISTORY = {
+    title: { es: 'Nuestra historia', en: 'Our story' },
+    lead: {
+      es: 'Abrimos en 1998 como taberna de barrio. Seguimos siendo eso: raciones para compartir, cocina de cuchara y la caña que pide el vecino.',
+      en: 'We opened in 1998 as a neighbourhood tavern. That is still what we are: sharing plates, slow-cooked specials and the beer the regulars ask for.'
+    },
+    chapters: [
+      {
+        year: '1998',
+        title: { es: 'La primera caña', en: 'The first pint' },
+        text: {
+          es: 'Una barra corta, cuatro mesas y la receta de las bravas que aún no hemos tocado. El Norte nació para el mediodía de Alcobendas.',
+          en: 'A short bar, four tables and the bravas recipe we still have not touched. El Norte was born for lunchtime in Alcobendas.'
+        }
+      },
+      {
+        year: '2010',
+        title: { es: 'El salón de atrás', en: 'The back room' },
+        text: {
+          es: 'Abrimos el comedor. Más cubiertos, misma cocina. Las croquetas pasaron de tapa a ración porque nadie pedía solo una.',
+          en: 'We opened the dining room. More covers, the same kitchen. Croquettes went from a tapa to a sharing plate because nobody ever ordered just one.'
+        }
+      },
+      {
+        year: { es: 'Hoy', en: 'Today' },
+        title: { es: 'El sabor de siempre', en: 'The flavour you remember' },
+        text: {
+          es: 'Carta corta, producto de mercado y el menú del día de martes a viernes. Sin postureo: ven a comer.',
+          en: 'A short menu, market produce and a set lunch Tuesday to Friday. No fuss: come and eat.'
+        }
+      }
+    ]
+  };
+
+  const GBP = {
+    category: { es: 'Cervecería · Raciones y tapas', en: 'Beer house · Tapas & sharing plates' },
+    attributes: [
+      { es: 'Terraza', en: 'Outdoor seating' },
+      { es: 'Reservas', en: 'Takes reservations' },
+      { es: 'Menú del día', en: 'Set lunch' },
+      { es: 'Carta con alérgenos', en: 'Allergen-labelled menu' },
+      { es: 'Grupos', en: 'Group-friendly' },
+      { es: 'Pago con tarjeta', en: 'Card payments' }
+    ]
+  };
+
+  const BOOKING = {
+    maxGuests: 8,
+    slotMinutes: 30,
+    lastSeatingBeforeClose: 30,
+    areas: ['any', 'salon', 'terrace', 'bar']
+  };
+
+  const FEATURED = ['bravas', 'croquetas', 'huevos-rotos', 'tosta-solomillo', 'cana-doble', 'menu-completo'];
 
   /* --- Horarios: FUENTE ÚNICA ----------------------------------------
      Clave = día de la semana JS (0 domingo … 6 sábado).
@@ -180,7 +276,7 @@ window.VISIWEB_DEMO = (function () {
           priceEn: '€7.50',
           allergens: ['huevos'],
           tags: ['recomendado', 'picante', 'vegetariano'],
-          image: null
+          image: photo('bravas.jpg')
         },
         {
           id: 'croquetas',
@@ -193,7 +289,7 @@ window.VISIWEB_DEMO = (function () {
           priceEn: '€9.20',
           allergens: ['gluten', 'lacteos', 'huevos'],
           tags: ['recomendado'],
-          image: null
+          image: photo('croquetas.jpg')
         },
         {
           id: 'calamares',
@@ -206,7 +302,7 @@ window.VISIWEB_DEMO = (function () {
           priceEn: '€12.90',
           allergens: ['gluten', 'moluscos'],
           tags: [],
-          image: null
+          image: photo('calamares.jpg')
         },
         {
           id: 'huevos-rotos',
@@ -219,7 +315,7 @@ window.VISIWEB_DEMO = (function () {
           priceEn: '€13.80',
           allergens: ['huevos'],
           tags: ['recomendado'],
-          image: null
+          image: photo('huevos.jpg')
         }
       ]
     },
@@ -243,7 +339,7 @@ window.VISIWEB_DEMO = (function () {
           priceEn: '€8.90',
           allergens: ['gluten', 'lacteos'],
           tags: ['recomendado'],
-          image: null
+          image: photo('solomillo.jpg')
         },
         {
           id: 'tosta-gulas',
@@ -256,7 +352,7 @@ window.VISIWEB_DEMO = (function () {
           priceEn: '€7.60',
           allergens: ['gluten', 'pescado', 'soja'],
           tags: ['picante'],
-          image: null
+          image: photo('gulas.jpg')
         },
         {
           id: 'montado-lomo',
@@ -269,7 +365,7 @@ window.VISIWEB_DEMO = (function () {
           priceEn: '€6.40',
           allergens: ['gluten'],
           tags: [],
-          image: null
+          image: photo('lomo.jpg')
         }
       ]
     },
@@ -293,7 +389,7 @@ window.VISIWEB_DEMO = (function () {
           priceEn: 'Included',
           allergens: ['gluten', 'huevos', 'apio', 'lacteos'],
           tags: [],
-          image: null
+          image: photo('primeros.jpg')
         },
         {
           id: 'segundos',
@@ -306,7 +402,7 @@ window.VISIWEB_DEMO = (function () {
           priceEn: 'Included',
           allergens: ['pescado', 'huevos', 'gluten', 'apio'],
           tags: [],
-          image: null
+          image: photo('segundos.jpg')
         },
         {
           id: 'postres',
@@ -319,7 +415,7 @@ window.VISIWEB_DEMO = (function () {
           priceEn: 'Included',
           allergens: ['lacteos', 'huevos'],
           tags: ['vegetariano'],
-          image: null
+          image: photo('postres.jpg')
         },
         {
           id: 'menu-completo',
@@ -332,7 +428,7 @@ window.VISIWEB_DEMO = (function () {
           priceEn: '€13.50',
           allergens: ['gluten'],
           tags: ['recomendado'],
-          image: null
+          image: photo('menu.jpg')
         }
       ]
     },
@@ -356,7 +452,7 @@ window.VISIWEB_DEMO = (function () {
           priceEn: '€2.80',
           allergens: ['gluten'],
           tags: ['recomendado'],
-          image: null
+          image: photo('cana.jpg')
         },
         {
           id: 'rioja',
@@ -369,7 +465,7 @@ window.VISIWEB_DEMO = (function () {
           priceEn: '€3.20',
           allergens: ['sulfitos'],
           tags: [],
-          image: null
+          image: photo('rioja.jpg')
         },
         {
           id: 'ribera',
@@ -382,7 +478,7 @@ window.VISIWEB_DEMO = (function () {
           priceEn: '€3.60',
           allergens: ['sulfitos'],
           tags: ['recomendado'],
-          image: null
+          image: photo('ribera.jpg')
         },
         {
           id: 'vermut',
@@ -395,7 +491,7 @@ window.VISIWEB_DEMO = (function () {
           priceEn: '€2.90',
           allergens: ['sulfitos'],
           tags: [],
-          image: null
+          image: photo('vermut.jpg')
         }
       ]
     }
@@ -439,7 +535,7 @@ window.VISIWEB_DEMO = (function () {
       htmlLang: 'es',
       locale: 'es-ES',
       metaTitle: 'Taberna El Norte · Cervecería y raciones en Alcobendas',
-      metaDescription: 'Taberna El Norte, cervecería y raciones caseras en Alcobendas (Madrid). Carta digital con alérgenos, menú del día por 13,50 € y reserva por WhatsApp.',
+      metaDescription: 'Taberna El Norte, cervecería y raciones en Alcobendas. Carta bilingüe con alérgenos, salón y terraza, historia del local y reservas online.',
       days: ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'],
       statusOpen: 'Abierto ahora',
       statusClosed: 'Cerrado ahora',
@@ -449,12 +545,57 @@ window.VISIWEB_DEMO = (function () {
       callLong: 'Llamar al restaurante',
       langLabel: 'Idioma',
       skipToMenu: 'Ir a la carta',
+      skipToContent: 'Ir al contenido',
+      navHome: 'Inicio',
+      navMenu: 'Carta',
+      navLocal: 'El local',
+      navHistory: 'Historia',
+      navBook: 'Reservas',
+      featuredTitle: 'De la casa',
+      featuredCta: 'Ver la carta completa',
+      localTitle: 'El local',
+      localSubtitle: 'Salón, barra y terraza. Como una taberna de barrio, con mesa para quedarse.',
+      historyTitle: 'Nuestra historia',
+      bookTitle: 'Reservar mesa',
+      bookSubtitle: 'Elige día, hora y comensales. Recibirás la confirmación al instante (demostración).',
+      bookName: 'Nombre',
+      bookPhone: 'Teléfono',
+      bookDate: 'Fecha',
+      bookTime: 'Hora',
+      bookGuests: 'Comensales',
+      bookNotes: 'Comentario (opcional)',
+      bookSubmit: 'Confirmar reserva',
+      bookClosed: 'Ese día no hay cocina. Elige otro.',
+      bookNoSlots: 'No quedan horarios en esa fecha.',
+      bookSuccessTitle: 'Reserva solicitada',
+      bookSuccessText: 'Hemos anotado tu mesa para {guests} el {date} a las {time}. En un local real se confirmaría por SMS. Esta es una demostración: no se envía nada a la cocina.',
+      bookAnother: 'Hacer otra reserva',
+      bookWhatsAppAlt: 'También por WhatsApp',
+      bookError: 'Revisa los campos e inténtalo de nuevo.',
+      bookArea: 'Zona',
+      bookAreaAny: 'Sin preferencia',
+      bookAreaSalon: 'Salón',
+      bookAreaTerrace: 'Terraza',
+      bookAreaBar: 'Barra',
+      bookDemoNote: 'Motor de reservas de demostración. En un local real la petición llega a caja.',
+      bookTimePlaceholder: 'Elige una hora',
+      bookDatePlaceholder: 'Selecciona una fecha',
+      bookGuestOne: '1 persona',
+      bookGuestMany: '{n} personas',
+      allergenFilter: 'Filtrar por alérgenos',
+      allergenFilterHint: 'Oculta los platos que contienen el alérgeno seleccionado.',
+      allergenFilterClear: 'Quitar filtros',
+      allergenFilterEmpty: 'Ningún plato coincide con el filtro.',
+      navLabel: 'Secciones',
+      gbpTitle: 'Ficha de Google',
+      gbpSubtitle: 'Así aparece el local en búsquedas de tapas y menú del día en Alcobendas.',
+      gbpPhotos: 'Fotos del local',
       quickActions: 'Acciones rápidas',
       heroEyebrow: 'Alcobendas · Desde 1998',
       heroTitle: 'El sabor de siempre.',
       heroSubtitle: 'Raciones caseras en el corazón de Alcobendas.',
       reserve: 'Reservar mesa',
-      reserveWhatsApp: 'Reservar por WhatsApp',
+      reserveWhatsApp: 'Reservar mesa por WhatsApp',
       directions: 'Cómo llegar',
       labelAddress: 'Dirección',
       labelToday: 'Horario de hoy',
@@ -485,7 +626,17 @@ window.VISIWEB_DEMO = (function () {
       kitchenHours: 'Horario de cocina',
       closed: 'Cerrado',
       contact: 'Reservas y contacto',
-      groupsNotice: 'Grupos de más de diez personas: reserva con veinticuatro horas de antelación.',
+      locationTitle: 'Ubicación y reservas',
+      viewOnMap: 'Ver en mapa',
+      callDirect: 'Llamar directamente',
+      credit: '© {year} {name} · Carta digital ultrarrápida creada por',
+      planBadge: 'Plan Gastro Premium',
+      planBanner: 'Esta demo interactiva incluye todas las características del Plan Gastro Premium (390 € - pago único).',
+      planCta: 'Ver planes y contratar ↗',
+      planHero: 'Demo Carta Digital · Nivel Gastro Premium',
+      demoCreditLead: 'Web demo desarrollada por',
+      demoCreditPlan: '· Realizada con el Plan Gastro Premium',
+      groupsNotice: 'Mesas de más de 8 personas con reserva previa de 24h.',
       legalTitle: 'Información legal',
       legalNotice: 'Aviso legal',
       privacy: 'Política de privacidad',
@@ -512,7 +663,7 @@ window.VISIWEB_DEMO = (function () {
       htmlLang: 'en',
       locale: 'en-GB',
       metaTitle: 'Taberna El Norte · Beer house and tapas in Alcobendas',
-      metaDescription: 'Taberna El Norte, a traditional beer house serving homemade tapas in Alcobendas (Madrid). Digital menu with allergens, €13.50 set lunch and WhatsApp booking.',
+      metaDescription: 'Taberna El Norte, a beer house in Alcobendas. Bilingual menu with allergens, dining room and terrace, our story, and online table booking.',
       days: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
       statusOpen: 'Open now',
       statusClosed: 'Closed now',
@@ -522,12 +673,57 @@ window.VISIWEB_DEMO = (function () {
       callLong: 'Call the restaurant',
       langLabel: 'Language',
       skipToMenu: 'Skip to the menu',
+      skipToContent: 'Skip to content',
+      navHome: 'Home',
+      navMenu: 'Menu',
+      navLocal: 'The rooms',
+      navHistory: 'Our story',
+      navBook: 'Book',
+      featuredTitle: 'House favourites',
+      featuredCta: 'See the full menu',
+      localTitle: 'The rooms',
+      localSubtitle: 'Dining room, bar and terrace. A neighbourhood tavern with tables you stay at.',
+      historyTitle: 'Our story',
+      bookTitle: 'Book a table',
+      bookSubtitle: 'Choose a day, time and party size. You will see an instant confirmation (demo).',
+      bookName: 'Name',
+      bookPhone: 'Phone',
+      bookDate: 'Date',
+      bookTime: 'Time',
+      bookGuests: 'Guests',
+      bookNotes: 'Notes (optional)',
+      bookSubmit: 'Confirm booking',
+      bookClosed: 'The kitchen is closed that day. Please pick another.',
+      bookNoSlots: 'No times left on that date.',
+      bookSuccessTitle: 'Request received',
+      bookSuccessText: 'We have noted a table for {guests} on {date} at {time}. In a real restaurant this would be confirmed by SMS. This is a demo: nothing is sent to the kitchen.',
+      bookAnother: 'Make another booking',
+      bookWhatsAppAlt: 'Or book on WhatsApp',
+      bookError: 'Please check the fields and try again.',
+      bookArea: 'Zone',
+      bookAreaAny: 'No preference',
+      bookAreaSalon: 'Dining room',
+      bookAreaTerrace: 'Terrace',
+      bookAreaBar: 'Bar',
+      bookDemoNote: 'Demo booking engine. In a real venue the request would reach the till.',
+      bookTimePlaceholder: 'Choose a time',
+      bookDatePlaceholder: 'Select a date',
+      bookGuestOne: '1 guest',
+      bookGuestMany: '{n} guests',
+      allergenFilter: 'Filter by allergen',
+      allergenFilterHint: 'Hides dishes that contain the selected allergen.',
+      allergenFilterClear: 'Clear filters',
+      allergenFilterEmpty: 'No dishes match this filter.',
+      navLabel: 'Sections',
+      gbpTitle: 'Google Business profile',
+      gbpSubtitle: 'How the tavern appears for tapas and set-lunch searches in Alcobendas.',
+      gbpPhotos: 'Venue photos',
       quickActions: 'Quick actions',
       heroEyebrow: 'Alcobendas · Since 1998',
       heroTitle: 'The flavour you remember.',
       heroSubtitle: 'Homemade tapas in the heart of Alcobendas.',
       reserve: 'Book a table',
-      reserveWhatsApp: 'Book on WhatsApp',
+      reserveWhatsApp: 'Book a table on WhatsApp',
       directions: 'Get directions',
       labelAddress: 'Address',
       labelToday: "Today's hours",
@@ -558,7 +754,17 @@ window.VISIWEB_DEMO = (function () {
       kitchenHours: 'Kitchen hours',
       closed: 'Closed',
       contact: 'Bookings and contact',
-      groupsNotice: 'Groups of more than ten people: please book twenty-four hours in advance.',
+      locationTitle: 'Location & bookings',
+      viewOnMap: 'View on map',
+      callDirect: 'Call us directly',
+      credit: '© {year} {name} · Ultra-fast digital menu built by',
+      planBadge: 'Gastro Premium Plan',
+      planBanner: 'This interactive demo includes every feature of the Gastro Premium Plan (€390, one-off payment).',
+      planCta: 'See plans and sign up ↗',
+      planHero: 'Digital menu demo · Gastro Premium',
+      demoCreditLead: 'Demo website built by',
+      demoCreditPlan: '· Built with the Gastro Premium Plan',
+      groupsNotice: 'Tables for more than 8 guests need a booking 24 hours in advance.',
       legalTitle: 'Legal information',
       legalNotice: 'Legal notice',
       privacy: 'Privacy policy',
@@ -598,6 +804,11 @@ window.VISIWEB_DEMO = (function () {
     dietTags: DIET_TAGS,
     menu: MENU,
     reviews: REVIEWS,
+    local: LOCAL,
+    history: HISTORY,
+    gbp: GBP,
+    booking: BOOKING,
+    featured: FEATURED,
     i18n: I18N,
     whatsappText: WHATSAPP_TEXT,
     legalPages: {
