@@ -1,0 +1,171 @@
+/* Entrada de Tailwind para la plantilla de carta digital (demo).
+   Compilar con:  npm run build:demo   ->   assets/demo.css           */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Fuentes autoalojadas: ni una petición a terceros antes del consentimiento.
+   Archivos variables (subconjunto latin) en assets/fonts/.                */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('fonts/inter-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+    U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Cormorant Garamond';
+  font-style: normal;
+  font-weight: 500 700;
+  font-display: swap;
+  src: url('fonts/cormorant-garamond-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+    U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@layer base {
+  :root {
+    color-scheme: light dark;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  .font-serif {
+    font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  }
+
+  /* Foco visible y coherente en todos los elementos interactivos */
+  :focus-visible {
+    outline: 2px solid theme('colors.slate.900');
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :focus-visible {
+      outline-color: theme('colors.slate.100');
+    }
+  }
+
+  [hidden] {
+    display: none !important;
+  }
+}
+
+@layer components {
+  .tab {
+    @apply inline-flex min-h-11 shrink-0 items-center whitespace-nowrap rounded-full bg-slate-100 px-4 text-sm font-medium text-slate-700 transition-colors;
+  }
+
+  .tab:hover {
+    @apply bg-slate-200 text-slate-900;
+  }
+
+  .tab[aria-selected='true'] {
+    @apply bg-slate-900 text-white;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .tab {
+      @apply bg-slate-800 text-slate-300;
+    }
+
+    .tab:hover {
+      @apply bg-slate-700 text-white;
+    }
+
+    .tab[aria-selected='true'] {
+      @apply bg-slate-100 text-slate-900;
+    }
+  }
+
+  .btn-primary {
+    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-slate-900 px-7 text-sm font-semibold text-white transition-colors hover:bg-slate-700 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-white;
+  }
+
+  .btn-outline {
+    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-slate-300 px-7 text-sm font-semibold text-slate-900 transition-colors hover:border-slate-900 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-100 dark:hover:border-slate-400 dark:hover:bg-slate-900;
+  }
+
+  .pill-allergen {
+    @apply inline-flex items-center gap-1 rounded-full border border-slate-300 px-2 py-0.5 text-[11px] font-medium text-slate-700 dark:border-slate-600 dark:text-slate-300;
+  }
+
+  .pill-tag {
+    @apply inline-flex items-center gap-1 rounded-sm bg-slate-900 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-white dark:bg-slate-100 dark:text-slate-900;
+  }
+
+  .pill-tag-soft {
+    @apply inline-flex items-center gap-1 rounded-sm bg-slate-100 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-slate-700 dark:bg-slate-800 dark:text-slate-200;
+  }
+
+  .link-underline {
+    @apply font-medium text-slate-900 underline decoration-slate-400 underline-offset-4 transition-colors hover:decoration-slate-900 dark:text-slate-100 dark:decoration-slate-500 dark:hover:decoration-slate-100;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@layer utilities {
+  .soft-in {
+    animation: soft-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  @keyframes soft-in {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  .live-dot {
+    animation: live-dot 1.8s ease-in-out infinite;
+  }
+
+  @keyframes live-dot {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.35;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .soft-in,
+    .live-dot {
+      animation: none !important;
+    }
+
+    html {
+      scroll-behavior: auto !important;
+    }
+  }
+
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+}

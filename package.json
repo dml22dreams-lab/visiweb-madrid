@@ -1,0 +1,19 @@
+{
+  "name": "visiweb-madrid",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Web de VisiWeb Madrid y plantilla de carta digital para hostelería (demo).",
+  "scripts": {
+    "build:demo": "tailwindcss -c tailwind.demo.config.js -i src/demo.input.css -o assets/demo.css --minify",
+    "watch:demo": "tailwindcss -c tailwind.demo.config.js -i src/demo.input.css -o assets/demo.css --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dml22dreams-lab/visiweb-madrid.git"
+  },
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "tailwindcss": "^3.4.17"
+  }
+}
