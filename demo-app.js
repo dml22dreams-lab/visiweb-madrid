@@ -658,14 +658,14 @@
     const keys = Object.keys(D.allergens);
     table.textContent = '';
 
-    const thead = el('thead');
-    const headRow = el('tr', 'border-b border-slate-300 dark:border-slate-700');
-    const firstTh = el('th', 'sticky left-0 bg-white py-2 pr-4 text-left text-xs font-semibold uppercase tracking-wide dark:bg-slate-900');
+    const thead = el('thead', 'sticky top-0 z-20 border-b border-stone-300 bg-stone-100 shadow-sm dark:border-stone-700 dark:bg-stone-800');
+    const headRow = el('tr');
+    const firstTh = el('th', 'sticky top-0 left-0 z-30 border-b border-r border-stone-300 bg-stone-100 py-2 pl-4 pr-4 text-left text-xs font-bold uppercase tracking-wide dark:border-stone-700 dark:bg-stone-800');
     firstTh.scope = 'col';
     firstTh.textContent = t('dish');
     headRow.appendChild(firstTh);
     keys.forEach((key) => {
-      const th = el('th', 'px-2 py-2 text-center text-[11px] font-semibold');
+      const th = el('th', 'sticky top-0 z-20 border-b border-stone-300 bg-stone-100 px-2 py-2 text-center text-[11px] font-semibold shadow-sm dark:border-stone-700 dark:bg-stone-800');
       th.scope = 'col';
       th.innerHTML = '<abbr title="' + esc(L(D.allergens[key].name)) + '" class="no-underline">' +
         esc(D.allergens[key].short) + '</abbr>';
@@ -677,7 +677,7 @@
     const tbody = el('tbody');
     D.menu.forEach((cat) => {
       const catRow = el('tr');
-      const catCell = el('th', 'bg-slate-50 py-2 pr-4 text-left text-xs font-semibold uppercase tracking-wide dark:bg-slate-800');
+      const catCell = el('th', 'border-b border-stone-200 bg-stone-50 py-2 pl-4 pr-4 text-left text-xs font-semibold uppercase tracking-wide dark:border-stone-800 dark:bg-stone-800');
       catCell.scope = 'colgroup';
       catCell.colSpan = keys.length + 1;
       catCell.textContent = L(cat.name);
@@ -685,13 +685,13 @@
       tbody.appendChild(catRow);
 
       cat.items.forEach((item) => {
-        const row = el('tr', 'border-b border-slate-200 dark:border-slate-800');
-        const th = el('th', 'sticky left-0 max-w-[12rem] bg-white py-2.5 pr-4 text-left text-sm font-medium dark:bg-slate-900');
+        const row = el('tr');
+        const th = el('th', 'sticky left-0 z-10 max-w-[12rem] border-b border-r border-stone-200 bg-white py-2.5 pl-4 pr-4 text-left text-sm font-medium shadow-[2px_0_5px_-2px_rgba(0,0,0,0.08)] dark:border-stone-800 dark:bg-stone-900');
         th.scope = 'row';
         th.textContent = L(item.name);
         row.appendChild(th);
         keys.forEach((key) => {
-          const td = el('td', 'px-2 py-2.5 text-center');
+          const td = el('td', 'border-b border-stone-200 px-2 py-2.5 text-center dark:border-stone-800');
           const has = item.allergens.indexOf(key) >= 0;
           td.innerHTML = has
             ? '<span class="sr-only">' + esc(L(D.allergens[key].name)) + '</span><span aria-hidden="true">●</span>'

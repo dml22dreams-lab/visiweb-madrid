@@ -835,8 +835,10 @@
         <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
       </button>
     </div>
-    <div class="thin-scroll min-h-0 flex-1 overflow-auto overscroll-contain px-5 py-4">
-      <table id="allergen-table" class="w-full border-collapse text-left text-sm"></table>
+    <div class="min-h-0 flex-1 px-5 py-4">
+      <div class="no-scrollbar relative max-h-[60vh] overflow-auto rounded-xl border border-stone-200 dark:border-stone-800">
+        <table id="allergen-table" class="w-full border-separate border-spacing-0 text-left text-sm"></table>
+      </div>
     </div>
     <div class="shrink-0 border-t border-slate-200 px-5 py-4 dark:border-slate-800">
       <p class="text-xs leading-relaxed text-slate-600 dark:text-slate-400" data-i18n="staffNotice">Consulta a nuestro personal la información completa de los catorce alérgenos de declaración obligatoria.</p>

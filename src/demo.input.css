@@ -375,3 +375,17 @@
     font-variant-numeric: tabular-nums;
   }
 }
+
+/* Ocultar barra de scroll para Chrome, Safari, Edge y Opera */
+::-webkit-scrollbar {
+  display: none !important;
+  width: 0px !important;
+  height: 0px !important;
+  background: transparent !important;
+}
+
+/* Ocultar barra de scroll para Firefox e IE/Edge clásico */
+html, body, * {
+  scrollbar-width: none !important; /* Firefox */
+  -ms-overflow-style: none !important; /* IE y Edge */
+}
