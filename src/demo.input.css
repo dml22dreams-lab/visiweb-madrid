@@ -72,7 +72,7 @@
 
 @layer components {
   .tab {
-    @apply inline-flex min-h-11 shrink-0 items-center whitespace-nowrap rounded-full bg-slate-100 px-4 text-sm font-medium text-slate-700 transition-colors;
+    @apply inline-flex min-h-11 shrink-0 items-center justify-center whitespace-nowrap rounded-full bg-slate-100 px-4 text-center text-sm font-medium text-slate-700 transition-colors;
   }
 
   .tab:hover {
@@ -110,11 +110,11 @@
   }
 
   .pill-tag {
-    @apply inline-flex items-center gap-1 rounded-sm bg-slate-900 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-white dark:bg-slate-100 dark:text-slate-900;
+    @apply inline-flex items-center gap-1 rounded-full bg-slate-900 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-white dark:bg-slate-100 dark:text-slate-900;
   }
 
   .pill-tag-soft {
-    @apply inline-flex items-center gap-1 rounded-sm bg-slate-100 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-slate-700 dark:bg-slate-800 dark:text-slate-200;
+    @apply inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-slate-700 dark:bg-slate-800 dark:text-slate-200;
   }
 
   .link-underline {
@@ -159,7 +159,7 @@
   }
 
   .site-nav-link {
-    @apply inline-flex min-h-11 shrink-0 items-center whitespace-nowrap px-2.5 text-[13px] font-medium text-slate-600 transition-colors hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100;
+    @apply inline-flex min-h-11 shrink-0 items-center justify-center whitespace-nowrap px-2.5 text-center text-[13px] font-medium text-slate-600 transition-colors hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100;
   }
 
   .site-nav-link[aria-current='page'] {

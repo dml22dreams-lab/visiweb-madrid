@@ -300,7 +300,7 @@
     body.append(title, desc);
 
     if (item.tags.length) {
-      const tags = el('div', 'mt-2.5 flex flex-wrap gap-1.5');
+      const tags = el('div', 'mt-4 flex flex-wrap gap-1.5');
       item.tags.forEach((key) => {
         const tag = el('span', key === 'recomendado' ? 'pill-tag' : 'pill-tag-soft');
         tag.textContent = L(D.dietTags[key].name);
@@ -309,7 +309,7 @@
       body.appendChild(tags);
     }
 
-    const allergens = el('div', 'mt-2.5 flex flex-wrap items-center gap-1.5');
+    const allergens = el('div', 'mt-4 flex flex-wrap items-center gap-1.5');
     const label = el('span', 'text-[11px] font-semibold uppercase tracking-wide text-slate-600 dark:text-slate-400');
     label.textContent = item.allergens.length ? t('allergensInDish') : t('noAllergens');
     allergens.appendChild(label);
@@ -608,9 +608,23 @@
     });
   }
 
+  function setAllergenPanel(open) {
+    const panel = $('#allergen-filter-panel');
+    const toggle = $('#allergen-filter-toggle');
+    const icon = $('#allergen-filter-chevron');
+    if (!panel || !toggle) return;
+    panel.classList.toggle('is-open', open);
+    toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    if (icon) icon.classList.toggle('rotate-90', open);
+  }
+
   function initAllergenFilters() {
     const wrap = $('#allergen-filters');
     if (!wrap) return;
+    on('#allergen-filter-toggle', 'click', () => {
+      const toggle = $('#allergen-filter-toggle');
+      setAllergenPanel(toggle.getAttribute('aria-expanded') !== 'true');
+    });
     wrap.addEventListener('click', (event) => {
       const btn = event.target.closest('[data-filter]');
       if (!btn) return;

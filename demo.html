@@ -370,6 +370,14 @@
     html {
       scrollbar-gutter: stable;
     }
+    .plan-pin {
+      transition: transform .55s cubic-bezier(.22, 1, .36, 1), box-shadow .55s cubic-bezier(.22, 1, .36, 1);
+    }
+    .plan-pin:hover,
+    .plan-pin:active {
+      transform: translateY(2px) scale(.985);
+      box-shadow: inset 0 3px 6px rgba(12, 10, 9, .35);
+    }
     .btn-primary {
       transition: transform .55s cubic-bezier(.22, 1, .36, 1), box-shadow .55s cubic-bezier(.22, 1, .36, 1), background-color .55s cubic-bezier(.22, 1, .36, 1);
     }
@@ -390,6 +398,13 @@
       transform: translateY(2px) scale(.985);
       box-shadow: inset 0 3px 6px rgba(6, 78, 59, .45);
     }
+    .btn-call {
+      transition: transform .55s cubic-bezier(.22, 1, .36, 1), box-shadow .55s cubic-bezier(.22, 1, .36, 1), border-color .55s cubic-bezier(.22, 1, .36, 1);
+    }
+    .btn-call:hover {
+      transform: translateY(2px) scale(.985);
+      box-shadow: inset 0 3px 6px rgba(12, 10, 9, .18);
+    }
     @media (prefers-color-scheme: dark) {
       #btn-lang-toggle.lang-btn {
         background: rgba(30, 41, 59, 0.8);
@@ -398,6 +413,28 @@
       #btn-lang-toggle .lang-text {
         color: #ffffff;
       }
+    }
+    #allergen-filter-toggle:hover { color: #000; }
+    #allergen-filter-chevron {
+      width: 0.75rem;
+      height: 0.75rem;
+      transition: transform .2s ease;
+    }
+    #allergen-filter-toggle[aria-expanded="true"] #allergen-filter-chevron {
+      transform: rotate(90deg);
+    }
+    #allergen-filter-panel {
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows .3s ease;
+    }
+    #allergen-filter-panel.is-open { grid-template-rows: 1fr; }
+    #allergen-filter-panel > div { overflow: hidden; }
+    #tabs { justify-content: safe center; }
+    .tab { justify-content: center; text-align: center; }
+    .site-nav-link { justify-content: center; text-align: center; }
+    @media (prefers-color-scheme: dark) {
+      #allergen-filter-toggle:hover { color: #fff; }
     }
   </style>
 </head>
@@ -409,7 +446,7 @@
   <div class="sticky top-0 z-50">
   <div class="flex w-full flex-wrap items-center justify-between gap-x-4 gap-y-1 bg-stone-900 px-4 py-2 text-xs text-stone-200 shadow-sm">
     <div class="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1">
-      <span class="rounded-full bg-amber-400 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-stone-950" data-i18n="planBadge">Plan Gastro Premium</span>
+      <a href="index.html#gastro-premium" class="plan-pin rounded-full bg-amber-400 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-stone-950 no-underline" data-i18n="planBadge">Plan Gastro Premium</a>
       <span data-i18n="planBanner">Esta demo interactiva incluye todas las características del Plan Gastro Premium (390 € - pago único).</span>
     </div>
     <a href="https://visiwebmadrid.com/#planes" target="_blank" rel="noopener" class="shrink-0 whitespace-nowrap underline transition-colors hover:text-amber-400" data-i18n="planCta">Ver planes y contratar ↗</a>
@@ -515,10 +552,17 @@
         </div>
 
         <div class="mt-8">
-          <p class="text-[10px] font-semibold uppercase tracking-[.18em] text-slate-600 dark:text-slate-400" data-i18n="allergenFilter">Filtrar por alérgenos</p>
-          <p class="mt-1 text-xs text-slate-500 dark:text-slate-400" data-i18n="allergenFilterHint">Oculta los platos que contienen el alérgeno seleccionado.</p>
-          <div id="allergen-filters" class="mt-3 flex flex-wrap gap-1.5"></div>
-          <button type="button" id="clear-allergen-filters" class="mt-3 text-xs font-medium text-slate-600 underline underline-offset-4 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100" hidden data-i18n="allergenFilterClear">Quitar filtros</button>
+          <button type="button" id="allergen-filter-toggle" class="inline-flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[.18em] text-slate-600 transition-colors dark:text-slate-400" aria-expanded="false" aria-controls="allergen-filter-panel">
+            <span class="underline underline-offset-4" data-i18n="allergenFilter">Filtrar por alérgenos</span>
+            <svg id="allergen-filter-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"></path></svg>
+          </button>
+          <div id="allergen-filter-panel">
+            <div class="overflow-hidden">
+              <p class="mt-3 text-xs text-slate-500 dark:text-slate-400" data-i18n="allergenFilterHint">Oculta los platos que contienen el alérgeno seleccionado.</p>
+              <div id="allergen-filters" class="mt-3 flex flex-wrap gap-1.5"></div>
+              <button type="button" id="clear-allergen-filters" class="mt-3 text-xs font-medium text-slate-600 underline underline-offset-4 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100" hidden data-i18n="allergenFilterClear">Quitar filtros</button>
+            </div>
+          </div>
         </div>
       </div>
 
