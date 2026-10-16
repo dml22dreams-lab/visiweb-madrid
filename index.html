@@ -49,8 +49,9 @@
     .stagger > .reveal:nth-child(4).is-in { animation-delay: .24s; }
 
     #planes article {
-      transition: transform .3s ease, box-shadow .3s ease, border-color .3s ease;
+      transition: transform .3s ease, box-shadow .3s ease, border-color .3s ease, opacity .2s ease;
     }
+    #planes article.plan-fade { opacity: 0; }
     #planes article:hover {
       transform: translateY(-6px);
     }
@@ -115,27 +116,56 @@
       .fade-in-up, .scale-in, .reveal.is-in, #planes article.plan-attention::before { animation: none !important; }
       .reveal { opacity: 1; transform: none; }
     }
+
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    #nav-more > summary { list-style: none; }
+    #nav-more > summary::-webkit-details-marker { display: none; }
+
+    @media (max-width: 767px) {
+      #theme-toggle {
+        border-color: transparent;
+        background: transparent;
+        box-shadow: none;
+        color: #78716c;
+      }
+      .dark #theme-toggle {
+        border-color: transparent;
+        background: transparent;
+        color: #a8a29e;
+      }
+    }
   </style>
 </head>
-<body class="overflow-x-hidden bg-[#FAF9F6] text-stone-900 antialiased selection:bg-[#E6D5C3] selection:text-stone-900 dark:bg-stone-950 dark:text-stone-200">
+<body class="overflow-x-hidden bg-[#FAF9F6] pb-20 text-stone-900 antialiased selection:bg-[#E6D5C3] selection:text-stone-900 dark:bg-stone-950 dark:text-stone-200 md:pb-0">
 
   <header class="sticky top-0 z-50 w-full border-b border-stone-200 bg-[#FAF9F6]/95 dark:border-stone-800 dark:bg-stone-950/95">
-    <div class="mx-auto flex w-full max-w-7xl flex-wrap items-center justify-between gap-x-3 gap-y-2 px-4 py-3 sm:px-6 lg:px-8">
-      <div class="flex min-w-0 items-center gap-2">
+    <div class="mx-auto flex w-full max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:px-6 lg:px-8">
+      <div class="flex shrink-0 items-center gap-2">
         <span class="text-xl font-semibold tracking-tight text-stone-900 dark:text-stone-100 sm:text-2xl">Visi<span class="text-[#8B5E34] dark:text-[#E6D5C3]">Web</span></span>
         <span class="hidden rounded-full border border-[#E6D5C3] bg-[#E6D5C3] px-2 py-0.5 text-xs font-semibold text-stone-900 sm:inline dark:border-stone-700 dark:bg-stone-800 dark:text-stone-200">Madrid</span>
       </div>
-      <nav class="flex max-w-full flex-wrap items-center justify-end gap-1.5 sm:gap-3" aria-label="Principal">
-        <a href="#planes" class="text-sm font-semibold text-stone-500 transition-colors duration-300 hover:text-stone-900 dark:text-stone-300 dark:hover:text-stone-100">Planes</a>
-        <button type="button" id="cart-open" class="relative grid h-10 w-10 place-items-center rounded-xl border border-stone-200 bg-white text-stone-800 transition-colors duration-300 hover:border-stone-400 dark:border-stone-800 dark:bg-stone-900 dark:text-stone-200" aria-label="Abrir carrito">
-          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h15l-1.5 9h-12L5 3H2"></path>
-            <circle cx="9" cy="20" r="1.2" fill="currentColor" stroke="none"></circle>
-            <circle cx="18" cy="20" r="1.2" fill="currentColor" stroke="none"></circle>
-          </svg>
-          <span id="cart-count" class="absolute -right-1.5 -top-1.5 hidden min-h-5 min-w-5 place-items-center rounded-full bg-stone-800 px-1 text-[11px] font-bold leading-5 text-white">0</span>
-        </button>
-        <div id="auth-slot" class="relative">
+      <div id="mobile-actions" class="flex items-center gap-1.5 md:hidden"></div>
+      <nav id="desktop-nav" class="hidden items-center gap-3 md:flex" aria-label="Principal">
+      <a id="nav-planes" href="#planes" class="text-sm font-semibold text-stone-500 transition-colors duration-300 hover:text-stone-900 dark:text-stone-300 dark:hover:text-stone-100">Planes</a>
+      <button type="button" id="theme-toggle" class="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-stone-200 bg-white text-stone-800 transition-colors duration-300 hover:border-stone-400 dark:border-stone-800 dark:bg-stone-900 dark:text-stone-200" aria-label="Activar modo oscuro" aria-pressed="false">
+        <svg class="hidden h-5 w-5 dark:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+          <circle cx="12" cy="12" r="4"></circle>
+          <path stroke-linecap="round" d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path>
+        </svg>
+        <svg class="block h-5 w-5 dark:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+          <path stroke-linejoin="round" d="M21 14.5A8.5 8.5 0 1 1 9.5 3a7 7 0 0 0 11.5 11.5z"></path>
+        </svg>
+      </button>
+      <button type="button" id="cart-open" class="relative grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-stone-200 bg-white text-stone-800 transition-colors duration-300 hover:border-stone-400 dark:border-stone-800 dark:bg-stone-900 dark:text-stone-200" aria-label="Abrir carrito">
+        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h15l-1.5 9h-12L5 3H2"></path>
+          <circle cx="9" cy="20" r="1.2" fill="currentColor" stroke="none"></circle>
+          <circle cx="18" cy="20" r="1.2" fill="currentColor" stroke="none"></circle>
+        </svg>
+        <span id="cart-count" class="absolute -right-1.5 -top-1.5 hidden min-h-5 min-w-5 place-items-center rounded-full bg-stone-800 px-1 text-[11px] font-bold leading-5 text-white">0</span>
+      </button>
+      <div id="auth-slot" class="relative">
           <button type="button" id="auth-open" class="inline-flex h-10 items-center gap-1.5 rounded-xl border border-stone-200 bg-white px-3 text-xs font-semibold text-stone-800 transition-colors duration-300 hover:border-stone-400 sm:text-sm dark:border-stone-800 dark:bg-stone-900 dark:text-stone-200">
             <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="8" r="3.2"></circle><path stroke-linecap="round" d="M5 19.2c1.4-2.6 3.8-3.7 7-3.7s5.6 1.1 7 3.7"></path></svg>
             Acceder
@@ -153,25 +183,50 @@
             </div>
           </div>
         </div>
-        <button type="button" id="theme-toggle" class="grid h-10 w-10 place-items-center rounded-xl border border-stone-200 bg-white text-stone-800 transition-colors duration-300 hover:border-stone-400 dark:border-stone-800 dark:bg-stone-900 dark:text-stone-200" aria-label="Activar modo oscuro" aria-pressed="false">
-          <svg class="hidden h-5 w-5 dark:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-            <circle cx="12" cy="12" r="4"></circle>
-            <path stroke-linecap="round" d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path>
-          </svg>
-          <svg class="block h-5 w-5 dark:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-            <path stroke-linejoin="round" d="M21 14.5A8.5 8.5 0 1 1 9.5 3a7 7 0 0 0 11.5 11.5z"></path>
-          </svg>
-        </button>
-        <a href="https://wa.me/34000000000?text=%C2%A1Hola!%20Me%20gustar%C3%ADa%20pedir%20una%20demo%20gratuita%20para%20ver%20c%C3%B3mo%20quedar%C3%ADa%20la%20web%20y%20la%20carta%20digital%20de%20mi%20local." target="_blank" rel="noopener noreferrer" class="btn-ink rounded-lg bg-stone-800 px-2.5 py-2 text-[11px] font-semibold leading-none text-white hover:bg-stone-900 sm:px-4 sm:text-sm">
-          Pedir Demo Gratis
-        </a>
-        <a href="demo.html" target="_blank" rel="noopener noreferrer" class="hidden items-center gap-1.5 text-sm font-semibold text-stone-500 transition-colors duration-300 hover:text-stone-900 dark:text-stone-300 dark:hover:text-stone-100 lg:inline-flex">
-          Ver ejemplo
-          <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M8 16 16 8M9 8h7v7"></path></svg>
-        </a>
+      <a id="nav-wa" href="https://wa.me/34000000000?text=%C2%A1Hola!%20Me%20gustar%C3%ADa%20pedir%20una%20demo%20gratuita%20para%20ver%20c%C3%B3mo%20quedar%C3%ADa%20la%20web%20y%20la%20carta%20digital%20de%20mi%20local." target="_blank" rel="noopener noreferrer" class="btn-ink rounded-lg bg-stone-800 px-4 py-2 text-sm font-semibold leading-none text-white hover:bg-stone-900">
+        Pedir Demo Gratis
+      </a>
+      <a id="nav-ejemplo" href="demo.html" target="_blank" rel="noopener noreferrer" class="hidden items-center gap-1.5 text-sm font-semibold text-stone-500 transition-colors duration-300 hover:text-stone-900 dark:text-stone-300 dark:hover:text-stone-100 lg:inline-flex">
+        Ver ejemplo
+        <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M8 16 16 8M9 8h7v7"></path></svg>
+      </a>
       </nav>
     </div>
+    <details id="nav-more" class="group border-t border-stone-200 px-4 dark:border-stone-800 md:hidden">
+      <summary class="relative flex w-full cursor-pointer items-center justify-center py-2 text-xs font-semibold text-stone-500">
+        <span class="underline underline-offset-2">Planes y acceso</span>
+        <svg class="absolute right-0 h-4 w-4 transition-transform group-open:rotate-90" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"></path></svg>
+      </summary>
+      <div id="mobile-panel" class="flex items-center justify-between gap-3 pb-3"></div>
+    </details>
   </header>
+  <a id="nav-demo" href="demo.html" target="_blank" rel="noopener noreferrer" class="inline-flex shrink-0 items-center justify-center whitespace-nowrap bg-stone-900 px-3 py-1.5 rounded-xl text-xs font-semibold text-white dark:bg-stone-100 dark:text-stone-900">Ver demo</a>
+  <script>
+    (function () {
+      var demo = document.getElementById('nav-demo');
+      var mobileActions = document.getElementById('mobile-actions');
+      var desktopNav = document.getElementById('desktop-nav');
+      var panel = document.getElementById('mobile-panel');
+      var planes = document.getElementById('nav-planes');
+      var cart = document.getElementById('cart-open');
+      var auth = document.getElementById('auth-slot');
+      var theme = document.getElementById('theme-toggle');
+      var wa = document.getElementById('nav-wa');
+      var ejemplo = document.getElementById('nav-ejemplo');
+      var mq = window.matchMedia('(min-width: 768px)');
+      function placeNav() {
+        if (mq.matches) {
+          desktopNav.append(planes, cart, auth, theme, wa, ejemplo);
+          mobileActions.append(demo);
+        } else {
+          mobileActions.append(theme, cart, demo);
+          panel.append(planes, auth);
+        }
+      }
+      placeNav();
+      if (mq.addEventListener) mq.addEventListener('change', placeNav);
+    })();
+  </script>
 
   <section class="relative w-full overflow-x-hidden">
     <div class="relative mx-auto w-full max-w-7xl px-4 pb-20 pt-16 text-center sm:px-6 lg:px-8 lg:pb-28 lg:pt-24">
@@ -204,8 +259,9 @@
         <p class="mx-auto mt-3 max-w-xl hyphens-auto break-words text-stone-500">Sin tecnicismos raros ni cobros sorpresa. Directo al grano.</p>
       </div>
 
-      <div class="mt-8 flex flex-col gap-5 px-4 md:hidden">
-        <article class="rounded-3xl border border-stone-200 bg-white p-7 dark:border-stone-800 dark:bg-stone-900">
+      <div class="mt-8 md:hidden">
+        <div id="servicios-slider" class="flex overflow-x-auto snap-x snap-mandatory gap-4 pb-4 px-4 no-scrollbar -mx-4">
+        <article class="w-[85%] min-w-[85%] shrink-0 snap-center rounded-3xl p-6 bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 shadow-sm">
           <div class="mb-5 w-fit rounded-2xl bg-[#F3EDE4] p-3 dark:bg-stone-800">
             <svg class="h-7 w-7 text-[#8B5E34] dark:text-[#E6D5C3]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
               <rect x="7" y="2.5" width="10" height="19" rx="2"></rect>
@@ -217,7 +273,7 @@
             Olvídate de PDFs de 20 megas que nadie puede leer. Una carta adaptada a la pantalla de cualquier móvil que carga en menos de un segundo con código QR.
           </p>
         </article>
-        <article class="rounded-3xl border border-stone-200 bg-white p-7 dark:border-stone-800 dark:bg-stone-900">
+        <article class="w-[85%] min-w-[85%] shrink-0 snap-center rounded-3xl p-6 bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 shadow-sm">
           <div class="mb-5 w-fit rounded-2xl bg-[#F3EDE4] p-3 dark:bg-stone-800">
             <svg class="h-7 w-7 text-[#8B5E34] dark:text-[#E6D5C3]" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
               <path d="M12 2.2a6.8 6.8 0 0 0-6.8 6.8c0 5.1 6.8 12.8 6.8 12.8s6.8-7.7 6.8-12.8A6.8 6.8 0 0 0 12 2.2zm0 9.2a2.4 2.4 0 1 1 0-4.8 2.4 2.4 0 0 1 0 4.8z"></path>
@@ -228,7 +284,7 @@
             Optimizamos tu ficha de Google Perfil de Empresa para que aparezcas entre los primeros cuando alguien busque tapas, menús o terrazas en tu zona.
           </p>
         </article>
-        <article class="rounded-3xl border border-stone-200 bg-white p-7 dark:border-stone-800 dark:bg-stone-900">
+        <article class="w-[85%] min-w-[85%] shrink-0 snap-center rounded-3xl p-6 bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 shadow-sm">
           <div class="mb-5 w-fit rounded-2xl bg-[#F3EDE4] p-3 dark:bg-stone-800">
             <svg class="h-7 w-7 text-[#8B5E34] dark:text-[#E6D5C3]" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
               <path d="M7.4 3.2c.4-.4 1-.5 1.5-.3l2.2.9c.5.2.8.7.8 1.2l-.1 2.1a1.3 1.3 0 0 1-.7 1.1l-1.2.6a10.6 10.6 0 0 0 5.1 5.1l.6-1.2c.2-.4.6-.6 1.1-.7l2.1-.1c.5 0 1 .3 1.2.8l.9 2.2c.2.5.1 1.1-.3 1.5l-1.3 1.3c-.4.4-1 .6-1.6.5C10.8 18.6 5.4 13.2 4.6 6.1c-.1-.6.1-1.2.5-1.6L7.4 3.2z"></path>
@@ -239,6 +295,12 @@
             Botones directos para llamar al bar o enviar un WhatsApp con un clic. Menos pasos para el cliente, más mesas reservadas para ti.
           </p>
         </article>
+        </div>
+        <div class="flex items-center justify-center gap-2" role="tablist" aria-label="Servicios">
+          <button type="button" data-servicio-dot="0" aria-label="Carta digital" class="h-2 w-2 rounded-full bg-stone-800 dark:bg-stone-100"></button>
+          <button type="button" data-servicio-dot="1" aria-label="Google Maps" class="h-2 w-2 rounded-full bg-stone-300 dark:bg-stone-600"></button>
+          <button type="button" data-servicio-dot="2" aria-label="Reservas" class="h-2 w-2 rounded-full bg-stone-300 dark:bg-stone-600"></button>
+        </div>
       </div>
 
       <div class="relative mx-auto hidden h-[420px] w-full max-w-5xl items-center justify-center md:flex">
@@ -297,8 +359,15 @@
       </a>
     </div>
 
+    <div id="plan-tabs" class="mb-6 grid grid-cols-2 gap-1 rounded-2xl bg-stone-200/80 p-1 dark:bg-stone-800/80 md:hidden" role="tablist" aria-label="Planes">
+      <button type="button" role="tab" data-plan-tab="basico" aria-selected="false" class="rounded-xl px-2 py-3 text-center text-sm font-medium leading-tight text-stone-600 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100">Básico</button>
+      <button type="button" role="tab" data-plan-tab="pro" aria-selected="false" class="rounded-xl px-2 py-3 text-center text-sm font-medium leading-tight text-stone-600 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100">Pro</button>
+      <button type="button" role="tab" data-plan-tab="gastro" aria-selected="true" class="rounded-xl border-2 border-[#E6D5C3] bg-white px-2 py-3 text-center text-sm font-bold leading-tight text-stone-900 shadow-sm dark:bg-stone-900 dark:text-stone-100">Gastro Premium</button>
+      <button type="button" role="tab" data-plan-tab="vip" aria-selected="false" class="rounded-xl px-2 py-3 text-center text-sm font-medium leading-tight text-stone-600 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100">Digitalización Total</button>
+    </div>
+
     <div id="planes" class="stagger grid scroll-mt-28 grid-cols-1 items-stretch gap-6 pt-4 md:grid-cols-2 xl:grid-cols-4">
-      <article data-web="basico" data-name="Básico" data-price="120" data-plazo="Entrega lista en 48h laborables" data-active="35" class="reveal flex h-full min-h-fit w-full min-w-0 flex-col justify-between rounded-2xl border border-stone-200 bg-white p-6 shadow-sm transition-shadow duration-300 hover:shadow-md dark:border-stone-800 dark:bg-stone-900">
+      <article data-web="basico" data-name="Básico" data-price="120" data-plazo="Entrega lista en 48h laborables" data-active="35" class="reveal hidden h-full min-h-fit w-full min-w-0 flex-col justify-between rounded-2xl border border-stone-200 bg-white p-6 shadow-sm transition-shadow duration-300 hover:shadow-md dark:border-stone-800 dark:bg-stone-900 md:flex">
         <header>
           <h3 class="text-lg font-extrabold tracking-tight text-stone-900 dark:text-stone-100">Básico</h3>
           <p class="mt-1 text-xs text-stone-500 dark:text-stone-400">Cervecerías y bares de tapas</p>
@@ -323,7 +392,7 @@
         </button>
       </article>
 
-      <article data-web="pro" data-name="Pro" data-price="190" data-plazo="Entrega en 3 a 5 días laborables" data-active="45" class="reveal flex h-full min-h-fit w-full min-w-0 flex-col justify-between rounded-2xl border border-stone-200 bg-white p-6 shadow-sm transition-shadow duration-300 hover:shadow-md dark:border-stone-800 dark:bg-stone-900">
+      <article data-web="pro" data-name="Pro" data-price="190" data-plazo="Entrega en 3 a 5 días laborables" data-active="45" class="reveal hidden h-full min-h-fit w-full min-w-0 flex-col justify-between rounded-2xl border border-stone-200 bg-white p-6 shadow-sm transition-shadow duration-300 hover:shadow-md dark:border-stone-800 dark:bg-stone-900 md:flex">
         <header>
           <h3 class="text-lg font-extrabold tracking-tight text-stone-900 dark:text-stone-100">Pro</h3>
           <p class="mt-1 text-xs text-stone-500 dark:text-stone-400">Menú del día y reservas</p>
@@ -372,7 +441,7 @@
         </button>
       </article>
 
-      <article data-web="vip" data-name="Digitalización Total" data-price="790" data-plazo="Entrega en 10 a 14 días laborables" data-active="220" class="reveal flex h-full min-h-fit w-full min-w-0 flex-col justify-between rounded-2xl border border-stone-200 bg-white p-6 shadow-sm transition-shadow duration-300 hover:shadow-md dark:border-stone-800 dark:bg-stone-900">
+      <article data-web="vip" data-name="Digitalización Total" data-price="790" data-plazo="Entrega en 10 a 14 días laborables" data-active="220" class="reveal hidden h-full min-h-fit w-full min-w-0 flex-col justify-between rounded-2xl border border-stone-200 bg-white p-6 shadow-sm transition-shadow duration-300 hover:shadow-md dark:border-stone-800 dark:bg-stone-900 md:flex">
         <header>
           <h3 class="text-lg font-extrabold tracking-tight text-stone-900 dark:text-stone-100">Digitalización Total</h3>
           <p class="mt-1 text-xs text-stone-500 dark:text-stone-400">VIP, grupos y eventos</p>
@@ -434,11 +503,11 @@
     <aside class="reveal mt-8 rounded-2xl border border-stone-200 bg-white px-5 py-5  dark:border-stone-800 dark:bg-stone-900" aria-label="Servicios adicionales">
       <p class="mb-4 text-xs font-semibold uppercase tracking-widest text-stone-500">Servicios adicionales</p>
       <div class="flex flex-wrap items-center justify-center gap-2.5 md:justify-start">
-        <button type="button" data-extra="qr" class="relative inline-flex max-w-full cursor-pointer flex-wrap items-center gap-2 whitespace-normal rounded-full border border-stone-200 bg-white px-3.5 py-1.5 text-left text-sm text-stone-600 transition duration-300 hover:z-50 hover:translate-y-1 hover:scale-[0.98] hover:border-stone-400 has-[.is-open]:z-50 dark:border-stone-800 dark:bg-stone-950/60 dark:text-stone-300">Pack soportes físicos QR (metacrilato/madera) <span class="font-semibold text-[#8B5E34] dark:text-[#E6D5C3]">60&nbsp;€</span><span data-extra-info class="group/tooltip relative inline-flex h-5 w-5 shrink-0 items-center justify-center"><span class="grid h-5 w-5 place-items-center rounded-full bg-[#E6D5C3] text-xs font-bold text-stone-900" aria-hidden="true">?</span><span role="tooltip" class="pointer-events-none absolute bottom-full right-0 z-50 mb-2 w-[min(18rem,calc(100vw-2.5rem))] max-w-[calc(100vw-2.5rem)] rounded-xl border border-stone-700 bg-stone-900/95 p-3 text-xs leading-relaxed text-stone-200 opacity-0 shadow-md  transition-all duration-200 group-hover/tooltip:opacity-100 group-[.is-open]/tooltip:opacity-100 dark:bg-stone-800/95">Fabricación y entrega de peanas o placas rígidas y resistentes con tu código QR para colocar en mesas y barra, listas para escanear. Plazo de entrega física: 5-7 días laborables.<span class="absolute top-full right-1 border-x-[6px] border-b-0 border-t-[6px] border-x-transparent border-t-stone-900/95 dark:border-t-stone-800/95" aria-hidden="true"></span></span></span></button>
-        <button type="button" data-extra="foto" class="relative inline-flex max-w-full cursor-pointer flex-wrap items-center gap-2 whitespace-normal rounded-full border border-stone-200 bg-white px-3.5 py-1.5 text-left text-sm text-stone-600 transition duration-300 hover:z-50 hover:translate-y-1 hover:scale-[0.98] hover:border-stone-400 has-[.is-open]:z-50 dark:border-stone-800 dark:bg-stone-950/60 dark:text-stone-300">Sesión fotográfica extra <span class="font-semibold text-[#8B5E34] dark:text-[#E6D5C3]">40&nbsp;€</span><span data-extra-info class="group/tooltip relative inline-flex h-5 w-5 shrink-0 items-center justify-center"><span class="grid h-5 w-5 place-items-center rounded-full bg-[#E6D5C3] text-xs font-bold text-stone-900" aria-hidden="true">?</span><span role="tooltip" class="pointer-events-none absolute bottom-full right-0 z-50 mb-2 w-[min(18rem,calc(100vw-2.5rem))] max-w-[calc(100vw-2.5rem)] rounded-xl border border-stone-700 bg-stone-900/95 p-3 text-xs leading-relaxed text-stone-200 opacity-0 shadow-md  transition-all duration-200 group-hover/tooltip:opacity-100 group-[.is-open]/tooltip:opacity-100 dark:bg-stone-800/95">Desplazamiento presencial a tu local para tomar fotografías nítidas de nuevos platos, terraza o salón para nutrir la web y Google Maps. Entrega y subida de fotos editadas en 48-72h tras la visita.<span class="absolute top-full right-1 border-x-[6px] border-b-0 border-t-[6px] border-x-transparent border-t-stone-900/95 dark:border-t-stone-800/95" aria-hidden="true"></span></span></span></button>
-        <button type="button" data-extra="idioma" class="relative inline-flex max-w-full cursor-pointer flex-wrap items-center gap-2 whitespace-normal rounded-full border border-stone-200 bg-white px-3.5 py-1.5 text-left text-sm text-stone-600 transition duration-300 hover:z-50 hover:translate-y-1 hover:scale-[0.98] hover:border-stone-400 has-[.is-open]:z-50 dark:border-stone-800 dark:bg-stone-950/60 dark:text-stone-300">Idioma adicional <span class="font-semibold text-[#8B5E34] dark:text-[#E6D5C3]">19,99&nbsp;€</span><span data-extra-info class="group/tooltip relative inline-flex h-5 w-5 shrink-0 items-center justify-center"><span class="grid h-5 w-5 place-items-center rounded-full bg-[#E6D5C3] text-xs font-bold text-stone-900" aria-hidden="true">?</span><span role="tooltip" class="pointer-events-none absolute bottom-full right-0 z-50 mb-2 w-[min(18rem,calc(100vw-2.5rem))] max-w-[calc(100vw-2.5rem)] rounded-xl border border-stone-700 bg-stone-900/95 p-3 text-xs leading-relaxed text-stone-200 opacity-0 shadow-md  transition-all duration-200 group-hover/tooltip:opacity-100 group-[.is-open]/tooltip:opacity-100 dark:bg-stone-800/95">Traducción y maquetación completa de toda tu carta digital a un idioma adicional (inglés, francés, alemán, etc.). Traducción integrada en 24-48h laborables.<span class="absolute top-full right-1 border-x-[6px] border-b-0 border-t-[6px] border-x-transparent border-t-stone-900/95 dark:border-t-stone-800/95" aria-hidden="true"></span></span></span></button>
-        <button type="button" data-extra="ads" class="relative inline-flex max-w-full cursor-pointer flex-wrap items-center gap-2 whitespace-normal rounded-full border border-stone-200 bg-white px-3.5 py-1.5 text-left text-sm text-stone-600 transition duration-300 hover:z-50 hover:translate-y-1 hover:scale-[0.98] hover:border-stone-400 has-[.is-open]:z-50 dark:border-stone-800 dark:bg-stone-950/60 dark:text-stone-300">Campaña Google Ads local <span class="font-semibold text-[#8B5E34] dark:text-[#E6D5C3]">150&nbsp;€</span><span data-extra-info class="group/tooltip relative inline-flex h-5 w-5 shrink-0 items-center justify-center"><span class="grid h-5 w-5 place-items-center rounded-full bg-[#E6D5C3] text-xs font-bold text-stone-900" aria-hidden="true">?</span><span role="tooltip" class="pointer-events-none absolute bottom-full right-0 z-50 mb-2 w-[min(18rem,calc(100vw-2.5rem))] max-w-[calc(100vw-2.5rem)] rounded-xl border border-stone-700 bg-stone-900/95 p-3 text-xs leading-relaxed text-stone-200 opacity-0 shadow-md  transition-all duration-200 group-hover/tooltip:opacity-100 group-[.is-open]/tooltip:opacity-100 dark:bg-stone-800/95">Configuración técnica de anuncios geolocalizados en Google para que tu restaurante aparezca arriba del todo en búsquedas de tu zona. Campaña configurada y activa en 48h.<span class="absolute top-full right-1 border-x-[6px] border-b-0 border-t-[6px] border-x-transparent border-t-stone-900/95 dark:border-t-stone-800/95" aria-hidden="true"></span></span></span></button>
-        <button type="button" data-extra="horas" class="relative inline-flex max-w-full cursor-pointer flex-wrap items-center gap-2 whitespace-normal rounded-full border border-stone-200 bg-white px-3.5 py-1.5 text-left text-sm text-stone-600 transition duration-300 hover:z-50 hover:translate-y-1 hover:scale-[0.98] hover:border-stone-400 has-[.is-open]:z-50 dark:border-stone-800 dark:bg-stone-950/60 dark:text-stone-300">Horas de desarrollo fuera de cuota <span class="font-semibold text-[#8B5E34] dark:text-[#E6D5C3]">30&nbsp;€/hora</span><span data-extra-info class="group/tooltip relative inline-flex h-5 w-5 shrink-0 items-center justify-center"><span class="grid h-5 w-5 place-items-center rounded-full bg-[#E6D5C3] text-xs font-bold text-stone-900" aria-hidden="true">?</span><span role="tooltip" class="pointer-events-none absolute bottom-full right-0 z-50 mb-2 w-[min(18rem,calc(100vw-2.5rem))] max-w-[calc(100vw-2.5rem)] rounded-xl border border-stone-700 bg-stone-900/95 p-3 text-xs leading-relaxed text-stone-200 opacity-0 shadow-md  transition-all duration-200 group-hover/tooltip:opacity-100 group-[.is-open]/tooltip:opacity-100 dark:bg-stone-800/95">Bolsa de horas para modificaciones estructurales grandes o funciones especiales que queden fuera del mantenimiento mensual contratado.<span class="absolute top-full right-1 border-x-[6px] border-b-0 border-t-[6px] border-x-transparent border-t-stone-900/95 dark:border-t-stone-800/95" aria-hidden="true"></span></span></span></button>
+        <button type="button" data-extra="qr" class="relative inline-flex max-w-full cursor-pointer flex-wrap items-center gap-2 rounded-2xl border border-stone-200 bg-white p-3 text-left text-xs text-stone-600 transition duration-300 hover:z-50 hover:translate-y-1 hover:scale-[0.98] hover:border-stone-400 has-[.is-open]:z-50 dark:border-stone-800 dark:bg-stone-950/60 dark:text-stone-300 sm:text-sm">Pack soportes físicos QR (metacrilato/madera) <span class="inline-flex items-center gap-1.5 whitespace-nowrap"><span class="font-semibold text-[#8B5E34] dark:text-[#E6D5C3]">60&nbsp;€</span><span data-extra-info class="group/tooltip relative inline-flex h-5 w-5 shrink-0 items-center justify-center"><span class="grid h-5 w-5 place-items-center rounded-full bg-[#E6D5C3] text-xs font-bold text-stone-900" aria-hidden="true">?</span><span role="tooltip" class="pointer-events-none absolute bottom-full right-0 z-50 mb-2 w-[min(18rem,calc(100vw-2.5rem))] max-w-[calc(100vw-2.5rem)] rounded-xl border border-stone-700 bg-stone-900/95 p-3 text-xs leading-relaxed text-stone-200 opacity-0 shadow-md  transition-all duration-200 group-hover/tooltip:opacity-100 group-[.is-open]/tooltip:opacity-100 dark:bg-stone-800/95">Fabricación y entrega de peanas o placas rígidas y resistentes con tu código QR para colocar en mesas y barra, listas para escanear. Plazo de entrega física: 5-7 días laborables.<span class="absolute top-full right-1 border-x-[6px] border-b-0 border-t-[6px] border-x-transparent border-t-stone-900/95 dark:border-t-stone-800/95" aria-hidden="true"></span></span></span></span></button>
+        <button type="button" data-extra="foto" class="relative inline-flex max-w-full cursor-pointer flex-wrap items-center gap-2 rounded-2xl border border-stone-200 bg-white p-3 text-left text-xs text-stone-600 transition duration-300 hover:z-50 hover:translate-y-1 hover:scale-[0.98] hover:border-stone-400 has-[.is-open]:z-50 dark:border-stone-800 dark:bg-stone-950/60 dark:text-stone-300 sm:text-sm">Sesión fotográfica extra <span class="inline-flex items-center gap-1.5 whitespace-nowrap"><span class="font-semibold text-[#8B5E34] dark:text-[#E6D5C3]">40&nbsp;€</span><span data-extra-info class="group/tooltip relative inline-flex h-5 w-5 shrink-0 items-center justify-center"><span class="grid h-5 w-5 place-items-center rounded-full bg-[#E6D5C3] text-xs font-bold text-stone-900" aria-hidden="true">?</span><span role="tooltip" class="pointer-events-none absolute bottom-full right-0 z-50 mb-2 w-[min(18rem,calc(100vw-2.5rem))] max-w-[calc(100vw-2.5rem)] rounded-xl border border-stone-700 bg-stone-900/95 p-3 text-xs leading-relaxed text-stone-200 opacity-0 shadow-md  transition-all duration-200 group-hover/tooltip:opacity-100 group-[.is-open]/tooltip:opacity-100 dark:bg-stone-800/95">Desplazamiento presencial a tu local para tomar fotografías nítidas de nuevos platos, terraza o salón para nutrir la web y Google Maps. Entrega y subida de fotos editadas en 48-72h tras la visita.<span class="absolute top-full right-1 border-x-[6px] border-b-0 border-t-[6px] border-x-transparent border-t-stone-900/95 dark:border-t-stone-800/95" aria-hidden="true"></span></span></span></span></button>
+        <button type="button" data-extra="idioma" class="relative inline-flex max-w-full cursor-pointer flex-wrap items-center gap-2 rounded-2xl border border-stone-200 bg-white p-3 text-left text-xs text-stone-600 transition duration-300 hover:z-50 hover:translate-y-1 hover:scale-[0.98] hover:border-stone-400 has-[.is-open]:z-50 dark:border-stone-800 dark:bg-stone-950/60 dark:text-stone-300 sm:text-sm">Idioma adicional <span class="inline-flex items-center gap-1.5 whitespace-nowrap"><span class="font-semibold text-[#8B5E34] dark:text-[#E6D5C3]">19,99&nbsp;€</span><span data-extra-info class="group/tooltip relative inline-flex h-5 w-5 shrink-0 items-center justify-center"><span class="grid h-5 w-5 place-items-center rounded-full bg-[#E6D5C3] text-xs font-bold text-stone-900" aria-hidden="true">?</span><span role="tooltip" class="pointer-events-none absolute bottom-full right-0 z-50 mb-2 w-[min(18rem,calc(100vw-2.5rem))] max-w-[calc(100vw-2.5rem)] rounded-xl border border-stone-700 bg-stone-900/95 p-3 text-xs leading-relaxed text-stone-200 opacity-0 shadow-md  transition-all duration-200 group-hover/tooltip:opacity-100 group-[.is-open]/tooltip:opacity-100 dark:bg-stone-800/95">Traducción y maquetación completa de toda tu carta digital a un idioma adicional (inglés, francés, alemán, etc.). Traducción integrada en 24-48h laborables.<span class="absolute top-full right-1 border-x-[6px] border-b-0 border-t-[6px] border-x-transparent border-t-stone-900/95 dark:border-t-stone-800/95" aria-hidden="true"></span></span></span></span></button>
+        <button type="button" data-extra="ads" class="relative inline-flex max-w-full cursor-pointer flex-wrap items-center gap-2 rounded-2xl border border-stone-200 bg-white p-3 text-left text-xs text-stone-600 transition duration-300 hover:z-50 hover:translate-y-1 hover:scale-[0.98] hover:border-stone-400 has-[.is-open]:z-50 dark:border-stone-800 dark:bg-stone-950/60 dark:text-stone-300 sm:text-sm">Campaña Google Ads local <span class="inline-flex items-center gap-1.5 whitespace-nowrap"><span class="font-semibold text-[#8B5E34] dark:text-[#E6D5C3]">150&nbsp;€</span><span data-extra-info class="group/tooltip relative inline-flex h-5 w-5 shrink-0 items-center justify-center"><span class="grid h-5 w-5 place-items-center rounded-full bg-[#E6D5C3] text-xs font-bold text-stone-900" aria-hidden="true">?</span><span role="tooltip" class="pointer-events-none absolute bottom-full right-0 z-50 mb-2 w-[min(18rem,calc(100vw-2.5rem))] max-w-[calc(100vw-2.5rem)] rounded-xl border border-stone-700 bg-stone-900/95 p-3 text-xs leading-relaxed text-stone-200 opacity-0 shadow-md  transition-all duration-200 group-hover/tooltip:opacity-100 group-[.is-open]/tooltip:opacity-100 dark:bg-stone-800/95">Configuración técnica de anuncios geolocalizados en Google para que tu restaurante aparezca arriba del todo en búsquedas de tu zona. Campaña configurada y activa en 48h.<span class="absolute top-full right-1 border-x-[6px] border-b-0 border-t-[6px] border-x-transparent border-t-stone-900/95 dark:border-t-stone-800/95" aria-hidden="true"></span></span></span></span></button>
+        <button type="button" data-extra="horas" class="relative inline-flex max-w-full cursor-pointer flex-wrap items-center gap-2 rounded-2xl border border-stone-200 bg-white p-3 text-left text-xs text-stone-600 transition duration-300 hover:z-50 hover:translate-y-1 hover:scale-[0.98] hover:border-stone-400 has-[.is-open]:z-50 dark:border-stone-800 dark:bg-stone-950/60 dark:text-stone-300 sm:text-sm">Horas de desarrollo fuera de cuota <span class="inline-flex items-center gap-1.5 whitespace-nowrap"><span class="font-semibold text-[#8B5E34] dark:text-[#E6D5C3]">30&nbsp;€/hora</span><span data-extra-info class="group/tooltip relative inline-flex h-5 w-5 shrink-0 items-center justify-center"><span class="grid h-5 w-5 place-items-center rounded-full bg-[#E6D5C3] text-xs font-bold text-stone-900" aria-hidden="true">?</span><span role="tooltip" class="pointer-events-none absolute bottom-full right-0 z-50 mb-2 w-[min(18rem,calc(100vw-2.5rem))] max-w-[calc(100vw-2.5rem)] rounded-xl border border-stone-700 bg-stone-900/95 p-3 text-xs leading-relaxed text-stone-200 opacity-0 shadow-md  transition-all duration-200 group-hover/tooltip:opacity-100 group-[.is-open]/tooltip:opacity-100 dark:bg-stone-800/95">Bolsa de horas para modificaciones estructurales grandes o funciones especiales que queden fuera del mantenimiento mensual contratado.<span class="absolute top-full right-1 border-x-[6px] border-b-0 border-t-[6px] border-x-transparent border-t-stone-900/95 dark:border-t-stone-800/95" aria-hidden="true"></span></span></span></span></button>
       </div>
     </aside>
   </section>
@@ -586,7 +655,7 @@
       </div>
     </aside>
   </div>
-  <p id="cart-toast" role="status" class="pointer-events-none fixed bottom-6 left-1/2 z-[110] max-w-[calc(100%-2rem)] -translate-x-1/2 translate-y-3 rounded-full bg-stone-900 px-4 py-2.5 text-center text-sm font-semibold text-white opacity-0 shadow-md transition duration-300 dark:bg-white dark:text-stone-900">Pack añadido al carrito</p>
+  <p id="cart-toast" role="status" class="pointer-events-none fixed bottom-24 left-1/2 z-[110] max-w-[calc(100%-2rem)] -translate-x-1/2 translate-y-3 rounded-full bg-stone-900 px-4 py-2.5 text-center text-sm font-semibold text-white opacity-0 shadow-md transition duration-300 dark:bg-white dark:text-stone-900 md:bottom-6">Pack añadido al carrito</p>
 
   <div id="auth-modal" class="pointer-events-none fixed inset-0 z-[100] hidden items-center justify-center overflow-y-auto p-4" aria-hidden="true">
     <button type="button" id="auth-backdrop" class="absolute inset-0 bg-stone-950/60 opacity-0  transition-opacity duration-300" aria-label="Cerrar acceso"></button>
@@ -1091,6 +1160,38 @@
         });
       });
 
+      var planTabs = document.querySelectorAll('[data-plan-tab]');
+      var planTabOn = ['bg-white', 'dark:bg-stone-900', 'font-bold', 'text-stone-900', 'dark:text-stone-100', 'shadow-sm'];
+      var planTabOff = ['font-medium', 'text-stone-600', 'dark:text-stone-400', 'hover:text-stone-900', 'dark:hover:text-stone-100'];
+
+      function showPlanTab(id) {
+        planTabs.forEach(function (tab) {
+          var on = tab.getAttribute('data-plan-tab') === id;
+          tab.setAttribute('aria-selected', on ? 'true' : 'false');
+          planTabOn.forEach(function (cls) { tab.classList.toggle(cls, on); });
+          planTabOff.forEach(function (cls) { tab.classList.toggle(cls, !on); });
+        });
+        webCards.forEach(function (card) {
+          var on = card.getAttribute('data-web') === id;
+          var wasHidden = card.classList.contains('hidden');
+          card.classList.toggle('hidden', !on);
+          card.classList.toggle('flex', on);
+          card.classList.toggle('md:flex', !on);
+          if (!on) card.classList.remove('plan-fade');
+          if (on && wasHidden) {
+            card.classList.add('is-in', 'settled', 'plan-fade');
+            void card.offsetWidth;
+            card.classList.remove('plan-fade');
+          }
+        });
+      }
+
+      planTabs.forEach(function (tab) {
+        tab.addEventListener('click', function () {
+          showPlanTab(tab.getAttribute('data-plan-tab'));
+        });
+      });
+
       function chooseMaintenance(card) {
         maintenanceCards.forEach(function (other) {
           var on = other === card;
@@ -1521,5 +1622,51 @@
       paintTabs();
     })();
   </script>
+  <script>
+    (function () {
+      var slider = document.getElementById('servicios-slider');
+      if (!slider) return;
+      var dots = Array.prototype.slice.call(document.querySelectorAll('[data-servicio-dot]'));
+      var cards = Array.prototype.slice.call(slider.children);
+      function paint(active) {
+        dots.forEach(function (dot, index) {
+          var on = index === active;
+          dot.className = on
+            ? 'h-2 w-2 rounded-full bg-stone-800 dark:bg-stone-100'
+            : 'h-2 w-2 rounded-full bg-stone-300 dark:bg-stone-600';
+          if (on) dot.setAttribute('aria-current', 'true');
+          else dot.removeAttribute('aria-current');
+        });
+      }
+      function activeIndex() {
+        var box = slider.getBoundingClientRect();
+        var mid = box.left + box.width / 2;
+        var current = 0;
+        var best = Infinity;
+        cards.forEach(function (card, index) {
+          var rect = card.getBoundingClientRect();
+          var delta = Math.abs(rect.left + rect.width / 2 - mid);
+          if (delta < best) {
+            best = delta;
+            current = index;
+          }
+        });
+        return current;
+      }
+      slider.addEventListener('scroll', function () { paint(activeIndex()); }, { passive: true });
+      dots.forEach(function (dot, index) {
+        dot.addEventListener('click', function () {
+          var box = slider.getBoundingClientRect();
+          var rect = cards[index].getBoundingClientRect();
+          slider.scrollTo({ left: slider.scrollLeft + (rect.left - box.left) - (box.width - rect.width) / 2, behavior: 'smooth' });
+        });
+      });
+      paint(0);
+    })();
+  </script>
+  <div class="fixed bottom-0 left-0 right-0 z-40 flex items-center gap-2 border-t border-stone-200 bg-stone-50/95 p-3 backdrop-blur-md dark:border-stone-800 dark:bg-stone-950/95 md:hidden">
+    <a href="demo.html" target="_blank" rel="noopener noreferrer" class="flex w-1/2 items-center justify-center border border-stone-300 bg-white py-2.5 rounded-xl text-xs font-semibold text-center text-stone-900 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100">Ver demo real</a>
+    <a href="https://wa.me/34000000000?text=%C2%A1Hola!%20Me%20gustar%C3%ADa%20pedir%20una%20demo%20gratuita%20para%20ver%20c%C3%B3mo%20quedar%C3%ADa%20la%20web%20y%20la%20carta%20digital%20de%20mi%20local." target="_blank" rel="noopener noreferrer" class="flex w-1/2 items-center justify-center bg-emerald-600 py-2.5 rounded-xl text-xs font-semibold text-center text-white shadow-sm">Pedir demo gratis</a>
+  </div>
 </body>
 </html>
