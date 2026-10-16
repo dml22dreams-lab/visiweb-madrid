@@ -677,10 +677,11 @@
     const tbody = el('tbody');
     D.menu.forEach((cat) => {
       const catRow = el('tr');
-      const catCell = el('th', 'border-b border-stone-200 bg-stone-50 py-2 pl-4 pr-4 text-left text-xs font-semibold uppercase tracking-wide dark:border-stone-800 dark:bg-stone-800');
-      catCell.scope = 'colgroup';
+      const catCell = el('td', 'w-full border-b border-stone-200 bg-stone-50 p-0 text-left dark:border-stone-800 dark:bg-stone-800');
       catCell.colSpan = keys.length + 1;
-      catCell.textContent = L(cat.name);
+      const catLabel = el('span', 'sticky left-0 inline-block px-4 py-2 bg-inherit font-bold text-xs uppercase tracking-wider z-10');
+      catLabel.textContent = L(cat.name);
+      catCell.appendChild(catLabel);
       catRow.appendChild(catCell);
       tbody.appendChild(catRow);
 
