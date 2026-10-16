@@ -17,6 +17,8 @@
   const WEEK_ORDER = [1, 2, 3, 4, 5, 6, 0];
   const PAGES = ['inicio', 'carta', 'local', 'historia', 'reservas'];
   const allergenFilters = new Set();
+  const FILTER_OFF = ['bg-white', 'text-stone-700', 'border-stone-300', 'dark:bg-slate-950', 'dark:text-slate-300', 'dark:border-slate-600'];
+  const FILTER_ON = ['bg-stone-900', 'text-white', 'border-stone-900', 'dark:bg-slate-100', 'dark:text-slate-900', 'dark:border-slate-100'];
 
   /* ------------------------------- Utilidades ------------------------------- */
   const $ = (sel) => document.querySelector(sel);
@@ -564,18 +566,35 @@
     });
   }
 
+  function paintFilterButton(btn, active) {
+    FILTER_OFF.forEach((cls) => btn.classList.toggle(cls, !active));
+    FILTER_ON.forEach((cls) => btn.classList.toggle(cls, active));
+    btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+  }
+
   function renderAllergenFilters() {
     const wrap = $('#allergen-filters');
     if (!wrap) return;
-    wrap.textContent = '';
-    Object.keys(D.allergens).forEach((key) => {
-      const btn = el('button', 'filter-chip');
-      btn.type = 'button';
-      btn.dataset.filter = key;
-      btn.setAttribute('aria-pressed', String(allergenFilters.has(key)));
-      btn.textContent = L(D.allergens[key].name);
-      wrap.appendChild(btn);
-    });
+    const keys = Object.keys(D.allergens);
+    const existing = wrap.querySelectorAll('[data-filter]');
+    if (existing.length === keys.length) {
+      existing.forEach((btn) => {
+        const key = btn.dataset.filter;
+        if (!D.allergens[key]) return;
+        btn.textContent = L(D.allergens[key].name);
+        paintFilterButton(btn, allergenFilters.has(key));
+      });
+    } else {
+      wrap.replaceChildren();
+      keys.forEach((key) => {
+        const btn = el('button', 'filter-chip bg-white text-stone-700 border-stone-300 transition-colors duration-150');
+        btn.type = 'button';
+        btn.dataset.filter = key;
+        btn.textContent = L(D.allergens[key].name);
+        paintFilterButton(btn, allergenFilters.has(key));
+        wrap.appendChild(btn);
+      });
+    }
     const clear = $('#clear-allergen-filters');
     if (clear) clear.hidden = allergenFilters.size === 0;
   }
@@ -593,7 +612,7 @@
         allergenFilters.forEach((key) => {
           if (keys.indexOf(key) >= 0) hide = true;
         });
-        li.hidden = hide;
+        li.classList.toggle('hidden', hide);
         if (!hide) visible += 1;
       });
     });
@@ -603,9 +622,6 @@
     }
     const clear = $('#clear-allergen-filters');
     if (clear) clear.hidden = allergenFilters.size === 0;
-    document.querySelectorAll('#allergen-filters [data-filter]').forEach((btn) => {
-      btn.setAttribute('aria-pressed', String(allergenFilters.has(btn.dataset.filter)));
-    });
   }
 
   function setAllergenPanel(open) {
@@ -627,14 +643,17 @@
     });
     wrap.addEventListener('click', (event) => {
       const btn = event.target.closest('[data-filter]');
-      if (!btn) return;
+      if (!btn || !wrap.contains(btn)) return;
       const key = btn.dataset.filter;
-      if (allergenFilters.has(key)) allergenFilters.delete(key);
-      else allergenFilters.add(key);
+      const active = !allergenFilters.has(key);
+      if (active) allergenFilters.add(key);
+      else allergenFilters.delete(key);
+      paintFilterButton(btn, active);
       applyAllergenFilter();
     });
     on('#clear-allergen-filters', 'click', () => {
       allergenFilters.clear();
+      wrap.querySelectorAll('[data-filter]').forEach((btn) => paintFilterButton(btn, false));
       applyAllergenFilter();
     });
   }
