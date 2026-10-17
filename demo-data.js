@@ -65,25 +65,25 @@ window.VISIWEB_DEMO = (function () {
     rooms: [
       {
         id: 'fachada',
-        image: photo('fachada.jpg'),
+        image: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=80',
         title: { es: 'Fachada', en: 'Façade' },
         desc: { es: 'En el corazón de Alcobendas, con la puerta abierta al barrio.', en: 'In the heart of Alcobendas, with the door open to the neighbourhood.' }
       },
       {
         id: 'salon',
-        image: photo('salon.jpg'),
+        image: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=80',
         title: { es: 'El salón', en: 'The dining room' },
         desc: { es: 'Madera, luz baja y mesas para quedarse. 42 cubiertos en sala.', en: 'Wood, low light and tables you want to linger at. 42 covers inside.' }
       },
       {
         id: 'barra',
-        image: photo('barra.jpg'),
+        image: 'https://images.unsplash.com/photo-1514933651103-005eec06c04b?auto=format&fit=crop&w=800&q=80',
         title: { es: 'La barra', en: 'The bar' },
         desc: { es: 'Caña doble bien fría y el vermut de grifo. El sitio de siempre.', en: 'An ice-cold double draught and vermouth on tap. The usual spot.' }
       },
       {
         id: 'terraza',
-        image: photo('terraza.jpg'),
+        image: 'https://images.unsplash.com/photo-1543007630-9710e4a00a20?auto=format&fit=crop&w=800&q=80',
         title: { es: 'Terraza', en: 'Terrace' },
         desc: { es: '16 plazas al aire. Reservas de terraza, preferencia al mediodía.', en: '16 seats outdoors. Terrace bookings are easiest at lunchtime.' }
       }
@@ -289,7 +289,7 @@ window.VISIWEB_DEMO = (function () {
           priceEn: '€9.20',
           allergens: ['gluten', 'lacteos', 'huevos'],
           tags: ['recomendado'],
-          image: photo('croquetas.jpg')
+          image: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=400&q=80'
         },
         {
           id: 'calamares',
@@ -302,7 +302,7 @@ window.VISIWEB_DEMO = (function () {
           priceEn: '€12.90',
           allergens: ['gluten', 'moluscos'],
           tags: [],
-          image: photo('calamares.jpg')
+          image: 'https://images.unsplash.com/photo-1599488615731-7e5c2823ff28?auto=format&fit=crop&w=400&q=80'
         },
         {
           id: 'huevos-rotos',
@@ -315,7 +315,7 @@ window.VISIWEB_DEMO = (function () {
           priceEn: '€13.80',
           allergens: ['huevos'],
           tags: ['recomendado'],
-          image: photo('huevos.jpg')
+          image: 'https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?auto=format&fit=crop&w=400&q=80'
         }
       ]
     },
@@ -339,7 +339,7 @@ window.VISIWEB_DEMO = (function () {
           priceEn: '€8.90',
           allergens: ['gluten', 'lacteos'],
           tags: ['recomendado'],
-          image: photo('solomillo.jpg')
+          image: 'https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&w=400&q=80'
         },
         {
           id: 'tosta-gulas',
@@ -352,7 +352,7 @@ window.VISIWEB_DEMO = (function () {
           priceEn: '€7.60',
           allergens: ['gluten', 'pescado', 'soja'],
           tags: ['picante'],
-          image: photo('gulas.jpg')
+          image: 'https://images.unsplash.com/photo-1509722747041-616f39b57569?auto=format&fit=crop&w=400&q=80'
         },
         {
           id: 'montado-lomo',
@@ -365,7 +365,7 @@ window.VISIWEB_DEMO = (function () {
           priceEn: '€6.40',
           allergens: ['gluten'],
           tags: [],
-          image: photo('lomo.jpg')
+          image: 'https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=400&q=80'
         }
       ]
     },
@@ -402,7 +402,7 @@ window.VISIWEB_DEMO = (function () {
           priceEn: 'Included',
           allergens: ['pescado', 'huevos', 'gluten', 'apio'],
           tags: [],
-          image: photo('segundos.jpg')
+          image: 'https://images.unsplash.com/photo-1532550907401-a500c9a57435?auto=format&fit=crop&w=400&q=80'
         },
         {
           id: 'postres',
@@ -421,12 +421,16 @@ window.VISIWEB_DEMO = (function () {
           id: 'menu-completo',
           name: { es: 'Menú completo', en: 'Full set menu' },
           desc: {
-            es: 'Primero, segundo, postre, pan de hogaza y bebida incluidos. Café, 1,00 € aparte.',
-            en: 'Starter, main, dessert, sourdough bread and a drink included. Coffee €1.00 extra.'
+            es: 'Primero, segundo, postre o café, pan de hogaza y bebida incluidos.',
+            en: 'Starter, main, dessert or coffee, sourdough bread and a drink included.'
           },
           price: '13,50 €',
           priceEn: '€13.50',
-          allergens: ['gluten'],
+          allergens: [],
+          allergenNote: {
+            es: 'Según platos seleccionados',
+            en: 'Depends on the dishes you choose'
+          },
           tags: ['recomendado'],
           image: photo('menu.jpg')
         }

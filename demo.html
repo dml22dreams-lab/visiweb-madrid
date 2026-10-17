@@ -443,7 +443,7 @@
   <a href="#contenido" class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[80] focus:rounded-full focus:bg-slate-900 focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white dark:focus:bg-slate-100 dark:focus:text-slate-900" data-i18n="skipToContent">Ir al contenido</a>
 
   <!-- ============================ CABECERA ============================ -->
-  <div class="sticky top-0 z-50">
+  <div data-site-sticky class="sticky top-0 z-30 border-b border-stone-200 bg-white/95 shadow-sm backdrop-blur-sm dark:border-slate-800 dark:bg-slate-950/95">
   <div class="flex w-full flex-wrap items-center justify-between gap-x-4 gap-y-1 bg-stone-900 px-4 py-2 text-xs text-stone-200 shadow-sm">
     <div class="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1">
       <a href="index.html#gastro-premium" class="plan-pin rounded-full bg-amber-400 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-stone-950 no-underline" data-i18n="planBadge">Plan Gastro Premium</a>
@@ -451,7 +451,7 @@
     </div>
     <a href="https://visiwebmadrid.com/#planes" target="_blank" rel="noopener" class="shrink-0 whitespace-nowrap underline transition-colors hover:text-amber-400" data-i18n="planCta">Ver planes y contratar ↗</a>
   </div>
-  <header class="border-b border-slate-200 bg-white/95 backdrop-blur dark:border-slate-800 dark:bg-slate-950/95">
+  <header>
     <div class="mx-auto max-w-3xl px-5">
       <div class="flex items-center justify-between gap-3 py-3">
         <a href="#inicio" class="min-w-0 rounded-sm no-underline">
@@ -566,14 +566,14 @@
         </div>
       </div>
 
-      <div class="sticky top-[6.75rem] z-30 border-b border-slate-200 bg-white/95 py-2 backdrop-blur dark:border-slate-800 dark:bg-slate-950/95">
+      <div id="menu-tabs-bar" class="sticky z-20 border-b border-stone-200 bg-white/95 py-2 shadow-sm backdrop-blur-sm dark:border-slate-800 dark:bg-slate-950/95" style="top: var(--site-sticky-h, 12rem)">
         <div class="mx-auto max-w-3xl px-5">
           <div id="tabs" class="no-scrollbar flex gap-2 overflow-x-auto" role="tablist" aria-label="Categorías de la carta" data-i18n-aria-label="menuTabsLabel"></div>
         </div>
       </div>
 
       <div class="mx-auto max-w-3xl px-5">
-        <div id="panels" class="mt-6"></div>
+        <div id="panels" class="scroll-mt-24 pt-4"></div>
         <p id="filter-empty" class="mt-10 hidden text-center text-sm text-slate-600 dark:text-slate-400" data-i18n="allergenFilterEmpty">Ningún plato coincide con el filtro.</p>
 
         <section class="mt-14 border-t border-slate-200 pt-8 dark:border-slate-800" aria-labelledby="allergen-key-title">
@@ -655,7 +655,7 @@
     </div>
 
     <!-- ============================== RESERVAS ============================== -->
-    <div data-page="reservas" hidden>
+    <div id="reservas" data-page="reservas" class="scroll-mt-32 pt-8" hidden>
       <section class="mx-auto max-w-3xl px-5 pb-16 pt-12">
         <div class="text-center">
           <h1 class="font-serif text-3xl font-semibold tracking-tight sm:text-4xl" data-i18n="bookTitle">Reservar mesa</h1>

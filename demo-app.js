@@ -313,9 +313,17 @@
 
     const allergens = el('div', 'mt-4 flex flex-wrap items-center gap-1.5');
     const label = el('span', 'text-[11px] font-semibold uppercase tracking-wide text-slate-600 dark:text-slate-400');
-    label.textContent = item.allergens.length ? t('allergensInDish') : t('noAllergens');
-    allergens.appendChild(label);
-    item.allergens.forEach((key) => allergens.appendChild(allergenPill(key)));
+    if (item.allergenNote) {
+      label.textContent = t('allergensInDish');
+      allergens.appendChild(label);
+      const note = el('span', 'pill-allergen');
+      note.textContent = L(item.allergenNote);
+      allergens.appendChild(note);
+    } else {
+      label.textContent = item.allergens.length ? t('allergensInDish') : t('noAllergens');
+      allergens.appendChild(label);
+      item.allergens.forEach((key) => allergens.appendChild(allergenPill(key)));
+    }
     body.appendChild(allergens);
 
     const price = el('span', 'dish-price');
@@ -709,6 +717,11 @@
         const th = el('th', 'sticky left-0 z-10 max-w-[12rem] border-b border-r border-stone-200 bg-white py-2.5 pl-4 pr-4 text-left text-sm font-medium shadow-[2px_0_5px_-2px_rgba(0,0,0,0.08)] dark:border-stone-800 dark:bg-stone-900');
         th.scope = 'row';
         th.textContent = L(item.name);
+        if (item.allergenNote) {
+          const note = el('span', 'mt-0.5 block text-[11px] font-normal normal-case tracking-normal text-slate-500');
+          note.textContent = t('allergensInDish') + ' ' + L(item.allergenNote);
+          th.appendChild(note);
+        }
         row.appendChild(th);
         keys.forEach((key) => {
           const td = el('td', 'border-b border-stone-200 px-2 py-2.5 text-center dark:border-stone-800');
@@ -1418,7 +1431,16 @@
     if (consent && consent.map) loadMap();
   }
 
+  function syncStickyOffset() {
+    var bar = document.querySelector('[data-site-sticky]');
+    if (!bar) return;
+    document.documentElement.style.setProperty('--site-sticky-h', bar.offsetHeight + 'px');
+  }
+
   /* --------------------------------- Arranque ------------------------------ */
+  syncStickyOffset();
+  window.addEventListener('resize', syncStickyOffset);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(syncStickyOffset);
   renderAll();
   initTabs();
   initAllergenFilters();
