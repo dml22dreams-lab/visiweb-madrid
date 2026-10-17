@@ -128,53 +128,41 @@
 
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     .no-scrollbar::-webkit-scrollbar { display: none; }
-
-    .phone-bezel {
-      width: 292px;
-      border-radius: 2.4rem;
-      padding: 12px 12px 16px;
-      background: #1c1917;
-      box-shadow: 0 28px 60px -28px rgba(28, 25, 23, .55);
-    }
-    .phone-screen {
-      height: 560px;
-      overflow: hidden;
-      border-radius: 1.7rem;
-      background: #fff;
-    }
-    .phone-screen iframe {
-      width: 390px;
-      height: 836px;
-      border: 0;
-      transform: scale(.687);
-      transform-origin: top left;
-    }
   </style>
 </head>
 <body class="overflow-x-hidden bg-[#FAF9F6] pb-24 text-stone-900 antialiased selection:bg-[#E6D5C3] selection:text-stone-900 dark:bg-stone-950 dark:text-stone-200 md:pb-0">
 
   <header class="sticky top-0 z-50 w-full border-b border-stone-200 bg-[#FAF9F6]/95 dark:border-stone-800 dark:bg-stone-950/95">
-    <div class="mx-auto flex w-full max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:px-6 lg:px-8">
+    <div class="mx-auto flex w-full max-w-7xl items-center justify-between gap-2 px-3 py-2.5 sm:gap-3 sm:px-6 sm:py-3 lg:px-8">
       <div class="flex shrink-0 items-center gap-2">
-        <span class="text-xl font-semibold tracking-tight text-stone-900 dark:text-stone-100 sm:text-2xl">Visi<span class="text-[#8B5E34] dark:text-[#E6D5C3]">Web</span></span>
+        <span class="text-lg font-semibold tracking-tight text-stone-900 dark:text-stone-100 sm:text-2xl">Visi<span class="text-[#8B5E34] dark:text-[#E6D5C3]">Web</span></span>
         <span class="hidden rounded-full border border-[#E6D5C3] bg-[#E6D5C3] px-2 py-0.5 text-xs font-semibold text-stone-900 sm:inline dark:border-stone-700 dark:bg-stone-800 dark:text-stone-200">Madrid</span>
       </div>
-      <nav id="desktop-nav" class="hidden items-center gap-3 md:flex" aria-label="Principal">
-      <a id="nav-planes" href="#planes" class="text-sm font-semibold text-stone-500 transition-colors duration-300 hover:text-stone-900 dark:text-stone-300 dark:hover:text-stone-100">Planes</a>
-      <a id="nav-wa" data-wa-text="¡Hola! Me gustaría pedir una demo gratuita para ver cómo quedaría la web y la carta digital de mi local." href="#" target="_blank" rel="noopener noreferrer" class="btn-ink rounded-lg bg-stone-800 px-4 py-2 text-sm font-semibold leading-none text-white hover:bg-stone-900">
+      <nav id="desktop-nav" class="flex flex-nowrap items-center justify-end gap-2.5 sm:gap-4" aria-label="Principal">
+      <button type="button" id="theme-toggle" class="grid h-9 w-9 shrink-0 place-items-center rounded-xl border border-stone-200 bg-white text-stone-800 transition-colors duration-300 hover:border-stone-400 dark:border-stone-800 dark:bg-stone-900 dark:text-stone-200 sm:h-10 sm:w-10" aria-label="Activar modo oscuro" aria-pressed="false">
+        <svg class="hidden h-5 w-5 dark:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+          <circle cx="12" cy="12" r="4"></circle>
+          <path stroke-linecap="round" d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path>
+        </svg>
+        <svg class="block h-5 w-5 dark:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+          <path stroke-linejoin="round" d="M21 14.5A8.5 8.5 0 1 1 9.5 3a7 7 0 0 0 11.5 11.5z"></path>
+        </svg>
+      </button>
+      <a id="nav-planes" href="#planes" class="inline-flex items-center whitespace-nowrap rounded-xl border border-stone-300 px-2.5 py-1.5 text-[11px] font-semibold text-stone-800 transition-colors hover:bg-stone-100 dark:border-stone-700 dark:text-stone-200 dark:hover:bg-stone-800 sm:px-3 sm:text-xs">Planes</a>
+      <a id="nav-wa" data-wa-text="¡Hola! Me gustaría pedir una demo gratuita para ver cómo quedaría la web y la carta digital de mi local." href="#" target="_blank" rel="noopener noreferrer" class="btn-ink inline-flex whitespace-nowrap rounded-lg bg-stone-800 px-2 py-1.5 text-[11px] font-semibold leading-none text-white hover:bg-stone-900 sm:px-4 sm:py-2 sm:text-sm">
         Pedir Demo Gratis
       </a>
-      <a id="nav-ejemplo" href="demo.html" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl border border-stone-300 dark:border-stone-700 text-xs font-semibold text-stone-800 dark:text-stone-200 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors">
-        Ver ejemplo
+      <a id="nav-ejemplo" href="demo.html" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 whitespace-nowrap rounded-xl border border-stone-300 px-2 py-1.5 text-[11px] font-semibold text-stone-800 transition-colors hover:bg-stone-100 dark:border-stone-700 dark:text-stone-200 dark:hover:bg-stone-800 sm:px-3 sm:text-xs">
+        Ver demo
         <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M8 16 16 8M9 8h7v7"></path></svg>
       </a>
       </nav>
     </div>
   </header>
 
-  <section class="relative w-full overflow-x-hidden">
-    <div class="relative mx-auto grid w-full max-w-7xl items-center gap-12 px-4 pb-20 pt-16 sm:px-6 lg:grid-cols-[minmax(0,1.15fr)_auto] lg:gap-16 lg:px-8 lg:pb-28 lg:pt-24">
-      <div class="text-center lg:text-left">
+  <section class="relative flex min-h-[calc(100vh-5rem)] w-full flex-col justify-center overflow-x-hidden py-12 md:min-h-[85vh] md:py-20">
+    <div class="relative mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="max-w-3xl text-center lg:text-left">
         <div class="scale-in mx-auto mb-6 inline-flex max-w-full flex-wrap items-center justify-center gap-2 rounded-full border border-stone-200 bg-white px-3 py-1.5 text-center text-xs font-semibold text-stone-700 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-300 lg:mx-0">
           <span class="h-2 w-2 shrink-0 rounded-full bg-[#8B5E34]"></span>
           Especialistas en Hostelería Local
@@ -194,22 +182,11 @@
           </a>
         </div>
       </div>
-      <figure class="fade-in-up delay-3 mx-auto w-fit">
-        <div class="phone-bezel">
-          <div class="mb-2 flex justify-center" aria-hidden="true">
-            <span class="h-1.5 w-16 rounded-full bg-stone-700"></span>
-          </div>
-          <div class="phone-screen">
-            <iframe src="demo.html?lang=es" title="Carta digital de ejemplo en el móvil" loading="eager"></iframe>
-          </div>
-        </div>
-        <figcaption class="mt-3 text-center text-xs font-semibold text-stone-500">Así ve el cliente tu carta</figcaption>
-      </figure>
     </div>
   </section>
 
-  <section id="servicios" class="group w-full scroll-mt-24">
-    <div class="mx-auto w-full max-w-7xl px-4 py-16 sm:px-6 md:py-24 lg:px-8">
+  <section id="servicios" class="group w-full scroll-mt-24 pt-20 pb-20 md:pt-28">
+    <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
       <div class="mx-auto max-w-xl text-center">
         <h2 class="break-words text-3xl font-bold leading-tight text-stone-900 dark:text-stone-100 sm:text-4xl md:text-5xl">Todo lo que tu local necesita</h2>
         <p class="mx-auto mt-3 max-w-xl hyphens-auto break-words text-stone-500">Sin tecnicismos raros ni cobros sorpresa. Directo al grano.</p>
@@ -472,61 +449,8 @@
         <button type="button" class="w-fit text-left text-stone-600 transition-colors hover:text-stone-900 dark:text-stone-300 dark:hover:text-stone-100" data-open-legal="cookies">Política de Cookies</button>
       </nav>
     </div>
-    <div id="footer-tools" class="mx-auto flex w-full max-w-7xl items-center justify-between gap-3 border-t border-stone-200 px-4 py-4 dark:border-stone-800 md:hidden">
-      <button type="button" id="theme-toggle" class="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-stone-200 bg-white text-stone-800 transition-colors duration-300 hover:border-stone-400 dark:border-stone-800 dark:bg-stone-900 dark:text-stone-200" aria-label="Activar modo oscuro" aria-pressed="false">
-        <svg class="hidden h-5 w-5 dark:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-          <circle cx="12" cy="12" r="4"></circle>
-          <path stroke-linecap="round" d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path>
-        </svg>
-        <svg class="block h-5 w-5 dark:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-          <path stroke-linejoin="round" d="M21 14.5A8.5 8.5 0 1 1 9.5 3a7 7 0 0 0 11.5 11.5z"></path>
-        </svg>
-      </button>
-      <div id="auth-slot" class="relative">
-        <button type="button" id="auth-open" class="inline-flex h-10 items-center gap-1.5 rounded-xl border border-stone-200 bg-white px-3 text-xs font-semibold text-stone-800 transition-colors duration-300 hover:border-stone-400 sm:text-sm dark:border-stone-800 dark:bg-stone-900 dark:text-stone-200">
-          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="8" r="3.2"></circle><path stroke-linecap="round" d="M5 19.2c1.4-2.6 3.8-3.7 7-3.7s5.6 1.1 7 3.7"></path></svg>
-          Acceder
-        </button>
-        <div id="auth-session" class="hidden">
-          <button type="button" id="auth-menu-toggle" class="inline-flex h-10 max-w-[11rem] items-center gap-2 rounded-full border border-stone-200 bg-white py-1 pl-1 pr-2.5 text-stone-800 transition-colors duration-300 hover:border-stone-400 sm:max-w-[14rem] dark:border-stone-800 dark:bg-stone-900 dark:text-stone-200" aria-expanded="false" aria-haspopup="menu">
-            <span class="relative shrink-0">
-              <span id="auth-avatar" class="grid h-8 w-8 place-items-center overflow-hidden rounded-full bg-[#E6D5C3] text-xs font-bold text-stone-900"></span>
-              <span class="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border-2 border-white bg-emerald-600 dark:border-stone-950" aria-hidden="true"></span>
-            </span>
-            <span id="auth-email" class="truncate text-xs font-semibold"></span>
-          </button>
-          <div id="auth-menu" class="absolute right-0 top-full z-20 mt-2 hidden w-44 rounded-xl border border-stone-200 bg-white p-1 shadow-md dark:border-stone-800 dark:bg-stone-900" role="menu">
-            <button type="button" id="auth-logout" class="w-full rounded-lg px-3 py-2 text-left text-sm font-semibold text-stone-600 transition-colors hover:bg-stone-100 dark:text-stone-200 dark:hover:bg-stone-800" role="menuitem">Cerrar sesión</button>
-          </div>
-        </div>
-      </div>
-    </div>
     <p class="border-t border-stone-200 px-4 py-4 text-center text-xs text-stone-500 dark:border-stone-800">© 2026 VisiWeb Madrid. Todos los derechos reservados.</p>
   </footer>
-  <script>
-    (function () {
-      var footerTools = document.getElementById('footer-tools');
-      var desktopNav = document.getElementById('desktop-nav');
-      var planes = document.getElementById('nav-planes');
-      var auth = document.getElementById('auth-slot');
-      var theme = document.getElementById('theme-toggle');
-      var wa = document.getElementById('nav-wa');
-      var ejemplo = document.getElementById('nav-ejemplo');
-      var menu = document.getElementById('auth-menu');
-      var mq = window.matchMedia('(min-width: 768px)');
-      function placeNav() {
-        var desktop = mq.matches;
-        if (desktop) desktopNav.append(planes, theme, auth, wa, ejemplo);
-        else footerTools.append(theme, auth);
-        menu.classList.toggle('top-full', desktop);
-        menu.classList.toggle('mt-2', desktop);
-        menu.classList.toggle('bottom-full', !desktop);
-        menu.classList.toggle('mb-2', !desktop);
-      }
-      placeNav();
-      if (mq.addEventListener) mq.addEventListener('change', placeNav);
-    })();
-  </script>
 
   <dialog id="legal-aviso" class="w-[min(100%-2rem,40rem)] rounded-2xl border border-stone-200 bg-white p-0 text-stone-900 shadow-lg backdrop:bg-stone-950/60 open:flex open:flex-col dark:border-stone-800 dark:bg-stone-900 dark:text-stone-200">
     <div class="flex items-start justify-between gap-4 border-b border-stone-200 px-6 py-4 dark:border-stone-800">
@@ -537,7 +461,7 @@
       <p>El sitio web VisiWeb Madrid informa sobre servicios de digitalización y posicionamiento local para hostelería en Alcobendas, San Sebastián de los Reyes y Madrid.</p>
       <p>El titular opera bajo el nombre comercial VisiWeb Madrid. Los datos identificativos completos (razón social o nombre, NIF y domicilio) se facilitan antes de la contratación y a cualquier persona que los solicite por el canal de contacto de esta web.</p>
       <p>Los contenidos, textos, diseño y marca de este sitio son titularidad de VisiWeb Madrid. Queda prohibida su reproducción no autorizada.</p>
-      <p>Los precios publicados son orientativos de los planes descritos. El montaje se abona al 50% al inicio y al 50% a la entrega. La cuota de mantenimiento incluye hosting, dominio y soporte según el plan, con un compromiso de 12 meses.</p>
+      <p>Los precios publicados son orientativos de los planes descritos. El montaje se abona al 50% a la confirmación del proyecto y al 50% restante a la entrega y publicación de la web. La cuota de mantenimiento es mensual, con un compromiso inicial de 12 meses, e incluye soporte, actualizaciones, hosting y dominio. El dominio es en todo momento propiedad del cliente.</p>
       <p>VisiWeb Madrid no se responsabiliza del uso que terceros hagan de los enlaces externos, incluido WhatsApp.</p>
     </div>
   </dialog>
@@ -550,7 +474,7 @@
     <div class="max-h-[70vh] space-y-4 overflow-y-auto px-6 py-5 text-sm leading-relaxed text-stone-500 dark:text-stone-300">
       <section class="space-y-2">
         <h3 class="font-semibold text-stone-900 dark:text-stone-100">1. Formato y condiciones de pago</h3>
-        <p>El desarrollo de cualquier tipo de web requiere un abono del 50% al inicio del proyecto y el 50% restante a la entrega y puesta en marcha del sitio web. La cuota mensual de mantenimiento entra en vigor a partir de la publicación oficial.</p>
+        <p>El desarrollo de la web se cobra al 50% de anticipo a la confirmación del proyecto y al 50% restante a la entrega y publicación de la web.</p>
       </section>
       <section class="space-y-2">
         <h3 class="font-semibold text-stone-900 dark:text-stone-100">2. Plazos estimados de entrega</h3>
@@ -571,11 +495,11 @@
       </section>
       <section class="space-y-2">
         <h3 class="font-semibold text-stone-900 dark:text-stone-100">5. Mantenimiento y permanencia</h3>
-        <p>El servicio de mantenimiento técnico y gestión de Google Maps está sujeto a un compromiso mínimo de 12 meses, garantizando la operatividad del hosting, renovación del dominio, certificados de seguridad y soporte continuo.</p>
+        <p>La cuota de mantenimiento es mensual y tiene un compromiso inicial de 12 meses. Incluye soporte, actualizaciones, hosting y dominio.</p>
       </section>
       <section class="space-y-2">
-        <h3 class="font-semibold text-stone-900 dark:text-stone-100">6. Dominios existentes y migraciones</h3>
-        <p>La titularidad de los dominios aportados por el cliente pertenece en todo momento al propio cliente o local comercial. Si el cliente dispone de permanencia activa con otro proveedor, se podrá acordar el inicio de la cuota de mantenimiento mensual coincidiendo con la finalización efectiva del servicio anterior.</p>
+        <h3 class="font-semibold text-stone-900 dark:text-stone-100">6. Dominio propio y migraciones</h3>
+        <p>El dominio web es en todo momento propiedad del cliente. Si procede de otro proveedor con permanencia activa, el cobro del mantenimiento podrá aplazarse hasta la extinción de dicho contrato.</p>
       </section>
     </div>
   </dialog>
@@ -587,8 +511,10 @@
     </div>
     <div class="max-h-[70vh] space-y-3 overflow-y-auto px-6 py-5 text-sm leading-relaxed text-stone-500 dark:text-stone-300">
       <p>Responsable: VisiWeb Madrid. Contacto a través del enlace de WhatsApp publicado en esta web.</p>
-      <p>El formulario de interés recoge el nombre del local y la zona para abrir WhatsApp y, si Supabase está configurado, guardar esa solicitud. Si escribes por WhatsApp, los datos que nos facilites se usan solo para atender tu consulta o preparar un presupuesto.</p>
-      <p>La base del tratamiento es tu solicitud de información y, si contratas, la ejecución del servicio. WhatsApp (Meta) trata los mensajes según sus propias condiciones al usar ese canal.</p>
+      <p>Finalidad del tratamiento: gestión de consultas comerciales, preparación de presupuestos y elaboración de demos gratuitas solicitadas voluntariamente por el usuario.</p>
+      <p>Datos tratados: nombre del local, zona geográfica y datos de contacto facilitados vía formulario o WhatsApp.</p>
+      <p>La base del tratamiento es la solicitud voluntaria del usuario y, si se contrata el servicio, su ejecución.</p>
+      <p>Destinatarios y encargados del tratamiento: Meta Platforms Ireland Ltd., para el servicio de mensajería WhatsApp, y Cloudflare Inc., como proveedor de infraestructura y hosting.</p>
       <p>No vendemos datos ni los usamos para publicidad de terceros. Se conservan el tiempo necesario para gestionar la consulta o la relación contractual y los plazos legales aplicables.</p>
       <p>Puedes solicitar acceso, rectificación, supresión, limitación, oposición y portabilidad por el mismo canal de contacto, y reclamar ante la Agencia Española de Protección de Datos.</p>
     </div>
@@ -600,10 +526,9 @@
       <button type="button" class="rounded-lg px-2 py-1 text-sm font-semibold text-stone-500 hover:text-stone-900 dark:hover:text-stone-100" data-close-legal>Cerrar</button>
     </div>
     <div class="max-h-[70vh] space-y-3 overflow-y-auto px-6 py-5 text-sm leading-relaxed text-stone-500 dark:text-stone-300">
-      <p>Este sitio no usa cookies de analítica ni de publicidad.</p>
-      <p>Se guarda en el almacenamiento local del navegador la preferencia de modo claro u oscuro (<span class="font-semibold">theme</span>), solo en este dispositivo, para recordar tu elección. Puedes borrarla desde la configuración del navegador.</p>
-      <p>La tipografía se carga desde Google Fonts y los estilos desde el CDN de Tailwind. Esas peticiones pueden implicar el tratamiento técnico de la dirección IP por parte de esos proveedores.</p>
-      <p>No se instalan cookies propias de seguimiento. Si en el futuro se añadieran cookies no técnicas, se pedirá consentimiento antes de activarlas.</p>
+      <p>Este sitio utiliza únicamente cookies técnicas y funcionales estrictamente necesarias para la navegación, la seguridad (Cloudflare) y la preferencia de tema claro u oscuro.</p>
+      <p>La preferencia de tema se guarda en este dispositivo para recordar tu elección. Puedes borrarla desde la configuración del navegador.</p>
+      <p>No se utilizan cookies de seguimiento publicitario de terceros.</p>
     </div>
   </dialog>
 
@@ -624,64 +549,6 @@
       <button type="submit" class="mt-5 flex w-full items-center justify-center rounded-xl bg-emerald-600 px-4 py-3.5 text-base font-semibold text-white shadow-sm transition-colors hover:bg-emerald-700">Pedir por WhatsApp</button>
     </form>
   </div>
-  <p id="cart-toast" role="status" class="pointer-events-none fixed bottom-24 left-1/2 z-[110] max-w-[calc(100%-2rem)] -translate-x-1/2 translate-y-3 rounded-full bg-stone-900 px-4 py-2.5 text-center text-sm font-semibold text-white opacity-0 shadow-md transition duration-300 dark:bg-white dark:text-stone-900 md:bottom-6"></p>
-
-  <div id="auth-modal" class="pointer-events-none fixed inset-0 z-[100] hidden items-center justify-center overflow-y-auto p-4" aria-hidden="true">
-    <button type="button" id="auth-backdrop" class="absolute inset-0 bg-stone-950/60 backdrop-blur-md opacity-0 transition-opacity duration-300" aria-label="Cerrar acceso"></button>
-    <div id="auth-card" role="dialog" aria-modal="true" aria-labelledby="auth-title" class="relative mx-4 my-auto max-h-[calc(100dvh-2rem)] w-full max-w-md translate-y-2 scale-[0.98] overflow-y-auto rounded-3xl border border-stone-200 bg-white p-6 opacity-0 shadow-lg transition duration-300 sm:p-8 dark:border-stone-800 dark:bg-stone-900">
-      <div class="mb-6 text-center">
-        <span class="mx-auto mb-3 grid h-12 w-12 place-items-center rounded-2xl bg-[#E6D5C3] text-stone-900" aria-hidden="true">
-          <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21s7-5.4 7-11a7 7 0 1 0-14 0c0 5.6 7 11 7 11z"></path><circle cx="12" cy="10" r="2.2"></circle></svg>
-        </span>
-        <h2 id="auth-title" class="text-xl font-extrabold tracking-tight text-stone-900 dark:text-stone-100">VisiWeb Madrid</h2>
-        <p class="mt-1 text-sm text-stone-500">Digitalización y Webs para Bares y Restaurantes</p>
-        <button type="button" id="auth-close" class="mt-2 text-sm font-semibold text-[#8B5E34] transition-colors hover:text-stone-900 dark:text-[#E6D5C3] dark:hover:text-stone-100">Volver a la web</button>
-      </div>
-      <div class="flex rounded-2xl bg-stone-100 p-1 dark:bg-stone-800" role="tablist" aria-label="Acceso">
-        <button type="button" id="auth-tab-login" role="tab" aria-selected="true" class="flex-1 rounded-xl bg-white px-3 py-2 text-sm font-semibold text-stone-900 shadow-sm transition duration-300 dark:bg-stone-700 dark:text-stone-100">Iniciar sesión</button>
-        <button type="button" id="auth-tab-signup" role="tab" aria-selected="false" class="flex-1 rounded-xl px-3 py-2 text-sm font-semibold text-stone-500 transition duration-300 dark:text-stone-400">Crear cuenta</button>
-      </div>
-      <form id="auth-form" class="mt-5 space-y-3" novalidate>
-        <label class="block">
-          <span class="mb-1.5 block text-xs font-semibold text-stone-500 dark:text-stone-300">Correo</span>
-          <span class="relative block">
-            <svg class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-stone-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16v12H4z"></path><path stroke-linecap="round" stroke-linejoin="round" d="m4 7 8 6 8-6"></path></svg>
-            <input id="auth-email-input" type="email" name="email" autocomplete="email" required placeholder="tuemail@ejemplo.com" class="w-full rounded-xl border border-stone-200 bg-stone-50 py-3 pl-10 pr-3 text-sm text-stone-900 outline-none transition placeholder:text-stone-400 focus:border-stone-500 focus:ring-2 focus:ring-stone-400/25 dark:border-stone-800 dark:bg-stone-800 dark:text-stone-100">
-          </span>
-        </label>
-        <label id="auth-password-wrap" class="block">
-          <span class="mb-1.5 block text-xs font-semibold text-stone-500 dark:text-stone-300">Contraseña</span>
-          <span class="relative block">
-            <svg class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-stone-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path stroke-linecap="round" d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg>
-            <input id="auth-password-input" type="password" name="password" autocomplete="current-password" required placeholder="••••••••" class="w-full rounded-xl border border-stone-200 bg-stone-50 py-3 pl-10 pr-11 text-sm text-stone-900 outline-none transition placeholder:text-stone-400 focus:border-stone-500 focus:ring-2 focus:ring-stone-400/25 dark:border-stone-800 dark:bg-stone-800 dark:text-stone-100">
-            <button type="button" id="auth-password-toggle" class="absolute right-2 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-lg text-stone-400 transition-colors hover:text-stone-600 dark:hover:text-stone-200" aria-label="Mostrar contraseña">
-              <svg id="auth-eye" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12z"></path><circle cx="12" cy="12" r="2.5"></circle></svg>
-              <svg id="auth-eye-off" class="hidden h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" d="M3 3l18 18"></path><path stroke-linecap="round" stroke-linejoin="round" d="M10.6 6.2A10.7 10.7 0 0 1 12 6c6.5 0 10 6 10 6a18.4 18.4 0 0 1-3.2 3.8M6.1 6.7C3.6 8.4 2 12 2 12a18.7 18.7 0 0 0 6.4 5.2"></path><path stroke-linecap="round" d="M9.9 9.9a2.5 2.5 0 0 0 3.5 3.5"></path></svg>
-            </button>
-          </span>
-        </label>
-        <button type="button" id="auth-forgot" class="block w-full text-right text-sm font-semibold text-[#8B5E34] transition-colors hover:text-stone-900 dark:text-[#E6D5C3] dark:hover:text-stone-100">¿Olvidaste tu contraseña?</button>
-        <p id="auth-feedback" class="hidden text-sm leading-relaxed text-red-600 dark:text-red-400" role="status"></p>
-        <button type="submit" id="auth-submit" class="btn-ink flex w-full items-center justify-center rounded-xl bg-stone-900 px-4 py-3 text-sm font-semibold text-white hover:bg-stone-800 disabled:cursor-not-allowed disabled:opacity-50">Iniciar sesión</button>
-      </form>
-      <div class="my-5 flex items-center gap-3 text-xs font-semibold uppercase tracking-widest text-stone-400">
-        <span class="h-px flex-1 bg-stone-200 dark:bg-stone-800"></span>
-        <span>o</span>
-        <span class="h-px flex-1 bg-stone-200 dark:bg-stone-800"></span>
-      </div>
-      <button type="button" id="auth-google" class="flex w-full items-center justify-center gap-2 rounded-xl border border-stone-200 bg-white px-4 py-3 text-sm font-semibold text-stone-800 transition duration-300 hover:border-stone-400 hover:bg-stone-50 dark:border-stone-800 dark:bg-stone-950 dark:text-stone-200 dark:hover:bg-stone-800">
-        <svg class="h-5 w-5" viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 8 3.1l5.7-5.7C34.2 6.1 29.4 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.7-.4-3.5z"></path><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 16 19 12 24 12c3.1 0 5.8 1.2 8 3.1l5.7-5.7C34.2 6.1 29.4 4 24 4 16.3 4 9.6 8.3 6.3 14.7z"></path><path fill="#4CAF50" d="M24 44c5.2 0 10-2 13.6-5.2l-6.3-5.3C29.2 35.1 26.7 36 24 36c-5.3 0-9.7-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"></path><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-1.1 3.2-3.5 5.7-6.6 7.2l6.3 5.3C37.4 38.3 44 34 44 24c0-1.3-.1-2.7-.4-3.5z"></path></svg>
-        Continuar con Google
-      </button>
-      <div class="mt-4 flex items-center justify-center gap-1.5">
-        <button type="button" id="auth-magic" class="text-sm font-semibold text-stone-500 transition-colors hover:text-stone-900 dark:text-stone-300 dark:hover:text-stone-100">Acceder con enlace mágico</button>
-        <button type="button" class="group/magic relative inline-flex items-center justify-center w-4 h-4 rounded-full bg-stone-200 dark:bg-stone-700 text-[10px] font-bold text-stone-700 dark:text-stone-200 cursor-help hover:bg-stone-800 hover:text-white transition-colors" aria-label="Qué es un enlace mágico" onclick="event.preventDefault();event.stopPropagation()">?
-          <span class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 w-64 p-3 rounded-xl pointer-events-none opacity-0 group-hover/magic:opacity-100 transition-all duration-200 z-50 text-xs leading-relaxed shadow-md text-left bg-stone-900/95 dark:bg-stone-800/95 text-stone-200 border border-stone-700" role="tooltip">Te enviamos un enlace directo a tu correo electrónico para que inicies sesión en un clic, sin tener que recordar ninguna contraseña.<span class="absolute top-full left-1/2 -mt-px -translate-x-1/2 border-4 border-transparent border-t-stone-900/95 dark:border-t-stone-800/95" aria-hidden="true"></span></span>
-        </button>
-      </div>
-    </div>
-  </div>
-
   <script>
     (function () {
       var root = document.documentElement;
@@ -909,278 +776,9 @@
   </script>
   <script>
     (function () {
-      const SUPABASE_URL = 'https://atcgrdfzyboqvdvtfymz.supabase.co';
-      const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF0Y2dyZGZ6eWJvcXZkdnRmeW16Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE5OTc1NTksImV4cCI6MjEwNzU3MzU1OX0.LKMVrtcqd_suMUeyWeedPs5yuzTYLVbz7Lel9A0iKY8';
-      const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-      window.visiwebSupabase = supabase;
-
-      var mode = 'login';
-      var modal = document.getElementById('auth-modal');
-      var backdrop = document.getElementById('auth-backdrop');
-      var card = document.getElementById('auth-card');
-      var form = document.getElementById('auth-form');
-      var emailInput = document.getElementById('auth-email-input');
-      var passwordInput = document.getElementById('auth-password-input');
-      var forgot = document.getElementById('auth-forgot');
-      var submit = document.getElementById('auth-submit');
-      var feedback = document.getElementById('auth-feedback');
-      var tabLogin = document.getElementById('auth-tab-login');
-      var tabSignup = document.getElementById('auth-tab-signup');
-      var openButton = document.getElementById('auth-open');
-      var sessionBox = document.getElementById('auth-session');
-      var menu = document.getElementById('auth-menu');
-      var menuToggle = document.getElementById('auth-menu-toggle');
-      var avatar = document.getElementById('auth-avatar');
-      var emailLabel = document.getElementById('auth-email');
-      var toast = document.getElementById('cart-toast');
-      var toastTimer = null;
-      var activeTab = ['bg-white', 'text-stone-900', 'shadow-sm', 'dark:bg-stone-700', 'dark:text-stone-100'];
-      var idleTab = ['text-stone-500', 'dark:text-stone-400'];
-
-      function showToast(message) {
-        toast.textContent = message;
-        toast.classList.remove('opacity-0', 'translate-y-3');
-        toast.classList.add('opacity-100', 'translate-y-0');
-        clearTimeout(toastTimer);
-        toastTimer = setTimeout(function () {
-          toast.classList.add('opacity-0', 'translate-y-3');
-          toast.classList.remove('opacity-100', 'translate-y-0');
-        }, 2600);
-      }
-
-      function setFeedback(message, ok) {
-        feedback.textContent = message || '';
-        feedback.classList.toggle('hidden', !message);
-        feedback.classList.toggle('text-red-600', !ok);
-        feedback.classList.toggle('dark:text-red-400', !ok);
-        feedback.classList.toggle('text-emerald-700', !!ok);
-        feedback.classList.toggle('dark:text-emerald-400', !!ok);
-      }
-
-      function readyClient() {
-        if (!supabase) {
-          setFeedback('No se ha cargado el SDK de Supabase.');
-          return false;
-        }
-        return true;
-      }
-
-      function paintTabs() {
-        var loginOn = mode === 'login';
-        activeTab.forEach(function (cls) {
-          tabLogin.classList.toggle(cls, loginOn);
-          tabSignup.classList.toggle(cls, !loginOn);
-        });
-        idleTab.forEach(function (cls) {
-          tabLogin.classList.toggle(cls, !loginOn);
-          tabSignup.classList.toggle(cls, loginOn);
-        });
-        tabLogin.setAttribute('aria-selected', loginOn ? 'true' : 'false');
-        tabSignup.setAttribute('aria-selected', loginOn ? 'false' : 'true');
-        submit.textContent = loginOn ? 'Iniciar sesión' : 'Crear cuenta';
-        forgot.classList.toggle('hidden', !loginOn);
-        passwordInput.autocomplete = loginOn ? 'current-password' : 'new-password';
-      }
-
-      function setMode(next) {
-        mode = next;
-        setFeedback('');
-        paintTabs();
-      }
-
-      function openModal() {
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
-        modal.classList.remove('pointer-events-none');
-        modal.setAttribute('aria-hidden', 'false');
-        document.body.classList.add('overflow-hidden');
-        requestAnimationFrame(function () {
-          backdrop.classList.add('opacity-100');
-          backdrop.classList.remove('opacity-0');
-          card.classList.remove('opacity-0', 'translate-y-2', 'scale-[0.98]');
-          card.classList.add('opacity-100', 'translate-y-0', 'scale-100');
-        });
-        emailInput.focus();
-      }
-
-      function closeModal() {
-        backdrop.classList.remove('opacity-100');
-        backdrop.classList.add('opacity-0');
-        card.classList.add('opacity-0', 'translate-y-2', 'scale-[0.98]');
-        card.classList.remove('opacity-100', 'translate-y-0', 'scale-100');
-        modal.setAttribute('aria-hidden', 'true');
-        document.body.classList.remove('overflow-hidden');
-        setTimeout(function () {
-          if (modal.getAttribute('aria-hidden') === 'true') {
-            modal.classList.add('hidden', 'pointer-events-none');
-            modal.classList.remove('flex');
-          }
-        }, 280);
-      }
-
-      function closeMenu() {
-        menu.classList.add('hidden');
-        menuToggle.setAttribute('aria-expanded', 'false');
-      }
-
-      function actualizarEstadoUsuario(user) {
-        window.visiwebUser = user || null;
-        var logged = !!user;
-        openButton.classList.toggle('hidden', logged);
-        sessionBox.classList.toggle('hidden', !logged);
-        if (!logged) {
-          closeMenu();
-          document.dispatchEvent(new CustomEvent('visiweb-session'));
-          return;
-        }
-        var email = user.email || 'Cuenta';
-        emailLabel.textContent = email;
-        var photo = user.user_metadata && (user.user_metadata.avatar_url || user.user_metadata.picture);
-        avatar.textContent = '';
-        if (photo) {
-          var img = document.createElement('img');
-          img.src = photo;
-          img.alt = '';
-          img.className = 'h-full w-full object-cover';
-          avatar.appendChild(img);
-        } else {
-          avatar.textContent = email.charAt(0).toUpperCase();
-        }
-        document.dispatchEvent(new CustomEvent('visiweb-session'));
-      }
-
-      function emailValue() {
-        return emailInput.value.trim();
-      }
-
-      tabLogin.addEventListener('click', function () { setMode('login'); });
-      tabSignup.addEventListener('click', function () { setMode('signup'); });
-      openButton.addEventListener('click', function () {
-        setFeedback('');
-        openModal();
-      });
-      document.getElementById('auth-close').addEventListener('click', closeModal);
-      backdrop.addEventListener('click', closeModal);
-      document.addEventListener('keydown', function (event) {
-        if (event.key === 'Escape' && modal.getAttribute('aria-hidden') === 'false') closeModal();
-        if (event.key === 'Escape') closeMenu();
-      });
-
-      document.getElementById('auth-password-toggle').addEventListener('click', function () {
-        var show = passwordInput.type === 'password';
-        passwordInput.type = show ? 'text' : 'password';
-        document.getElementById('auth-eye').classList.toggle('hidden', show);
-        document.getElementById('auth-eye-off').classList.toggle('hidden', !show);
-        this.setAttribute('aria-label', show ? 'Ocultar contraseña' : 'Mostrar contraseña');
-      });
-
-      menuToggle.addEventListener('click', function (event) {
-        event.stopPropagation();
-        var open = menu.classList.contains('hidden');
-        menu.classList.toggle('hidden', !open);
-        menuToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
-      });
-      document.addEventListener('click', function (event) {
-        if (!sessionBox.contains(event.target)) closeMenu();
-      });
-
-      document.getElementById('auth-logout').addEventListener('click', function () {
-        if (!readyClient()) return;
-        supabase.auth.signOut().then(function (result) {
-          if (result.error) setFeedback(result.error.message);
-          closeMenu();
-        });
-      });
-
-      document.getElementById('auth-google').addEventListener('click', function () {
-        if (!readyClient()) {
-          openModal();
-          return;
-        }
-        supabase.auth.signInWithOAuth({
-          provider: 'google',
-          options: { redirectTo: window.location.origin }
-        }).then(function (result) {
-          if (result.error) setFeedback(result.error.message);
-        });
-      });
-
-      document.getElementById('auth-magic').addEventListener('click', function () {
-        if (!readyClient()) return;
-        var email = window.prompt('Escribe tu correo para enviarte el enlace mágico', emailValue());
-        if (!email) return;
-        email = email.trim();
-        if (!email) return;
-        supabase.auth.signInWithOtp({
-          email: email,
-          options: { emailRedirectTo: window.location.origin }
-        }).then(function (result) {
-          if (result.error) setFeedback(result.error.message);
-          else setFeedback('Te hemos enviado un enlace mágico a ' + email + '.', true);
-        });
-      });
-
-      forgot.addEventListener('click', function () {
-        if (!readyClient()) return;
-        var email = emailValue();
-        if (!email) {
-          setFeedback('Escribe tu correo para restablecer la contraseña.');
-          emailInput.focus();
-          return;
-        }
-        supabase.auth.resetPasswordForEmail(email, {
-          redirectTo: window.location.origin
-        }).then(function (result) {
-          if (result.error) setFeedback(result.error.message);
-          else setFeedback('Te hemos enviado un correo para restablecer la contraseña.', true);
-        });
-      });
-
-      form.addEventListener('submit', function (event) {
-        event.preventDefault();
-        if (!readyClient()) return;
-        var email = emailValue();
-        var password = passwordInput.value;
-        if (!email || !password) {
-          setFeedback('Completa el correo y la contraseña.');
-          return;
-        }
-        if (password.length < 6) {
-          setFeedback('La contraseña debe tener al menos 6 caracteres.');
-          return;
-        }
-        submit.disabled = true;
-        var request = mode === 'signup'
-          ? supabase.auth.signUp({ email: email, password: password, options: { emailRedirectTo: window.location.origin } })
-          : supabase.auth.signInWithPassword({ email: email, password: password });
-        request.then(function (result) {
-          submit.disabled = false;
-          if (result.error) {
-            setFeedback(result.error.message);
-            return;
-          }
-          if (mode === 'signup' && result.data && result.data.user && !result.data.session) {
-            setFeedback('Cuenta creada. Revisa tu correo para confirmarla.', true);
-          }
-        }).catch(function () {
-          submit.disabled = false;
-          setFeedback('No se ha podido conectar con Supabase.');
-        });
-      });
-
-      if (supabase) {
-        supabase.auth.onAuthStateChange(function (event, session) {
-          var user = session && session.user ? session.user : null;
-          actualizarEstadoUsuario(user);
-          if (event === 'SIGNED_IN' && user) {
-            closeModal();
-            showToast('Sesión iniciada como ' + user.email);
-          }
-          if (event === 'SIGNED_OUT') showToast('Sesión cerrada');
-        });
-      }
-
-      paintTabs();
+      var SUPABASE_URL = 'https://atcgrdfzyboqvdvtfymz.supabase.co';
+      var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF0Y2dyZGZ6eWJvcXZkdnRmeW16Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE5OTc1NTksImV4cCI6MjEwNzU3MzU1OX0.LKMVrtcqd_suMUeyWeedPs5yuzTYLVbz7Lel9A0iKY8';
+      if (window.supabase) window.visiwebSupabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     })();
   </script>
   <script>
