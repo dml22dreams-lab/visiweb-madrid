@@ -415,23 +415,15 @@
       </article>
     </div>
 
-    <p class="reveal mx-auto mt-6 max-w-3xl text-center text-xs leading-relaxed text-stone-500 dark:text-stone-400">
-      *Plazos de desarrollo contabilizados a partir de la recepción de carta/material y confirmación del anticipo del 50%.
-    </p>
-    <p class="reveal mx-auto mt-2 max-w-3xl text-center text-sm leading-relaxed text-stone-500 dark:text-stone-400">
-      *Cuotas mensuales de mantenimiento con compromiso de 12 meses (incluyen hosting de alta velocidad, dominio, seguridad SSL y soporte).
-    </p>
-    <p class="reveal mx-auto mt-4 flex max-w-3xl items-start gap-3 rounded-2xl border border-[#E6D5C3] bg-[#F3EDE4] px-4 py-3.5 text-left text-sm leading-relaxed text-stone-800 shadow-sm dark:border-stone-700 dark:bg-stone-900 dark:text-stone-200">
-      <span class="shrink-0 text-base leading-snug" aria-hidden="true">🔄</span>
-      <span>¿Ya tienes tu propio dominio o una web antigua? Nos encargamos de conectarlo y migrar el tráfico a tu nueva web sin coste extra y sin que tu negocio se quede sin servicio.</span>
-    </p>
-
-    <section id="mantenimiento" class="reveal mt-16 text-center" aria-label="Planes de mantenimiento">
+    <section id="mantenimiento" class="reveal mt-8 text-center" aria-label="Planes de mantenimiento">
       <p class="text-xs uppercase tracking-wider font-semibold text-stone-500">Servicio recurrente</p>
       <h2 class="mt-2 text-2xl font-bold text-stone-900 dark:text-stone-100 md:text-3xl">Mantenimiento y gestión continua</h2>
-      <p class="mx-auto mt-2 max-w-xl text-center text-stone-600 dark:text-stone-400">Elige el nivel de soporte para que tu web y tu ficha de Google Maps estén siempre al día, sin que tengas que tocar nada.</p>
-      <div class="mx-auto mt-8 grid max-w-4xl grid-cols-1 gap-6 text-left md:grid-cols-2">
-        <article data-maint-plan="base" data-name="Técnico Base" data-price="25" data-idle="border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900" class="flex h-full flex-col justify-between rounded-2xl border border-stone-200 bg-white p-6 shadow-sm transition duration-300 dark:border-stone-800 dark:bg-stone-900">
+      <div id="maint-tabs" class="mx-auto mb-6 mt-6 grid max-w-md grid-cols-2 gap-1 rounded-2xl bg-stone-200/80 p-1 dark:bg-stone-800/80 md:hidden" role="tablist" aria-label="Mantenimiento">
+        <button type="button" role="tab" data-maint-tab="base" aria-selected="false" class="rounded-xl px-2 py-3 text-center text-sm font-medium leading-tight text-stone-600 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100">Técnico Base (25 €)</button>
+        <button type="button" role="tab" data-maint-tab="activa" aria-selected="true" class="rounded-xl bg-white px-2 py-3 text-center text-sm font-bold leading-tight text-stone-900 shadow-sm dark:bg-stone-900 dark:text-stone-100">Gestión Activa (85 €)</button>
+      </div>
+      <div class="mx-auto grid max-w-4xl grid-cols-1 gap-6 pt-4 text-left md:mt-8 md:grid-cols-2">
+        <article data-maint-plan="base" data-name="Técnico Base" data-price="25" data-idle="border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900" class="hidden h-full flex-col justify-between rounded-2xl border border-stone-200 bg-white p-6 shadow-sm transition duration-300 dark:border-stone-800 dark:bg-stone-900 md:flex">
           <div>
             <h3 class="text-lg font-extrabold tracking-tight text-stone-900 dark:text-stone-100">Mantenimiento Técnico Base</h3>
             <div class="mt-5 border-b border-stone-200 pb-5 dark:border-stone-800">
@@ -496,30 +488,89 @@
       <h2 class="break-words text-3xl font-bold leading-tight text-stone-900 dark:text-stone-100 sm:text-4xl">Antes de decir que no</h2>
       <p class="mt-3 text-sm leading-relaxed text-stone-600 dark:text-stone-300 sm:text-base">Sabemos lo que cuesta levantar la persiana cada día. Por eso trabajamos así:</p>
     </div>
-    <div class="grid gap-4 md:grid-cols-2">
-      <article class="reveal rounded-2xl border border-stone-200 bg-white p-6 dark:border-stone-800 dark:bg-stone-900">
-        <h3 class="text-lg font-bold text-stone-900 dark:text-stone-100">¿Ya tengo Instagram?</h3>
-        <p class="mt-2 text-sm leading-relaxed text-stone-600 dark:text-stone-300">Instagram no posiciona cuando alguien busca "dónde cenar cerca de mí" en Google Maps. Nosotros sí.</p>
-      </article>
-      <article class="reveal rounded-2xl border border-stone-200 bg-white p-6 dark:border-stone-800 dark:bg-stone-900">
-        <h3 class="text-lg font-bold text-stone-900 dark:text-stone-100">TheFork se queda comisión.</h3>
-        <p class="mt-2 text-sm leading-relaxed text-stone-600 dark:text-stone-300">Nuestro botón de reservas es tuyo. Directo a tu WhatsApp. Cero comisiones.</p>
-      </article>
-      <article class="reveal rounded-2xl border border-stone-200 bg-white p-6 dark:border-stone-800 dark:bg-stone-900">
-        <h3 class="text-lg font-bold text-stone-900 dark:text-stone-100">No tengo tiempo de cambiar la carta.</h3>
-        <p class="mt-2 text-sm leading-relaxed text-stone-600 dark:text-stone-300">Mándanos una foto de la pizarra o el menú manchado. Nosotros la subimos por ti en 24h.</p>
-      </article>
-      <article class="reveal rounded-2xl border border-stone-200 bg-white p-6 dark:border-stone-800 dark:bg-stone-900">
-        <h3 class="text-lg font-bold text-stone-900 dark:text-stone-100">¿Otra web que no sirve para nada?</h3>
-        <p class="mt-2 text-sm leading-relaxed text-stone-600 dark:text-stone-300">Por eso no pagas todo de golpe. Hacemos la demo con tus platos, y si no te gusta, no avanzamos.</p>
-      </article>
+    <div id="objeciones-accordion" class="bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-3xl p-4 sm:p-6 shadow-sm max-w-3xl mx-auto divide-y divide-stone-100 dark:divide-stone-800">
+      <div data-accordion-item>
+        <button type="button" data-accordion-trigger aria-expanded="false" class="w-full flex items-center justify-between py-4 text-left cursor-pointer group">
+          <span class="text-stone-900 dark:text-stone-100 font-bold text-base sm:text-lg group-hover:text-[#C4A484] dark:group-hover:text-[#E6D5C3] transition-colors">¿Ya tengo Instagram?</span>
+          <svg class="h-4 w-4 shrink-0 text-black transition-transform duration-200 transform rotate-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5.5 15.5 12 9 18.5"/></svg>
+        </button>
+        <div data-accordion-panel class="max-h-0 opacity-0 overflow-hidden transition-all duration-300">
+          <p class="text-stone-600 dark:text-stone-400 text-sm sm:text-base leading-relaxed pb-4 pt-1">Instagram no posiciona cuando alguien busca "dónde cenar cerca de mí" en Google Maps. Nosotros sí.</p>
+        </div>
+      </div>
+      <div data-accordion-item>
+        <button type="button" data-accordion-trigger aria-expanded="false" class="w-full flex items-center justify-between py-4 text-left cursor-pointer group">
+          <span class="text-stone-900 dark:text-stone-100 font-bold text-base sm:text-lg group-hover:text-[#C4A484] dark:group-hover:text-[#E6D5C3] transition-colors">TheFork se queda comisión.</span>
+          <svg class="h-4 w-4 shrink-0 text-black transition-transform duration-200 transform rotate-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5.5 15.5 12 9 18.5"/></svg>
+        </button>
+        <div data-accordion-panel class="max-h-0 opacity-0 overflow-hidden transition-all duration-300">
+          <p class="text-stone-600 dark:text-stone-400 text-sm sm:text-base leading-relaxed pb-4 pt-1">Nuestro botón de reservas es tuyo. Directo a tu WhatsApp. Cero comisiones.</p>
+        </div>
+      </div>
+      <div data-accordion-item>
+        <button type="button" data-accordion-trigger aria-expanded="false" class="w-full flex items-center justify-between py-4 text-left cursor-pointer group">
+          <span class="text-stone-900 dark:text-stone-100 font-bold text-base sm:text-lg group-hover:text-[#C4A484] dark:group-hover:text-[#E6D5C3] transition-colors">No tengo tiempo de cambiar la carta.</span>
+          <svg class="h-4 w-4 shrink-0 text-black transition-transform duration-200 transform rotate-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5.5 15.5 12 9 18.5"/></svg>
+        </button>
+        <div data-accordion-panel class="max-h-0 opacity-0 overflow-hidden transition-all duration-300">
+          <p class="text-stone-600 dark:text-stone-400 text-sm sm:text-base leading-relaxed pb-4 pt-1">Mándanos una foto de la pizarra o el menú manchado. Nosotros la subimos por ti en 24h.</p>
+        </div>
+      </div>
+      <div data-accordion-item>
+        <button type="button" data-accordion-trigger aria-expanded="false" class="w-full flex items-center justify-between py-4 text-left cursor-pointer group">
+          <span class="text-stone-900 dark:text-stone-100 font-bold text-base sm:text-lg group-hover:text-[#C4A484] dark:group-hover:text-[#E6D5C3] transition-colors">¿Otra web que no sirve para nada?</span>
+          <svg class="h-4 w-4 shrink-0 text-black transition-transform duration-200 transform rotate-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5.5 15.5 12 9 18.5"/></svg>
+        </button>
+        <div data-accordion-panel class="max-h-0 opacity-0 overflow-hidden transition-all duration-300">
+          <p class="text-stone-600 dark:text-stone-400 text-sm sm:text-base leading-relaxed pb-4 pt-1">Por eso no pagas todo de golpe. Hacemos la demo con tus platos, y si no te gusta, no avanzamos.</p>
+        </div>
+      </div>
+      <div data-accordion-item>
+        <button type="button" data-accordion-trigger aria-expanded="false" class="w-full flex items-center justify-between py-4 text-left cursor-pointer group">
+          <span class="text-stone-900 dark:text-stone-100 font-bold text-base sm:text-lg group-hover:text-[#C4A484] dark:group-hover:text-[#E6D5C3] transition-colors">¿Y si ya tengo dominio propio o una web anterior?</span>
+          <svg class="h-4 w-4 shrink-0 text-black transition-transform duration-200 transform rotate-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5.5 15.5 12 9 18.5"/></svg>
+        </button>
+        <div data-accordion-panel class="max-h-0 opacity-0 overflow-hidden transition-all duration-300">
+          <p class="text-stone-600 dark:text-stone-400 text-sm sm:text-base leading-relaxed pb-4 pt-1">Nos encargamos de conectar tu dominio actual y migrar el tráfico a la nueva web sin coste extra y sin que tu local se quede sin servicio ni un solo minuto.</p>
+        </div>
+      </div>
     </div>
   </section>
+  <script>
+    (function () {
+      var root = document.getElementById('objeciones-accordion');
+      if (!root) return;
+      root.querySelectorAll('[data-accordion-trigger]').forEach(function (trigger) {
+        trigger.addEventListener('click', function () {
+          var item = trigger.closest('[data-accordion-item]');
+          var wasOpen = trigger.getAttribute('aria-expanded') === 'true';
+          root.querySelectorAll('[data-accordion-item]').forEach(function (other) {
+            var button = other.querySelector('[data-accordion-trigger]');
+            var panel = other.querySelector('[data-accordion-panel]');
+            var icon = button.querySelector('svg');
+            button.setAttribute('aria-expanded', 'false');
+            panel.classList.add('max-h-0', 'opacity-0');
+            panel.classList.remove('max-h-40', 'opacity-100');
+            icon.classList.add('rotate-0');
+            icon.classList.remove('rotate-90');
+          });
+          if (wasOpen) return;
+          var panel = item.querySelector('[data-accordion-panel]');
+          var icon = trigger.querySelector('svg');
+          trigger.setAttribute('aria-expanded', 'true');
+          panel.classList.remove('max-h-0', 'opacity-0');
+          panel.classList.add('max-h-40', 'opacity-100');
+          icon.classList.remove('rotate-0');
+          icon.classList.add('rotate-90');
+        });
+      });
+    })();
+  </script>
 
   <div class="mx-auto mb-20 mt-12 w-full max-w-7xl px-4 sm:px-6 lg:mb-28 lg:px-8">
     <span class="hidden border-[#8B5E34]"></span>
-    <div id="pack-summary" class="rounded-3xl border border-stone-200 bg-white p-6 shadow-md dark:border-stone-800 dark:bg-stone-900 sm:p-8">
-      <div class="grid items-center gap-8 lg:grid-cols-2 lg:gap-10">
+    <div id="pack-summary" class="mx-auto max-w-2xl rounded-3xl border border-stone-200 bg-white p-6 shadow-md dark:border-stone-800 dark:bg-stone-900 sm:p-8 md:max-w-none">
+      <div class="grid items-center gap-8 md:grid-cols-2 md:gap-10">
         <div>
           <h3 class="text-lg font-bold text-stone-900 dark:text-stone-100">Resumen de tu configuración</h3>
           <div class="mt-4 space-y-1.5 text-sm text-stone-600 dark:text-stone-300">
@@ -533,7 +584,7 @@
           </div>
           <button type="button" id="pack-quote" class="mt-6 bg-emerald-600 font-bold text-white shadow-md transition-all duration-150 ease-out cursor-pointer hover:translate-y-0.5 hover:shadow-sm hover:scale-[0.99] hover:bg-emerald-700 active:translate-y-1 active:scale-[0.97] py-3.5 px-6 rounded-2xl w-full sm:w-auto">Pedir presupuesto de este Pack por WhatsApp ↗</button>
         </div>
-        <section id="contacto" class="scroll-mt-24 border-t border-stone-200 pt-8 text-center dark:border-stone-800 lg:border-l lg:border-t-0 lg:pl-10 lg:pt-0">
+        <section id="contacto" class="hidden scroll-mt-24 border-stone-200 text-center dark:border-stone-800 md:block md:border-l md:pl-10">
           <h2 class="break-words text-2xl font-bold leading-tight text-stone-900 dark:text-stone-100">¿No sabes si tu ficha de Google está bien configurada?</h2>
           <p class="mt-3 hyphens-auto break-words text-sm leading-relaxed text-stone-500 dark:text-stone-400">
             Escríbenos el nombre de tu bar y te enviamos gratis una captura de cómo sales comparado con 3 bares de tu misma calle.
@@ -1075,6 +1126,30 @@
         });
       });
 
+      var maintTabs = document.querySelectorAll('[data-maint-tab]');
+      var maintCards = document.querySelectorAll('[data-maint-plan]');
+
+      function showMaintTab(id) {
+        maintTabs.forEach(function (tab) {
+          var on = tab.getAttribute('data-maint-tab') === id;
+          tab.setAttribute('aria-selected', on ? 'true' : 'false');
+          planTabOn.forEach(function (cls) { tab.classList.toggle(cls, on); });
+          planTabOff.forEach(function (cls) { tab.classList.toggle(cls, !on); });
+        });
+        maintCards.forEach(function (card) {
+          var on = card.getAttribute('data-maint-plan') === id;
+          card.classList.toggle('hidden', !on);
+          card.classList.toggle('flex', on);
+          card.classList.toggle('md:flex', !on);
+        });
+      }
+
+      maintTabs.forEach(function (tab) {
+        tab.addEventListener('click', function () {
+          showMaintTab(tab.getAttribute('data-maint-tab'));
+        });
+      });
+
       document.getElementById('pack-quote').addEventListener('click', function (event) {
         var web = money(selectedWeb());
         var maint = money(selectedMaint());
@@ -1156,7 +1231,7 @@
       link.setAttribute('href', window.visiwebWa(link.getAttribute('data-wa-text')));
     });
   </script>
-  <div id="scroll-progress-rail" class="fixed top-0 right-0 w-[8px] h-screen z-50 cursor-pointer bg-stone-300/25 dark:bg-stone-700/25">
+  <div id="scroll-progress-rail" class="fixed top-0 right-0 w-[3px] h-screen z-50 cursor-pointer bg-stone-300/25 dark:bg-stone-700/25 md:w-[8px]">
     <div id="scroll-progress-fill" class="w-full h-0 min-h-[28px] bg-stone-500/60 dark:bg-stone-300/60 rounded-b-full transition-[height] duration-75 ease-out pointer-events-none"></div>
   </div>
   <script>
