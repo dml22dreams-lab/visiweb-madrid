@@ -71,10 +71,30 @@
     #planes article:hover {
       transform: translateY(-6px);
     }
+    #objeciones article {
+      cursor: pointer;
+      transition: transform .3s ease, box-shadow .3s ease;
+    }
+    #objeciones article:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 10px 24px rgb(28 25 23 / .08);
+    }
     #planes [data-select-web] {
       transition: transform .3s ease, background-color .3s ease, border-color .3s ease, color .3s ease;
     }
     #planes [data-select-web]:hover {
+      transform: translateY(-4px);
+    }
+    #mantenimiento article {
+      transition: transform .3s ease, box-shadow .3s ease;
+    }
+    #mantenimiento article:hover {
+      transform: translateY(-6px);
+    }
+    #mantenimiento [data-select-maint] {
+      transition: transform .3s ease, background-color .3s ease, border-color .3s ease, color .3s ease;
+    }
+    #mantenimiento [data-select-maint]:hover {
       transform: translateY(-4px);
     }
     .btn-ink {
@@ -95,15 +115,36 @@
       background-color: #fafaf9;
     }
     .dark .is-picked { background-color: #292524; }
-    .is-picked-btn {
-      background: #1c1917 !important;
-      color: #fff !important;
+    button.is-picked-btn {
+      border-width: 2px !important;
+      border-style: solid !important;
       border-color: #1c1917 !important;
     }
-    #planes [data-web="gastro"] .is-picked-btn {
-      background: #E6D5C3 !important;
+    .dark button.is-picked-btn {
+      border-color: #fafaf9 !important;
+    }
+    [data-extra],
+    [data-extra] button {
+      cursor: pointer;
+    }
+    [data-extra][aria-pressed="true"] {
+      border-width: 2px !important;
+      border-style: solid !important;
+      border-color: #1c1917 !important;
+      background-color: #f5f5f4 !important;
       color: #1c1917 !important;
-      border-color: #E6D5C3 !important;
+      box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    }
+    .dark [data-extra][aria-pressed="true"] {
+      border-color: #f5f5f4 !important;
+      background-color: rgb(41 37 36 / 0.8) !important;
+      color: #f5f5f4 !important;
+    }
+    [data-extra][aria-pressed="true"] span.font-semibold { color: inherit !important; }
+    .pack-figure.is-updating { animation: pack-pop .28s ease; }
+    @keyframes pack-pop {
+      from { opacity: .35; transform: translateY(4px); }
+      to { opacity: 1; transform: none; }
     }
 
     @keyframes plan-attention {
@@ -301,7 +342,7 @@
     </div>
 
     <div id="planes" class="stagger mx-auto grid max-w-6xl scroll-mt-28 grid-cols-1 items-stretch gap-6 pt-4 md:grid-cols-3">
-      <article data-web="basico" data-name="Básico" data-price="120" data-plazo="Entrega lista en 48h laborables" data-active="25" class="reveal hidden h-full min-h-fit w-full min-w-0 flex-col justify-between rounded-2xl border border-stone-200 bg-white p-6 shadow-sm transition-shadow duration-300 hover:shadow-md dark:border-stone-800 dark:bg-stone-900 md:flex">
+      <article data-web="basico" data-name="Básico" data-price="120" data-plazo="Entrega lista en 48h laborables" data-active="25" data-idle="border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900" class="reveal hidden h-full min-h-fit w-full min-w-0 flex-col justify-between rounded-2xl border border-stone-200 bg-white p-6 shadow-sm transition-shadow duration-300 hover:shadow-md dark:border-stone-800 dark:bg-stone-900 md:flex">
         <header>
           <h3 class="text-lg font-extrabold tracking-tight text-stone-900 dark:text-stone-100">Básico</h3>
           <p class="mt-1 text-xs text-stone-500 dark:text-stone-400">Cervecerías y bares de tapas</p>
@@ -322,11 +363,11 @@
         </ul>
         <button type="button" data-select-web aria-pressed="false"
            class="mt-6 rounded-xl border border-stone-300 bg-white px-4 py-3 text-center font-semibold text-stone-800 transition-colors duration-300 hover:border-stone-800 hover:bg-stone-50 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-200 dark:hover:bg-stone-800">
-          Me interesa este plan
+          Elegir este
         </button>
       </article>
 
-      <article id="gastro-premium" data-web="gastro" data-name="Gastro Premium" data-price="390" data-plazo="Entrega en 5 a 7 días laborables" data-active="85" class="reveal relative flex h-full min-h-fit w-full min-w-0 scroll-mt-28 flex-col justify-between rounded-2xl border-2 border-[#8B5E34] bg-white p-6 shadow-sm transition-shadow duration-300 hover:shadow-md dark:border-[#C4A484] dark:bg-stone-900">
+      <article id="gastro-premium" data-web="gastro" data-name="Gastro Premium" data-price="390" data-plazo="Entrega en 5 a 7 días laborables" data-active="85" data-idle="border-2 border-[#8B5E34] dark:border-[#C4A484] bg-white dark:bg-stone-900" class="reveal relative flex h-full min-h-fit w-full min-w-0 scroll-mt-28 flex-col justify-between rounded-2xl border-2 border-[#8B5E34] bg-white p-6 shadow-sm transition-shadow duration-300 hover:shadow-md dark:border-[#C4A484] dark:bg-stone-900">
         <span class="plan-badge absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-[#E6D5C3] px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-stone-900">Recomendado</span>
         <header class="pt-2">
           <h3 class="text-lg font-extrabold tracking-tight text-stone-900 dark:text-stone-100">Gastro Premium</h3>
@@ -346,11 +387,11 @@
         </ul>
         <button type="button" data-select-web aria-pressed="false"
            class="mt-6 rounded-xl bg-[#E6D5C3] px-4 py-3 text-center font-semibold text-stone-900 transition-colors duration-300 hover:bg-[#d4c0aa]">
-          Me interesa este plan
+          Elegir este
         </button>
       </article>
 
-      <article data-web="vip" data-name="Digitalización Total" data-price="790" data-plazo="Entrega en 10 a 14 días laborables" data-active="220" class="reveal hidden h-full min-h-fit w-full min-w-0 flex-col justify-between rounded-2xl border border-stone-200 bg-white p-6 shadow-sm transition-shadow duration-300 hover:shadow-md dark:border-stone-800 dark:bg-stone-900 md:flex">
+      <article data-web="vip" data-name="Digitalización Total" data-price="790" data-plazo="Entrega en 10 a 14 días laborables" data-active="220" data-idle="border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900" class="reveal hidden h-full min-h-fit w-full min-w-0 flex-col justify-between rounded-2xl border border-stone-200 bg-white p-6 shadow-sm transition-shadow duration-300 hover:shadow-md dark:border-stone-800 dark:bg-stone-900 md:flex">
         <header>
           <h3 class="text-lg font-extrabold tracking-tight text-stone-900 dark:text-stone-100">Digitalización Total</h3>
           <p class="mt-1 text-xs text-stone-500 dark:text-stone-400">VIP, grupos y eventos</p>
@@ -369,7 +410,7 @@
         </ul>
         <button type="button" data-select-web aria-pressed="false"
            class="mt-6 rounded-xl border border-stone-300 bg-white px-4 py-3 text-center font-semibold text-stone-800 transition-colors duration-300 hover:border-stone-800 hover:bg-stone-50 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-200 dark:hover:bg-stone-800">
-          Me interesa este plan
+          Elegir este
         </button>
       </article>
     </div>
@@ -385,14 +426,67 @@
       <span>¿Ya tienes tu propio dominio o una web antigua? Nos encargamos de conectarlo y migrar el tráfico a tu nueva web sin coste extra y sin que tu negocio se quede sin servicio.</span>
     </p>
 
+    <section id="mantenimiento" class="reveal mt-16 text-center" aria-label="Planes de mantenimiento">
+      <p class="text-xs uppercase tracking-wider font-semibold text-stone-500">Servicio recurrente</p>
+      <h2 class="mt-2 text-2xl font-bold text-stone-900 dark:text-stone-100 md:text-3xl">Mantenimiento y gestión continua</h2>
+      <p class="mx-auto mt-2 max-w-xl text-center text-stone-600 dark:text-stone-400">Elige el nivel de soporte para que tu web y tu ficha de Google Maps estén siempre al día, sin que tengas que tocar nada.</p>
+      <div class="mx-auto mt-8 grid max-w-4xl grid-cols-1 gap-6 text-left md:grid-cols-2">
+        <article data-maint-plan="base" data-name="Técnico Base" data-price="25" data-idle="border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900" class="flex h-full flex-col justify-between rounded-2xl border border-stone-200 bg-white p-6 shadow-sm transition duration-300 dark:border-stone-800 dark:bg-stone-900">
+          <div>
+            <h3 class="text-lg font-extrabold tracking-tight text-stone-900 dark:text-stone-100">Mantenimiento Técnico Base</h3>
+            <div class="mt-5 border-b border-stone-200 pb-5 dark:border-stone-800">
+              <p class="text-3xl font-extrabold text-stone-900 dark:text-stone-100">25&nbsp;€<span class="text-base font-semibold text-stone-500 dark:text-stone-400"> / mes</span></p>
+              <p class="mt-2 text-sm font-medium text-stone-600 dark:text-stone-400">compromiso 12 meses</p>
+            </div>
+            <ul class="mt-5 space-y-2.5 text-sm leading-snug text-stone-600 dark:text-stone-300">
+              <li class="flex gap-2"><span class="shrink-0 text-[#8B5E34] dark:text-[#E6D5C3]" aria-hidden="true">✓</span> Hosting de alta velocidad en Cloudflare</li>
+              <li class="flex gap-2"><span class="shrink-0 text-[#8B5E34] dark:text-[#E6D5C3]" aria-hidden="true">✓</span> Renovación anual de dominio incluida</li>
+              <li class="flex gap-2"><span class="shrink-0 text-[#8B5E34] dark:text-[#E6D5C3]" aria-hidden="true">✓</span> Certificado SSL de seguridad (HTTPS)</li>
+              <li class="flex gap-2"><span class="shrink-0 text-[#8B5E34] dark:text-[#E6D5C3]" aria-hidden="true">✓</span> Soporte técnico ante caídas o incidencias</li>
+              <li class="flex gap-2"><span class="shrink-0 text-[#8B5E34] dark:text-[#E6D5C3]" aria-hidden="true">✓</span> Cambios de carta reflejados en 24-48h tras aviso por WhatsApp</li>
+            </ul>
+          </div>
+          <button type="button" data-select-maint aria-pressed="false" class="mt-6 rounded-xl border border-stone-300 bg-white px-4 py-3 text-center font-semibold text-stone-800 transition-colors duration-300 hover:border-stone-800 hover:bg-stone-50 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-200 dark:hover:bg-stone-800">Elegir este</button>
+        </article>
+        <article data-maint-plan="activa" data-name="Gestión Activa" data-price="85" data-idle="border-2 border-[#E6D5C3] dark:border-[#C4A484] bg-white dark:bg-stone-900" class="relative flex h-full flex-col justify-between rounded-2xl border-2 border-[#E6D5C3] bg-white p-6 shadow-sm transition duration-300 dark:border-[#C4A484] dark:bg-stone-900">
+          <span class="plan-badge absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-[#E6D5C3] px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-stone-900">Más popular</span>
+          <div class="pt-2">
+            <h3 class="text-lg font-extrabold tracking-tight text-stone-900 dark:text-stone-100">Gestión Activa + SEO Google Maps</h3>
+            <div class="mt-5 border-b border-stone-200 pb-5 dark:border-stone-800">
+              <p class="text-3xl font-extrabold text-stone-900 dark:text-stone-100">85&nbsp;€<span class="text-base font-semibold text-stone-500 dark:text-stone-400"> / mes</span></p>
+              <p class="mt-2 text-sm font-medium text-stone-600 dark:text-stone-400">compromiso 12 meses</p>
+            </div>
+            <ul class="mt-5 space-y-2.5 text-sm leading-snug text-stone-600 dark:text-stone-300">
+              <li class="flex gap-2"><span class="shrink-0 text-[#8B5E34] dark:text-[#E6D5C3]" aria-hidden="true">✓</span> Todo lo incluido en el Mantenimiento Base</li>
+              <li class="flex gap-2"><span class="shrink-0 text-[#8B5E34] dark:text-[#E6D5C3]" aria-hidden="true">✓</span> Hasta 8 actualizaciones de carta al mes (en menos de 24h)</li>
+              <li class="flex gap-2"><span class="shrink-0 text-[#8B5E34] dark:text-[#E6D5C3]" aria-hidden="true">✓</span> Subida mensual de 10 fotos profesionales a Google Maps</li>
+              <li class="flex gap-2"><span class="shrink-0 text-[#8B5E34] dark:text-[#E6D5C3]" aria-hidden="true">✓</span> Redacción y propuesta de respuestas a reseñas de clientes</li>
+              <li class="flex gap-2"><span class="shrink-0 text-[#8B5E34] dark:text-[#E6D5C3]" aria-hidden="true">✓</span> Mantenimiento del motor de reservas y carta bilingüe</li>
+              <li class="flex gap-2"><span class="shrink-0 text-[#8B5E34] dark:text-[#E6D5C3]" aria-hidden="true">✓</span> Informe mensual de métricas (visitas, llamadas y clics en 'Cómo llegar')</li>
+            </ul>
+          </div>
+          <button type="button" data-select-maint aria-pressed="false" class="mt-6 rounded-xl bg-[#E6D5C3] px-4 py-3 text-center font-semibold text-stone-900 transition-colors duration-300 hover:bg-[#d4c0aa]">Elegir este</button>
+        </article>
+      </div>
+    </section>
+
     <aside class="reveal mt-8 rounded-2xl border border-stone-200 bg-white px-5 py-5  dark:border-stone-800 dark:bg-stone-900" aria-label="Servicios adicionales">
       <p class="mb-4 text-xs font-semibold uppercase tracking-widest text-stone-500">Servicios adicionales</p>
       <div class="flex flex-wrap items-center justify-center gap-2.5 md:justify-start">
-        <button type="button" data-extra="qr" data-interest="Pack soportes físicos QR (metacrilato/madera)" class="relative inline-flex max-w-full cursor-pointer flex-wrap items-center gap-2 rounded-2xl border border-stone-200 bg-white p-3 text-left text-xs text-stone-600 transition duration-300 hover:z-50 hover:translate-y-1 hover:scale-[0.98] hover:border-stone-400 has-[.is-open]:z-50 dark:border-stone-800 dark:bg-stone-950/60 dark:text-stone-300 sm:text-sm">Pack soportes físicos QR (metacrilato/madera) <span class="inline-flex items-center gap-1.5 whitespace-nowrap"><span class="font-semibold text-[#8B5E34] dark:text-[#E6D5C3]">60&nbsp;€</span><span data-extra-info class="group/tooltip relative inline-flex h-5 w-5 shrink-0 items-center justify-center"><span class="grid h-5 w-5 place-items-center rounded-full bg-[#E6D5C3] text-xs font-bold text-stone-900" aria-hidden="true">?</span><span role="tooltip" class="pointer-events-none absolute bottom-full right-0 z-50 mb-2 block w-[min(18rem,calc(100vw-2.5rem))] max-w-[calc(100vw-2.5rem)] whitespace-normal break-words rounded-xl border border-stone-700 bg-stone-900/95 p-3 text-xs leading-relaxed text-stone-200 opacity-0 shadow-md  transition-all duration-200 group-hover/tooltip:opacity-100 group-[.is-open]/tooltip:opacity-100 dark:bg-stone-800/95">Fabricación y entrega de peanas o placas rígidas y resistentes con tu código QR para colocar en mesas y barra, listas para escanear. Plazo de entrega física: 5-7 días laborables.<span class="absolute top-full right-1 border-x-[6px] border-b-0 border-t-[6px] border-x-transparent border-t-stone-900/95 dark:border-t-stone-800/95" aria-hidden="true"></span></span></span></span></button>
-        <button type="button" data-extra="foto" data-interest="Sesión fotográfica extra" class="relative inline-flex max-w-full cursor-pointer flex-wrap items-center gap-2 rounded-2xl border border-stone-200 bg-white p-3 text-left text-xs text-stone-600 transition duration-300 hover:z-50 hover:translate-y-1 hover:scale-[0.98] hover:border-stone-400 has-[.is-open]:z-50 dark:border-stone-800 dark:bg-stone-950/60 dark:text-stone-300 sm:text-sm">Sesión fotográfica extra <span class="inline-flex items-center gap-1.5 whitespace-nowrap"><span class="font-semibold text-[#8B5E34] dark:text-[#E6D5C3]">40&nbsp;€</span><span data-extra-info class="group/tooltip relative inline-flex h-5 w-5 shrink-0 items-center justify-center"><span class="grid h-5 w-5 place-items-center rounded-full bg-[#E6D5C3] text-xs font-bold text-stone-900" aria-hidden="true">?</span><span role="tooltip" class="pointer-events-none absolute bottom-full right-0 z-50 mb-2 block w-[min(18rem,calc(100vw-2.5rem))] max-w-[calc(100vw-2.5rem)] whitespace-normal break-words rounded-xl border border-stone-700 bg-stone-900/95 p-3 text-xs leading-relaxed text-stone-200 opacity-0 shadow-md  transition-all duration-200 group-hover/tooltip:opacity-100 group-[.is-open]/tooltip:opacity-100 dark:bg-stone-800/95">Desplazamiento presencial a tu local para tomar fotografías nítidas de nuevos platos, terraza o salón para nutrir la web y Google Maps. Entrega y subida de fotos editadas en 48-72h tras la visita.<span class="absolute top-full right-1 border-x-[6px] border-b-0 border-t-[6px] border-x-transparent border-t-stone-900/95 dark:border-t-stone-800/95" aria-hidden="true"></span></span></span></span></button>
-        <button type="button" data-extra="idioma" data-interest="Idioma adicional" class="relative inline-flex max-w-full cursor-pointer flex-wrap items-center gap-2 rounded-2xl border border-stone-200 bg-white p-3 text-left text-xs text-stone-600 transition duration-300 hover:z-50 hover:translate-y-1 hover:scale-[0.98] hover:border-stone-400 has-[.is-open]:z-50 dark:border-stone-800 dark:bg-stone-950/60 dark:text-stone-300 sm:text-sm">Idioma adicional <span class="inline-flex items-center gap-1.5 whitespace-nowrap"><span class="font-semibold text-[#8B5E34] dark:text-[#E6D5C3]">20&nbsp;€</span><span data-extra-info class="group/tooltip relative inline-flex h-5 w-5 shrink-0 items-center justify-center"><span class="grid h-5 w-5 place-items-center rounded-full bg-[#E6D5C3] text-xs font-bold text-stone-900" aria-hidden="true">?</span><span role="tooltip" class="pointer-events-none absolute bottom-full right-0 z-50 mb-2 block w-[min(18rem,calc(100vw-2.5rem))] max-w-[calc(100vw-2.5rem)] whitespace-normal break-words rounded-xl border border-stone-700 bg-stone-900/95 p-3 text-xs leading-relaxed text-stone-200 opacity-0 shadow-md  transition-all duration-200 group-hover/tooltip:opacity-100 group-[.is-open]/tooltip:opacity-100 dark:bg-stone-800/95">Traducción y maquetación completa de toda tu carta digital a un idioma adicional (inglés, francés, alemán, etc.). Traducción integrada en 24-48h laborables.<span class="absolute top-full right-1 border-x-[6px] border-b-0 border-t-[6px] border-x-transparent border-t-stone-900/95 dark:border-t-stone-800/95" aria-hidden="true"></span></span></span></span></button>
-        <button type="button" data-extra="ads" data-interest="Campaña Google Ads local" class="relative inline-flex max-w-full cursor-pointer flex-wrap items-center gap-2 rounded-2xl border border-stone-200 bg-white p-3 text-left text-xs text-stone-600 transition duration-300 hover:z-50 hover:translate-y-1 hover:scale-[0.98] hover:border-stone-400 has-[.is-open]:z-50 dark:border-stone-800 dark:bg-stone-950/60 dark:text-stone-300 sm:text-sm">Campaña Google Ads local <span class="inline-flex items-center gap-1.5 whitespace-nowrap"><span class="font-semibold text-[#8B5E34] dark:text-[#E6D5C3]">150&nbsp;€</span><span data-extra-info class="group/tooltip relative inline-flex h-5 w-5 shrink-0 items-center justify-center"><span class="grid h-5 w-5 place-items-center rounded-full bg-[#E6D5C3] text-xs font-bold text-stone-900" aria-hidden="true">?</span><span role="tooltip" class="pointer-events-none absolute bottom-full right-0 z-50 mb-2 block w-[min(18rem,calc(100vw-2.5rem))] max-w-[calc(100vw-2.5rem)] whitespace-normal break-words rounded-xl border border-stone-700 bg-stone-900/95 p-3 text-xs leading-relaxed text-stone-200 opacity-0 shadow-md  transition-all duration-200 group-hover/tooltip:opacity-100 group-[.is-open]/tooltip:opacity-100 dark:bg-stone-800/95">Configuración técnica de anuncios geolocalizados en Google para que tu restaurante aparezca arriba del todo en búsquedas de tu zona. Campaña configurada y activa en 48h.<span class="absolute top-full right-1 border-x-[6px] border-b-0 border-t-[6px] border-x-transparent border-t-stone-900/95 dark:border-t-stone-800/95" aria-hidden="true"></span></span></span></span></button>
-        <button type="button" data-extra="horas" data-interest="Horas de desarrollo fuera de cuota" class="relative inline-flex max-w-full cursor-pointer flex-wrap items-center gap-2 rounded-2xl border border-stone-200 bg-white p-3 text-left text-xs text-stone-600 transition duration-300 hover:z-50 hover:translate-y-1 hover:scale-[0.98] hover:border-stone-400 has-[.is-open]:z-50 dark:border-stone-800 dark:bg-stone-950/60 dark:text-stone-300 sm:text-sm">Horas de desarrollo fuera de cuota <span class="inline-flex items-center gap-1.5 whitespace-nowrap"><span class="font-semibold text-[#8B5E34] dark:text-[#E6D5C3]">30&nbsp;€/hora</span><span data-extra-info class="group/tooltip relative inline-flex h-5 w-5 shrink-0 items-center justify-center"><span class="grid h-5 w-5 place-items-center rounded-full bg-[#E6D5C3] text-xs font-bold text-stone-900" aria-hidden="true">?</span><span role="tooltip" class="pointer-events-none absolute bottom-full right-0 z-50 mb-2 block w-[min(18rem,calc(100vw-2.5rem))] max-w-[calc(100vw-2.5rem)] whitespace-normal break-words rounded-xl border border-stone-700 bg-stone-900/95 p-3 text-xs leading-relaxed text-stone-200 opacity-0 shadow-md  transition-all duration-200 group-hover/tooltip:opacity-100 group-[.is-open]/tooltip:opacity-100 dark:bg-stone-800/95">Bolsa de horas para modificaciones estructurales grandes o funciones especiales que queden fuera del mantenimiento mensual contratado.<span class="absolute top-full right-1 border-x-[6px] border-b-0 border-t-[6px] border-x-transparent border-t-stone-900/95 dark:border-t-stone-800/95" aria-hidden="true"></span></span></span></span></button>
+        <button type="button" data-extra="qr" data-price="60" data-label="Soportes QR" data-interest="Pack soportes físicos QR (metacrilato/madera)" aria-pressed="false" class="relative inline-flex max-w-full cursor-pointer flex-wrap items-center gap-2 rounded-2xl border border-stone-200 bg-stone-50 p-3 text-left text-xs text-stone-700 transition duration-300 hover:z-50 hover:translate-y-1 hover:scale-[0.98] has-[.is-open]:z-50 dark:border-stone-800 dark:bg-stone-900 dark:text-stone-300 sm:text-sm">Pack soportes físicos QR (metacrilato/madera) <span class="inline-flex items-center gap-1.5 whitespace-nowrap"><span class="font-semibold text-[#8B5E34] dark:text-[#E6D5C3]">60&nbsp;€</span><span data-extra-info class="group/tooltip relative inline-flex h-5 w-5 shrink-0 items-center justify-center"><span class="grid h-5 w-5 place-items-center rounded-full bg-[#E6D5C3] text-xs font-bold text-stone-900" aria-hidden="true">?</span><span role="tooltip" class="pointer-events-none absolute bottom-full right-0 z-50 mb-2 block w-[min(18rem,calc(100vw-2.5rem))] max-w-[calc(100vw-2.5rem)] whitespace-normal break-words rounded-xl bg-stone-900 p-3 text-xs leading-relaxed text-stone-200 opacity-0 shadow-md transition-opacity duration-200 group-hover/tooltip:opacity-100 group-[.is-open]/tooltip:opacity-100 dark:bg-stone-800">Fabricación y entrega de peanas o placas rígidas y resistentes con tu código QR para colocar en mesas y barra, listas para escanear. Plazo de entrega física: 5-7 días laborables.<span class="absolute top-[calc(100%-2px)] right-3 block h-0 w-0 border-x-[6px] border-b-0 border-t-[6px] border-x-transparent border-t-stone-900 dark:border-t-stone-800" aria-hidden="true"></span></span></span></span></button>
+        <button type="button" data-extra="foto" data-price="40" data-label="Sesión foto extra" data-interest="Sesión fotográfica extra" aria-pressed="false" class="relative inline-flex max-w-full cursor-pointer flex-wrap items-center gap-2 rounded-2xl border border-stone-200 bg-stone-50 p-3 text-left text-xs text-stone-700 transition duration-300 hover:z-50 hover:translate-y-1 hover:scale-[0.98] has-[.is-open]:z-50 dark:border-stone-800 dark:bg-stone-900 dark:text-stone-300 sm:text-sm">Sesión fotográfica extra <span class="inline-flex items-center gap-1.5 whitespace-nowrap"><span class="font-semibold text-[#8B5E34] dark:text-[#E6D5C3]">40&nbsp;€</span><span data-extra-info class="group/tooltip relative inline-flex h-5 w-5 shrink-0 items-center justify-center"><span class="grid h-5 w-5 place-items-center rounded-full bg-[#E6D5C3] text-xs font-bold text-stone-900" aria-hidden="true">?</span><span role="tooltip" class="pointer-events-none absolute bottom-full right-0 z-50 mb-2 block w-[min(18rem,calc(100vw-2.5rem))] max-w-[calc(100vw-2.5rem)] whitespace-normal break-words rounded-xl bg-stone-900 p-3 text-xs leading-relaxed text-stone-200 opacity-0 shadow-md transition-opacity duration-200 group-hover/tooltip:opacity-100 group-[.is-open]/tooltip:opacity-100 dark:bg-stone-800">Desplazamiento presencial a tu local para tomar fotografías nítidas de nuevos platos, terraza o salón para nutrir la web y Google Maps. Entrega y subida de fotos editadas en 48-72h tras la visita.<span class="absolute top-[calc(100%-2px)] right-3 block h-0 w-0 border-x-[6px] border-b-0 border-t-[6px] border-x-transparent border-t-stone-900 dark:border-t-stone-800" aria-hidden="true"></span></span></span></span></button>
+        <div data-extra="idioma" data-price="20" data-qty="0" data-label="Idioma adicional" data-interest="Idioma adicional" aria-pressed="false" role="button" tabindex="0" class="relative inline-flex max-w-full cursor-pointer items-center gap-2 rounded-2xl border border-stone-200 bg-stone-50 p-3 text-left text-xs text-stone-700 transition duration-300 has-[.is-open]:z-50 dark:border-stone-800 dark:bg-stone-900 dark:text-stone-300 sm:text-sm">
+          <button type="button" data-idioma-inc data-idioma-idle class="cursor-pointer font-medium">+ Idioma adicional (20&nbsp;€)</button>
+          <span data-idioma-active class="hidden items-center gap-2 font-medium">
+            <span>Idiomas extra:</span>
+            <button type="button" data-idioma-dec class="grid h-6 w-6 shrink-0 cursor-pointer place-items-center rounded-full border border-stone-300 bg-white text-sm font-bold text-stone-900" aria-label="Quitar un idioma">−</button>
+            <span data-idioma-count class="min-w-[1.25rem] text-center text-sm font-bold tabular-nums">0</span>
+            <button type="button" data-idioma-inc class="grid h-6 w-6 shrink-0 cursor-pointer place-items-center rounded-full border border-stone-300 bg-white text-sm font-bold text-stone-900" aria-label="Añadir un idioma">+</button>
+          </span>
+          <span data-extra-info class="group/tooltip relative inline-flex h-5 w-5 shrink-0 items-center justify-center"><span class="grid h-5 w-5 place-items-center rounded-full bg-[#E6D5C3] text-xs font-bold text-stone-900" aria-hidden="true">?</span><span role="tooltip" class="pointer-events-none absolute bottom-full right-0 z-50 mb-2 block w-[min(18rem,calc(100vw-2.5rem))] max-w-[calc(100vw-2.5rem)] whitespace-normal break-words rounded-xl bg-stone-900 p-3 text-xs leading-relaxed text-stone-200 opacity-0 shadow-md transition-opacity duration-200 group-hover/tooltip:opacity-100 group-[.is-open]/tooltip:opacity-100 dark:bg-stone-800">Traducción y maquetación completa de toda tu carta digital a un idioma adicional (inglés, francés, alemán, etc.). Traducción integrada en 24-48h laborables.<span class="absolute top-[calc(100%-2px)] right-3 block h-0 w-0 border-x-[6px] border-b-0 border-t-[6px] border-x-transparent border-t-stone-900 dark:border-t-stone-800" aria-hidden="true"></span></span></span>
+        </div>
+        <button type="button" data-extra="ads" data-price="150" data-label="Campaña Google Ads" data-interest="Campaña Google Ads local" aria-pressed="false" class="relative inline-flex max-w-full cursor-pointer flex-wrap items-center gap-2 rounded-2xl border border-stone-200 bg-stone-50 p-3 text-left text-xs text-stone-700 transition duration-300 hover:z-50 hover:translate-y-1 hover:scale-[0.98] has-[.is-open]:z-50 dark:border-stone-800 dark:bg-stone-900 dark:text-stone-300 sm:text-sm">Campaña Google Ads local <span class="inline-flex items-center gap-1.5 whitespace-nowrap"><span class="font-semibold text-[#8B5E34] dark:text-[#E6D5C3]">150&nbsp;€</span><span data-extra-info class="group/tooltip relative inline-flex h-5 w-5 shrink-0 items-center justify-center"><span class="grid h-5 w-5 place-items-center rounded-full bg-[#E6D5C3] text-xs font-bold text-stone-900" aria-hidden="true">?</span><span role="tooltip" class="pointer-events-none absolute bottom-full right-0 z-50 mb-2 block w-[min(18rem,calc(100vw-2.5rem))] max-w-[calc(100vw-2.5rem)] whitespace-normal break-words rounded-xl bg-stone-900 p-3 text-xs leading-relaxed text-stone-200 opacity-0 shadow-md transition-opacity duration-200 group-hover/tooltip:opacity-100 group-[.is-open]/tooltip:opacity-100 dark:bg-stone-800">Configuración técnica de anuncios geolocalizados en Google para que tu restaurante aparezca arriba del todo en búsquedas de tu zona. Campaña configurada y activa en 48h.<span class="absolute top-[calc(100%-2px)] right-3 block h-0 w-0 border-x-[6px] border-b-0 border-t-[6px] border-x-transparent border-t-stone-900 dark:border-t-stone-800" aria-hidden="true"></span></span></span></span></button>
+        <button type="button" data-extra="horas" data-price="30" data-suffix="/hora" data-label="Horas de desarrollo" data-interest="Horas de desarrollo fuera de cuota" aria-pressed="false" class="relative inline-flex max-w-full cursor-pointer flex-wrap items-center gap-2 rounded-2xl border border-stone-200 bg-stone-50 p-3 text-left text-xs text-stone-700 transition duration-300 hover:z-50 hover:translate-y-1 hover:scale-[0.98] has-[.is-open]:z-50 dark:border-stone-800 dark:bg-stone-900 dark:text-stone-300 sm:text-sm">Horas de desarrollo fuera de cuota <span class="inline-flex items-center gap-1.5 whitespace-nowrap"><span class="font-semibold text-[#8B5E34] dark:text-[#E6D5C3]">30&nbsp;€/hora</span><span data-extra-info class="group/tooltip relative inline-flex h-5 w-5 shrink-0 items-center justify-center"><span class="grid h-5 w-5 place-items-center rounded-full bg-[#E6D5C3] text-xs font-bold text-stone-900" aria-hidden="true">?</span><span role="tooltip" class="pointer-events-none absolute bottom-full right-0 z-50 mb-2 block w-[min(18rem,calc(100vw-2.5rem))] max-w-[calc(100vw-2.5rem)] whitespace-normal break-words rounded-xl bg-stone-900 p-3 text-xs leading-relaxed text-stone-200 opacity-0 shadow-md transition-opacity duration-200 group-hover/tooltip:opacity-100 group-[.is-open]/tooltip:opacity-100 dark:bg-stone-800">Bolsa de horas para modificaciones estructurales grandes o funciones especiales que queden fuera del mantenimiento mensual contratado.<span class="absolute top-[calc(100%-2px)] right-3 block h-0 w-0 border-x-[6px] border-b-0 border-t-[6px] border-x-transparent border-t-stone-900 dark:border-t-stone-800" aria-hidden="true"></span></span></span></span></button>
       </div>
     </aside>
   </section>
@@ -400,6 +494,7 @@
   <section id="objeciones" class="mx-auto w-full max-w-7xl scroll-mt-24 px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
     <div class="reveal mx-auto mb-10 max-w-2xl text-center">
       <h2 class="break-words text-3xl font-bold leading-tight text-stone-900 dark:text-stone-100 sm:text-4xl">Antes de decir que no</h2>
+      <p class="mt-3 text-sm leading-relaxed text-stone-600 dark:text-stone-300 sm:text-base">Sabemos lo que cuesta levantar la persiana cada día. Por eso trabajamos así:</p>
     </div>
     <div class="grid gap-4 md:grid-cols-2">
       <article class="reveal rounded-2xl border border-stone-200 bg-white p-6 dark:border-stone-800 dark:bg-stone-900">
@@ -421,20 +516,38 @@
     </div>
   </section>
 
-  <section id="contacto" class="mx-auto w-full max-w-7xl scroll-mt-24 px-4 py-20 sm:px-6 lg:px-8">
-    <div class="reveal mx-auto max-w-xl rounded-3xl border border-stone-200 bg-white p-6 text-center shadow-sm dark:border-stone-800 dark:bg-stone-900 sm:p-8">
-      <h2 class="break-words text-2xl font-bold leading-tight text-stone-900 dark:text-stone-100 sm:text-3xl">¿No sabes si tu ficha de Google está bien configurada?</h2>
-      <p class="mt-3 hyphens-auto break-words text-sm leading-relaxed text-stone-500 dark:text-stone-400">
-        Escríbenos el nombre de tu bar y te enviamos gratis una captura de cómo sales comparado con 3 bares de tu misma calle.
-      </p>
-      <div class="mt-8">
-        <button type="button" data-open-audit class="flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 px-6 py-3.5 font-semibold text-white shadow-sm transition-colors duration-300 hover:bg-emerald-700">
-          Pedir auditoría de mi ficha gratis
-        </button>
+  <div class="mx-auto mb-20 mt-12 w-full max-w-7xl px-4 sm:px-6 lg:mb-28 lg:px-8">
+    <span class="hidden border-[#8B5E34]"></span>
+    <div id="pack-summary" class="rounded-3xl border border-stone-200 bg-white p-6 shadow-md dark:border-stone-800 dark:bg-stone-900 sm:p-8">
+      <div class="grid items-center gap-8 lg:grid-cols-2 lg:gap-10">
+        <div>
+          <h3 class="text-lg font-bold text-stone-900 dark:text-stone-100">Resumen de tu configuración</h3>
+          <div class="mt-4 space-y-1.5 text-sm text-stone-600 dark:text-stone-300">
+            <p>Web elegida: <span id="pack-web" class="pack-figure font-semibold text-stone-900 dark:text-stone-100"></span></p>
+            <p>Mantenimiento: <span id="pack-maint" class="pack-figure font-semibold text-stone-900 dark:text-stone-100"></span></p>
+            <div id="pack-extras" class="pack-figure space-y-1"></div>
+          </div>
+          <div class="mt-5 space-y-1 border-t border-stone-200 pt-4 text-sm dark:border-stone-800">
+            <p id="pack-setup" class="pack-figure font-semibold text-stone-900 dark:text-stone-100"></p>
+            <p id="pack-month" class="pack-figure font-semibold text-stone-900 dark:text-stone-100"></p>
+          </div>
+          <button type="button" id="pack-quote" class="mt-6 bg-emerald-600 font-bold text-white shadow-md transition-all duration-150 ease-out cursor-pointer hover:translate-y-0.5 hover:shadow-sm hover:scale-[0.99] hover:bg-emerald-700 active:translate-y-1 active:scale-[0.97] py-3.5 px-6 rounded-2xl w-full sm:w-auto">Pedir presupuesto de este Pack por WhatsApp ↗</button>
+        </div>
+        <section id="contacto" class="scroll-mt-24 border-t border-stone-200 pt-8 text-center dark:border-stone-800 lg:border-l lg:border-t-0 lg:pl-10 lg:pt-0">
+          <h2 class="break-words text-2xl font-bold leading-tight text-stone-900 dark:text-stone-100">¿No sabes si tu ficha de Google está bien configurada?</h2>
+          <p class="mt-3 hyphens-auto break-words text-sm leading-relaxed text-stone-500 dark:text-stone-400">
+            Escríbenos el nombre de tu bar y te enviamos gratis una captura de cómo sales comparado con 3 bares de tu misma calle.
+          </p>
+          <div class="mt-6">
+            <button type="button" data-open-audit class="flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 px-6 py-3.5 font-semibold text-white shadow-md transition-all duration-150 ease-out cursor-pointer hover:translate-y-0.5 hover:shadow-sm hover:scale-[0.99] hover:bg-emerald-700 active:translate-y-1 active:scale-[0.97]">
+              Pedir auditoría de mi ficha gratis
+            </button>
+          </div>
+          <p class="mt-4 text-xs text-stone-500">Atención directa en Alcobendas, San Sebastián de los Reyes y Madrid norte.</p>
+        </section>
       </div>
-      <p class="mt-4 text-xs text-stone-500">Atención directa en Alcobendas, San Sebastián de los Reyes y Madrid norte.</p>
     </div>
-  </section>
+  </div>
 
   <footer class="w-full border-t border-stone-200 bg-white dark:border-stone-800 dark:bg-stone-950/60">
     <div class="mx-auto flex w-full max-w-7xl flex-col gap-8 px-4 py-12 sm:px-6 lg:flex-row lg:items-start lg:justify-between lg:px-8">
@@ -540,13 +653,13 @@
           <h2 id="interest-title" class="text-lg font-semibold text-stone-900 dark:text-stone-100">Me interesa este plan</h2>
           <p id="interest-plan" class="mt-1 text-sm text-stone-500 dark:text-stone-400"></p>
         </div>
-        <button type="button" id="interest-close" class="grid h-9 w-9 shrink-0 place-items-center text-2xl leading-none text-stone-500" aria-label="Cerrar">×</button>
+        <button type="button" id="interest-close" class="grid h-9 w-9 shrink-0 place-items-center text-stone-400 transition-colors hover:text-black dark:text-stone-500 dark:hover:text-white" aria-label="Cerrar"><svg viewBox="0 0 24 24" class="h-[18px] w-[18px]" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
       </div>
-      <label class="block text-sm font-semibold text-stone-800 dark:text-stone-200" for="interest-name">Nombre de tu bar o local</label>
-      <input id="interest-name" name="nombre" required autocomplete="organization" placeholder="Nombre de tu bar o local" class="mt-1.5 w-full rounded-xl border border-stone-300 bg-white px-3 py-3 text-base text-stone-900 outline-none ring-stone-800 focus:ring-2 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100">
+      <label id="interest-name-label" class="block text-sm font-semibold text-stone-800 dark:text-stone-200" for="interest-name">Nombre de tu bar o local</label>
+      <input id="interest-name" name="nombre" required autocomplete="organization" placeholder="Nombre de tu bar o local" class="mt-1.5 w-full rounded-xl border border-stone-300 bg-white px-3 py-3 text-base text-stone-900 outline-none ring-stone-800 focus:ring-1 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100">
       <label id="interest-zone-label" class="mt-4 block text-sm font-semibold text-stone-800 dark:text-stone-200" for="interest-zone">Zona (ej. Sanse, Alcobendas...)</label>
-      <input id="interest-zone" name="zona" required autocomplete="address-level2" placeholder="Zona (ej. Sanse, Alcobendas...)" class="mt-1.5 w-full rounded-xl border border-stone-300 bg-white px-3 py-3 text-base text-stone-900 outline-none ring-stone-800 focus:ring-2 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100">
-      <button type="submit" class="mt-5 flex w-full items-center justify-center rounded-xl bg-emerald-600 px-4 py-3.5 text-base font-semibold text-white shadow-sm transition-colors hover:bg-emerald-700">Pedir por WhatsApp</button>
+      <input id="interest-zone" name="zona" required autocomplete="address-level2" placeholder="Zona (ej. Sanse, Alcobendas...)" class="mt-1.5 w-full rounded-xl border border-stone-300 bg-white px-3 py-3 text-base text-stone-900 outline-none ring-stone-800 focus:ring-1 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100">
+      <button type="submit" id="interest-submit" class="mt-5 flex w-full items-center justify-center rounded-xl bg-emerald-600 px-4 py-3.5 text-base font-semibold text-white shadow-sm transition-colors hover:bg-emerald-700">Pedir por WhatsApp</button>
     </form>
   </div>
   <script>
@@ -634,15 +747,45 @@
       var planLabel = document.getElementById('interest-plan');
       var titleEl = document.getElementById('interest-title');
       var currentPlan = '';
+      var packWarned = false;
+      var planToastTimer = null;
+
+      function hidePlanToast() {
+        var toast = document.getElementById('plan-alert-toast');
+        if (!toast) return;
+        clearTimeout(planToastTimer);
+        toast.classList.add('-translate-y-12', 'opacity-0');
+        toast.classList.remove('translate-y-0', 'opacity-100');
+      }
+
+      function showPlanToast() {
+        var toast = document.getElementById('plan-alert-toast');
+        if (!toast) return;
+        toast.classList.remove('-translate-y-12', 'opacity-0');
+        toast.classList.add('translate-y-0', 'opacity-100');
+        clearTimeout(planToastTimer);
+        planToastTimer = setTimeout(hidePlanToast, 4000);
+      }
+      var presetMessage = '';
       var mode = 'plan';
+      var nameLabel = document.getElementById('interest-name-label');
+      var submitBtn = document.getElementById('interest-submit');
 
       function openInterest(plan, options) {
         options = options || {};
         mode = options.mode || 'plan';
+        presetMessage = options.message || '';
         currentPlan = plan;
         var audit = mode === 'audit';
-        titleEl.textContent = audit ? 'Auditoría de tu ficha' : 'Me interesa este plan';
-        planLabel.textContent = audit ? 'Te la enviamos gratis por WhatsApp.' : plan;
+        var pack = mode === 'pack';
+        titleEl.textContent = audit ? 'Auditoría de tu ficha' : pack ? 'Estás a un paso de tener la carta digital de tu local.' : 'Me interesa este plan';
+        planLabel.textContent = audit ? 'Te la enviamos gratis por WhatsApp.' : pack ? '' : plan;
+        planLabel.classList.toggle('hidden', pack);
+        nameLabel.textContent = pack ? 'Nombre de tu bar / restaurante *' : 'Nombre de tu bar o local';
+        nameInput.placeholder = pack ? 'Nombre de tu bar / restaurante' : 'Nombre de tu bar o local';
+        zoneLabel.textContent = pack ? 'Ciudad (ej. Alcobendas, Sanse, Tetuán...) *' : 'Zona (ej. Sanse, Alcobendas...)';
+        zoneInput.placeholder = pack ? 'Ciudad (ej. Alcobendas, Sanse, Tetuán...)' : 'Zona (ej. Sanse, Alcobendas...)';
+        submitBtn.textContent = pack ? 'Enviar mi solicitud por WhatsApp' : 'Pedir por WhatsApp';
         zoneLabel.classList.toggle('hidden', audit);
         zoneInput.classList.toggle('hidden', audit);
         zoneInput.required = !audit;
@@ -675,21 +818,175 @@
         }, 280);
       }
 
+      function setPicked(card, on) {
+        var btn = card.querySelector('[data-select-web], [data-select-maint]');
+        if (!btn) return;
+        btn.classList.toggle('is-picked-btn', on);
+        btn.textContent = on ? '✓ Seleccionado' : 'Elegir este';
+        btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+      }
+
+      function money(card) {
+        if (!card) return { name: '', price: 0 };
+        return {
+          name: card.getAttribute('data-name'),
+          price: Number(card.getAttribute('data-price')) || 0
+        };
+      }
+
+      function selectedWeb() {
+        var button = document.querySelector('[data-web] [data-select-web][aria-pressed="true"]');
+        return button ? button.closest('[data-web]') : null;
+      }
+
+      function selectedMaint() {
+        var button = document.querySelector('[data-maint-plan] [data-select-maint][aria-pressed="true"]');
+        return button ? button.closest('[data-maint-plan]') : null;
+      }
+
+      function selectedExtras() {
+        return Array.prototype.slice.call(document.querySelectorAll('[data-extra][aria-pressed="true"]')).map(function (button) {
+          var unit = Number(button.getAttribute('data-price')) || 0;
+          var qty = button.getAttribute('data-extra') === 'idioma' ? Number(button.getAttribute('data-qty')) || 0 : 1;
+          var label = button.getAttribute('data-label');
+          if (button.getAttribute('data-extra') === 'idioma') {
+            label = qty === 1 ? '1 Idioma adicional' : qty + ' Idiomas adicionales';
+          }
+          return {
+            label: label,
+            price: unit * qty,
+            suffix: button.getAttribute('data-suffix') || ''
+          };
+        });
+      }
+
+      function pulse(node) {
+        node.classList.remove('is-updating');
+        void node.offsetWidth;
+        node.classList.add('is-updating');
+      }
+
+      function renderPack() {
+        var web = money(selectedWeb());
+        var maint = money(selectedMaint());
+        var extras = selectedExtras();
+        var setup = web.price + extras.reduce(function (sum, item) { return sum + item.price; }, 0);
+        var half = Math.round(setup / 2);
+        var webEl = document.getElementById('pack-web');
+        var maintEl = document.getElementById('pack-maint');
+        var extrasEl = document.getElementById('pack-extras');
+        var setupEl = document.getElementById('pack-setup');
+        var monthEl = document.getElementById('pack-month');
+        paintChoice(webEl, web.name, web.name + ' (' + web.price + ' €)');
+        paintChoice(maintEl, maint.name, maint.name + ' (' + maint.price + ' €/mes)');
+        extrasEl.innerHTML = extras.map(function (item) {
+          return '<p>+ ' + item.label + ' (' + item.price + ' €' + item.suffix + ')</p>';
+        }).join('');
+        setupEl.textContent = 'Total montaje inicial: ' + setup + ' € (Anticipo 50%: ' + half + ' €)';
+        monthEl.textContent = 'Mantenimiento mensual: ' + (maint.name ? maint.price + ' €/mes' : '—');
+        [webEl, maintEl, extrasEl, setupEl, monthEl].forEach(pulse);
+      }
+
+      var choicePending = ['text-rose-600', 'dark:text-rose-400', 'font-bold', 'animate-pulse'];
+      var choiceReady = ['font-semibold', 'text-stone-900', 'dark:text-stone-100'];
+
+      function paintChoice(el, chosen, label) {
+        var pending = packWarned && !chosen;
+        el.textContent = chosen ? label : (pending ? '✕ Sin elegir' : 'Sin elegir');
+        choicePending.forEach(function (cls) { el.classList.toggle(cls, pending); });
+        choiceReady.forEach(function (cls) { el.classList.toggle(cls, !pending); });
+      }
+
+      function packMessage(name, zone) {
+        var web = money(selectedWeb());
+        var maint = money(selectedMaint());
+        var extras = selectedExtras();
+        var setup = web.price + extras.reduce(function (sum, item) { return sum + item.price; }, 0);
+        var half = Math.round(setup / 2);
+        var extraText = extras.length
+          ? extras.map(function (item) { return item.label + ' (' + item.price + ' €' + item.suffix + ')'; }).join(', ')
+          : 'Ninguno';
+        return [
+          'Hola, soy de ' + name + ' en ' + zone + '. He configurado este pack en la web:',
+          '- Web: ' + (web.name ? web.name + ' (' + web.price + ' €)' : 'Sin elegir'),
+          '- Mantenimiento: ' + (maint.name ? maint.name + ' (' + maint.price + ' €/mes)' : 'Sin elegir'),
+          '- Extras: ' + extraText,
+          '- Total montaje: ' + setup + ' € (50% anticipo: ' + half + ' €)',
+          '¿Podemos ver la demo y ponerlo en marcha?'
+        ].join('\n');
+      }
+
       document.querySelectorAll('[data-select-web]').forEach(function (button) {
         button.addEventListener('click', function () {
           var card = button.closest('[data-web]');
           if (!card) return;
-          openInterest(card.getAttribute('data-name'));
+          var turnOff = button.getAttribute('aria-pressed') === 'true';
+          document.querySelectorAll('[data-web]').forEach(function (other) {
+            setPicked(other, !turnOff && other === card);
+          });
+          if (window.matchMedia('(max-width: 767px)').matches) showPlanTab(card.getAttribute('data-web'));
+          renderPack();
+        });
+      });
+
+      document.querySelectorAll('[data-select-maint]').forEach(function (button) {
+        button.addEventListener('click', function () {
+          var card = button.closest('[data-maint-plan]');
+          if (!card) return;
+          var turnOff = button.getAttribute('aria-pressed') === 'true';
+          document.querySelectorAll('[data-maint-plan]').forEach(function (other) {
+            setPicked(other, !turnOff && other === card);
+          });
+          renderPack();
         });
       });
 
       document.querySelectorAll('[data-extra]').forEach(function (button) {
+        if (button.getAttribute('data-extra') === 'idioma') return;
         button.addEventListener('click', function (event) {
           if (event.target.closest('[data-extra-info]')) return;
-          var plan = button.getAttribute('data-interest');
-          if (plan) openInterest(plan);
+          button.setAttribute('aria-pressed', button.getAttribute('aria-pressed') === 'true' ? 'false' : 'true');
+          renderPack();
         });
       });
+
+      (function () {
+        var idioma = document.querySelector('[data-extra="idioma"]');
+        if (!idioma) return;
+        function setIdioma(qty) {
+          qty = Math.max(0, qty);
+          idioma.setAttribute('data-qty', String(qty));
+          idioma.setAttribute('aria-pressed', qty > 0 ? 'true' : 'false');
+          idioma.querySelector('[data-idioma-idle]').classList.toggle('hidden', qty > 0);
+          var active = idioma.querySelector('[data-idioma-active]');
+          active.classList.toggle('hidden', qty === 0);
+          active.classList.toggle('inline-flex', qty > 0);
+          idioma.querySelector('[data-idioma-count]').textContent = String(qty);
+          renderPack();
+        }
+        idioma.addEventListener('click', function (event) {
+          if (event.target.closest('[data-extra-info], [data-idioma-inc], [data-idioma-dec]')) return;
+          var qty = Number(idioma.getAttribute('data-qty')) || 0;
+          setIdioma(qty > 0 ? 0 : 1);
+        });
+        idioma.addEventListener('keydown', function (event) {
+          if (event.key !== 'Enter' && event.key !== ' ') return;
+          if (event.target.closest('[data-extra-info], [data-idioma-inc], [data-idioma-dec], [data-idioma-idle]')) return;
+          event.preventDefault();
+          var qty = Number(idioma.getAttribute('data-qty')) || 0;
+          setIdioma(qty > 0 ? 0 : 1);
+        });
+        idioma.querySelectorAll('[data-idioma-inc]').forEach(function (button) {
+          button.addEventListener('click', function (event) {
+            event.stopPropagation();
+            setIdioma((Number(idioma.getAttribute('data-qty')) || 0) + 1);
+          });
+        });
+        idioma.querySelector('[data-idioma-dec]').addEventListener('click', function (event) {
+          event.stopPropagation();
+          setIdioma((Number(idioma.getAttribute('data-qty')) || 0) - 1);
+        });
+      })();
 
       document.querySelectorAll('[data-extra-info]').forEach(function (info) {
         info.addEventListener('click', function (event) {
@@ -724,10 +1021,15 @@
         var name = nameInput.value.trim();
         var zone = zoneInput.value.trim();
         var audit = mode === 'audit';
-        if (!name || !currentPlan || (!audit && !zone)) return;
+        if (!name || (mode !== 'pack' && !currentPlan) || (!audit && !zone)) return;
         var message = audit
           ? 'Hola, soy de ' + name + '. Quiero la auditoría gratis de mi ficha de Google: una captura de cómo salgo comparado con 3 bares de mi misma calle.'
-          : 'Hola, soy de ' + name + ' en ' + zone + '. Me interesa el ' + currentPlan + '. ¿Podemos ver una demo?';
+          : mode === 'pack'
+            ? packMessage(name, zone)
+            : presetMessage
+              ? presetMessage + ' Soy de ' + name + ' en ' + zone + '.'
+              : 'Hola, soy de ' + name + ' en ' + zone + '. Me interesa el ' + currentPlan + '. ¿Podemos ver una demo?';
+        if (mode === 'pack') currentPlan = message;
         var client = window.visiwebSupabase;
         if (client) {
           client.from('leads').insert({
@@ -772,6 +1074,27 @@
           showPlanTab(tab.getAttribute('data-plan-tab'));
         });
       });
+
+      document.getElementById('pack-quote').addEventListener('click', function (event) {
+        var web = money(selectedWeb());
+        var maint = money(selectedMaint());
+        if (!web.name || !maint.name) {
+          event.preventDefault();
+          packWarned = true;
+          renderPack();
+          document.getElementById('planes')?.scrollIntoView({ behavior: 'smooth' });
+          showPlanToast();
+          return;
+        }
+        openInterest(web.name + ' + ' + maint.name, { mode: 'pack' });
+      });
+
+      document.addEventListener('click', function (event) {
+        if (event.target.id !== 'close-toast-btn') return;
+        hidePlanToast();
+      });
+
+      renderPack();
     })();
   </script>
   <script>
@@ -833,5 +1156,56 @@
       link.setAttribute('href', window.visiwebWa(link.getAttribute('data-wa-text')));
     });
   </script>
+  <div id="scroll-progress-rail" class="fixed top-0 right-0 w-[8px] h-screen z-50 cursor-pointer bg-stone-300/25 dark:bg-stone-700/25">
+    <div id="scroll-progress-fill" class="w-full h-0 min-h-[28px] bg-stone-500/60 dark:bg-stone-300/60 rounded-b-full transition-[height] duration-75 ease-out pointer-events-none"></div>
+  </div>
+  <script>
+    const progressFill = document.getElementById('scroll-progress-fill');
+    const progressRail = document.getElementById('scroll-progress-rail');
+    if (progressFill) {
+      const updateProgress = () => {
+        const scrollTop = window.scrollY || document.documentElement.scrollTop;
+        const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const progress = scrollHeight > 0 ? Math.min(Math.max((scrollTop / scrollHeight) * 100, 4), 100) : 4;
+        progressFill.style.height = `${progress}%`;
+      };
+      window.addEventListener('scroll', updateProgress, { passive: true });
+      window.addEventListener('resize', updateProgress, { passive: true });
+      updateProgress();
+
+      if (progressRail) {
+        let dragging = false;
+        const scrollToPointer = (clientY) => {
+          const rect = progressRail.getBoundingClientRect();
+          const ratio = rect.height > 0 ? Math.min(Math.max((clientY - rect.top) / rect.height, 0), 1) : 0;
+          const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+          const root = document.documentElement;
+          const previous = root.style.scrollBehavior;
+          root.style.scrollBehavior = 'auto';
+          window.scrollTo(0, ratio * scrollHeight);
+          root.style.scrollBehavior = previous;
+        };
+        progressRail.addEventListener('pointerdown', (event) => {
+          dragging = true;
+          progressRail.setPointerCapture(event.pointerId);
+          scrollToPointer(event.clientY);
+        });
+        progressRail.addEventListener('pointermove', (event) => {
+          if (!dragging) return;
+          scrollToPointer(event.clientY);
+        });
+        const endDrag = () => { dragging = false; };
+        progressRail.addEventListener('pointerup', endDrag);
+        progressRail.addEventListener('pointercancel', endDrag);
+      }
+    }
+  </script>
+  <div id="plan-alert-toast" class="fixed top-6 left-1/2 -translate-x-1/2 z-50 pointer-events-none transition-all duration-300 transform -translate-y-12 opacity-0">
+    <div class="pointer-events-auto flex items-center gap-2.5 px-5 py-3 rounded-full bg-stone-900/95 dark:bg-stone-100/95 text-stone-100 dark:text-stone-900 shadow-2xl border border-white/10 dark:border-stone-800 text-xs sm:text-sm font-medium backdrop-blur-md">
+      <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-amber-400 text-stone-950 text-xs font-bold shrink-0">!</span>
+      <span>Selecciona al menos una web y un plan de mantenimiento para continuar.</span>
+      <button type="button" id="close-toast-btn" class="ml-2 text-stone-400 hover:text-white dark:hover:text-stone-950 text-base leading-none transition-colors">✕</button>
+    </div>
+  </div>
 </body>
 </html>
