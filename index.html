@@ -210,24 +210,58 @@
 
   <section class="relative flex min-h-[calc(100vh-5rem)] w-full flex-col justify-center overflow-x-hidden py-12 md:min-h-[85vh] md:py-20">
     <div class="relative mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
-      <div class="max-w-3xl text-center lg:text-left">
-        <div class="scale-in mx-auto mb-6 inline-flex max-w-full flex-wrap items-center justify-center gap-2 rounded-full border border-stone-200 bg-white px-3 py-1.5 text-center text-xs font-semibold text-stone-700 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-300 lg:mx-0">
-          <span class="h-2 w-2 shrink-0 rounded-full bg-[#8B5E34]"></span>
-          Especialistas en Hostelería Local
+      <div class="grid items-center gap-10 md:grid md:grid-cols-2 md:gap-12">
+        <div class="text-center md:text-left">
+          <div class="scale-in mx-auto mb-6 inline-flex max-w-full flex-wrap items-center justify-center gap-2 rounded-full border border-stone-200 bg-white px-3 py-1.5 text-center text-xs font-semibold text-stone-700 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-300 md:mx-0">
+            <span class="h-2 w-2 shrink-0 rounded-full bg-[#8B5E34]"></span>
+            Especialistas en Hostelería Local
+          </div>
+          <h1 class="fade-in-up break-words text-3xl font-bold leading-tight tracking-tight text-stone-900 dark:text-stone-100 sm:text-4xl lg:text-5xl">
+            Atrae más mesas. Carta QR en 48h y el mejor SEO local de tu zona.
+          </h1>
+          <p class="fade-in-up delay-1 mx-auto mt-6 max-w-xl hyphens-auto break-words text-base leading-relaxed text-stone-500 dark:text-stone-400 sm:text-lg md:mx-0">
+            Ficha de Google optimizada, fotos al día, categorías correctas y tu carta siempre enlazada. Entregas desde 48h.
+          </p>
+          <div class="fade-in-up delay-2 mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row md:justify-start">
+            <button type="button" data-open-audit class="btn-ink w-full rounded-xl bg-stone-800 px-7 py-3.5 font-semibold text-white hover:bg-stone-900 sm:w-auto">
+              Auditoría gratuita de mi ficha
+            </button>
+            <a href="demo.html" target="_blank" rel="noopener noreferrer" class="inline-flex w-full items-center justify-center rounded-xl border border-stone-300 bg-white px-7 py-3.5 text-center font-semibold text-stone-800 shadow-sm transition-colors duration-300 hover:border-stone-800 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-200 dark:hover:border-stone-500 sm:w-auto">
+              Ver web de ejemplo
+            </a>
+          </div>
         </div>
-        <h1 class="fade-in-up break-words text-3xl font-bold leading-tight tracking-tight text-stone-900 dark:text-stone-100 sm:text-4xl lg:text-5xl">
-          Atrae más mesas. Carta QR en 48h y el mejor SEO local de tu zona.
-        </h1>
-        <p class="fade-in-up delay-1 mx-auto mt-6 max-w-xl hyphens-auto break-words text-base leading-relaxed text-stone-500 dark:text-stone-400 sm:text-lg lg:mx-0">
-          Aparece el primero en Google Maps... Paga la mitad al confirmar y el resto al publicar tu web. Entregas desde 48h.
-        </p>
-        <div class="fade-in-up delay-2 mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row lg:justify-start">
-          <button type="button" data-open-demo class="btn-ink w-full rounded-xl bg-stone-800 px-7 py-3.5 font-semibold text-white hover:bg-stone-900 sm:w-auto">
-            Quiero una demo de mi bar
-          </button>
-          <a href="demo.html" target="_blank" rel="noopener noreferrer" class="inline-flex w-full items-center justify-center rounded-xl border border-stone-300 bg-white px-7 py-3.5 text-center font-semibold text-stone-800 shadow-sm transition-colors duration-300 hover:border-stone-800 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-200 dark:hover:border-stone-500 sm:w-auto">
-            Ver web de ejemplo
-          </a>
+        <div class="relative mx-auto h-[440px] w-full max-w-md md:h-[480px]" aria-hidden="true">
+          <div class="absolute left-0 top-4 w-[210px] rounded-[2rem] border-[7px] border-stone-900 bg-stone-900 shadow-2xl sm:w-[230px] dark:border-stone-600">
+            <div class="overflow-hidden rounded-[1.45rem] bg-[#FAF9F6] dark:bg-stone-950">
+              <img src="https://images.unsplash.com/photo-1515443961218-a51367888e4b?auto=format&fit=crop&w=640&q=80" alt="" class="h-36 w-full object-cover sm:h-40" width="640" height="480">
+              <div class="px-3.5 pb-4 pt-3">
+                <p class="text-[11px] font-bold uppercase tracking-wider text-[#8B5E34] dark:text-[#E6D5C3]">Carta · Raciones</p>
+                <ul class="mt-2.5 space-y-2 text-[13px] text-stone-800 dark:text-stone-200">
+                  <li class="flex items-baseline justify-between gap-2 border-b border-stone-200 pb-2 dark:border-stone-800"><span>Croquetas de jamón</span><span class="font-semibold tabular-nums">8,50 €</span></li>
+                  <li class="flex items-baseline justify-between gap-2 border-b border-stone-200 pb-2 dark:border-stone-800"><span>Patatas bravas</span><span class="font-semibold tabular-nums">6,00 €</span></li>
+                  <li class="flex items-baseline justify-between gap-2 border-b border-stone-200 pb-2 dark:border-stone-800"><span>Tortilla de patata</span><span class="font-semibold tabular-nums">9,00 €</span></li>
+                  <li class="flex items-baseline justify-between gap-2"><span>Jamón ibérico</span><span class="font-semibold tabular-nums">16,00 €</span></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="absolute bottom-2 right-0 w-[230px] rounded-2xl border border-stone-200 bg-white p-4 shadow-xl sm:w-[250px] dark:border-stone-700 dark:bg-stone-900">
+            <div class="flex items-start gap-2.5">
+              <span class="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[#E6D5C3] text-sm font-extrabold text-stone-900">G</span>
+              <div class="min-w-0">
+                <p class="truncate text-sm font-bold text-stone-900 dark:text-stone-100">Bar La Esquina</p>
+                <p class="text-xs text-stone-500 dark:text-stone-400">Bar de tapas · Alcobendas</p>
+              </div>
+            </div>
+            <p class="mt-3 flex items-center gap-1.5 text-sm font-semibold text-stone-900 dark:text-stone-100">
+              <span class="text-amber-500" aria-hidden="true">★★★★★</span>
+              <span>4,8</span>
+              <span class="font-medium text-stone-500 dark:text-stone-400">(128)</span>
+            </p>
+            <p class="mt-2 text-xs leading-relaxed text-stone-600 dark:text-stone-300">“Carta clara, fotos al día y reserva por WhatsApp en un toque.”</p>
+            <p class="mt-3 inline-flex rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-bold text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">Ficha optimizada · Carta enlazada</p>
+          </div>
         </div>
       </div>
     </div>
@@ -355,8 +389,7 @@
           <p class="mt-1 text-xs text-stone-500 dark:text-stone-400">Cervecerías y bares de tapas</p>
         </header>
         <div class="mt-5 border-b border-stone-200 pb-5 dark:border-stone-800">
-          <p class="text-3xl font-extrabold text-stone-900 dark:text-stone-100">120&nbsp;€</p>
-          <p class="mt-1 text-xs text-stone-400 dark:text-stone-500">(IVA no incluido)</p>
+          <p class="text-3xl font-extrabold text-stone-900 dark:text-stone-100">120&nbsp;€ <span class="align-middle text-base font-bold text-stone-500 dark:text-stone-400">+ IVA</span></p>
           <p class="mt-2 text-sm font-medium leading-snug text-stone-700 dark:text-stone-300">+ Mantenimiento mensual a elegir en el siguiente paso.</p>
           <p class="mt-2.5 inline-flex max-w-full flex-wrap items-center gap-1.5 rounded-full border border-stone-200 bg-[#F3EDE4] px-2.5 py-1 text-[11px] font-semibold leading-tight text-stone-800 dark:border-stone-700 dark:bg-stone-800 dark:text-stone-200"><span aria-hidden="true">⏱️</span> Entrega lista en 48h laborables*</p>
         </div>
@@ -375,15 +408,14 @@
         </button>
       </article>
 
-      <article id="gastro-premium" data-web="gastro" data-name="Gastro Premium" data-price="390" data-plazo="Entrega en 5 a 7 días laborables" data-active="85" data-idle="border-2 border-[#8B5E34] dark:border-[#C4A484] bg-white dark:bg-stone-900" class="reveal relative flex h-full min-h-fit w-full min-w-0 scroll-mt-28 flex-col justify-between rounded-2xl border-2 border-[#8B5E34] bg-white p-6 shadow-sm transition-shadow duration-300 hover:shadow-md dark:border-[#C4A484] dark:bg-stone-900">
+      <article id="gastro-premium" data-web="gastro" data-name="Gastro Premium" data-price="390" data-plazo="Entrega en 5 a 7 días laborables" data-active="85" data-idle="border-2 border-[#8B5E34] dark:border-[#C4A484] bg-white dark:bg-stone-900" class="reveal is-picked relative flex h-full min-h-fit w-full min-w-0 scroll-mt-28 flex-col justify-between rounded-2xl border-2 border-[#8B5E34] bg-white p-6 shadow-sm transition-shadow duration-300 hover:shadow-md dark:border-[#C4A484] dark:bg-stone-900">
         <span class="plan-badge absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-[#E6D5C3] px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-stone-900">Recomendado</span>
         <header class="pt-2">
           <h3 class="text-lg font-extrabold tracking-tight text-stone-900 dark:text-stone-100">Gastro Premium</h3>
           <p class="mt-1 text-xs text-[#8B5E34] dark:text-[#E6D5C3]">Restaurantes y gastrobares</p>
         </header>
         <div class="mt-5 border-b border-stone-200 pb-5 dark:border-stone-800">
-          <p class="text-3xl font-extrabold text-stone-900 dark:text-stone-100">390&nbsp;€</p>
-          <p class="mt-1 text-xs text-stone-400 dark:text-stone-500">(IVA no incluido)</p>
+          <p class="text-3xl font-extrabold text-stone-900 dark:text-stone-100">390&nbsp;€ <span class="align-middle text-base font-bold text-stone-500 dark:text-stone-400">+ IVA</span></p>
           <p class="mt-2 text-sm font-medium leading-snug text-stone-700 dark:text-stone-300">+ Mantenimiento mensual a elegir en el siguiente paso.</p>
           <p class="mt-2.5 inline-flex max-w-full flex-wrap items-center gap-1.5 rounded-full border border-stone-200 bg-[#F3EDE4] px-2.5 py-1 text-[11px] font-semibold leading-tight text-stone-800 dark:border-stone-700 dark:bg-stone-800 dark:text-stone-200"><span aria-hidden="true">⏱️</span> Entrega en 5 a 7 días laborables*</p>
         </div>
@@ -394,20 +426,19 @@
           <li class="flex gap-2"><span class="shrink-0 text-[#8B5E34] dark:text-[#E6D5C3]" aria-hidden="true">✓</span> Sistema de reservas directo por WhatsApp (sin comisiones)</li>
           <li class="flex gap-2"><span class="shrink-0 text-[#8B5E34] dark:text-[#E6D5C3]" aria-hidden="true">✓</span> Optimización avanzada de la ficha de Google Maps</li>
         </ul>
-        <button type="button" data-select-web aria-pressed="false"
-           class="mt-6 rounded-xl bg-[#E6D5C3] px-4 py-3 text-center font-semibold text-stone-900 transition-colors duration-300 hover:bg-[#d4c0aa]">
-          Elegir este
+        <button type="button" data-select-web aria-pressed="true"
+           class="is-picked-btn mt-6 rounded-xl bg-[#E6D5C3] px-4 py-3 text-center font-semibold text-stone-900 transition-colors duration-300 hover:bg-[#d4c0aa]">
+          ✓ Seleccionado
         </button>
       </article>
 
-      <article data-web="vip" data-name="Digitalización Total" data-price="790" data-plazo="Entrega en 10 a 14 días laborables" data-active="220" data-idle="border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900" class="reveal hidden h-full min-h-fit w-full min-w-0 flex-col justify-between rounded-2xl border border-stone-200 bg-white p-6 shadow-sm transition-shadow duration-300 hover:shadow-md dark:border-stone-800 dark:bg-stone-900 md:flex">
+      <article data-web="vip" data-name="Digitalización Total" data-price="790" data-plazo="Entrega en 10 a 14 días laborables" data-active="85" data-idle="border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900" class="reveal hidden h-full min-h-fit w-full min-w-0 flex-col justify-between rounded-2xl border border-stone-200 bg-white p-6 shadow-sm transition-shadow duration-300 hover:shadow-md dark:border-stone-800 dark:bg-stone-900 md:flex">
         <header>
           <h3 class="text-lg font-extrabold tracking-tight text-stone-900 dark:text-stone-100">Digitalización Total</h3>
           <p class="mt-1 text-xs text-stone-500 dark:text-stone-400">VIP, grupos y eventos</p>
         </header>
         <div class="mt-5 border-b border-stone-200 pb-5 dark:border-stone-800">
-          <p class="text-3xl font-extrabold text-stone-900 dark:text-stone-100">790&nbsp;€</p>
-          <p class="mt-1 text-xs text-stone-400 dark:text-stone-500">(IVA no incluido)</p>
+          <p class="text-3xl font-extrabold text-stone-900 dark:text-stone-100">790&nbsp;€ <span class="align-middle text-base font-bold text-stone-500 dark:text-stone-400">+ IVA</span></p>
           <p class="mt-2 text-sm font-medium leading-snug text-stone-700 dark:text-stone-300">+ Mantenimiento mensual a elegir en el siguiente paso.</p>
           <p class="mt-2.5 inline-flex max-w-full flex-wrap items-center gap-1.5 rounded-full border border-stone-200 bg-[#F3EDE4] px-2.5 py-1 text-[11px] font-semibold leading-tight text-stone-800 dark:border-stone-700 dark:bg-stone-800 dark:text-stone-200"><span aria-hidden="true">⏱️</span> Entrega en 10 a 14 días laborables*</p>
         </div>
@@ -429,39 +460,39 @@
     <section id="mantenimiento" class="reveal mt-8 text-center" aria-label="Planes de mantenimiento">
       <p class="text-xs uppercase tracking-wider font-semibold text-stone-500">Servicio recurrente</p>
       <h2 class="mt-2 text-2xl font-bold text-stone-900 dark:text-stone-100 md:text-3xl">Mantenimiento y gestión continua</h2>
-      <div id="maint-tabs" class="mx-auto mb-6 mt-6 grid w-full max-w-3xl grid-cols-3 gap-1 rounded-2xl bg-stone-200/80 p-1 dark:bg-stone-800/80 md:hidden" role="tablist" aria-label="Mantenimiento">
+      <div id="maint-tabs" class="mx-auto mb-6 mt-6 grid w-full max-w-3xl grid-cols-2 gap-1 rounded-2xl bg-stone-200/80 p-1 dark:bg-stone-800/80 md:hidden" role="tablist" aria-label="Mantenimiento">
         <button type="button" role="tab" data-maint-tab="base" aria-selected="false" class="rounded-xl px-2 py-3 text-center text-xs font-medium leading-tight text-stone-600 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100 sm:text-sm">Técnico Base (25 €)</button>
         <button type="button" role="tab" data-maint-tab="activa" aria-selected="true" class="rounded-xl bg-white px-2 py-3 text-center text-xs font-bold leading-tight text-stone-900 shadow-sm dark:bg-stone-900 dark:text-stone-100 sm:text-sm">Gestión Activa (85 €)</button>
-        <button type="button" role="tab" data-maint-tab="vip" aria-selected="false" class="rounded-xl px-2 py-3 text-center text-xs font-medium leading-tight text-stone-600 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100 sm:text-sm">VIP / Multisede (220 €/mes)</button>
       </div>
-      <div class="mx-auto grid max-w-6xl grid-cols-1 gap-6 pt-4 text-left md:mt-8 md:grid-cols-3">
+      <div class="mx-auto grid max-w-4xl grid-cols-1 gap-6 pt-4 text-left md:mt-8 md:grid-cols-2">
         <article data-maint-plan="base" data-name="Técnico Base" data-price="25" data-idle="border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900" class="hidden h-full flex-col justify-between rounded-2xl border border-stone-200 bg-white p-6 shadow-sm transition duration-300 dark:border-stone-800 dark:bg-stone-900 md:flex">
           <div>
             <h3 class="text-lg font-extrabold tracking-tight text-stone-900 dark:text-stone-100">Mantenimiento Técnico Base</h3>
             <div class="mt-5 border-b border-stone-200 pb-5 dark:border-stone-800">
               <p class="text-3xl font-extrabold text-stone-900 dark:text-stone-100">25&nbsp;€<span class="text-base font-semibold text-stone-500 dark:text-stone-400"> / mes</span></p>
-              <p class="mt-2 text-sm font-medium text-stone-600 dark:text-stone-400">compromiso 12 meses</p>
+              <p class="mt-2 text-sm font-bold text-stone-900 dark:text-stone-100">compromiso 12 meses</p>
             </div>
             <ul class="mt-5 space-y-2.5 text-sm leading-snug text-stone-600 dark:text-stone-300">
               <li class="flex gap-2"><span class="shrink-0 text-[#8B5E34] dark:text-[#E6D5C3]" aria-hidden="true">✓</span> Hosting de alta velocidad en Cloudflare</li>
               <li class="flex gap-2"><span class="shrink-0 text-[#8B5E34] dark:text-[#E6D5C3]" aria-hidden="true">✓</span> Renovación anual de dominio incluida</li>
               <li class="flex gap-2"><span class="shrink-0 text-[#8B5E34] dark:text-[#E6D5C3]" aria-hidden="true">✓</span> Certificado SSL de seguridad (HTTPS)</li>
-              <li class="flex gap-2"><span class="shrink-0 text-[#8B5E34] dark:text-[#E6D5C3]" aria-hidden="true">✓</span> Soporte técnico ante caídas o incidencias</li>
+              <li class="flex gap-2"><span class="shrink-0 text-[#8B5E34] dark:text-[#E6D5C3]" aria-hidden="true">✓</span> Soporte ante incidencias técnicas (L-V)</li>
               <li class="flex gap-2"><span class="shrink-0 text-[#8B5E34] dark:text-[#E6D5C3]" aria-hidden="true">✓</span> Hasta 2 actualizaciones de carta al mes (24-48h laborables)</li>
             </ul>
           </div>
           <button type="button" data-select-maint aria-pressed="false" class="mt-6 rounded-xl border border-stone-300 bg-white px-4 py-3 text-center font-semibold text-stone-800 transition-colors duration-300 hover:border-stone-800 hover:bg-stone-50 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-200 dark:hover:bg-stone-800">Elegir este</button>
         </article>
-        <article data-maint-plan="activa" data-name="Gestión Activa" data-price="85" data-idle="border-2 border-[#E6D5C3] dark:border-[#C4A484] bg-white dark:bg-stone-900" class="relative flex h-full flex-col justify-between rounded-2xl border-2 border-[#E6D5C3] bg-white p-6 shadow-sm transition duration-300 dark:border-[#C4A484] dark:bg-stone-900">
+        <article data-maint-plan="activa" data-name="Gestión Activa" data-price="85" data-idle="border-2 border-[#E6D5C3] dark:border-[#C4A484] bg-white dark:bg-stone-900" class="is-picked relative flex h-full flex-col justify-between rounded-2xl border-2 border-[#E6D5C3] bg-white p-6 shadow-sm transition duration-300 dark:border-[#C4A484] dark:bg-stone-900">
           <span class="plan-badge absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-[#E6D5C3] px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-stone-900">Más popular</span>
           <div class="pt-2">
             <h3 class="text-lg font-extrabold tracking-tight text-stone-900 dark:text-stone-100">Gestión Activa + SEO Google Maps</h3>
             <div class="mt-5 border-b border-stone-200 pb-5 dark:border-stone-800">
               <p class="text-3xl font-extrabold text-stone-900 dark:text-stone-100">85&nbsp;€<span class="text-base font-semibold text-stone-500 dark:text-stone-400"> / mes</span></p>
-              <p class="mt-2 text-sm font-medium text-stone-600 dark:text-stone-400">compromiso 12 meses</p>
+              <p class="mt-2 text-sm font-bold text-stone-900 dark:text-stone-100">compromiso 12 meses</p>
             </div>
             <ul class="mt-5 space-y-2.5 text-sm leading-snug text-stone-600 dark:text-stone-300">
               <li class="flex gap-2"><span class="shrink-0 text-[#8B5E34] dark:text-[#E6D5C3]" aria-hidden="true">✓</span> Todo lo incluido en el Mantenimiento Base</li>
+              <li class="flex gap-2"><span class="shrink-0 text-[#8B5E34] dark:text-[#E6D5C3]" aria-hidden="true">✓</span> Soporte técnico prioritario (Respuesta en máx. 24h laborables)</li>
               <li class="flex gap-2"><span class="shrink-0 text-[#8B5E34] dark:text-[#E6D5C3]" aria-hidden="true">✓</span> Hasta 8 actualizaciones de carta al mes (menos de 24h laborables)</li>
               <li class="flex gap-2"><span class="shrink-0 text-[#8B5E34] dark:text-[#E6D5C3]" aria-hidden="true">✓</span> Subida mensual de 10 fotos profesionales a Google Maps</li>
               <li class="flex gap-2"><span class="shrink-0 text-[#8B5E34] dark:text-[#E6D5C3]" aria-hidden="true">✓</span> Redacción y propuesta de respuestas a reseñas de clientes</li>
@@ -469,23 +500,7 @@
               <li class="flex gap-2"><span class="shrink-0 text-[#8B5E34] dark:text-[#E6D5C3]" aria-hidden="true">✓</span> Informe mensual de métricas (visitas, llamadas y clics en 'Cómo llegar')</li>
             </ul>
           </div>
-          <button type="button" data-select-maint aria-pressed="false" class="mt-6 rounded-xl bg-[#E6D5C3] px-4 py-3 text-center font-semibold text-stone-900 transition-colors duration-300 hover:bg-[#d4c0aa]">Elegir este</button>
-        </article>
-        <article data-maint-plan="vip" data-name="VIP / Multisede" data-price="220" data-idle="border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900" class="hidden h-full flex-col justify-between rounded-2xl border border-stone-200 bg-white p-6 shadow-sm transition duration-300 dark:border-stone-800 dark:bg-stone-900 md:flex">
-          <div>
-            <h3 class="text-lg font-extrabold tracking-tight text-stone-900 dark:text-stone-100">VIP / Multisede</h3>
-            <div class="mt-5 border-b border-stone-200 pb-5 dark:border-stone-800">
-              <p class="text-3xl font-extrabold text-stone-900 dark:text-stone-100">220&nbsp;€<span class="text-base font-semibold text-stone-500 dark:text-stone-400"> / mes</span></p>
-              <p class="mt-2 text-sm font-medium text-stone-600 dark:text-stone-400">compromiso 12 meses</p>
-            </div>
-            <ul class="mt-5 space-y-2.5 text-sm leading-snug text-stone-600 dark:text-stone-300">
-              <li class="flex gap-2"><span class="shrink-0 text-[#8B5E34] dark:text-[#E6D5C3]" aria-hidden="true">✓</span> Soporte prioritario 24/7</li>
-              <li class="flex gap-2"><span class="shrink-0 text-[#8B5E34] dark:text-[#E6D5C3]" aria-hidden="true">✓</span> Cambios de carta ilimitados</li>
-              <li class="flex gap-2"><span class="shrink-0 text-[#8B5E34] dark:text-[#E6D5C3]" aria-hidden="true">✓</span> Reportes avanzados</li>
-              <li class="flex gap-2"><span class="shrink-0 text-[#8B5E34] dark:text-[#E6D5C3]" aria-hidden="true">✓</span> Gestión multisede</li>
-            </ul>
-          </div>
-          <button type="button" data-select-maint aria-pressed="false" class="mt-6 rounded-xl border border-stone-300 bg-white px-4 py-3 text-center font-semibold text-stone-800 transition-colors duration-300 hover:border-stone-800 hover:bg-stone-50 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-200 dark:hover:bg-stone-800">Elegir este</button>
+          <button type="button" data-select-maint aria-pressed="true" class="is-picked-btn mt-6 rounded-xl bg-[#E6D5C3] px-4 py-3 text-center font-semibold text-stone-900 transition-colors duration-300 hover:bg-[#d4c0aa]">✓ Seleccionado</button>
         </article>
       </div>
     </section>
@@ -611,13 +626,13 @@
         <div>
           <h3 class="text-lg font-bold text-stone-900 dark:text-stone-100">Resumen de tu configuración</h3>
           <div class="mt-4 space-y-1.5 text-sm text-stone-600 dark:text-stone-300">
-            <p>Web elegida: <span id="pack-web" class="pack-figure font-semibold text-stone-900 dark:text-stone-100"></span></p>
-            <p>Mantenimiento: <span id="pack-maint" class="pack-figure font-semibold text-stone-900 dark:text-stone-100"></span></p>
+            <p>Web elegida: <span id="pack-web" class="pack-figure font-semibold text-stone-900 dark:text-stone-100">Gastro Premium (390 € + IVA)</span></p>
+            <p>Mantenimiento: <span id="pack-maint" class="pack-figure font-semibold text-stone-900 dark:text-stone-100">Gestión Activa (85 €/mes + IVA)</span></p>
             <div id="pack-extras" class="pack-figure space-y-1"></div>
           </div>
           <div class="mt-5 space-y-1 border-t border-stone-200 pt-4 text-sm dark:border-stone-800">
-            <p id="pack-setup" class="pack-figure font-semibold text-stone-900 dark:text-stone-100"></p>
-            <p id="pack-month" class="pack-figure font-semibold text-stone-900 dark:text-stone-100"></p>
+            <p id="pack-setup" class="pack-figure font-semibold text-stone-900 dark:text-stone-100">Total montaje inicial: 390 € + IVA (Anticipo 50%: 195 € + IVA)</p>
+            <p id="pack-month" class="pack-figure font-semibold text-stone-900 dark:text-stone-100">Mantenimiento mensual: 85 €/mes + IVA</p>
           </div>
           <button type="button" id="pack-quote" class="mt-6 bg-emerald-600 font-bold text-white shadow-md transition-all duration-150 ease-out cursor-pointer hover:translate-y-0.5 hover:shadow-sm hover:scale-[0.99] hover:bg-emerald-700 active:translate-y-1 active:scale-[0.97] py-3.5 px-6 rounded-2xl w-full sm:w-auto">Pedir presupuesto de este Pack por WhatsApp ↗</button>
         </div>
@@ -913,6 +928,7 @@
       function setPicked(card, on) {
         var btn = card.querySelector('[data-select-web], [data-select-maint]');
         if (!btn) return;
+        card.classList.toggle('is-picked', on);
         btn.classList.toggle('is-picked-btn', on);
         btn.textContent = on ? '✓ Seleccionado' : 'Elegir este';
         btn.setAttribute('aria-pressed', on ? 'true' : 'false');
@@ -926,15 +942,8 @@
         };
       }
 
-      function selectedWeb() {
-        var button = document.querySelector('[data-web] [data-select-web][aria-pressed="true"]');
-        return button ? button.closest('[data-web]') : null;
-      }
-
-      function selectedMaint() {
-        var button = document.querySelector('[data-maint-plan] [data-select-maint][aria-pressed="true"]');
-        return button ? button.closest('[data-maint-plan]') : null;
-      }
+      var selectedWeb = document.querySelector('[data-web="gastro"]');
+      var selectedMaintenance = document.querySelector('[data-maint-plan="activa"]');
 
       function euroIva(amount, suffix) {
         return amount + ' €' + (suffix || '') + ' + IVA';
@@ -968,8 +977,8 @@
       }
 
       function renderPack() {
-        var web = money(selectedWeb());
-        var maint = money(selectedMaint());
+        var web = money(selectedWeb);
+        var maint = money(selectedMaintenance);
         var extras = selectedExtras();
         var setup = web.price + extras.reduce(function (sum, item) { return sum + item.price; }, 0);
         var half = Math.round(setup / 2);
@@ -999,8 +1008,8 @@
       }
 
       function packMessage(name, zone) {
-        var web = money(selectedWeb());
-        var maint = money(selectedMaint());
+        var web = money(selectedWeb);
+        var maint = money(selectedMaintenance);
         var extras = selectedExtras();
         var setup = web.price + extras.reduce(function (sum, item) { return sum + item.price; }, 0);
         var half = Math.round(setup / 2);
@@ -1022,15 +1031,17 @@
           var card = button.closest('[data-web]');
           if (!card) return;
           var turnOff = button.getAttribute('aria-pressed') === 'true';
+          selectedWeb = turnOff ? null : card;
           document.querySelectorAll('[data-web]').forEach(function (other) {
             setPicked(other, !turnOff && other === card);
           });
           if (!turnOff && card.getAttribute('data-web') === 'vip') {
-            var vipMaint = document.querySelector('[data-maint-plan="vip"]');
+            var activaMaint = document.querySelector('[data-maint-plan="activa"]');
+            selectedMaintenance = activaMaint;
             document.querySelectorAll('[data-maint-plan]').forEach(function (other) {
-              setPicked(other, other === vipMaint);
+              setPicked(other, other === activaMaint);
             });
-            showMaintTab('vip');
+            showMaintTab('activa');
           }
           if (window.matchMedia('(max-width: 767px)').matches) showPlanTab(card.getAttribute('data-web'));
           renderPack();
@@ -1042,6 +1053,7 @@
           var card = button.closest('[data-maint-plan]');
           if (!card) return;
           var turnOff = button.getAttribute('aria-pressed') === 'true';
+          selectedMaintenance = turnOff ? null : card;
           document.querySelectorAll('[data-maint-plan]').forEach(function (other) {
             setPicked(other, !turnOff && other === card);
           });
@@ -1221,8 +1233,8 @@
       });
 
       document.getElementById('pack-quote').addEventListener('click', function (event) {
-        var web = money(selectedWeb());
-        var maint = money(selectedMaint());
+        var web = money(selectedWeb);
+        var maint = money(selectedMaintenance);
         if (!web.name || !maint.name) {
           event.preventDefault();
           packWarned = true;
