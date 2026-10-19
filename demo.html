@@ -430,6 +430,13 @@
     }
     #allergen-filter-panel.is-open { grid-template-rows: 1fr; }
     #allergen-filter-panel > div { overflow: hidden; }
+    #plan-banner-reveal {
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows .2s ease;
+    }
+    #plan-banner-reveal.is-open { grid-template-rows: 1fr; }
+    #plan-banner-reveal > div { overflow: hidden; min-height: 0; }
     #tabs { justify-content: safe center; }
     .tab { justify-content: center; text-align: center; }
     .site-nav-link { justify-content: center; text-align: center; }
@@ -444,12 +451,26 @@
 
   <!-- ============================ CABECERA ============================ -->
   <div data-site-sticky class="sticky top-0 z-30 border-b border-stone-200 bg-white/95 shadow-sm backdrop-blur-sm dark:border-slate-800 dark:bg-slate-950/95">
-  <div class="flex w-full flex-wrap items-center justify-between gap-x-4 gap-y-1 bg-stone-900 px-4 py-2 text-xs text-stone-200 shadow-sm">
-    <div class="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1">
-      <a href="index.html#gastro-premium" class="plan-pin rounded-full bg-amber-400 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-stone-950 no-underline" data-i18n="planBadge">Plan Gastro Premium</a>
-      <span data-i18n="planBanner">Esta demo interactiva incluye las características del Plan Gastro Premium (390 € montaje + 85 €/mes. IVA no inc.).</span>
+  <div class="w-full bg-stone-900 text-xs text-stone-200 shadow-sm">
+    <div class="px-3 py-1 md:hidden">
+      <div class="flex items-center gap-2">
+        <a href="index.html#gastro-premium" class="plan-pin mr-2 shrink-0 rounded-full bg-amber-400 p-1 text-[10px] font-bold uppercase leading-none tracking-wide text-stone-950 no-underline" data-i18n="planBadge">Plan Gastro Premium</a>
+        <a href="https://visiwebmadrid.com/#planes" target="_blank" rel="noopener" class="min-w-0 flex-1 truncate underline underline-offset-2 transition-colors hover:text-amber-400" data-i18n="planCta">Ver planes y contratar ↗</a>
+        <button type="button" id="plan-banner-toggle" class="grid h-5 w-5 shrink-0 place-items-center" aria-expanded="false" aria-controls="plan-banner-text" aria-label="Mostrar información del plan">
+          <svg id="plan-banner-chevron" class="h-3.5 w-3.5 rotate-0 transition-transform duration-200" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 0 1 .02-1.06L11.168 10 7.23 6.29a.75.75 0 1 1 1.04-1.08l4.5 4.25a.75.75 0 0 1 0 1.08l-4.5 4.25a.75.75 0 0 1-1.06-.02Z" clip-rule="evenodd"/></svg>
+        </button>
+      </div>
+      <div id="plan-banner-reveal">
+        <div>
+          <p id="plan-banner-text" class="hidden pt-1 text-[11px] leading-snug" data-i18n="planBanner">Esta demo interactiva incluye las características del Plan Gastro Premium (390 € montaje. IVA no inc.).</p>
+        </div>
+      </div>
     </div>
-    <a href="https://visiwebmadrid.com/#planes" target="_blank" rel="noopener" class="shrink-0 whitespace-nowrap underline transition-colors hover:text-amber-400" data-i18n="planCta">Ver planes y contratar ↗</a>
+    <div class="hidden w-full items-center gap-x-4 px-4 py-2 md:flex">
+      <a href="index.html#gastro-premium" class="plan-pin shrink-0 rounded-full bg-amber-400 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-stone-950 no-underline" data-i18n="planBadge">Plan Gastro Premium</a>
+      <span class="min-w-0 flex-1" data-i18n="planBanner">Esta demo interactiva incluye las características del Plan Gastro Premium (390 € montaje. IVA no inc.).</span>
+      <a href="https://visiwebmadrid.com/#planes" target="_blank" rel="noopener" class="shrink-0 whitespace-nowrap underline transition-colors hover:text-amber-400" data-i18n="planCta">Ver planes y contratar ↗</a>
+    </div>
   </div>
   <header>
     <div class="mx-auto max-w-3xl px-5">
@@ -886,5 +907,40 @@
 
   <script src="demo-data.js"></script>
   <script src="demo-app.js"></script>
+  <script>
+    (function () {
+      var btn = document.getElementById('plan-banner-toggle');
+      var text = document.getElementById('plan-banner-text');
+      var chevron = document.getElementById('plan-banner-chevron');
+      var panel = document.getElementById('plan-banner-reveal');
+      if (!btn || !text || !chevron || !panel) return;
+
+      btn.addEventListener('click', function () {
+        var willOpen = text.classList.contains('hidden');
+        chevron.classList.toggle('rotate-90', willOpen);
+        chevron.classList.toggle('rotate-0', !willOpen);
+        btn.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+
+        if (willOpen) {
+          text.classList.remove('hidden');
+          text.classList.add('block');
+          requestAnimationFrame(function () {
+            panel.classList.add('is-open');
+            window.dispatchEvent(new Event('resize'));
+          });
+          return;
+        }
+
+        panel.classList.remove('is-open');
+        panel.addEventListener('transitionend', function hide(e) {
+          if (e.propertyName !== 'grid-template-rows') return;
+          text.classList.add('hidden');
+          text.classList.remove('block');
+          panel.removeEventListener('transitionend', hide);
+          window.dispatchEvent(new Event('resize'));
+        });
+      });
+    })();
+  </script>
 </body>
 </html>
