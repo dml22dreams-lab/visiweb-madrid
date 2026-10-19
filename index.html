@@ -71,10 +71,31 @@
     .stagger > .reveal:nth-child(3).is-in { animation-delay: .16s; }
     .stagger > .reveal:nth-child(4).is-in { animation-delay: .24s; }
 
-    #planes article {
-      transition: transform .3s ease, box-shadow .3s ease, border-color .3s ease, opacity .2s ease;
+    #planes article,
+    #maint-planes article {
+      transition: all .3s ease-out;
     }
     #planes article.plan-fade { opacity: 0; }
+    [data-servicio-dot],
+    #web-plans-dots > button,
+    #maint-plans-dots > button {
+      width: 0.5rem;
+      height: 0.5rem;
+      min-width: 0.5rem;
+      min-height: 0.5rem;
+      max-width: 0.5rem;
+      max-height: 0.5rem;
+      padding: 0;
+      transform: none;
+      flex-shrink: 0;
+    }
+    @media (max-width: 767px) {
+      #planes.is-swapping > article,
+      #maint-planes.is-swapping > article {
+        grid-area: 1 / 1;
+        width: 100%;
+      }
+    }
     #planes article:hover {
       transform: translateY(-6px);
     }
@@ -393,7 +414,7 @@
     </div>
 
     <div id="planes" class="stagger mx-auto grid max-w-6xl scroll-mt-28 grid-cols-1 items-stretch gap-6 pt-4 md:grid-cols-3">
-      <article data-web="basico" data-name="Básico" data-price="120" data-plazo="Entrega lista en 48h laborables" data-active="25" data-idle="border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900" class="reveal hidden h-full min-h-fit w-full min-w-0 flex-col justify-between rounded-2xl border border-stone-200 bg-white p-6 shadow-sm transition-shadow duration-300 hover:shadow-md dark:border-stone-800 dark:bg-stone-900 md:flex">
+      <article data-web="basico" data-name="Básico" data-price="120" data-plazo="Entrega lista en 48h laborables" data-active="25" data-idle="border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900" class="reveal hidden h-full min-h-fit w-full min-w-0 flex-col justify-between rounded-2xl border border-stone-200 bg-white p-6 shadow-sm transition-all duration-300 ease-out transform hover:shadow-md dark:border-stone-800 dark:bg-stone-900 md:flex">
         <header>
           <h3 class="text-lg font-extrabold tracking-tight text-stone-900 dark:text-stone-100">Básico</h3>
           <p class="mt-1 text-xs text-stone-500 dark:text-stone-400">Cervecerías y bares de tapas</p>
@@ -418,7 +439,7 @@
         </button>
       </article>
 
-      <article id="gastro-premium" data-web="gastro" data-name="Gastro Premium" data-price="390" data-plazo="Entrega en 5 a 7 días laborables" data-active="85" data-idle="border-2 border-[#8B5E34] dark:border-[#C4A484] bg-white dark:bg-stone-900" class="reveal is-picked relative flex h-full min-h-fit w-full min-w-0 scroll-mt-28 flex-col justify-between rounded-2xl border-2 border-[#8B5E34] bg-white p-6 shadow-sm transition-shadow duration-300 hover:shadow-md dark:border-[#C4A484] dark:bg-stone-900">
+      <article id="gastro-premium" data-web="gastro" data-name="Gastro Premium" data-price="390" data-plazo="Entrega en 5 a 7 días laborables" data-active="85" data-idle="border-2 border-[#8B5E34] dark:border-[#C4A484] bg-white dark:bg-stone-900" class="reveal is-picked relative flex h-full min-h-fit w-full min-w-0 scroll-mt-28 flex-col justify-between rounded-2xl border-2 border-[#8B5E34] bg-white p-6 shadow-sm transition-all duration-300 ease-out transform hover:shadow-md dark:border-[#C4A484] dark:bg-stone-900">
         <span class="plan-badge absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-[#E6D5C3] px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-stone-900">Recomendado</span>
         <header class="pt-2">
           <h3 class="text-lg font-extrabold tracking-tight text-stone-900 dark:text-stone-100">Gastro Premium</h3>
@@ -442,7 +463,7 @@
         </button>
       </article>
 
-      <article data-web="vip" data-name="Digitalización Total" data-price="790" data-plazo="Entrega en 10 a 14 días laborables" data-active="85" data-idle="border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900" class="reveal hidden h-full min-h-fit w-full min-w-0 flex-col justify-between rounded-2xl border border-stone-200 bg-white p-6 shadow-sm transition-shadow duration-300 hover:shadow-md dark:border-stone-800 dark:bg-stone-900 md:flex">
+      <article data-web="vip" data-name="Digitalización Total" data-price="790" data-plazo="Entrega en 10 a 14 días laborables" data-active="85" data-idle="border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900" class="reveal hidden h-full min-h-fit w-full min-w-0 flex-col justify-between rounded-2xl border border-stone-200 bg-white p-6 shadow-sm transition-all duration-300 ease-out transform hover:shadow-md dark:border-stone-800 dark:bg-stone-900 md:flex">
         <header>
           <h3 class="text-lg font-extrabold tracking-tight text-stone-900 dark:text-stone-100">Digitalización Total</h3>
           <p class="mt-1 text-xs text-stone-500 dark:text-stone-400">VIP, grupos y eventos</p>
@@ -467,6 +488,12 @@
       </article>
     </div>
 
+    <div id="web-plans-dots" class="flex items-center justify-center gap-2 mt-4 md:hidden">
+      <button type="button" data-web-dot="basico" aria-label="Básico" class="h-2 w-2 rounded-full bg-stone-300 dark:bg-stone-600"></button>
+      <button type="button" data-web-dot="gastro" aria-label="Gastro Premium" aria-current="true" class="h-2 w-2 rounded-full bg-stone-800 dark:bg-stone-100"></button>
+      <button type="button" data-web-dot="vip" aria-label="Digitalización Total" class="h-2 w-2 rounded-full bg-stone-300 dark:bg-stone-600"></button>
+    </div>
+
     <section id="mantenimiento" class="reveal mt-8 text-center" aria-label="Planes de mantenimiento">
       <p class="text-xs uppercase tracking-wider font-semibold text-stone-500">Servicio recurrente</p>
       <h2 class="mt-2 text-2xl font-bold text-stone-900 dark:text-stone-100 md:text-3xl">Mantenimiento y gestión continua</h2>
@@ -475,7 +502,7 @@
         <button type="button" role="tab" data-maint-tab="activa" aria-selected="true" class="rounded-xl border-2 border-[#E6D5C3] bg-white px-2 py-3 text-center text-xs font-bold leading-tight text-stone-900 shadow-sm dark:border-[#8C7A6B] dark:bg-stone-900 dark:text-stone-100 sm:text-sm">Gestión Activa (85 €)</button>
       </div>
       <div id="maint-planes" class="mx-auto grid max-w-4xl grid-cols-1 gap-6 pt-4 text-left md:mt-8 md:grid-cols-2">
-        <article data-maint-plan="base" data-name="Técnico Base" data-price="25" data-idle="border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900" class="hidden h-full flex-col justify-between rounded-2xl border border-stone-200 bg-white p-6 shadow-sm transition duration-300 dark:border-stone-800 dark:bg-stone-900 md:flex">
+        <article data-maint-plan="base" data-name="Técnico Base" data-price="25" data-idle="border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900" class="hidden h-full flex-col justify-between rounded-2xl border border-stone-200 bg-white p-6 shadow-sm transition-all duration-300 ease-out transform dark:border-stone-800 dark:bg-stone-900 md:flex">
           <div>
             <h3 class="text-lg font-extrabold tracking-tight text-stone-900 dark:text-stone-100">Mantenimiento Técnico Base</h3>
             <div class="mt-5 border-b border-stone-200 pb-5 dark:border-stone-800">
@@ -492,7 +519,7 @@
           </div>
           <button type="button" data-select-maint aria-pressed="false" class="mt-6 rounded-xl border border-stone-300 bg-white px-4 py-3 text-center font-semibold text-stone-800 transition-colors duration-300 hover:border-stone-800 hover:bg-stone-50 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-200 dark:hover:bg-stone-800">Elegir este</button>
         </article>
-        <article data-maint-plan="activa" data-name="Gestión Activa" data-price="85" data-idle="border-2 border-[#E6D5C3] dark:border-[#8C7A6B] bg-white dark:bg-stone-900" class="is-picked relative flex h-full flex-col justify-between rounded-2xl border-2 border-[#E6D5C3] bg-white p-6 shadow-sm transition duration-300 dark:border-[#8C7A6B] dark:bg-stone-900">
+        <article data-maint-plan="activa" data-name="Gestión Activa" data-price="85" data-idle="border-2 border-[#E6D5C3] dark:border-[#8C7A6B] bg-white dark:bg-stone-900" class="is-picked relative flex h-full flex-col justify-between rounded-2xl border-2 border-[#E6D5C3] bg-white p-6 shadow-sm transition-all duration-300 ease-out transform dark:border-[#8C7A6B] dark:bg-stone-900">
           <span class="plan-badge absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-[#E6D5C3] px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-stone-900">Más popular</span>
           <div class="pt-2">
             <h3 class="text-lg font-extrabold tracking-tight text-stone-900 dark:text-stone-100">Gestión Activa + SEO Google Maps</h3>
@@ -512,6 +539,10 @@
           </div>
           <button type="button" data-select-maint aria-pressed="true" class="is-picked-btn mt-6 rounded-xl bg-[#E6D5C3] px-4 py-3 text-center font-semibold text-stone-900 transition-colors duration-300 hover:bg-[#d4c0aa]">✓ Seleccionado</button>
         </article>
+      </div>
+      <div id="maint-plans-dots" class="flex items-center justify-center gap-2 mt-4 md:hidden">
+        <button type="button" data-maint-dot="base" aria-label="Técnico Base" class="h-2 w-2 rounded-full bg-stone-300 dark:bg-stone-600"></button>
+        <button type="button" data-maint-dot="activa" aria-label="Gestión Activa" aria-current="true" class="h-2 w-2 rounded-full bg-stone-800 dark:bg-stone-100"></button>
       </div>
     </section>
 
@@ -1187,8 +1218,103 @@
 
       var planTabs = document.querySelectorAll('[data-plan-tab]');
       var webCards = document.querySelectorAll('[data-web]');
+      var webDots = document.querySelectorAll('[data-web-dot]');
+      var planesEl = document.getElementById('planes');
       var planTabOn = ['bg-white', 'dark:bg-stone-900', 'font-bold', 'text-stone-900', 'dark:text-stone-100', 'shadow-sm'];
       var planTabOff = ['font-medium', 'text-stone-600', 'dark:text-stone-400', 'hover:text-stone-900', 'dark:hover:text-stone-100'];
+      var WEB_ORDER = ['basico', 'gastro', 'vip'];
+      var MAINT_ORDER = ['base', 'activa'];
+      var cardSwaps = {};
+
+      function syncDots(dots, attr, id) {
+        dots.forEach(function (dot) {
+          var on = dot.getAttribute(attr) === id;
+          dot.className = on
+            ? 'h-2 w-2 rounded-full bg-stone-800 dark:bg-stone-100'
+            : 'h-2 w-2 rounded-full bg-stone-300 dark:bg-stone-600';
+          if (on) dot.setAttribute('aria-current', 'true');
+          else dot.removeAttribute('aria-current');
+        });
+      }
+
+      function revealCard(card, on) {
+        card.classList.toggle('hidden', !on);
+        card.classList.toggle('flex', on);
+        card.classList.toggle('md:flex', !on);
+        if (on) card.classList.add('is-in', 'settled');
+      }
+
+      function clearCardMotion(card) {
+        card.style.transition = 'none';
+        card.style.opacity = '';
+        card.style.transform = '';
+        card.style.pointerEvents = '';
+        card.style.zIndex = '';
+        void card.offsetWidth;
+        card.style.transition = '';
+      }
+
+      function swapCards(key, container, cards, attr, id, order) {
+        var pending = cardSwaps[key];
+        if (pending && pending.timer) {
+          clearTimeout(pending.timer);
+          container.classList.remove('is-swapping');
+          cards.forEach(function (card) {
+            revealCard(card, card.getAttribute(attr) === pending.id);
+            clearCardMotion(card);
+          });
+          pending.timer = 0;
+        }
+
+        var next = null;
+        var current = null;
+        cards.forEach(function (card) {
+          if (card.getAttribute(attr) === id) next = card;
+          else if (card.classList.contains('flex') && !card.classList.contains('hidden')) current = card;
+        });
+
+        var mobile = window.matchMedia('(max-width: 767px)').matches;
+        if (!mobile || !container || !current || current === next || !next) {
+          cards.forEach(function (card) {
+            revealCard(card, card === next);
+            clearCardMotion(card);
+          });
+          if (container) container.classList.remove('is-swapping');
+          return;
+        }
+
+        var forward = order.indexOf(id) > order.indexOf(current.getAttribute(attr));
+        var enterX = forward ? '1rem' : '-1rem';
+        var leaveX = forward ? '-1rem' : '1rem';
+
+        container.classList.add('is-swapping');
+        current.classList.add('is-in', 'settled');
+        revealCard(next, true);
+        next.style.transition = 'none';
+        next.style.opacity = '0';
+        next.style.transform = 'translateX(' + enterX + ')';
+        next.style.zIndex = '1';
+        current.style.zIndex = '0';
+        current.style.pointerEvents = 'none';
+        void next.offsetWidth;
+        next.style.transition = '';
+        next.style.opacity = '1';
+        next.style.transform = 'translateX(0)';
+        current.style.opacity = '0';
+        current.style.transform = 'translateX(' + leaveX + ')';
+
+        cardSwaps[key] = {
+          id: id,
+          timer: setTimeout(function () {
+            cards.forEach(function (card) {
+              revealCard(card, card === next);
+              clearCardMotion(card);
+            });
+            container.classList.remove('is-swapping');
+            cardSwaps[key].timer = 0;
+          }, 300)
+        };
+      }
 
       function showPlanTab(id) {
         planTabs.forEach(function (tab) {
@@ -1197,19 +1323,8 @@
           planTabOn.forEach(function (cls) { tab.classList.toggle(cls, on); });
           planTabOff.forEach(function (cls) { tab.classList.toggle(cls, !on); });
         });
-        webCards.forEach(function (card) {
-          var on = card.getAttribute('data-web') === id;
-          var wasHidden = card.classList.contains('hidden');
-          card.classList.toggle('hidden', !on);
-          card.classList.toggle('flex', on);
-          card.classList.toggle('md:flex', !on);
-          if (!on) card.classList.remove('plan-fade');
-          if (on && wasHidden) {
-            card.classList.add('is-in', 'settled', 'plan-fade');
-            void card.offsetWidth;
-            card.classList.remove('plan-fade');
-          }
-        });
+        syncDots(webDots, 'data-web-dot', id);
+        swapCards('web', planesEl, webCards, 'data-web', id, WEB_ORDER);
       }
 
       planTabs.forEach(function (tab) {
@@ -1218,8 +1333,16 @@
         });
       });
 
+      webDots.forEach(function (dot) {
+        dot.addEventListener('click', function () {
+          showPlanTab(dot.getAttribute('data-web-dot'));
+        });
+      });
+
       var maintTabs = document.querySelectorAll('[data-maint-tab]');
       var maintCards = document.querySelectorAll('[data-maint-plan]');
+      var maintDots = document.querySelectorAll('[data-maint-dot]');
+      var maintEl = document.getElementById('maint-planes');
 
       function showMaintTab(id) {
         maintTabs.forEach(function (tab) {
@@ -1228,17 +1351,19 @@
           planTabOn.forEach(function (cls) { tab.classList.toggle(cls, on); });
           planTabOff.forEach(function (cls) { tab.classList.toggle(cls, !on); });
         });
-        maintCards.forEach(function (card) {
-          var on = card.getAttribute('data-maint-plan') === id;
-          card.classList.toggle('hidden', !on);
-          card.classList.toggle('flex', on);
-          card.classList.toggle('md:flex', !on);
-        });
+        syncDots(maintDots, 'data-maint-dot', id);
+        swapCards('maint', maintEl, maintCards, 'data-maint-plan', id, MAINT_ORDER);
       }
 
       maintTabs.forEach(function (tab) {
         tab.addEventListener('click', function () {
           showMaintTab(tab.getAttribute('data-maint-tab'));
+        });
+      });
+
+      maintDots.forEach(function (dot) {
+        dot.addEventListener('click', function () {
+          showMaintTab(dot.getAttribute('data-maint-dot'));
         });
       });
 
