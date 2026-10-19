@@ -273,7 +273,7 @@
     </div>
   </header>
 
-  <section class="relative flex min-h-[calc(100vh-5rem)] w-full flex-col justify-center overflow-x-hidden py-12 md:min-h-[85vh] md:py-20">
+  <section id="hero" class="relative flex w-full flex-col justify-center overflow-x-hidden py-10 md:min-h-[85vh] md:py-20">
     <div class="relative mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
       <div class="grid items-center gap-10 md:grid md:grid-cols-2 md:gap-12">
         <div class="text-center md:text-left">
@@ -424,30 +424,22 @@
     </div>
   </section>
 
-  <section class="relative mx-auto w-full max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
-    <div class="reveal mx-auto mb-14 max-w-3xl text-center">
+  <section class="relative mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 md:py-16 lg:px-8 lg:py-24">
+    <div class="reveal mx-auto mb-4 max-w-3xl text-center md:mb-14">
       <p class="mb-3 text-xs font-semibold uppercase tracking-widest text-[#8B5E34] dark:text-[#E6D5C3]">Planes y tarifas</p>
       <h2 class="break-words text-3xl font-bold leading-tight tracking-tight text-stone-900 dark:text-stone-100 sm:text-4xl md:text-5xl">Planes transparentes pensados para hostelería</h2>
-      <p class="mt-4 hyphens-auto break-words leading-relaxed text-stone-500 dark:text-stone-400">
+      <p class="mt-3 hyphens-auto break-words leading-relaxed text-stone-500 dark:text-stone-400 md:mt-4">
         Elige el montaje de la web (50% al inicio y 50% a la entrega) y pídenos la demo por WhatsApp.
       </p>
     </div>
 
-    <div class="reveal mx-auto mb-8 flex max-w-3xl flex-col items-center gap-2 rounded-2xl border border-stone-200 bg-[#F3EDE4] px-5 py-4 text-center text-sm text-stone-800 sm:flex-row sm:justify-center sm:gap-3 dark:border-stone-800 dark:bg-stone-900 dark:text-stone-200">
-      <span class="text-stone-600 dark:text-stone-300">¿Quieres ver cómo funciona en un dispositivo real?</span>
-      <a href="demo.html" target="_blank" rel="noopener noreferrer" class="btn-ink inline-flex items-center gap-1.5 rounded-lg bg-stone-800 px-3 py-1.5 text-xs font-semibold text-white hover:bg-stone-900 sm:text-sm">
-        Prueba nuestra demo interactiva aquí
-        <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M8 16 16 8M9 8h7v7"></path></svg>
-      </a>
-    </div>
-
-    <div id="plan-tabs" class="mb-6 grid grid-cols-3 gap-1 rounded-2xl bg-stone-200/80 p-1 dark:bg-stone-800/80 md:hidden" role="tablist" aria-label="Planes">
+    <div id="plan-tabs" class="mb-3 grid grid-cols-3 gap-1 rounded-2xl bg-stone-200/80 p-1 dark:bg-stone-800/80 md:hidden" role="tablist" aria-label="Planes">
       <button type="button" role="tab" data-plan-tab="basico" aria-selected="false" class="rounded-xl border-2 border-transparent px-2 py-3 text-center text-sm font-medium leading-tight text-stone-600 transition-[background-color,border-color,color,box-shadow] duration-300 ease-out hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100">Básico</button>
       <button type="button" role="tab" data-plan-tab="gastro" aria-selected="true" class="rounded-xl border-2 border-[#E6D5C3] bg-white px-2 py-3 text-center text-sm font-bold leading-tight text-stone-900 shadow-sm transition-[background-color,border-color,color,box-shadow] duration-300 ease-out dark:bg-stone-900 dark:text-stone-100">Gastro Premium</button>
       <button type="button" role="tab" data-plan-tab="vip" aria-selected="false" class="rounded-xl border-2 border-transparent px-2 py-3 text-center text-sm font-medium leading-tight text-stone-600 transition-[background-color,border-color,color,box-shadow] duration-300 ease-out hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100">Digitalización Total</button>
     </div>
 
-    <div id="planes" class="stagger mx-auto grid max-w-6xl scroll-mt-28 grid-cols-1 items-stretch gap-6 pt-4 md:grid-cols-3">
+    <div id="planes" class="stagger mx-auto grid max-w-6xl scroll-mt-28 grid-cols-1 items-stretch gap-6 pt-1 md:grid-cols-3 md:pt-4">
       <article data-web="basico" data-name="Básico" data-price="120" data-plazo="Entrega lista en 48h laborables" data-active="25" data-idle="border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900" class="reveal hidden h-full min-h-fit w-full min-w-0 flex-col justify-between rounded-2xl border border-stone-200 bg-white p-6 shadow-sm transition-all duration-300 ease-out transform hover:shadow-md dark:border-stone-800 dark:bg-stone-900 md:flex">
         <header>
           <h3 class="text-lg font-extrabold tracking-tight text-stone-900 dark:text-stone-100">Básico</h3>
@@ -1538,11 +1530,28 @@
       paint(0);
     })();
   </script>
-  <div class="fixed bottom-0 left-0 right-0 z-40 border-t border-stone-200 bg-[#FAF9F6]/95 p-3 backdrop-blur-md dark:border-stone-800 dark:bg-stone-950/95 md:hidden">
+  <div id="mobile-audit-bar" hidden class="fixed bottom-0 left-0 right-0 z-40 border-t border-stone-200 bg-[#FAF9F6]/95 p-3 backdrop-blur-md dark:border-stone-800 dark:bg-stone-950/95 md:hidden">
     <button type="button" data-open-audit class="flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-4 text-base font-semibold text-white shadow-sm">
       Pedir auditoría de mi ficha gratis
     </button>
   </div>
+  <script>
+    (function () {
+      var bar = document.getElementById('mobile-audit-bar');
+      var hero = document.getElementById('hero');
+      if (!bar || !hero || !('IntersectionObserver' in window)) return;
+      var mq = window.matchMedia('(max-width: 767px)');
+      var heroVisible = true;
+      function sync() {
+        bar.hidden = !mq.matches || heroVisible;
+      }
+      new IntersectionObserver(function (entries) {
+        heroVisible = entries[0].isIntersecting;
+        sync();
+      }, { threshold: 0 }).observe(hero);
+      mq.addEventListener('change', sync);
+    })();
+  </script>
   <script>
     document.querySelectorAll('a[data-wa-text]').forEach(function (link) {
       link.setAttribute('href', window.visiwebWa(link.getAttribute('data-wa-text')));
