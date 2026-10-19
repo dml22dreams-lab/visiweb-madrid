@@ -122,6 +122,16 @@
       background-color: #fafaf9;
     }
     .dark .is-picked { background-color: #292524; }
+    #mantenimiento [data-maint-plan="activa"].is-picked {
+      border-color: #E6D5C3 !important;
+    }
+    .dark #mantenimiento [data-maint-plan="activa"].is-picked {
+      border-color: #8C7A6B !important;
+    }
+    @media (max-width: 767px) {
+      #planes,
+      #maint-planes { touch-action: pan-y; }
+    }
     button.is-picked-btn {
       border-width: 2px !important;
       border-style: solid !important;
@@ -462,9 +472,9 @@
       <h2 class="mt-2 text-2xl font-bold text-stone-900 dark:text-stone-100 md:text-3xl">Mantenimiento y gestión continua</h2>
       <div id="maint-tabs" class="mx-auto mb-6 mt-6 grid w-full max-w-3xl grid-cols-2 gap-1 rounded-2xl bg-stone-200/80 p-1 dark:bg-stone-800/80 md:hidden" role="tablist" aria-label="Mantenimiento">
         <button type="button" role="tab" data-maint-tab="base" aria-selected="false" class="rounded-xl px-2 py-3 text-center text-xs font-medium leading-tight text-stone-600 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100 sm:text-sm">Técnico Base (25 €)</button>
-        <button type="button" role="tab" data-maint-tab="activa" aria-selected="true" class="rounded-xl bg-white px-2 py-3 text-center text-xs font-bold leading-tight text-stone-900 shadow-sm dark:bg-stone-900 dark:text-stone-100 sm:text-sm">Gestión Activa (85 €)</button>
+        <button type="button" role="tab" data-maint-tab="activa" aria-selected="true" class="rounded-xl border-2 border-[#E6D5C3] bg-white px-2 py-3 text-center text-xs font-bold leading-tight text-stone-900 shadow-sm dark:border-[#8C7A6B] dark:bg-stone-900 dark:text-stone-100 sm:text-sm">Gestión Activa (85 €)</button>
       </div>
-      <div class="mx-auto grid max-w-4xl grid-cols-1 gap-6 pt-4 text-left md:mt-8 md:grid-cols-2">
+      <div id="maint-planes" class="mx-auto grid max-w-4xl grid-cols-1 gap-6 pt-4 text-left md:mt-8 md:grid-cols-2">
         <article data-maint-plan="base" data-name="Técnico Base" data-price="25" data-idle="border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900" class="hidden h-full flex-col justify-between rounded-2xl border border-stone-200 bg-white p-6 shadow-sm transition duration-300 dark:border-stone-800 dark:bg-stone-900 md:flex">
           <div>
             <h3 class="text-lg font-extrabold tracking-tight text-stone-900 dark:text-stone-100">Mantenimiento Técnico Base</h3>
@@ -482,7 +492,7 @@
           </div>
           <button type="button" data-select-maint aria-pressed="false" class="mt-6 rounded-xl border border-stone-300 bg-white px-4 py-3 text-center font-semibold text-stone-800 transition-colors duration-300 hover:border-stone-800 hover:bg-stone-50 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-200 dark:hover:bg-stone-800">Elegir este</button>
         </article>
-        <article data-maint-plan="activa" data-name="Gestión Activa" data-price="85" data-idle="border-2 border-[#E6D5C3] dark:border-[#C4A484] bg-white dark:bg-stone-900" class="is-picked relative flex h-full flex-col justify-between rounded-2xl border-2 border-[#E6D5C3] bg-white p-6 shadow-sm transition duration-300 dark:border-[#C4A484] dark:bg-stone-900">
+        <article data-maint-plan="activa" data-name="Gestión Activa" data-price="85" data-idle="border-2 border-[#E6D5C3] dark:border-[#8C7A6B] bg-white dark:bg-stone-900" class="is-picked relative flex h-full flex-col justify-between rounded-2xl border-2 border-[#E6D5C3] bg-white p-6 shadow-sm transition duration-300 dark:border-[#8C7A6B] dark:bg-stone-900">
           <span class="plan-badge absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-[#E6D5C3] px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-stone-900">Más popular</span>
           <div class="pt-2">
             <h3 class="text-lg font-extrabold tracking-tight text-stone-900 dark:text-stone-100">Gestión Activa + SEO Google Maps</h3>
@@ -1230,6 +1240,57 @@
         tab.addEventListener('click', function () {
           showMaintTab(tab.getAttribute('data-maint-tab'));
         });
+      });
+
+      function bindHorizontalSwipe(el, onNext, onPrev) {
+        if (!el) return;
+        var startX = 0;
+        var startY = 0;
+        var active = false;
+        el.addEventListener('touchstart', function (event) {
+          if (!window.matchMedia('(max-width: 767px)').matches || event.touches.length !== 1) {
+            active = false;
+            return;
+          }
+          startX = event.touches[0].clientX;
+          startY = event.touches[0].clientY;
+          active = true;
+        }, { passive: true });
+        el.addEventListener('touchend', function (event) {
+          if (!active) return;
+          active = false;
+          var touch = event.changedTouches[0];
+          var dx = touch.clientX - startX;
+          var dy = touch.clientY - startY;
+          if (Math.abs(dx) < 48 || Math.abs(dx) <= Math.abs(dy)) return;
+          if (dx < 0) onNext();
+          else onPrev();
+        }, { passive: true });
+        el.addEventListener('touchcancel', function () { active = false; });
+      }
+
+      function stepTab(order, current, direction, show) {
+        if (!window.matchMedia('(max-width: 767px)').matches) return;
+        var index = order.indexOf(current);
+        var next = index + direction;
+        if (next < 0 || next >= order.length) return;
+        show(order[next]);
+      }
+
+      bindHorizontalSwipe(document.getElementById('planes'), function () {
+        var current = document.querySelector('[data-plan-tab][aria-selected="true"]');
+        stepTab(['basico', 'gastro', 'vip'], current && current.getAttribute('data-plan-tab'), 1, showPlanTab);
+      }, function () {
+        var current = document.querySelector('[data-plan-tab][aria-selected="true"]');
+        stepTab(['basico', 'gastro', 'vip'], current && current.getAttribute('data-plan-tab'), -1, showPlanTab);
+      });
+
+      bindHorizontalSwipe(document.getElementById('maint-planes'), function () {
+        var current = document.querySelector('[data-maint-tab][aria-selected="true"]');
+        stepTab(['base', 'activa'], current && current.getAttribute('data-maint-tab'), 1, showMaintTab);
+      }, function () {
+        var current = document.querySelector('[data-maint-tab][aria-selected="true"]');
+        stepTab(['base', 'activa'], current && current.getAttribute('data-maint-tab'), -1, showMaintTab);
       });
 
       document.getElementById('pack-quote').addEventListener('click', function (event) {
