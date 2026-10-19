@@ -170,11 +170,21 @@
       #mantenimiento [data-select-maint]:hover {
         transform: none;
       }
-      #objeciones-accordion [data-accordion-trigger] > span {
+    }
+    @media (hover: none), (pointer: coarse) {
+      #objeciones-accordion [data-accordion-trigger][aria-expanded="false"] > span {
         color: #1c1917;
       }
-      .dark #objeciones-accordion [data-accordion-trigger] > span {
+      .dark #objeciones-accordion [data-accordion-trigger][aria-expanded="false"] > span {
         color: #f5f5f4;
+      }
+      #objeciones-accordion [data-accordion-trigger][aria-expanded="false"]:active > span,
+      #objeciones-accordion [data-accordion-trigger][aria-expanded="true"] > span {
+        color: #C4A484;
+      }
+      .dark #objeciones-accordion [data-accordion-trigger][aria-expanded="false"]:active > span,
+      .dark #objeciones-accordion [data-accordion-trigger][aria-expanded="true"] > span {
+        color: #E6D5C3;
       }
     }
     button.is-picked-btn {
