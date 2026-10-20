@@ -73,7 +73,14 @@
 
     #planes article,
     #maint-planes article {
-      transition: all .3s ease-out;
+      transition: opacity 200ms ease-in-out;
+      height: auto;
+      padding-bottom: 1rem;
+    }
+    @media (min-width: 640px) {
+      #planes article {
+        padding-bottom: 1.25rem;
+      }
     }
     #planes article.plan-fade { opacity: 0; }
     [data-servicio-dot],
@@ -90,16 +97,19 @@
       flex-shrink: 0;
     }
     @media (max-width: 767px) {
-      #planes.is-swapping,
-      #maint-planes.is-swapping {
-        overflow: hidden;
-      }
-      #planes.is-swapping > article,
-      #maint-planes.is-swapping > article {
-        grid-area: 1 / 1;
+      #planes > article,
+      #maint-planes > article {
         width: 100%;
-        align-self: start;
-        height: auto !important;
+        max-width: 100%;
+        transform: none !important;
+        animation: none !important;
+      }
+    }
+    @media (min-width: 768px) {
+      #planes > article,
+      #maint-planes > article {
+        opacity: 1 !important;
+        transition: transform .3s ease, box-shadow .3s ease;
       }
     }
     #planes article:hover {
@@ -279,7 +289,7 @@
         <div class="text-center md:text-left">
           <div class="scale-in mx-auto mb-6 inline-flex max-w-full flex-wrap items-center justify-center gap-2 rounded-full border border-stone-200 bg-white px-3 py-1.5 text-center text-xs font-semibold text-stone-700 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-300 md:mx-0">
             <span class="h-2 w-2 shrink-0 rounded-full bg-[#8B5E34]"></span>
-            Especialistas en hostelería local
+            Especialistas en hostelería
           </div>
           <h1 class="fade-in-up break-words text-3xl font-bold leading-tight tracking-tight text-stone-900 dark:text-stone-100 sm:text-4xl lg:text-5xl">
             Atrae más mesas. Carta QR en 48h y el mejor SEO local de tu zona.
@@ -440,7 +450,7 @@
     </div>
 
     <div id="planes" class="stagger mx-auto grid max-w-6xl scroll-mt-28 grid-cols-1 items-stretch gap-6 pt-1 md:grid-cols-3 md:pt-4">
-      <article data-web="basico" data-name="Básico" data-price="120" data-plazo="Entrega lista en 48h laborables" data-active="25" data-idle="border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900" class="reveal mb-8 hidden h-full min-h-fit w-full min-w-0 flex-col justify-between rounded-2xl border border-stone-200 bg-white p-6 shadow-sm transition-all duration-300 ease-out transform hover:shadow-md dark:border-stone-800 dark:bg-stone-900 sm:p-8 md:flex">
+      <article data-web="basico" data-name="Básico" data-price="120" data-plazo="Entrega lista en 48h laborables" data-active="25" data-idle="border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900" class="reveal mb-8 hidden h-full min-h-fit w-full min-w-0 flex-col justify-between rounded-2xl border border-stone-200 bg-white p-6 opacity-0 shadow-sm hover:shadow-md dark:border-stone-800 dark:bg-stone-900 sm:p-8 md:flex">
         <header>
           <h3 class="text-lg font-extrabold tracking-tight text-stone-900 dark:text-stone-100">Básico</h3>
           <p class="mt-1 text-xs text-stone-500 dark:text-stone-400">Cervecerías y bares de tapas</p>
@@ -460,12 +470,12 @@
           <li class="flex gap-2"><span class="shrink-0 text-[#8B5E34] dark:text-[#E6D5C3]" aria-hidden="true">✓</span> Vinculación oficial del enlace web en Google Maps</li>
         </ul>
         <button type="button" data-select-web aria-pressed="false"
-           class="mt-6 rounded-xl border border-stone-300 bg-white px-4 py-3 text-center font-semibold text-stone-800 transition-colors duration-300 hover:border-stone-800 hover:bg-stone-50 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-200 dark:hover:bg-stone-800">
+           class="mt-6 w-full rounded-xl border border-stone-300 bg-white px-4 py-3 text-center font-semibold text-stone-800 transition-colors duration-300 hover:border-stone-800 hover:bg-stone-50 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-200 dark:hover:bg-stone-800">
           Elegir este
         </button>
       </article>
 
-      <article id="gastro-premium" data-web="gastro" data-name="Gastro Premium" data-price="390" data-plazo="Entrega en 5 a 7 días laborables" data-active="85" data-idle="border-2 border-[#8B5E34] dark:border-[#C4A484] bg-white dark:bg-stone-900" class="reveal relative mb-8 flex h-full min-h-fit w-full min-w-0 scroll-mt-28 flex-col justify-between rounded-2xl border-2 border-[#8B5E34] bg-white p-6 shadow-sm transition-all duration-300 ease-out transform hover:shadow-md dark:border-[#C4A484] dark:bg-stone-900 sm:p-8">
+      <article id="gastro-premium" data-web="gastro" data-name="Gastro Premium" data-price="390" data-plazo="Entrega en 5 a 7 días laborables" data-active="85" data-idle="border-2 border-[#8B5E34] dark:border-[#C4A484] bg-white dark:bg-stone-900" class="reveal relative mb-8 block h-full min-h-fit w-full min-w-0 scroll-mt-28 flex-col justify-between rounded-2xl border-2 border-[#8B5E34] bg-white p-6 opacity-100 shadow-sm transition-opacity duration-200 ease-in-out hover:shadow-md dark:border-[#C4A484] dark:bg-stone-900 sm:p-8 md:flex">
         <span class="plan-badge absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-[#E6D5C3] px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-stone-900">Recomendado</span>
         <header class="pt-2">
           <h3 class="text-lg font-extrabold tracking-tight text-stone-900 dark:text-stone-100">Gastro Premium</h3>
@@ -484,12 +494,12 @@
           <li class="flex gap-2"><span class="shrink-0 text-[#8B5E34] dark:text-[#E6D5C3]" aria-hidden="true">✓</span> Optimización avanzada de la ficha de Google Maps</li>
         </ul>
         <button type="button" data-select-web aria-pressed="false"
-           class="mt-6 rounded-xl border border-stone-300 bg-white px-4 py-3 text-center font-semibold text-stone-800 transition-colors duration-300 hover:border-stone-800 hover:bg-stone-50 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-200 dark:hover:bg-stone-800">
+           class="mt-6 w-full rounded-xl border border-stone-300 bg-white px-4 py-3 text-center font-semibold text-stone-800 transition-colors duration-300 hover:border-stone-800 hover:bg-stone-50 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-200 dark:hover:bg-stone-800">
           Elegir este
         </button>
       </article>
 
-      <article data-web="vip" data-name="Digitalización Total" data-price="790" data-plazo="Entrega en 10 a 14 días laborables" data-active="85" data-idle="border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900" class="reveal mb-8 hidden h-full min-h-fit w-full min-w-0 flex-col justify-between rounded-2xl border border-stone-200 bg-white p-6 shadow-sm transition-all duration-300 ease-out transform hover:shadow-md dark:border-stone-800 dark:bg-stone-900 sm:p-8 md:flex">
+      <article data-web="vip" data-name="Digitalización Total" data-price="790" data-plazo="Entrega en 10 a 14 días laborables" data-active="85" data-idle="border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900" class="reveal mb-8 hidden h-full min-h-fit w-full min-w-0 flex-col justify-between rounded-2xl border border-stone-200 bg-white p-6 opacity-0 shadow-sm hover:shadow-md dark:border-stone-800 dark:bg-stone-900 sm:p-8 md:flex">
         <header>
           <h3 class="text-lg font-extrabold tracking-tight text-stone-900 dark:text-stone-100">Digitalización Total</h3>
           <p class="mt-1 text-xs text-stone-500 dark:text-stone-400">VIP, grupos y eventos</p>
@@ -508,7 +518,7 @@
           <li class="flex gap-2"><span class="shrink-0 text-[#8B5E34] dark:text-[#E6D5C3]" aria-hidden="true">✓</span> Configuración avanzada de reputación online</li>
         </ul>
         <button type="button" data-select-web aria-pressed="false"
-           class="mt-6 rounded-xl border border-stone-300 bg-white px-4 py-3 text-center font-semibold text-stone-800 transition-colors duration-300 hover:border-stone-800 hover:bg-stone-50 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-200 dark:hover:bg-stone-800">
+           class="mt-6 w-full rounded-xl border border-stone-300 bg-white px-4 py-3 text-center font-semibold text-stone-800 transition-colors duration-300 hover:border-stone-800 hover:bg-stone-50 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-200 dark:hover:bg-stone-800">
           Elegir este
         </button>
       </article>
@@ -528,7 +538,7 @@
         <button type="button" role="tab" data-maint-tab="activa" aria-selected="true" class="rounded-xl border-2 border-[#E6D5C3] bg-white px-2 py-3 text-center text-xs font-bold leading-tight text-stone-900 shadow-sm transition-[background-color,border-color,color,box-shadow] duration-300 ease-out dark:border-[#8C7A6B] dark:bg-stone-900 dark:text-stone-100 sm:text-sm">Gestión Activa (85 €)</button>
       </div>
       <div id="maint-planes" class="mx-auto grid max-w-4xl grid-cols-1 gap-6 pt-4 text-left md:mt-8 md:grid-cols-2">
-        <article data-maint-plan="base" data-name="Técnico Base" data-price="25" data-idle="border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900" class="hidden h-full flex-col justify-between rounded-2xl border border-stone-200 bg-white p-6 shadow-sm transition-all duration-300 ease-out transform dark:border-stone-800 dark:bg-stone-900 md:flex">
+        <article data-maint-plan="base" data-name="Técnico Base" data-price="25" data-idle="border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900" class="hidden h-full w-full flex-col justify-between rounded-2xl border border-stone-200 bg-white p-6 opacity-0 shadow-sm dark:border-stone-800 dark:bg-stone-900 md:flex">
           <div>
             <h3 class="text-lg font-extrabold tracking-tight text-stone-900 dark:text-stone-100">Mantenimiento Técnico Base</h3>
             <div class="mt-5 border-b border-stone-200 pb-5 dark:border-stone-800">
@@ -543,9 +553,9 @@
               <li class="flex gap-2"><span class="shrink-0 text-[#8B5E34] dark:text-[#E6D5C3]" aria-hidden="true">✓</span> Hasta 2 actualizaciones de carta al mes (24-48h laborables)</li>
             </ul>
           </div>
-          <button type="button" data-select-maint aria-pressed="false" class="mt-6 rounded-xl border border-stone-300 bg-white px-4 py-3 text-center font-semibold text-stone-800 transition-colors duration-300 hover:border-stone-800 hover:bg-stone-50 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-200 dark:hover:bg-stone-800">Elegir este</button>
+          <button type="button" data-select-maint aria-pressed="false" class="mt-6 w-full rounded-xl border border-stone-300 bg-white px-4 py-3 text-center font-semibold text-stone-800 transition-colors duration-300 hover:border-stone-800 hover:bg-stone-50 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-200 dark:hover:bg-stone-800">Elegir este</button>
         </article>
-        <article data-maint-plan="activa" data-name="Gestión Activa" data-price="85" data-idle="border-2 border-[#E6D5C3] dark:border-[#8C7A6B] bg-white dark:bg-stone-900" class="relative flex h-full flex-col justify-between rounded-2xl border-2 border-[#E6D5C3] bg-white p-6 shadow-sm transition-all duration-300 ease-out transform dark:border-[#8C7A6B] dark:bg-stone-900">
+        <article data-maint-plan="activa" data-name="Gestión Activa" data-price="85" data-idle="border-2 border-[#E6D5C3] dark:border-[#8C7A6B] bg-white dark:bg-stone-900" class="relative block h-full w-full flex-col justify-between rounded-2xl border-2 border-[#E6D5C3] bg-white p-6 opacity-100 shadow-sm transition-opacity duration-200 ease-in-out dark:border-[#8C7A6B] dark:bg-stone-900 md:flex">
           <span class="plan-badge absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-[#E6D5C3] px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-stone-900">Más popular</span>
           <div class="pt-2">
             <h3 class="text-lg font-extrabold tracking-tight text-stone-900 dark:text-stone-100">Gestión Activa + SEO Google Maps</h3>
@@ -563,7 +573,7 @@
               <li class="flex gap-2"><span class="shrink-0 text-[#8B5E34] dark:text-[#E6D5C3]" aria-hidden="true">✓</span> Informe mensual de métricas (visitas, llamadas y clics en 'Cómo llegar')</li>
             </ul>
           </div>
-          <button type="button" data-select-maint aria-pressed="false" class="mt-6 rounded-xl border border-stone-300 bg-white px-4 py-3 text-center font-semibold text-stone-800 transition-colors duration-300 hover:border-stone-800 hover:bg-stone-50 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-200 dark:hover:bg-stone-800">Elegir este</button>
+          <button type="button" data-select-maint aria-pressed="false" class="mt-6 w-full rounded-xl border border-stone-300 bg-white px-4 py-3 text-center font-semibold text-stone-800 transition-colors duration-300 hover:border-stone-800 hover:bg-stone-50 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-200 dark:hover:bg-stone-800">Elegir este</button>
         </article>
       </div>
       <div id="maint-plans-dots" class="flex items-center justify-center gap-2 mt-4 md:hidden">
@@ -1151,11 +1161,12 @@
         });
       });
 
-      function bindStepper(kind, prefix) {
+      function bindStepper(kind, prefix, max) {
         var node = document.querySelector('[data-extra="' + kind + '"]');
         if (!node) return;
         function setQty(qty) {
           qty = Math.max(0, qty);
+          if (max != null) qty = Math.min(max, qty);
           node.setAttribute('data-qty', String(qty));
           node.setAttribute('aria-pressed', qty > 0 ? 'true' : 'false');
           node.querySelector('[data-' + prefix + '-idle]').classList.toggle('hidden', qty > 0);
@@ -1163,6 +1174,12 @@
           active.classList.toggle('hidden', qty === 0);
           active.classList.toggle('inline-flex', qty > 0);
           node.querySelector('[data-' + prefix + '-count]').textContent = String(qty);
+          var atMax = max != null && qty >= max;
+          node.querySelectorAll('[data-' + prefix + '-inc]').forEach(function (button) {
+            button.disabled = atMax;
+            button.classList.toggle('opacity-40', atMax);
+            button.classList.toggle('cursor-not-allowed', atMax);
+          });
           renderPack();
         }
         node.addEventListener('click', function (event) {
@@ -1189,8 +1206,8 @@
         });
       }
 
-      bindStepper('idioma', 'idioma');
-      bindStepper('horas', 'horas');
+      bindStepper('idioma', 'idioma', 7);
+      bindStepper('horas', 'horas', 4);
 
       document.querySelectorAll('[data-extra-info]').forEach(function (info) {
         info.addEventListener('click', function (event) {
@@ -1261,10 +1278,6 @@
       var planesEl = document.getElementById('planes');
       var planTabOn = ['bg-white', 'dark:bg-stone-900', 'font-bold', 'text-stone-900', 'dark:text-stone-100', 'shadow-sm', 'border-[#E6D5C3]'];
       var planTabOff = ['font-medium', 'text-stone-600', 'dark:text-stone-400', 'hover:text-stone-900', 'dark:hover:text-stone-100', 'border-transparent'];
-      var WEB_ORDER = ['basico', 'gastro', 'vip'];
-      var MAINT_ORDER = ['base', 'activa'];
-      var cardSwaps = {};
-
       function syncDots(dots, attr, id) {
         dots.forEach(function (dot) {
           var on = dot.getAttribute(attr) === id;
@@ -1277,94 +1290,31 @@
       }
 
       function revealCard(card, on) {
-        card.classList.toggle('hidden', !on);
-        card.classList.toggle('flex', on);
-        card.classList.toggle('md:flex', !on);
-        if (on) card.classList.add('is-in', 'settled');
-      }
-
-      function clearCardMotion(card) {
-        card.style.transition = 'none';
+        card.classList.add('is-in', 'settled', 'w-full');
+        card.classList.remove('flex', 'transform', 'transition-all', 'duration-300', 'ease-out', 'scale-90', 'scale-95', 'scale-100', 'scale-105');
+        card.style.transition = '';
         card.style.opacity = '';
         card.style.transform = '';
         card.style.pointerEvents = '';
         card.style.zIndex = '';
-        void card.offsetWidth;
-        card.style.transition = '';
+        if (on) {
+          card.classList.remove('hidden', 'opacity-0');
+          card.classList.add('block', 'opacity-100', 'transition-opacity', 'duration-200', 'ease-in-out', 'md:flex');
+        } else {
+          card.classList.remove('block', 'opacity-100', 'transition-opacity', 'duration-200', 'ease-in-out');
+          card.classList.add('hidden', 'opacity-0', 'md:flex');
+        }
       }
 
-      function finishSwap(key, container, cards, attr, id) {
-        cards.forEach(function (card) {
-          revealCard(card, card.getAttribute(attr) === id);
-          clearCardMotion(card);
-        });
+      function showCards(container, cards, attr, id) {
         if (container) {
           container.classList.remove('is-swapping');
           container.style.transition = '';
           container.style.height = '';
         }
-        if (cardSwaps[key]) cardSwaps[key].timer = 0;
-      }
-
-      function swapCards(key, container, cards, attr, id, order) {
-        var pending = cardSwaps[key];
-        if (pending && pending.timer) {
-          clearTimeout(pending.timer);
-          finishSwap(key, container, cards, attr, pending.id);
-        }
-
-        var next = null;
-        var current = null;
         cards.forEach(function (card) {
-          if (card.getAttribute(attr) === id) next = card;
-          else if (card.classList.contains('flex') && !card.classList.contains('hidden')) current = card;
+          revealCard(card, card.getAttribute(attr) === id);
         });
-
-        var mobile = window.matchMedia('(max-width: 767px)').matches;
-        var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        if (!mobile || reduce || !container || !current || current === next || !next) {
-          finishSwap(key, container, cards, attr, id);
-          return;
-        }
-
-        var forward = order.indexOf(id) > order.indexOf(current.getAttribute(attr));
-        var shift = forward ? 24 : -24;
-        var cs = getComputedStyle(container);
-        var chrome = parseFloat(cs.paddingTop) + parseFloat(cs.paddingBottom) + parseFloat(cs.borderTopWidth) + parseFloat(cs.borderBottomWidth);
-        var ease = 'cubic-bezier(.4, 0, .2, 1)';
-        var motion = 'opacity .55s ' + ease + ', transform .55s ' + ease;
-
-        container.classList.add('is-swapping');
-        container.style.transition = 'none';
-        container.style.height = container.offsetHeight + 'px';
-        current.classList.add('is-in', 'settled');
-        revealCard(next, true);
-        next.style.transition = 'none';
-        current.style.transition = 'none';
-        next.style.opacity = '0';
-        next.style.transform = 'translate3d(' + shift + 'px,0,0)';
-        current.style.opacity = '1';
-        current.style.transform = 'translate3d(0,0,0)';
-        next.style.zIndex = '1';
-        current.style.zIndex = '0';
-        current.style.pointerEvents = 'none';
-        void next.offsetWidth;
-
-        container.style.transition = 'height .55s ' + ease;
-        next.style.transition = motion;
-        current.style.transition = motion;
-        container.style.height = (next.offsetHeight + chrome) + 'px';
-        next.style.opacity = '1';
-        next.style.transform = 'translate3d(0,0,0)';
-        current.style.opacity = '0';
-        current.style.transform = 'translate3d(' + (-shift) + 'px,0,0)';
-
-        cardSwaps[key] = {
-          id: id,
-          timer: setTimeout(function () {
-            finishSwap(key, container, cards, attr, id);
-          }, 580)
-        };
       }
 
       function showPlanTab(id) {
@@ -1375,7 +1325,7 @@
           planTabOff.forEach(function (cls) { tab.classList.toggle(cls, !on); });
         });
         syncDots(webDots, 'data-web-dot', id);
-        swapCards('web', planesEl, webCards, 'data-web', id, WEB_ORDER);
+        showCards(planesEl, webCards, 'data-web', id);
       }
 
       planTabs.forEach(function (tab) {
@@ -1406,7 +1356,7 @@
         maintTabs.forEach(function (tab) {
           tab.classList.toggle('dark:border-[#8C7A6B]', tab.getAttribute('data-maint-tab') === id);
         });
-        swapCards('maint', maintEl, maintCards, 'data-maint-plan', id, MAINT_ORDER);
+        showCards(maintEl, maintCards, 'data-maint-plan', id);
       }
 
       maintTabs.forEach(function (tab) {
