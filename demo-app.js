@@ -230,6 +230,12 @@
     const footerWa = $('#footer-whatsapp');
     if (footerWa) footerWa.href = wa;
 
+    const salesWa = $('#sales-whatsapp');
+    if (salesWa) {
+      salesWa.href = 'https://wa.me/' + D.developer.whatsapp + '?text=' +
+        encodeURIComponent(t('salesWhatsappText'));
+    }
+
     const maps = mapsUrl();
     ['#map-directions', '#footer-map'].forEach((sel) => {
       const node = $(sel);
@@ -290,46 +296,79 @@
   }
 
   function dishNode(item) {
-    const li = el('li', 'flex items-start gap-4 py-6');
+    const recommended = item.tags.indexOf('recomendado') >= 0;
+    const li = el('li', 'flex items-start justify-between gap-3 border-b border-stone-300 py-3 dark:border-stone-600 sm:gap-4 sm:py-4');
     li.dataset.allergens = item.allergens.join(',');
-    li.appendChild(imageOrPlaceholder(item.image, L(item.name), 80, 'h-20 w-20 shrink-0 rounded-lg object-cover'));
 
-    const body = el('div', 'min-w-0 flex-1');
-    const title = el('h3', 'pr-3 text-[15px] font-semibold leading-snug');
+    const body = el('div', 'min-w-0 flex-1 pr-1');
+    if (recommended) {
+      const badge = el('span', 'mb-3 mt-2 inline-block rounded-full bg-emerald-100 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-emerald-800 sm:mb-3.5 sm:mt-2.5 sm:text-xs');
+      badge.textContent = L(D.dietTags.recomendado.name);
+      body.appendChild(badge);
+    }
+
+    const heading = el('div', 'flex items-start justify-between');
+    const title = el('h3', 'text-sm font-bold leading-snug text-stone-900 dark:text-stone-100 sm:text-base');
     title.textContent = L(item.name);
-    const desc = el('p', 'mt-1 text-sm leading-relaxed text-slate-600 dark:text-slate-400');
-    desc.textContent = L(item.desc);
-    body.append(title, desc);
+    const price = el('span', 'ml-2 whitespace-nowrap text-sm font-bold text-stone-900 dark:text-stone-100 sm:text-base');
+    price.textContent = lang === 'en' ? item.priceEn : item.price;
+    heading.append(title, price);
 
-    if (item.tags.length) {
-      const tags = el('div', 'mt-4 flex flex-wrap gap-1.5');
-      item.tags.forEach((key) => {
-        const tag = el('span', key === 'recomendado' ? 'pill-tag' : 'pill-tag-soft');
+    const desc = el('p', 'mt-1 text-xs leading-snug text-stone-500 dark:text-stone-400 sm:text-sm');
+    desc.textContent = L(item.desc);
+    body.append(heading, desc);
+
+    const meta = el('div', 'mb-1');
+    const otherTags = item.tags.filter((key) => key !== 'recomendado');
+    if (otherTags.length) {
+      const tags = el('div', 'mt-3 flex flex-wrap gap-1.5 sm:mt-3.5');
+      otherTags.forEach((key) => {
+        const tag = el('span', 'pill-tag-soft');
         tag.textContent = L(D.dietTags[key].name);
         tags.appendChild(tag);
       });
-      body.appendChild(tags);
+      meta.appendChild(tags);
     }
 
-    const allergens = el('div', 'mt-4 flex flex-wrap items-center gap-1.5');
-    const label = el('span', 'text-[11px] font-semibold uppercase tracking-wide text-slate-600 dark:text-slate-400');
+    const allergenId = 'dish-allergens-' + item.id;
+    const toggle = el('button', 'toggle-allergens-btn mt-2.5 inline-flex cursor-pointer items-center gap-1.5 py-1 text-xs font-medium text-black sm:mt-3');
+    toggle.type = 'button';
+    toggle.setAttribute('aria-expanded', 'false');
+    toggle.setAttribute('aria-controls', allergenId);
+    const toggleLabel = el('span');
+    toggleLabel.textContent = t('allergensInDish').replace(/:\s*$/, '');
+    const chevron = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    chevron.setAttribute('class', 'w-3 h-3 text-black transition-transform duration-200 transform rotate-0');
+    chevron.setAttribute('fill', 'none');
+    chevron.setAttribute('stroke', 'currentColor');
+    chevron.setAttribute('viewBox', '0 0 24 24');
+    chevron.setAttribute('aria-hidden', 'true');
+    const chevronPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    chevronPath.setAttribute('stroke-linecap', 'round');
+    chevronPath.setAttribute('stroke-linejoin', 'round');
+    chevronPath.setAttribute('stroke-width', '2');
+    chevronPath.setAttribute('d', 'M9 5l7 7-7 7');
+    chevron.appendChild(chevronPath);
+    toggle.append(toggleLabel, chevron);
+
+    const allergens = el('div', 'hidden');
+    allergens.id = allergenId;
     if (item.allergenNote) {
-      label.textContent = t('allergensInDish');
-      allergens.appendChild(label);
       const note = el('span', 'pill-allergen');
       note.textContent = L(item.allergenNote);
       allergens.appendChild(note);
-    } else {
-      label.textContent = item.allergens.length ? t('allergensInDish') : t('noAllergens');
-      allergens.appendChild(label);
+    } else if (item.allergens.length) {
       item.allergens.forEach((key) => allergens.appendChild(allergenPill(key)));
+    } else {
+      const empty = el('span', 'text-xs text-stone-500 dark:text-stone-400');
+      empty.textContent = t('noAllergens');
+      allergens.appendChild(empty);
     }
-    body.appendChild(allergens);
+    meta.append(toggle, allergens);
+    body.appendChild(meta);
 
-    const price = el('span', 'dish-price');
-    price.textContent = lang === 'en' ? item.priceEn : item.price;
-
-    li.append(body, price);
+    const image = imageOrPlaceholder(item.image, L(item.name), 72, 'h-[72px] w-[72px] shrink-0 rounded-2xl object-cover sm:h-20 sm:w-20');
+    li.append(body, image);
     return li;
   }
 
@@ -359,9 +398,9 @@
       panel.tabIndex = 0;
       if (index !== 0) panel.hidden = true;
 
-      const desc = el('p', 'text-center text-sm italic text-slate-600 dark:text-slate-400');
+      const desc = el('p', 'text-center text-xs italic text-slate-600 dark:text-slate-400 sm:text-sm');
       desc.textContent = L(cat.desc);
-      const list = el('ul', 'mt-6 divide-y divide-slate-200 dark:divide-slate-800');
+      const list = el('ul', 'mt-3');
       cat.items.forEach((item) => list.appendChild(dishNode(item)));
       panel.append(desc, list);
       panels.appendChild(panel);
@@ -640,6 +679,27 @@
     panel.classList.toggle('is-open', open);
     toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
     if (icon) icon.classList.toggle('rotate-90', open);
+  }
+
+  function initDishAllergenToggles() {
+    const panels = $('#panels');
+    if (!panels) return;
+    panels.addEventListener('click', (event) => {
+      const btn = event.target.closest('.toggle-allergens-btn');
+      if (!btn || !panels.contains(btn)) return;
+      const list = btn.nextElementSibling;
+      if (!list || list.id !== btn.getAttribute('aria-controls')) return;
+      const open = list.classList.contains('hidden');
+      list.className = open
+        ? 'flex flex-wrap gap-1.5 pt-2 transition-all duration-200'
+        : 'hidden';
+      const icon = btn.querySelector('svg');
+      if (icon) {
+        icon.classList.toggle('rotate-90', open);
+        icon.classList.toggle('rotate-0', !open);
+      }
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
   }
 
   function initAllergenFilters() {
@@ -988,6 +1048,184 @@
     syncBookSelect(time);
   }
 
+  const WHEEL_ITEM = 'time-slot-item h-10 flex w-full shrink-0 items-center justify-center snap-center text-base font-semibold text-stone-700 dark:text-stone-300 transition-all cursor-pointer';
+  const WHEEL_ITEM_ON = 'time-slot-item h-10 flex w-full shrink-0 items-center justify-center snap-center text-base font-bold text-stone-900 dark:text-stone-100 scale-110 transition-all cursor-pointer';
+  let currentHourIndex = 0;
+
+  function paintWheelItem(item, active) {
+    item.className = active ? WHEEL_ITEM_ON : WHEEL_ITEM;
+    item.setAttribute('aria-selected', active ? 'true' : 'false');
+  }
+
+  function syncTimeWheel(select) {
+    const wrap = select.closest('.book-time-wheel');
+    const wheel = $('#book-time-wheel');
+    if (!wrap || !wheel) return;
+    const trigger = wrap.querySelector('.book-select-trigger');
+    const valueEl = wrap.querySelector('.book-select-value');
+    const panel = wrap.querySelector('.book-wheel-panel');
+    const previous = select.value;
+
+    wheel.textContent = '';
+    Array.prototype.forEach.call(select.options, (opt) => {
+      if (!opt.value) return;
+      const btn = el('button', WHEEL_ITEM);
+      btn.type = 'button';
+      btn.dataset.value = opt.value;
+      btn.textContent = opt.textContent;
+      btn.setAttribute('role', 'option');
+      btn.setAttribute('aria-selected', 'false');
+      wheel.appendChild(btn);
+    });
+
+    if (select.disabled) {
+      wrap.classList.remove('is-open');
+      if (trigger) trigger.setAttribute('aria-expanded', 'false');
+      if (panel) panel.hidden = true;
+    }
+    if (trigger) trigger.disabled = !!select.disabled;
+
+    const shown = select.options[select.selectedIndex];
+    if (valueEl) valueEl.textContent = shown ? shown.textContent : '';
+
+    const current = previous
+      ? wheel.querySelector('[data-value="' + CSS.escape(previous) + '"]')
+      : null;
+    const slots = wheel.querySelectorAll('.time-slot-item');
+    const found = current ? Array.prototype.indexOf.call(slots, current) : 0;
+    currentHourIndex = found < 0 ? 0 : found;
+    if (current) paintWheelItem(current, true);
+
+    if (wrap.classList.contains('is-open')) {
+      const target = current || wheel.querySelector('[data-value]');
+      if (target) {
+        requestAnimationFrame(() => {
+          wheel.dataset.lock = '1';
+          wheel.scrollTop = Math.max(0, target.offsetTop - (wheel.clientHeight / 2) + (target.offsetHeight / 2));
+          markCenteredTime(target, true);
+          wheel.dataset.lock = '';
+        });
+      }
+    }
+  }
+
+  function markCenteredTime(item, save) {
+    const wheel = $('#book-time-wheel');
+    const select = $('#book-time');
+    const wrap = select && select.closest('.book-time-wheel');
+    if (!wheel || !item || !select || !wrap) return;
+    wheel.querySelectorAll('[data-value]').forEach((node) => {
+      paintWheelItem(node, node === item);
+    });
+    if (!save) return;
+    select.value = item.dataset.value;
+    const valueEl = wrap.querySelector('.book-select-value');
+    if (valueEl) valueEl.textContent = item.textContent;
+    const slots = wheel.querySelectorAll('.time-slot-item');
+    const found = Array.prototype.indexOf.call(slots, item);
+    if (found >= 0) currentHourIndex = found;
+  }
+
+  function updateSelectedHour(item) {
+    markCenteredTime(item, true);
+  }
+
+  function scrollHourToCenter(wheel, item, smooth) {
+    const top = item.offsetTop - (wheel.clientHeight / 2) + (item.offsetHeight / 2);
+    wheel.scrollTo({ top: Math.max(0, top), behavior: smooth ? 'smooth' : 'auto' });
+  }
+
+  function centeredTimeItem(wheel) {
+    const mid = wheel.getBoundingClientRect().top + wheel.clientHeight / 2;
+    let best = null;
+    let bestDist = Infinity;
+    wheel.querySelectorAll('[data-value]').forEach((item) => {
+      const rect = item.getBoundingClientRect();
+      const dist = Math.abs(rect.top + rect.height / 2 - mid);
+      if (dist < bestDist) {
+        bestDist = dist;
+        best = item;
+      }
+    });
+    return best;
+  }
+
+  function initTimeWheel() {
+    const wrap = document.querySelector('.book-time-wheel');
+    const select = $('#book-time');
+    const wheel = $('#book-time-wheel');
+    if (!wrap || !select || !wheel || wheel.dataset.bound === '1') return;
+    wheel.dataset.bound = '1';
+    const trigger = wrap.querySelector('.book-select-trigger');
+    const panel = wrap.querySelector('.book-wheel-panel');
+    let scrollTimer = 0;
+    let isWheelThrottled = false;
+
+    function settle() {
+      if (wheel.dataset.lock === '1' || panel.hidden) return;
+      const item = centeredTimeItem(wheel);
+      if (item) markCenteredTime(item, true);
+    }
+
+    trigger.addEventListener('click', (event) => {
+      event.stopPropagation();
+      if (select.disabled || !wheel.querySelector('[data-value]')) return;
+      const open = trigger.getAttribute('aria-expanded') === 'true';
+      closeAllBookSelects();
+      if (open) return;
+      wrap.classList.add('is-open');
+      trigger.setAttribute('aria-expanded', 'true');
+      panel.hidden = false;
+      const target = wheel.querySelector('[data-value="' + CSS.escape(select.value) + '"]') || wheel.querySelector('[data-value]');
+      requestAnimationFrame(() => {
+        if (!target) return;
+        wheel.dataset.lock = '1';
+        scrollHourToCenter(wheel, target, false);
+        markCenteredTime(target, true);
+        wheel.dataset.lock = '';
+      });
+    });
+
+    wheel.addEventListener('click', (event) => {
+      const item = event.target.closest('.time-slot-item');
+      if (!item) return;
+      const slots = wheel.querySelectorAll('.time-slot-item');
+      const found = Array.prototype.indexOf.call(slots, item);
+      if (found >= 0) currentHourIndex = found;
+      scrollHourToCenter(wheel, item, true);
+      updateSelectedHour(item);
+    });
+
+    wheel.addEventListener('wheel', (event) => {
+      if (!event.deltaY || event.ctrlKey) return;
+      event.preventDefault();
+      if (isWheelThrottled) return;
+      const items = wheel.querySelectorAll('.time-slot-item');
+      if (!items.length) return;
+      const direction = event.deltaY > 0 ? 1 : -1;
+      const nextIndex = Math.min(Math.max(currentHourIndex + direction, 0), items.length - 1);
+      if (nextIndex !== currentHourIndex) {
+        currentHourIndex = nextIndex;
+        scrollHourToCenter(wheel, items[currentHourIndex], true);
+        updateSelectedHour(items[currentHourIndex]);
+      }
+      isWheelThrottled = true;
+      setTimeout(() => {
+        isWheelThrottled = false;
+      }, 160);
+    }, { passive: false });
+
+    wheel.addEventListener('scroll', () => {
+      if (wheel.dataset.lock === '1') return;
+      const item = centeredTimeItem(wheel);
+      if (item) markCenteredTime(item, false);
+      clearTimeout(scrollTimer);
+      scrollTimer = setTimeout(settle, 80);
+    }, { passive: true });
+
+    wheel.addEventListener('scrollend', settle);
+  }
+
   function applyI18nBookingOptions() {
     document.querySelectorAll('#book-area option[data-i18n]').forEach((node) => {
       node.textContent = t(node.dataset.i18n);
@@ -1002,12 +1240,18 @@
       wrap.classList.remove('is-open');
       const btn = wrap.querySelector('.book-select-trigger');
       const menu = wrap.querySelector('.book-select-menu');
+      const panel = wrap.querySelector('.book-wheel-panel');
       if (btn) btn.setAttribute('aria-expanded', 'false');
       if (menu) menu.hidden = true;
+      if (panel) panel.hidden = true;
     });
   }
 
   function syncBookSelect(select) {
+    if (select.id === 'book-time') {
+      syncTimeWheel(select);
+      return;
+    }
     const wrap = select.closest('.book-select');
     if (!wrap) return;
     const trigger = wrap.querySelector('.book-select-trigger');
@@ -1127,6 +1371,7 @@
     fillGuestSelect();
     refreshBookingSlots();
     initBookSelects();
+    initTimeWheel();
 
     date.addEventListener('change', refreshBookingSlots);
 
@@ -1443,6 +1688,7 @@
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(syncStickyOffset);
   renderAll();
   initTabs();
+  initDishAllergenToggles();
   initAllergenFilters();
   initBooking();
   applyHash({ quiet: true });

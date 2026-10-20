@@ -13,7 +13,8 @@ window.VISIWEB_DEMO = (function () {
   /* --- Créditos del desarrollador ---------------------------------- */
   const DEVELOPER = {
     name: 'VisiWeb Madrid',
-    plansUrl: 'https://visiwebmadrid.com/#planes'
+    plansUrl: 'https://visiwebmadrid.com/#planes',
+    whatsapp: '34612345678'
   };
 
   /* --- Negocio ------------------------------------------------------ */
@@ -635,8 +636,11 @@ window.VISIWEB_DEMO = (function () {
       callDirect: 'Llamar directamente',
       credit: '© {year} {name} · Carta digital ultrarrápida creada por',
       planBadge: 'Plan Gastro Premium',
-      planBanner: 'Esta demo interactiva incluye las características del Plan Gastro Premium (390 € montaje + 85 €/mes. IVA no inc.).',
+      planBanner: 'Esta demo interactiva incluye las características del Plan Gastro Premium (390 € montaje. IVA no inc.).',
       planCta: 'Ver planes y contratar ↗',
+      salesBar: 'Así quedaría tu local.',
+      salesBarCta: 'Pide la tuya',
+      salesWhatsappText: 'Hola, he visto la demo y quiero una así para mi local.',
       planHero: 'Demo Carta Digital · Nivel Gastro Premium',
       demoCreditLead: 'Web demo desarrollada por',
       demoCreditPlan: '· Realizada con el Plan Gastro Premium',
@@ -763,8 +767,11 @@ window.VISIWEB_DEMO = (function () {
       callDirect: 'Call us directly',
       credit: '© {year} {name} · Ultra-fast digital menu built by',
       planBadge: 'Gastro Premium Plan',
-      planBanner: 'This interactive demo includes the features of the Gastro Premium Plan (€390 setup + €85/month. VAT not included).',
+      planBanner: 'This interactive demo includes the features of the Gastro Premium Plan (€390 setup. VAT not included).',
       planCta: 'See plans and sign up ↗',
+      salesBar: 'This is how your place would look.',
+      salesBarCta: 'Request yours',
+      salesWhatsappText: 'Hello, I have seen the demo and I want one like this for my place.',
       planHero: 'Digital menu demo · Gastro Premium',
       demoCreditLead: 'Demo website built by',
       demoCreditPlan: '· Built with the Gastro Premium Plan',
