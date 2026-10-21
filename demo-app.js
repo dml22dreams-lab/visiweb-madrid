@@ -820,12 +820,27 @@
     activeAllergenCode = short;
     box.innerHTML =
       '<span class="font-bold text-stone-900 dark:text-stone-100 uppercase tracking-wider text-[11px] bg-stone-200 dark:bg-stone-700 px-1.5 py-0.5 rounded">' + esc(short) + '</span>' +
-      ' <span class="font-semibold text-stone-800 dark:text-stone-200">' + esc(allergenInfoName(short)) + '</span>';
+      ' <span class="font-semibold text-stone-800 dark:text-stone-200">' + esc(allergenInfoName(short)) + '</span>' +
+      '<button type="button" data-clear-allergen class="ml-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full text-stone-400 transition-colors hover:bg-stone-100 hover:text-stone-700 dark:hover:bg-stone-700 dark:hover:text-stone-100" aria-label="' + esc(t('allergenInfoClear')) + '">' +
+      '<svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M7 7l10 10M17 7 7 17"/></svg></button>';
     const table = $('#allergen-table');
     if (!table) return;
     table.querySelectorAll('[data-allergen-col]').forEach((cell) => {
       cell.classList.toggle('is-allergen-col', cell.getAttribute('data-allergen-col') === short);
     });
+  }
+
+  function clearAllergenInfo() {
+    activeAllergenCode = '';
+    const box = $('#allergen-info-box');
+    if (box) {
+      box.innerHTML =
+        '<span class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>' +
+        '<span data-i18n="allergenInfoHint">' + esc(t('allergenInfoHint')) + '</span>';
+    }
+    const table = $('#allergen-table');
+    if (!table) return;
+    table.querySelectorAll('.is-allergen-col').forEach((cell) => cell.classList.remove('is-allergen-col'));
   }
 
   function lockPage() {
@@ -870,6 +885,13 @@
     if (table) {
       table.addEventListener('click', onAllergenHead);
       table.addEventListener('mouseover', onAllergenHead);
+    }
+    const infoBox = $('#allergen-info-box');
+    if (infoBox) {
+      infoBox.addEventListener('click', (event) => {
+        if (!event.target.closest('[data-clear-allergen]')) return;
+        clearAllergenInfo();
+      });
     }
 
     on('#open-allergen-table', 'click', openDialog);
