@@ -264,7 +264,7 @@
         <span class="text-lg font-semibold tracking-tight text-stone-900 dark:text-stone-100 sm:text-2xl">Visi<span class="text-[#8B5E34] dark:text-[#E6D5C3]">Web</span></span>
         <span class="hidden rounded-full border border-[#E6D5C3] bg-[#E6D5C3] px-2 py-0.5 text-xs font-semibold text-stone-900 sm:inline dark:border-stone-700 dark:bg-stone-800 dark:text-stone-200">Madrid</span>
       </div>
-      <nav id="desktop-nav" class="flex w-full flex-wrap items-center justify-center gap-3 py-2 sm:gap-4 md:w-auto md:flex-nowrap md:justify-end" aria-label="Principal">
+      <nav id="desktop-nav" class="flex w-full flex-nowrap items-center justify-center gap-2 py-2 sm:gap-3 md:w-auto md:justify-end" aria-label="Principal">
       <button type="button" id="theme-toggle" class="grid h-11 w-11 shrink-0 place-items-center rounded-xl border border-stone-200 bg-white p-2 text-stone-800 transition-colors duration-300 hover:border-stone-400 dark:border-stone-800 dark:bg-stone-900 dark:text-stone-200" aria-label="Activar modo oscuro" aria-pressed="false">
         <svg class="hidden h-5 w-5 dark:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
           <circle cx="12" cy="12" r="4"></circle>
@@ -275,6 +275,14 @@
         </svg>
       </button>
       <a id="nav-planes" href="#planes" class="inline-flex min-h-11 items-center whitespace-nowrap rounded-xl border border-stone-300 px-3 py-2 text-xs font-semibold text-stone-800 transition-colors hover:bg-stone-100 dark:border-stone-700 dark:text-stone-200 dark:hover:bg-stone-800 sm:px-4 sm:text-sm">Planes</a>
+      <a href="https://wa.me/34612345678?text=Hola%2C%20quer%C3%ADa%20haceros%20una%20consulta%20sobre%20las%20webs%20para%20bares"
+         target="_blank"
+         rel="noopener noreferrer"
+         aria-label="Contactar por WhatsApp"
+         class="inline-flex min-h-11 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-xl bg-emerald-600 px-2.5 py-2 text-xs font-semibold text-white shadow-sm transition-all hover:scale-[1.02] hover:bg-emerald-700 active:scale-[0.98] cursor-pointer sm:px-3.5 sm:text-sm">
+        <svg class="h-4 w-4 fill-current" viewBox="0 0 24 24" aria-hidden="true"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/></svg>
+        <span class="max-[380px]:hidden"><span class="hidden sm:inline">Contactar por </span>WhatsApp</span>
+      </a>
       <a id="nav-ejemplo" href="demo.html" target="_blank" rel="noopener noreferrer" class="btn-ink inline-flex min-h-11 items-center gap-1 whitespace-nowrap rounded-lg bg-stone-800 px-3 py-2 text-xs font-semibold leading-none text-white hover:bg-stone-900 sm:px-4 sm:text-sm">
         Ver demo
         <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M8 16 16 8M9 8h7v7"></path></svg>
@@ -298,22 +306,21 @@
             Categorías, fotos y el enlace de la carta en tu ficha de Google. Entrega desde 48 h laborables.
           </p>
           <div class="fade-in-up delay-2 mt-8 flex flex-col items-center md:items-start">
-            <a href="demo.html" target="_blank" rel="noopener noreferrer" class="btn-ink inline-flex w-full items-center justify-center rounded-xl bg-stone-800 px-7 py-3.5 text-center font-semibold text-white hover:bg-stone-900 sm:w-auto">
-              Ver la demo
-            </a>
-            <button type="button" data-open-audit class="mt-3 text-sm font-semibold text-stone-600 underline decoration-stone-300 underline-offset-4 transition-colors hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100">
-              Auditoría gratuita de mi ficha
-            </button>
-            <div class="mt-4 flex items-center justify-start gap-1.5 text-sm text-stone-500 dark:text-stone-400">
-              <span>*</span>
-              <button type="button" onclick="document.getElementById('beneficios')?.scrollIntoView({ behavior: 'smooth', block: 'start' })" class="underline decoration-stone-300 underline-offset-4 transition-colors hover:text-stone-900 dark:decoration-stone-600 dark:hover:text-stone-100 cursor-pointer">
-                todo lo que tu local necesita
+            <div class="flex w-full flex-col items-center sm:w-auto">
+              <a href="demo.html" target="_blank" rel="noopener noreferrer" class="btn-ink inline-flex w-full items-center justify-center rounded-xl bg-stone-800 px-7 py-3.5 text-center font-semibold text-white hover:bg-stone-900 sm:w-auto">
+                Ver la demo
+              </a>
+              <button type="button" data-open-audit class="mt-3 inline-flex items-center rounded-full border border-stone-300 bg-white px-4 py-2 text-sm font-bold text-stone-800 transition duration-150 hover:translate-y-0.5 hover:bg-stone-100 dark:border-stone-600 dark:bg-stone-900 dark:text-stone-100 dark:hover:bg-stone-800">
+                Auditoría gratuita de mi ficha
+              </button>
+              <button type="button" onclick="document.getElementById('beneficios')?.scrollIntoView({ behavior: 'smooth', block: 'start' })" class="mt-4 cursor-pointer text-center text-sm text-stone-500 underline decoration-stone-300 underline-offset-4 transition-colors hover:text-stone-900 dark:text-stone-400 dark:decoration-stone-600 dark:hover:text-stone-100">
+                bajar a todo lo que tu local necesita
               </button>
             </div>
           </div>
         </div>
         <div class="relative mx-auto h-[440px] w-full max-w-md md:h-[480px]">
-          <div class="absolute left-0 top-4 w-[210px] rounded-[2rem] border-[7px] border-stone-900 bg-stone-900 shadow-2xl sm:w-[230px] dark:border-stone-600">
+          <a href="demo.html" target="_blank" rel="noopener noreferrer" aria-label="Ir a la web de demostración" class="absolute left-0 top-4 w-[210px] cursor-pointer rounded-[2rem] border-[7px] border-stone-900 bg-stone-900 shadow-2xl sm:w-[230px] dark:border-stone-600">
             <div class="overflow-hidden rounded-[1.45rem] bg-[#FAF9F6] dark:bg-stone-950">
               <img src="https://images.unsplash.com/photo-1515443961218-a51367888e4b?auto=format&fit=crop&w=640&q=80" alt="" class="h-36 w-full object-cover sm:h-40" width="640" height="480">
               <div class="px-3.5 pb-4 pt-3">
@@ -326,13 +333,16 @@
                 </ul>
               </div>
             </div>
-          </div>
-          <a href="demo.html" target="_blank" rel="noopener noreferrer" class="absolute bottom-2 right-0 block w-[230px] overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-xl sm:w-[250px] dark:border-stone-700 dark:bg-stone-900">
-            <img src="assets/demo/fachada.jpg" alt="Fachada de Taberna El Norte, el ejemplo de Alcobendas" class="h-28 w-full object-cover" width="800" height="450">
-            <div class="p-3.5">
-              <p class="truncate text-sm font-bold text-stone-900 dark:text-stone-100">Taberna El Norte</p>
-              <p class="text-xs text-stone-500 dark:text-stone-400">Ejemplo · Alcobendas</p>
-              <p class="mt-2 text-xs leading-relaxed text-stone-600 dark:text-stone-300">La demo que puedes abrir ahora, con su carta y su ficha.</p>
+          </a>
+          <a href="demo.html" target="_blank" rel="noopener noreferrer" class="absolute bottom-2 right-0 z-10 block w-[230px] sm:w-[250px]">
+            <p class="mb-1.5 text-center text-xs text-stone-500 underline decoration-stone-300 underline-offset-4 dark:text-stone-400 dark:decoration-stone-600">ir a web de demostración</p>
+            <div class="overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-xl dark:border-stone-700 dark:bg-stone-900">
+              <img src="assets/demo/fachada.jpg" alt="Fachada de Taberna El Norte, el ejemplo de Alcobendas" class="h-28 w-full object-cover" width="800" height="450">
+              <div class="p-3.5">
+                <p class="truncate text-sm font-bold text-stone-900 dark:text-stone-100">Taberna El Norte</p>
+                <p class="text-xs text-stone-500 dark:text-stone-400">Ejemplo · Alcobendas</p>
+                <p class="mt-2 text-xs leading-relaxed text-stone-600 dark:text-stone-300">La demo que puedes abrir ahora, con su carta y su ficha.</p>
+              </div>
             </div>
           </a>
         </div>
