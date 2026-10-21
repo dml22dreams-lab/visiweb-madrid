@@ -141,7 +141,7 @@
   }
 
   .site-nav-link {
-    @apply inline-flex min-h-11 shrink-0 items-center justify-center whitespace-nowrap px-2.5 text-center text-[13px] font-medium text-slate-600 transition-colors hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100;
+    @apply inline-flex shrink-0 items-center justify-center whitespace-nowrap px-2.5 py-2 text-center text-[13px] font-medium text-slate-600 transition-colors hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100;
   }
 
   .site-nav-link[aria-current='page'] {

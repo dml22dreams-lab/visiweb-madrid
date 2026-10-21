@@ -297,12 +297,12 @@
 
   function dishNode(item) {
     const recommended = item.tags.indexOf('recomendado') >= 0;
-    const li = el('li', 'flex items-start justify-between gap-3 border-b border-stone-300 py-3 dark:border-stone-600 sm:gap-4 sm:py-4');
+    const li = el('li', 'flex items-start justify-between gap-3 border-b border-stone-300 py-2 dark:border-stone-600');
     li.dataset.allergens = item.allergens.join(',');
 
     const body = el('div', 'min-w-0 flex-1 pr-1');
     if (recommended) {
-      const badge = el('span', 'mb-3 mt-2 inline-block rounded-full bg-emerald-100 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-emerald-800 sm:mb-3.5 sm:mt-2.5 sm:text-xs');
+      const badge = el('span', 'mb-1 inline-block rounded-full bg-emerald-100 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-emerald-800');
       badge.textContent = L(D.dietTags.recomendado.name);
       body.appendChild(badge);
     }
@@ -321,7 +321,7 @@
     const meta = el('div', 'mb-1');
     const otherTags = item.tags.filter((key) => key !== 'recomendado');
     if (otherTags.length) {
-      const tags = el('div', 'mt-3 flex flex-wrap gap-1.5 sm:mt-3.5');
+      const tags = el('div', 'mt-1.5 flex flex-wrap gap-1.5');
       otherTags.forEach((key) => {
         const tag = el('span', 'pill-tag-soft');
         tag.textContent = L(D.dietTags[key].name);
@@ -331,7 +331,7 @@
     }
 
     const allergenId = 'dish-allergens-' + item.id;
-    const toggle = el('button', 'toggle-allergens-btn mt-2.5 inline-flex cursor-pointer items-center gap-1.5 py-1 text-xs font-medium text-black sm:mt-3');
+    const toggle = el('button', 'toggle-allergens-btn mt-1 inline-flex cursor-pointer items-center gap-1.5 py-0.5 text-xs font-medium text-black');
     toggle.type = 'button';
     toggle.setAttribute('aria-expanded', 'false');
     toggle.setAttribute('aria-controls', allergenId);
@@ -400,7 +400,7 @@
 
       const desc = el('p', 'text-center text-xs italic text-slate-600 dark:text-slate-400 sm:text-sm');
       desc.textContent = L(cat.desc);
-      const list = el('ul', 'mt-3');
+      const list = el('ul', 'mt-1');
       cat.items.forEach((item) => list.appendChild(dishNode(item)));
       panel.append(desc, list);
       panels.appendChild(panel);
@@ -673,7 +673,7 @@
 
   function setAllergenPanel(open) {
     const panel = $('#allergen-filter-panel');
-    const toggle = $('#allergen-filter-toggle');
+    const toggle = $('#open-filter-btn');
     const icon = $('#allergen-filter-chevron');
     if (!panel || !toggle) return;
     panel.classList.toggle('is-open', open);
@@ -705,8 +705,8 @@
   function initAllergenFilters() {
     const wrap = $('#allergen-filters');
     if (!wrap) return;
-    on('#allergen-filter-toggle', 'click', () => {
-      const toggle = $('#allergen-filter-toggle');
+    on('#open-filter-btn', 'click', () => {
+      const toggle = $('#open-filter-btn');
       setAllergenPanel(toggle.getAttribute('aria-expanded') !== 'true');
     });
     wrap.addEventListener('click', (event) => {
