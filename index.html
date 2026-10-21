@@ -313,8 +313,8 @@
               <button type="button" data-open-audit class="mt-3 inline-flex items-center rounded-full border border-stone-300 bg-white px-4 py-2 text-sm font-bold text-stone-800 transition duration-150 hover:translate-y-0.5 hover:bg-stone-100 dark:border-stone-600 dark:bg-stone-900 dark:text-stone-100 dark:hover:bg-stone-800">
                 Auditoría gratuita de mi ficha
               </button>
-              <button type="button" onclick="document.getElementById('beneficios')?.scrollIntoView({ behavior: 'smooth', block: 'start' })" class="mt-4 cursor-pointer text-center text-sm text-stone-500 underline decoration-stone-300 underline-offset-4 transition-colors hover:text-stone-900 dark:text-stone-400 dark:decoration-stone-600 dark:hover:text-stone-100">
-                bajar a todo lo que tu local necesita
+              <button type="button" onclick="scrollToBeneficios()" class="mt-4 cursor-pointer text-center text-sm text-stone-500 underline decoration-stone-300 underline-offset-4 transition-colors hover:text-stone-900 dark:text-stone-400 dark:decoration-stone-600 dark:hover:text-stone-100">
+                bajar a "todo lo que tu local necesita"
               </button>
             </div>
           </div>
@@ -350,7 +350,7 @@
     </div>
   </section>
 
-  <section id="beneficios" class="group w-full scroll-mt-24 pt-20 pb-20 md:pt-28">
+  <section id="beneficios" class="group w-full scroll-mt-24 pt-12 pb-16 md:pt-16">
     <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
       <div class="mx-auto max-w-xl text-center">
         <h2 class="break-words text-3xl font-bold leading-tight text-stone-900 dark:text-stone-100 sm:text-4xl md:text-5xl">Todo lo que tu local necesita</h2>
@@ -401,7 +401,7 @@
         </div>
       </div>
 
-      <div class="relative mx-auto hidden h-[420px] w-full max-w-5xl items-center justify-center md:flex">
+      <div class="relative mx-auto hidden h-[320px] w-full max-w-5xl items-center justify-center md:flex">
         <div class="relative h-full w-[320px] lg:w-[350px]">
         <article class="absolute inset-x-0 top-0 bottom-0 my-auto h-fit w-full -rotate-12 -translate-x-[62%] -translate-y-1 scale-95 rounded-3xl border border-stone-200 bg-white p-7 opacity-90 shadow-lg transition-all duration-500 ease-out z-10 dark:border-stone-800 dark:bg-stone-900 md:group-hover:-translate-x-[340px] md:group-hover:translate-y-0 md:group-hover:rotate-0 md:group-hover:scale-100 md:group-hover:opacity-100 md:group-hover:shadow-xl lg:group-hover:-translate-x-[370px]">
           <div class="mb-5 w-fit rounded-2xl bg-[#F3EDE4] p-3 dark:bg-stone-800">
@@ -440,7 +440,7 @@
         </div>
       </div>
       <div class="mt-10 flex justify-center sm:mt-12">
-        <button type="button" onclick="scrollToWebs()" class="inline-flex cursor-pointer items-center gap-1.5 text-sm text-stone-600 underline decoration-stone-300 underline-offset-4 transition-colors hover:text-stone-900 dark:text-stone-400 dark:decoration-stone-600 dark:hover:text-stone-100 sm:text-base">
+        <button type="button" id="ver-webs" onclick="scrollToWebs()" class="inline-flex cursor-pointer items-center gap-1.5 text-sm text-stone-600 underline decoration-stone-300 underline-offset-4 transition-colors hover:text-stone-900 dark:text-stone-400 dark:decoration-stone-600 dark:hover:text-stone-100 sm:text-base">
           Ver webs ↓
         </button>
       </div>
@@ -1132,6 +1132,29 @@
           '¿Podemos ver la demo y ponerlo en marcha?'
         ].join('\n');
       }
+
+      window.scrollToBeneficios = function () {
+        var section = document.getElementById('beneficios');
+        if (!section) return;
+        var cta = document.getElementById('ver-webs');
+        var heading = section.querySelector('h2');
+        var header = document.querySelector('header');
+        var headerH = header ? header.getBoundingClientRect().height : 0;
+        var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        var gap = 16;
+        var y = window.scrollY;
+        var top = section.getBoundingClientRect().top + y - headerH - gap;
+        if (cta) {
+          var showCta = cta.getBoundingClientRect().bottom + y + gap - window.innerHeight;
+          if (showCta > top) top = showCta;
+        }
+        if (heading) {
+          var keepHeading = heading.getBoundingClientRect().top + y - headerH - 8;
+          if (top > keepHeading) top = keepHeading;
+        }
+        var max = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+        window.scrollTo({ top: Math.max(0, Math.min(top, max)), behavior: reduce ? 'auto' : 'smooth' });
+      };
 
       window.scrollToWebs = function () {
         var el = document.getElementById('planes');
