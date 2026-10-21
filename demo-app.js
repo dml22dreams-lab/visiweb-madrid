@@ -752,10 +752,13 @@
     firstTh.textContent = t('dish');
     headRow.appendChild(firstTh);
     keys.forEach((key) => {
-      const th = el('th', 'sticky top-0 z-20 border-b border-stone-300 bg-stone-100 px-2 py-2 text-center text-[11px] font-semibold shadow-sm dark:border-stone-700 dark:bg-stone-800');
+      const short = D.allergens[key].short;
+      const th = el('th', 'sticky top-0 z-20 cursor-pointer select-none border-b border-stone-300 bg-stone-100 px-2 py-2 text-center text-[11px] font-semibold shadow-sm transition-colors hover:bg-stone-200 hover:text-stone-900 dark:border-stone-700 dark:bg-stone-800 dark:hover:bg-stone-700');
       th.scope = 'col';
+      th.dataset.allergen = short;
+      th.dataset.allergenCol = short;
       th.innerHTML = '<abbr title="' + esc(L(D.allergens[key].name)) + '" class="no-underline">' +
-        esc(D.allergens[key].short) + '</abbr>';
+        esc(short) + '</abbr>';
       headRow.appendChild(th);
     });
     thead.appendChild(headRow);
@@ -785,6 +788,7 @@
         row.appendChild(th);
         keys.forEach((key) => {
           const td = el('td', 'border-b border-stone-200 px-2 py-2.5 text-center dark:border-stone-800');
+          td.dataset.allergenCol = D.allergens[key].short;
           const has = item.allergens.indexOf(key) >= 0;
           td.innerHTML = has
             ? '<span class="sr-only">' + esc(L(D.allergens[key].name)) + '</span><span aria-hidden="true">●</span>'
@@ -795,6 +799,33 @@
       });
     });
     table.appendChild(tbody);
+    if (activeAllergenCode) showAllergenInfo(activeAllergenCode);
+  }
+
+  let activeAllergenCode = '';
+
+  function allergenInfoName(short) {
+    const extra = {
+      GLU: { es: 'Gluten / Cereales con gluten', en: 'Cereals containing gluten' },
+      LAC: { es: 'Lácteos / Leche y derivados', en: 'Milk and dairy' }
+    };
+    if (extra[short]) return extra[short][lang] || extra[short].es;
+    const key = Object.keys(D.allergens).find((id) => D.allergens[id].short === short);
+    return key ? L(D.allergens[key].name) : short;
+  }
+
+  function showAllergenInfo(short) {
+    const box = $('#allergen-info-box');
+    if (!box || !D.allergens) return;
+    activeAllergenCode = short;
+    box.innerHTML =
+      '<span class="font-bold text-stone-900 dark:text-stone-100 uppercase tracking-wider text-[11px] bg-stone-200 dark:bg-stone-700 px-1.5 py-0.5 rounded">' + esc(short) + '</span>' +
+      ' <span class="font-semibold text-stone-800 dark:text-stone-200">' + esc(allergenInfoName(short)) + '</span>';
+    const table = $('#allergen-table');
+    if (!table) return;
+    table.querySelectorAll('[data-allergen-col]').forEach((cell) => {
+      cell.classList.toggle('is-allergen-col', cell.getAttribute('data-allergen-col') === short);
+    });
   }
 
   function lockPage() {
@@ -828,6 +859,17 @@
         dialog.removeAttribute('open');
         unlockPage();
       }
+    }
+
+    const table = $('#allergen-table');
+    function onAllergenHead(event) {
+      const th = event.target.closest('th[data-allergen]');
+      if (!th || !table || !table.contains(th)) return;
+      showAllergenInfo(th.dataset.allergen);
+    }
+    if (table) {
+      table.addEventListener('click', onAllergenHead);
+      table.addEventListener('mouseover', onAllergenHead);
     }
 
     on('#open-allergen-table', 'click', openDialog);
