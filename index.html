@@ -1160,6 +1160,35 @@
         })(start);
       }
 
+      function scrollToMaintCard() {
+        if (!window.matchMedia('(max-width: 767px)').matches) {
+          scrollToPhase('mantenimiento', 'start');
+          return;
+        }
+        var activeCard = document.querySelector('#maint-planes [data-maint-plan]:not(.hidden)') || document.getElementById('mantenimiento');
+        if (!activeCard) return;
+        var dots = document.getElementById('maint-plans-dots');
+        var bottomEl = dots && getComputedStyle(dots).display !== 'none' ? dots : activeCard;
+        var badge = activeCard.querySelector('.plan-badge');
+        var top = (badge || activeCard).getBoundingClientRect().top;
+        var bottom = bottomEl.getBoundingClientRect().bottom;
+        var header = document.querySelector('header');
+        var headerOffset = header ? header.getBoundingClientRect().height : 60;
+        var sheet = document.getElementById('bottom-audit-sheet');
+        var sheetOffset = 0;
+        if (sheet && !sheet.hidden) {
+          sheetOffset = Math.max(0, window.innerHeight - sheet.getBoundingClientRect().top);
+        }
+        var margin = 16;
+        var room = window.innerHeight - headerOffset - sheetOffset - margin;
+        var targetY = (bottom - top) <= room
+          ? window.scrollY + top - headerOffset - 8
+          : window.scrollY + bottom - window.innerHeight + sheetOffset + margin;
+        var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        var max = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+        window.scrollTo({ top: Math.max(0, Math.min(targetY, max)), behavior: reduce ? 'auto' : 'smooth' });
+      }
+
       document.querySelectorAll('[data-select-web]').forEach(function (button) {
         button.addEventListener('click', function () {
           var card = button.closest('[data-web]');
@@ -1180,7 +1209,7 @@
           if (window.matchMedia('(max-width: 767px)').matches) showPlanTab(card.getAttribute('data-web'));
           renderPack();
           if (!turnOff) {
-            scrollToPhase('mantenimiento', 'start');
+            setTimeout(scrollToMaintCard, 300);
           }
         });
       });
