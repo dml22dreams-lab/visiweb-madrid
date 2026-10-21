@@ -289,7 +289,7 @@ window.VISIWEB_DEMO = (function () {
           price: '9,20 €',
           priceEn: '€9.20',
           allergens: ['gluten', 'lacteos', 'huevos'],
-          tags: ['recomendado'],
+          tags: [],
           image: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=400&q=80'
         },
         {
@@ -315,7 +315,7 @@ window.VISIWEB_DEMO = (function () {
           price: '13,80 €',
           priceEn: '€13.80',
           allergens: ['huevos'],
-          tags: ['recomendado'],
+          tags: [],
           image: 'https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?auto=format&fit=crop&w=400&q=80'
         }
       ]
