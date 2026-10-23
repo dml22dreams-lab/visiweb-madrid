@@ -1189,6 +1189,8 @@
     panel.hidden = !open;
     if (!open) return;
     setGuestsPickerOpen(false);
+    closeAllBookSelects();
+    if (bookDatePicker && bookDatePicker.isOpen) bookDatePicker.close();
     requestAnimationFrame(() => alignTimeWheels(false));
   }
 
@@ -1336,6 +1338,8 @@
     if (!open) return;
     const timePanel = $('#time-picker');
     if (timePanel) timePanel.hidden = true;
+    closeAllBookSelects();
+    if (bookDatePicker && bookDatePicker.isOpen) bookDatePicker.close();
     requestAnimationFrame(() => alignGuestWheel(false));
   }
 
@@ -1406,6 +1410,9 @@
         if (select.disabled) return;
         const open = trigger.getAttribute('aria-expanded') === 'true';
         closeAllBookSelects();
+        setTimePickerOpen(false);
+        setGuestsPickerOpen(false);
+        if (bookDatePicker && bookDatePicker.isOpen) bookDatePicker.close();
         if (open) return;
         wrap.classList.add('is-open');
         trigger.setAttribute('aria-expanded', 'true');
@@ -1422,11 +1429,21 @@
     });
 
     document.addEventListener('click', (event) => {
-      if (!event.target.closest('.book-select')) closeAllBookSelects();
+      const target = event.target;
+      if (!target.closest('#time-picker') && !target.closest('#hora-reserva')) setTimePickerOpen(false);
+      if (!target.closest('#guests-picker') && !target.closest('#comensales-reserva')) setGuestsPickerOpen(false);
+      if (!target.closest('.book-select')) closeAllBookSelects();
+      if (bookDatePicker && bookDatePicker.isOpen && !target.closest('.flatpickr-calendar') && !target.closest('#fecha-reserva') && !target.closest('.book-date-wrap')) {
+        bookDatePicker.close();
+      }
     });
 
     document.addEventListener('keydown', (event) => {
-      if (event.key === 'Escape') closeAllBookSelects();
+      if (event.key !== 'Escape') return;
+      closeAllBookSelects();
+      setTimePickerOpen(false);
+      setGuestsPickerOpen(false);
+      if (bookDatePicker && bookDatePicker.isOpen) bookDatePicker.close();
     });
   }
 
@@ -1469,6 +1486,8 @@
       ],
       onOpen: function () {
         closeAllBookSelects();
+        setTimePickerOpen(false);
+        setGuestsPickerOpen(false);
       },
       onChange: function (dates) {
         if (!dates[0]) return;
