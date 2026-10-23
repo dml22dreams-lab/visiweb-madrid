@@ -141,7 +141,7 @@ window.VISIWEB_DEMO = (function () {
   };
 
   const BOOKING = {
-    maxGuests: 8,
+    maxGuests: 20,
     slotMinutes: 30,
     lastSeatingBeforeClose: 30,
     areas: ['any', 'salon', 'terrace', 'bar']
@@ -583,6 +583,8 @@ window.VISIWEB_DEMO = (function () {
       bookDemoNote: 'En un entorno real, este botón envía la solicitud estructurada directamente a tu WhatsApp, sin comisiones por comensal ni pasarelas intermedias.',
       bookTimePlaceholder: 'Elegir hora',
       bookDatePlaceholder: 'Selecciona una fecha',
+      bookGuestsPlaceholder: 'Elegir comensales',
+      bookGuestsPick: 'Seleccionar comensales',
       bookGuestOne: '1 persona',
       bookGuestMany: '{n} personas',
       allergenFilter: 'Filtrar por alérgenos',
@@ -716,6 +718,8 @@ window.VISIWEB_DEMO = (function () {
       bookDemoNote: 'In a real setting, this button sends the structured request straight to your WhatsApp, with no per-guest commission and no intermediate payment gateways.',
       bookTimePlaceholder: 'Choose a time',
       bookDatePlaceholder: 'Select a date',
+      bookGuestsPlaceholder: 'Choose guests',
+      bookGuestsPick: 'Select guests',
       bookGuestOne: '1 guest',
       bookGuestMany: '{n} guests',
       allergenFilter: 'Filter by allergen',

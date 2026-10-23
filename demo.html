@@ -723,13 +723,18 @@
             </div>
             <div class="book-field">
               <span id="book-guests-label" data-i18n="bookGuests">Comensales</span>
+              <input type="text" id="comensales-reserva" placeholder="Elegir comensales" readonly required data-i18n-placeholder="bookGuestsPlaceholder" aria-labelledby="book-guests-label">
               <div class="book-select">
                 <select id="book-guests" name="guests" required tabindex="-1" aria-labelledby="book-guests-label"></select>
-                <button type="button" class="book-select-trigger" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="book-guests-label">
-                  <span class="book-select-value"></span>
-                  <svg class="book-select-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5.5 15.5 12 9 18.5"/></svg>
-                </button>
-                <ul class="book-select-menu" role="listbox" hidden></ul>
+              </div>
+              <div id="guests-picker" hidden>
+                <div class="relative mt-3 flex h-40 overflow-hidden bg-stone-50 dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 p-2 select-none">
+                  <div class="absolute top-0 left-0 right-0 h-10 bg-gradient-to-b from-stone-50 dark:from-stone-900 to-transparent pointer-events-none z-20"></div>
+                  <div class="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-stone-50 dark:from-stone-900 to-transparent pointer-events-none z-20"></div>
+                  <div class="absolute top-1/2 left-4 right-4 -translate-y-1/2 h-10 border-y-2 border-stone-900/20 dark:border-stone-100/20 bg-stone-200/40 dark:bg-stone-800/40 rounded-xl pointer-events-none z-0"></div>
+                  <div id="wheel-guests" class="min-h-0 w-full h-full touch-pan-y overflow-y-auto overscroll-y-contain no-scrollbar text-center relative z-10" role="listbox" aria-labelledby="book-guests-label"></div>
+                </div>
+                <button type="button" id="book-guests-pick" class="btn-primary mt-3 w-full" data-i18n="bookGuestsPick">Seleccionar comensales</button>
               </div>
             </div>
             <div class="book-field">

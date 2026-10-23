@@ -1076,19 +1076,39 @@
     return slots;
   }
 
+  function guestLabel(n) {
+    return n === 1 ? t('bookGuestOne') : t('bookGuestMany', { n: n });
+  }
+
   function fillGuestSelect() {
     const select = $('#book-guests');
-    if (!select) return;
+    const wheel = $('#wheel-guests');
+    if (!select || !wheel) return;
     const previous = select.value;
+    const keep = previous && Number(previous) >= 1 && Number(previous) <= D.booking.maxGuests ? previous : '';
     select.textContent = '';
+    wheel.textContent = '';
+    wheel._active = null;
+    wheel.dataset.aligned = '';
+    const blank = el('option');
+    blank.value = '';
+    select.appendChild(blank);
     for (let n = 1; n <= D.booking.maxGuests; n++) {
       const opt = el('option');
       opt.value = String(n);
-      opt.textContent = n === 1 ? t('bookGuestOne') : t('bookGuestMany', { n: n });
+      opt.textContent = guestLabel(n);
       select.appendChild(opt);
+      const item = el('div', 'time-guest-item h-10 flex items-center justify-center snap-center text-base font-semibold text-stone-500 transition-all cursor-pointer');
+      item.dataset.val = String(n);
+      item.setAttribute('role', 'option');
+      item.textContent = guestLabel(n);
+      wheel.appendChild(item);
     }
-    select.value = previous && Number(previous) <= D.booking.maxGuests ? previous : '2';
-    syncBookSelect(select);
+    select.value = keep;
+    const visible = $('#comensales-reserva');
+    if (visible) visible.value = keep ? guestLabel(Number(keep)) : '';
+    const panel = $('#guests-picker');
+    if (panel && !panel.hidden) requestAnimationFrame(() => alignGuestWheel(false));
   }
 
   function refreshBookingSlots() {
@@ -1100,16 +1120,12 @@
     alignTimeWheels(false);
   }
 
-  const HOUR_OFF = 'time-hour-item h-10 flex items-center justify-center snap-center text-base font-semibold text-stone-500 transition-all cursor-pointer';
-  const HOUR_ON = 'time-hour-item h-10 flex items-center justify-center snap-center text-base font-bold text-stone-900 dark:text-stone-100 scale-110 transition-all cursor-pointer';
-  const MINUTE_OFF = 'time-minute-item h-10 flex items-center justify-center snap-center text-base font-semibold text-stone-500 transition-all cursor-pointer';
-  const MINUTE_ON = 'time-minute-item h-10 flex items-center justify-center snap-center text-base font-bold text-stone-900 dark:text-stone-100 scale-110 transition-all cursor-pointer';
-
   function paintWheelColumn(scroller, active) {
     if (scroller._active === active) return;
     scroller._active = active;
-    const on = scroller.id === 'wheel-hours' ? HOUR_ON : MINUTE_ON;
-    const off = scroller.id === 'wheel-hours' ? HOUR_OFF : MINUTE_OFF;
+    const kind = scroller.id === 'wheel-minutes' ? 'time-minute-item' : (scroller.id === 'wheel-guests' ? 'time-guest-item' : 'time-hour-item');
+    const on = kind + ' h-10 flex items-center justify-center snap-center text-base font-bold text-stone-900 dark:text-stone-100 scale-110 transition-all cursor-pointer';
+    const off = kind + ' h-10 flex items-center justify-center snap-center text-base font-semibold text-stone-500 transition-all cursor-pointer';
     scroller.querySelectorAll('[data-val]').forEach((node) => {
       node.className = node === active ? on : off;
       node.setAttribute('aria-selected', node === active ? 'true' : 'false');
@@ -1172,6 +1188,7 @@
     if (!panel) return;
     panel.hidden = !open;
     if (!open) return;
+    setGuestsPickerOpen(false);
     requestAnimationFrame(() => alignTimeWheels(false));
   }
 
@@ -1218,7 +1235,7 @@
   function bindTimeColumn(scroller) {
     if (!scroller || scroller.dataset.bound === '1') return;
     scroller.dataset.bound = '1';
-    const selector = scroller.id === 'wheel-hours' ? '.time-hour-item' : '.time-minute-item';
+    const selector = '[data-val]';
     function items() {
       return scroller.querySelectorAll(selector);
     }
@@ -1280,6 +1297,54 @@
     bindTimeColumn(minutes);
     on('#hora-reserva', 'click', () => setTimePickerOpen(true));
     on('#book-time-pick', 'click', commitTimeSelection);
+  }
+
+  function alignGuestWheel(force) {
+    const wheel = $('#wheel-guests');
+    if (!wheel || !wheel.clientHeight) return;
+    padTimeWheel(wheel);
+    if (!force && wheel.dataset.aligned === '1') return;
+    const current = $('#book-guests') && $('#book-guests').value;
+    const item = wheel.querySelector('[data-val="' + (current || '2') + '"]') || wheel.querySelector('[data-val]');
+    if (!item) return;
+    centerWheelItem(wheel, item, false);
+    paintWheelColumn(wheel, item);
+    wheel.dataset.index = String(Array.prototype.indexOf.call(wheel.querySelectorAll('[data-val]'), item));
+    wheel.dataset.aligned = '1';
+  }
+
+  function commitGuestSelection() {
+    const wheel = $('#wheel-guests');
+    const item = centeredWheelItem(wheel);
+    if (!item) return;
+    paintWheelColumn(wheel, item);
+    const n = Number(item.dataset.val);
+    const select = $('#book-guests');
+    if (select) select.value = String(n);
+    const visible = $('#comensales-reserva');
+    if (visible) visible.value = guestLabel(n);
+    setGuestsPickerOpen(false);
+  }
+
+  function setGuestsPickerOpen(open) {
+    const panel = $('#guests-picker');
+    if (!panel || panel.hidden === !open) {
+      if (open) requestAnimationFrame(() => alignGuestWheel(false));
+      return;
+    }
+    panel.hidden = !open;
+    if (!open) return;
+    const timePanel = $('#time-picker');
+    if (timePanel) timePanel.hidden = true;
+    requestAnimationFrame(() => alignGuestWheel(false));
+  }
+
+  function initGuestWheel() {
+    const wheel = $('#wheel-guests');
+    if (!wheel) return;
+    bindTimeColumn(wheel);
+    on('#comensales-reserva', 'click', () => setGuestsPickerOpen(true));
+    on('#book-guests-pick', 'click', commitGuestSelection);
   }
 
   function applyI18nBookingOptions() {
@@ -1425,6 +1490,7 @@
     refreshBookingSlots();
     initBookSelects();
     initTimeWheel();
+    initGuestWheel();
 
     date.addEventListener('change', refreshBookingSlots);
 
@@ -1440,7 +1506,7 @@
       const notes = $('#book-notes').value.trim();
       const closed = !dayRanges(weekdayOfYmd(ymd)).length;
 
-      if (!name || phone.replace(/\D/g, '').length < 9 || !ymd || !hour || closed) {
+      if (!name || phone.replace(/\D/g, '').length < 9 || !ymd || !hour || !guests || closed) {
         feedback.hidden = false;
         feedback.textContent = closed ? t('bookClosed') : t('bookError');
         return;
@@ -1480,9 +1546,18 @@
       form.reset();
       date.min = madridYMD(new Date());
       date.value = nextOpenYmd();
+      const guestInput = $('#comensales-reserva');
+      const guestSelect = $('#book-guests');
+      const guestWheel = $('#wheel-guests');
+      if (guestInput) guestInput.value = '';
+      if (guestSelect) guestSelect.value = '';
+      if (guestWheel) guestWheel.dataset.aligned = '';
+      setGuestsPickerOpen(false);
       fillGuestSelect();
       const hours = $('#wheel-hours');
       if (hours) hours.dataset.aligned = '';
+      const timeInput = $('#hora-reserva');
+      if (timeInput) timeInput.value = '';
       setTimePickerOpen(false);
       refreshBookingSlots();
       const success = $('#booking-success');
