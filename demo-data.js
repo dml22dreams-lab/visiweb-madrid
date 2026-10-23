@@ -14,7 +14,7 @@ window.VISIWEB_DEMO = (function () {
   const DEVELOPER = {
     name: 'VisiWeb Madrid',
     plansUrl: 'https://visiwebmadrid.com/#planes',
-    whatsapp: '34612345678'
+    whatsapp: '34608975906'
   };
 
   /* --- Negocio ------------------------------------------------------ */
@@ -25,11 +25,9 @@ window.VISIWEB_DEMO = (function () {
     timezone: 'Europe/Madrid',
     priceRange: '€€',
     cuisine: ['Spanish', 'Tapas'],
-    // Teléfono ficticio reservado para ficción (prefijo 910 000 000)
-    phone: '+34910000000',
-    phoneDisplay: '910 000 000',
-    // WhatsApp ficticio
-    whatsapp: '34600000000',
+    phone: '+34608975906',
+    phoneDisplay: '+34 608 97 59 06',
+    whatsapp: '34608975906',
     address: {
       street: { es: 'C. del Marqués de la Valdavia', en: 'C. del Marqués de la Valdavia' },
       postalCode: '28100',
@@ -583,7 +581,7 @@ window.VISIWEB_DEMO = (function () {
       bookAreaTerrace: 'Terraza',
       bookAreaBar: 'Barra',
       bookDemoNote: 'En un entorno real, este botón envía la solicitud estructurada directamente a tu WhatsApp, sin comisiones por comensal ni pasarelas intermedias.',
-      bookTimePlaceholder: 'Elige una hora',
+      bookTimePlaceholder: 'Elegir hora',
       bookDatePlaceholder: 'Selecciona una fecha',
       bookGuestOne: '1 persona',
       bookGuestMany: '{n} personas',

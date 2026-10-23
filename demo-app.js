@@ -877,14 +877,26 @@
     }
 
     const table = $('#allergen-table');
-    function onAllergenHead(event) {
-      const th = event.target.closest('th[data-allergen]');
-      if (!th || !table || !table.contains(th)) return;
-      showAllergenInfo(th.dataset.allergen);
+    function allergenShortAt(event) {
+      if (!table) return '';
+      const cell = event.target.closest('th, td');
+      if (cell && table.contains(cell) && cell.dataset.allergenCol) return cell.dataset.allergenCol;
+      const x = event.clientX;
+      const heads = table.querySelectorAll('thead th[data-allergen]');
+      for (let i = 0; i < heads.length; i++) {
+        const box = heads[i].getBoundingClientRect();
+        if (x >= box.left && x <= box.right) return heads[i].dataset.allergen;
+      }
+      return '';
+    }
+    function onAllergenPointer(event) {
+      const short = allergenShortAt(event);
+      if (!short || short === activeAllergenCode) return;
+      showAllergenInfo(short);
     }
     if (table) {
-      table.addEventListener('click', onAllergenHead);
-      table.addEventListener('mouseover', onAllergenHead);
+      table.addEventListener('click', onAllergenPointer);
+      table.addEventListener('mousemove', onAllergenPointer);
     }
     const infoBox = $('#allergen-info-box');
     if (infoBox) {
@@ -1081,129 +1093,34 @@
 
   function refreshBookingSlots() {
     const date = $('#book-date');
-    const time = $('#book-time');
     const feedback = $('#book-feedback');
-    if (!date || !time) return;
+    if (!date) return;
     if (!date.value) date.value = nextOpenYmd();
-    const slots = slotsForDate(date.value);
-    const previous = time.value;
-    time.textContent = '';
-    if (!slots.length) {
-      const opt = el('option');
-      opt.value = '';
-      opt.textContent = dayRanges(weekdayOfYmd(date.value)).length ? t('bookNoSlots') : t('bookClosed');
-      time.appendChild(opt);
-      time.disabled = true;
-    } else {
-      const placeholder = el('option');
-      placeholder.value = '';
-      placeholder.textContent = t('bookTimePlaceholder');
-      time.appendChild(placeholder);
-      slots.forEach((slot) => {
-        const opt = el('option');
-        opt.value = slot;
-        opt.textContent = slot;
-        time.appendChild(opt);
-      });
-      time.disabled = false;
-      time.value = slots.indexOf(previous) >= 0 ? previous : '';
-    }
     if (feedback) feedback.hidden = true;
-    syncBookSelect(time);
+    alignTimeWheels(false);
   }
 
-  const WHEEL_ITEM = 'time-slot-item h-10 flex w-full shrink-0 items-center justify-center snap-center text-base font-semibold text-stone-700 dark:text-stone-300 transition-all cursor-pointer';
-  const WHEEL_ITEM_ON = 'time-slot-item h-10 flex w-full shrink-0 items-center justify-center snap-center text-base font-bold text-stone-900 dark:text-stone-100 scale-110 transition-all cursor-pointer';
-  let currentHourIndex = 0;
+  const HOUR_OFF = 'time-hour-item h-10 flex items-center justify-center snap-center text-base font-semibold text-stone-500 transition-all cursor-pointer';
+  const HOUR_ON = 'time-hour-item h-10 flex items-center justify-center snap-center text-base font-bold text-stone-900 dark:text-stone-100 scale-110 transition-all cursor-pointer';
+  const MINUTE_OFF = 'time-minute-item h-10 flex items-center justify-center snap-center text-base font-semibold text-stone-500 transition-all cursor-pointer';
+  const MINUTE_ON = 'time-minute-item h-10 flex items-center justify-center snap-center text-base font-bold text-stone-900 dark:text-stone-100 scale-110 transition-all cursor-pointer';
 
-  function paintWheelItem(item, active) {
-    item.className = active ? WHEEL_ITEM_ON : WHEEL_ITEM;
-    item.setAttribute('aria-selected', active ? 'true' : 'false');
-  }
-
-  function syncTimeWheel(select) {
-    const wrap = select.closest('.book-time-wheel');
-    const wheel = $('#book-time-wheel');
-    if (!wrap || !wheel) return;
-    const trigger = wrap.querySelector('.book-select-trigger');
-    const valueEl = wrap.querySelector('.book-select-value');
-    const panel = wrap.querySelector('.book-wheel-panel');
-    const previous = select.value;
-
-    wheel.textContent = '';
-    Array.prototype.forEach.call(select.options, (opt) => {
-      if (!opt.value) return;
-      const btn = el('button', WHEEL_ITEM);
-      btn.type = 'button';
-      btn.dataset.value = opt.value;
-      btn.textContent = opt.textContent;
-      btn.setAttribute('role', 'option');
-      btn.setAttribute('aria-selected', 'false');
-      wheel.appendChild(btn);
+  function paintWheelColumn(scroller, active) {
+    if (scroller._active === active) return;
+    scroller._active = active;
+    const on = scroller.id === 'wheel-hours' ? HOUR_ON : MINUTE_ON;
+    const off = scroller.id === 'wheel-hours' ? HOUR_OFF : MINUTE_OFF;
+    scroller.querySelectorAll('[data-val]').forEach((node) => {
+      node.className = node === active ? on : off;
+      node.setAttribute('aria-selected', node === active ? 'true' : 'false');
     });
-
-    if (select.disabled) {
-      wrap.classList.remove('is-open');
-      if (trigger) trigger.setAttribute('aria-expanded', 'false');
-      if (panel) panel.hidden = true;
-    }
-    if (trigger) trigger.disabled = !!select.disabled;
-
-    const shown = select.options[select.selectedIndex];
-    if (valueEl) valueEl.textContent = shown ? shown.textContent : '';
-
-    const current = previous
-      ? wheel.querySelector('[data-value="' + CSS.escape(previous) + '"]')
-      : null;
-    const slots = wheel.querySelectorAll('.time-slot-item');
-    const found = current ? Array.prototype.indexOf.call(slots, current) : 0;
-    currentHourIndex = found < 0 ? 0 : found;
-    if (current) paintWheelItem(current, true);
-
-    if (wrap.classList.contains('is-open')) {
-      const target = current || wheel.querySelector('[data-value]');
-      if (target) {
-        requestAnimationFrame(() => {
-          wheel.dataset.lock = '1';
-          wheel.scrollTop = Math.max(0, target.offsetTop - (wheel.clientHeight / 2) + (target.offsetHeight / 2));
-          markCenteredTime(target, true);
-          wheel.dataset.lock = '';
-        });
-      }
-    }
   }
 
-  function markCenteredTime(item, save) {
-    const wheel = $('#book-time-wheel');
-    const select = $('#book-time');
-    const wrap = select && select.closest('.book-time-wheel');
-    if (!wheel || !item || !select || !wrap) return;
-    wheel.querySelectorAll('[data-value]').forEach((node) => {
-      paintWheelItem(node, node === item);
-    });
-    if (!save) return;
-    select.value = item.dataset.value;
-    const valueEl = wrap.querySelector('.book-select-value');
-    if (valueEl) valueEl.textContent = item.textContent;
-    const slots = wheel.querySelectorAll('.time-slot-item');
-    const found = Array.prototype.indexOf.call(slots, item);
-    if (found >= 0) currentHourIndex = found;
-  }
-
-  function updateSelectedHour(item) {
-    markCenteredTime(item, true);
-  }
-
-  function scrollHourToCenter(wheel, item, smooth) {
-    const top = item.offsetTop - (wheel.clientHeight / 2) + (item.offsetHeight / 2);
-    wheel.scrollTo({ top: Math.max(0, top), behavior: smooth ? 'smooth' : 'auto' });
-  }
-
-  function centeredTimeItem(wheel) {
-    const mid = wheel.getBoundingClientRect().top + wheel.clientHeight / 2;
+  function centeredWheelItem(scroller) {
+    const mid = scroller.getBoundingClientRect().top + scroller.clientHeight / 2;
     let best = null;
     let bestDist = Infinity;
-    wheel.querySelectorAll('[data-value]').forEach((item) => {
+    scroller.querySelectorAll('[data-val]').forEach((item) => {
       const rect = item.getBoundingClientRect();
       const dist = Math.abs(rect.top + rect.height / 2 - mid);
       if (dist < bestDist) {
@@ -1214,80 +1131,155 @@
     return best;
   }
 
-  function initTimeWheel() {
-    const wrap = document.querySelector('.book-time-wheel');
-    const select = $('#book-time');
-    const wheel = $('#book-time-wheel');
-    if (!wrap || !select || !wheel || wheel.dataset.bound === '1') return;
-    wheel.dataset.bound = '1';
-    const trigger = wrap.querySelector('.book-select-trigger');
-    const panel = wrap.querySelector('.book-wheel-panel');
-    let scrollTimer = 0;
-    let isWheelThrottled = false;
+  function selectedWheelValue(scroller) {
+    if (!scroller) return '';
+    const active = scroller.querySelector('[aria-selected="true"]');
+    if (active) return active.dataset.val;
+    const centered = centeredWheelItem(scroller);
+    return centered ? centered.dataset.val : '';
+  }
 
-    function settle() {
-      if (wheel.dataset.lock === '1' || panel.hidden) return;
-      const item = centeredTimeItem(wheel);
-      if (item) markCenteredTime(item, true);
+  function writeTimeValue(hour, minute) {
+    const select = $('#book-time');
+    if (!select) return;
+    const value = (hour || selectedWheelValue($('#wheel-hours'))) + ':' + (minute || selectedWheelValue($('#wheel-minutes')));
+    if (!/^\d{2}:\d{2}$/.test(value)) return;
+    let opt = select.querySelector('option[value="' + CSS.escape(value) + '"]');
+    if (!opt) {
+      opt = el('option');
+      opt.value = value;
+      opt.textContent = value;
+      select.appendChild(opt);
+    }
+    select.value = value;
+    const visible = $('#hora-reserva');
+    if (visible) visible.value = value;
+  }
+
+  function commitTimeSelection() {
+    const hours = $('#wheel-hours');
+    const minutes = $('#wheel-minutes');
+    const hourItem = centeredWheelItem(hours);
+    const minuteItem = centeredWheelItem(minutes);
+    if (hourItem) paintWheelColumn(hours, hourItem);
+    if (minuteItem) paintWheelColumn(minutes, minuteItem);
+    writeTimeValue(hourItem && hourItem.dataset.val, minuteItem && minuteItem.dataset.val);
+    setTimePickerOpen(false);
+  }
+
+  function setTimePickerOpen(open) {
+    const panel = $('#time-picker');
+    if (!panel) return;
+    panel.hidden = !open;
+    if (!open) return;
+    requestAnimationFrame(() => alignTimeWheels(false));
+  }
+
+  function padTimeWheel(scroller) {
+    const item = scroller.querySelector('[data-val]');
+    if (!item || !scroller.clientHeight) return;
+    const pad = Math.max(0, (scroller.clientHeight - item.offsetHeight) / 2);
+    scroller.style.paddingTop = pad + 'px';
+    scroller.style.paddingBottom = pad + 'px';
+  }
+
+  function centerWheelItem(scroller, item, smooth) {
+    const top = Math.max(0, item.offsetTop - (scroller.clientHeight - item.offsetHeight) / 2);
+    if (!smooth) {
+      scroller.scrollTop = top;
+      return;
+    }
+    scroller.dataset.moving = '1';
+    scroller.scrollTo({ top: top, behavior: 'smooth' });
+  }
+
+  function alignTimeWheels(force) {
+    const hours = $('#wheel-hours');
+    const minutes = $('#wheel-minutes');
+    if (!hours || !minutes || !hours.clientHeight) return;
+    padTimeWheel(hours);
+    padTimeWheel(minutes);
+    if (!force && hours.dataset.aligned === '1') return;
+    const hourItem = hours.querySelector('[data-val="20"]') || hours.querySelector('[data-val]');
+    const minuteItem = minutes.querySelector('[data-val="30"]') || minutes.querySelector('[data-val]');
+    if (hourItem) {
+      centerWheelItem(hours, hourItem, false);
+      paintWheelColumn(hours, hourItem);
+      hours.dataset.index = String(Array.prototype.indexOf.call(hours.querySelectorAll('[data-val]'), hourItem));
+    }
+    if (minuteItem) {
+      centerWheelItem(minutes, minuteItem, false);
+      paintWheelColumn(minutes, minuteItem);
+      minutes.dataset.index = String(Array.prototype.indexOf.call(minutes.querySelectorAll('[data-val]'), minuteItem));
+    }
+    hours.dataset.aligned = '1';
+  }
+
+  function bindTimeColumn(scroller) {
+    if (!scroller || scroller.dataset.bound === '1') return;
+    scroller.dataset.bound = '1';
+    const selector = scroller.id === 'wheel-hours' ? '.time-hour-item' : '.time-minute-item';
+    function items() {
+      return scroller.querySelectorAll(selector);
     }
 
-    trigger.addEventListener('click', (event) => {
-      event.stopPropagation();
-      if (select.disabled || !wheel.querySelector('[data-value]')) return;
-      const open = trigger.getAttribute('aria-expanded') === 'true';
-      closeAllBookSelects();
-      if (open) return;
-      wrap.classList.add('is-open');
-      trigger.setAttribute('aria-expanded', 'true');
-      panel.hidden = false;
-      const target = wheel.querySelector('[data-value="' + CSS.escape(select.value) + '"]') || wheel.querySelector('[data-value]');
-      requestAnimationFrame(() => {
-        if (!target) return;
-        wheel.dataset.lock = '1';
-        scrollHourToCenter(wheel, target, false);
-        markCenteredTime(target, true);
-        wheel.dataset.lock = '';
-      });
-    });
-
-    wheel.addEventListener('click', (event) => {
-      const item = event.target.closest('.time-slot-item');
+    function settle() {
+      const item = centeredWheelItem(scroller);
       if (!item) return;
-      const slots = wheel.querySelectorAll('.time-slot-item');
-      const found = Array.prototype.indexOf.call(slots, item);
-      if (found >= 0) currentHourIndex = found;
-      scrollHourToCenter(wheel, item, true);
-      updateSelectedHour(item);
-    });
+      const list = items();
+      const found = Array.prototype.indexOf.call(list, item);
+      if (found >= 0) scroller.dataset.index = String(found);
+      const top = Math.max(0, item.offsetTop - (scroller.clientHeight - item.offsetHeight) / 2);
+      if (Math.abs(scroller.scrollTop - top) > 2) scroller.scrollTop = top;
+      paintWheelColumn(scroller, item);
+    }
 
-    wheel.addEventListener('wheel', (event) => {
+    scroller.addEventListener('wheel', (event) => {
       if (!event.deltaY || event.ctrlKey) return;
       event.preventDefault();
-      if (isWheelThrottled) return;
-      const items = wheel.querySelectorAll('.time-slot-item');
-      if (!items.length) return;
-      const direction = event.deltaY > 0 ? 1 : -1;
-      const nextIndex = Math.min(Math.max(currentHourIndex + direction, 0), items.length - 1);
-      if (nextIndex !== currentHourIndex) {
-        currentHourIndex = nextIndex;
-        scrollHourToCenter(wheel, items[currentHourIndex], true);
-        updateSelectedHour(items[currentHourIndex]);
-      }
-      isWheelThrottled = true;
-      setTimeout(() => {
-        isWheelThrottled = false;
-      }, 160);
+      const list = items();
+      if (!list.length) return;
+      const index = Number(scroller.dataset.index || 0);
+      const next = Math.min(Math.max(index + (event.deltaY > 0 ? 1 : -1), 0), list.length - 1);
+      if (next === index) return;
+      scroller.dataset.index = String(next);
+      centerWheelItem(scroller, list[next], true);
+      paintWheelColumn(scroller, list[next]);
     }, { passive: false });
 
-    wheel.addEventListener('scroll', () => {
-      if (wheel.dataset.lock === '1') return;
-      const item = centeredTimeItem(wheel);
-      if (item) markCenteredTime(item, false);
-      clearTimeout(scrollTimer);
-      scrollTimer = setTimeout(settle, 80);
+    scroller.addEventListener('click', (event) => {
+      const item = event.target.closest(selector);
+      if (!item) return;
+      const list = items();
+      const found = Array.prototype.indexOf.call(list, item);
+      if (found >= 0) scroller.dataset.index = String(found);
+      centerWheelItem(scroller, item, true);
+      paintWheelColumn(scroller, item);
+    });
+
+    scroller.addEventListener('scroll', () => {
+      if (scroller.dataset.moving === '1') return;
+      const item = centeredWheelItem(scroller);
+      if (item) paintWheelColumn(scroller, item);
     }, { passive: true });
 
-    wheel.addEventListener('scrollend', settle);
+    scroller.addEventListener('scrollend', () => {
+      if (scroller.dataset.moving === '1') {
+        scroller.dataset.moving = '';
+        return;
+      }
+      settle();
+    });
+  }
+
+  function initTimeWheel() {
+    const hours = $('#wheel-hours');
+    const minutes = $('#wheel-minutes');
+    if (!hours || !minutes) return;
+    bindTimeColumn(hours);
+    bindTimeColumn(minutes);
+    on('#hora-reserva', 'click', () => setTimePickerOpen(true));
+    on('#book-time-pick', 'click', commitTimeSelection);
   }
 
   function applyI18nBookingOptions() {
@@ -1312,10 +1304,7 @@
   }
 
   function syncBookSelect(select) {
-    if (select.id === 'book-time') {
-      syncTimeWheel(select);
-      return;
-    }
+    if (select.id === 'book-time') return;
     const wrap = select.closest('.book-select');
     if (!wrap) return;
     const trigger = wrap.querySelector('.book-select-trigger');
@@ -1449,11 +1438,11 @@
       const guests = $('#book-guests').value;
       const area = $('#book-area').value;
       const notes = $('#book-notes').value.trim();
-      const slots = slotsForDate(ymd);
+      const closed = !dayRanges(weekdayOfYmd(ymd)).length;
 
-      if (!name || phone.replace(/\D/g, '').length < 9 || !ymd || !hour || slots.indexOf(hour) < 0) {
+      if (!name || phone.replace(/\D/g, '').length < 9 || !ymd || !hour || closed) {
         feedback.hidden = false;
-        feedback.textContent = t('bookError');
+        feedback.textContent = closed ? t('bookClosed') : t('bookError');
         return;
       }
 
@@ -1492,6 +1481,9 @@
       date.min = madridYMD(new Date());
       date.value = nextOpenYmd();
       fillGuestSelect();
+      const hours = $('#wheel-hours');
+      if (hours) hours.dataset.aligned = '';
+      setTimePickerOpen(false);
       refreshBookingSlots();
       const success = $('#booking-success');
       success.hidden = true;

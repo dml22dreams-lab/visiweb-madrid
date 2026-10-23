@@ -420,6 +420,7 @@
     }
     #open-filter-btn:hover { color: #000; }
     .site-split { border-top: 2px solid #000; }
+    #contenido { min-height: 100dvh; }
     @media (prefers-color-scheme: dark) {
       .site-split { border-top-color: #e7e5e4; }
     }
@@ -458,7 +459,7 @@
         <span class="block truncate font-semibold" data-i18n="salesBar">Así quedaría tu local.</span>
         <span class="block truncate text-[10px] text-stone-300" data-i18n="planBanner">Esta demo interactiva incluye las características del Plan Gastro Premium (390 € montaje. IVA no inc.).</span>
       </p>
-      <a id="sales-whatsapp" href="https://wa.me/34612345678?text=Hola%2C%20he%20visto%20la%20demo%20y%20quiero%20una%20as%C3%AD%20para%20mi%20local." target="_blank" rel="noopener" class="shrink-0 rounded-full bg-emerald-600 px-2.5 py-1 text-[11px] font-bold text-white no-underline hover:bg-emerald-500">
+      <a id="sales-whatsapp" href="https://wa.me/34608975906?text=Hola%2C%20he%20visto%20la%20demo%20y%20quiero%20una%20as%C3%AD%20para%20mi%20local." target="_blank" rel="noopener" class="shrink-0 rounded-full bg-emerald-600 px-2.5 py-1 text-[11px] font-bold text-white no-underline hover:bg-emerald-500">
         <span data-i18n="salesBarCta">Pide la tuya</span>
       </a>
     </div>
@@ -482,7 +483,7 @@
             </div>
           </button>
 
-          <a id="header-call" href="tel:+34910000000" class="btn-outline min-h-0 px-3 py-1.5 sm:px-4" data-i18n-aria-label="callLong">
+          <a id="header-call" href="tel:+34608975906" class="btn-outline min-h-0 px-3 py-1.5 sm:px-4" data-i18n-aria-label="callLong">
             <span class="call-icon">
               <svg class="call-phone h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6.6 10.8a12.8 12.8 0 0 0 5.6 5.6l2-2a1 1 0 0 1 1-.2 9.6 9.6 0 0 0 3.5.6 1 1 0 0 1 1 1V19a1 1 0 0 1-1 1A17 17 0 0 1 4 6a1 1 0 0 1 1-1h3.2a1 1 0 0 1 1 1 9.6 9.6 0 0 0 .6 3.5 1 1 0 0 1-.2 1l-2 2z"/></svg>
               <span class="call-waves" aria-hidden="true"><span></span><span></span><span></span></span>
@@ -688,20 +689,36 @@
             </label>
             <div class="book-field">
               <span id="book-time-label" data-i18n="bookTime">Hora</span>
-              <div class="book-select book-time-wheel">
+              <input type="text" id="hora-reserva" placeholder="Elegir hora" readonly required data-i18n-placeholder="bookTimePlaceholder" aria-labelledby="book-time-label">
+              <div class="book-select">
                 <select id="book-time" name="time" required tabindex="-1" aria-labelledby="book-time-label"></select>
-                <button type="button" class="book-select-trigger" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="book-time-label" aria-controls="book-time-wheel">
-                  <span class="book-select-value"></span>
-                  <svg class="book-select-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5.5 15.5 12 9 18.5"/></svg>
-                </button>
-                <div class="book-wheel-panel" hidden>
-                  <div class="h-36 relative overflow-hidden bg-stone-50 dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800">
-                    <div class="absolute top-1/2 left-4 right-4 -translate-y-1/2 h-10 border-y-2 border-stone-900/20 dark:border-stone-100/20 bg-stone-200/40 dark:bg-stone-800/40 rounded-xl pointer-events-none z-0"></div>
-                    <div id="book-time-wheel" class="h-full overflow-y-auto snap-y snap-mandatory py-12 no-scrollbar text-center relative z-[1] overscroll-y-contain" role="listbox" aria-labelledby="book-time-label"></div>
-                    <div class="absolute top-0 left-0 right-0 h-10 bg-gradient-to-b from-stone-50 dark:from-stone-900 to-transparent pointer-events-none z-10"></div>
-                    <div class="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-stone-50 dark:from-stone-900 to-transparent pointer-events-none z-10"></div>
-                  </div>
+              </div>
+              <div id="time-picker" hidden>
+              <div class="relative mt-3 flex h-40 overflow-hidden bg-stone-50 dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 p-2 select-none">
+                <div class="absolute top-0 left-0 right-0 h-10 bg-gradient-to-b from-stone-50 dark:from-stone-900 to-transparent pointer-events-none z-20"></div>
+                <div class="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-stone-50 dark:from-stone-900 to-transparent pointer-events-none z-20"></div>
+                <div class="absolute top-1/2 left-4 right-4 -translate-y-1/2 h-10 border-y-2 border-stone-900/20 dark:border-stone-100/20 bg-stone-200/40 dark:bg-stone-800/40 rounded-xl pointer-events-none z-0"></div>
+                <span class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-xl font-bold text-stone-700 dark:text-stone-300 pointer-events-none z-10">:</span>
+                <div id="wheel-hours" class="min-h-0 w-1/2 h-full touch-pan-y overflow-y-auto overscroll-y-contain no-scrollbar text-center relative z-10" role="listbox" aria-labelledby="book-time-label">
+                  <div class="time-hour-item h-10 flex items-center justify-center snap-center text-base font-semibold text-stone-500 transition-all cursor-pointer" data-val="12" role="option">12</div>
+                  <div class="time-hour-item h-10 flex items-center justify-center snap-center text-base font-semibold text-stone-500 transition-all cursor-pointer" data-val="13" role="option">13</div>
+                  <div class="time-hour-item h-10 flex items-center justify-center snap-center text-base font-semibold text-stone-500 transition-all cursor-pointer" data-val="14" role="option">14</div>
+                  <div class="time-hour-item h-10 flex items-center justify-center snap-center text-base font-semibold text-stone-500 transition-all cursor-pointer" data-val="15" role="option">15</div>
+                  <div class="time-hour-item h-10 flex items-center justify-center snap-center text-base font-semibold text-stone-500 transition-all cursor-pointer" data-val="16" role="option">16</div>
+                  <div class="time-hour-item h-10 flex items-center justify-center snap-center text-base font-semibold text-stone-500 transition-all cursor-pointer" data-val="19" role="option">19</div>
+                  <div class="time-hour-item h-10 flex items-center justify-center snap-center text-base font-semibold text-stone-500 transition-all cursor-pointer" data-val="20" role="option">20</div>
+                  <div class="time-hour-item h-10 flex items-center justify-center snap-center text-base font-semibold text-stone-500 transition-all cursor-pointer" data-val="21" role="option">21</div>
+                  <div class="time-hour-item h-10 flex items-center justify-center snap-center text-base font-semibold text-stone-500 transition-all cursor-pointer" data-val="22" role="option">22</div>
+                  <div class="time-hour-item h-10 flex items-center justify-center snap-center text-base font-semibold text-stone-500 transition-all cursor-pointer" data-val="23" role="option">23</div>
                 </div>
+                <div id="wheel-minutes" class="min-h-0 w-1/2 h-full touch-pan-y overflow-y-auto overscroll-y-contain no-scrollbar text-center relative z-10" role="listbox" aria-label="Minutos">
+                  <div class="time-minute-item h-10 flex items-center justify-center snap-center text-base font-semibold text-stone-500 transition-all cursor-pointer" data-val="00" role="option">00</div>
+                  <div class="time-minute-item h-10 flex items-center justify-center snap-center text-base font-semibold text-stone-500 transition-all cursor-pointer" data-val="15" role="option">15</div>
+                  <div class="time-minute-item h-10 flex items-center justify-center snap-center text-base font-semibold text-stone-500 transition-all cursor-pointer" data-val="30" role="option">30</div>
+                  <div class="time-minute-item h-10 flex items-center justify-center snap-center text-base font-semibold text-stone-500 transition-all cursor-pointer" data-val="45" role="option">45</div>
+                </div>
+              </div>
+              <button type="button" id="book-time-pick" class="btn-primary mt-3 w-full">Seleccionar la hora</button>
               </div>
             </div>
             <div class="book-field">
@@ -788,9 +805,9 @@
 
           <div class="mt-6 flex flex-col gap-3">
             <a href="#reservas" class="btn-primary w-full" data-i18n="reserve">Reservar mesa</a>
-            <a id="footer-phone" href="tel:+34910000000" class="btn-call">
+            <a id="footer-phone" href="tel:+34608975906" class="btn-call">
               <svg class="h-4 w-4 shrink-0 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6.6 10.8a12.8 12.8 0 0 0 5.6 5.6l2-2a1 1 0 0 1 1-.2 9.6 9.6 0 0 0 3.5.6 1 1 0 0 1 1 1V19a1 1 0 0 1-1 1A17 17 0 0 1 4 6a1 1 0 0 1 1-1h3.2a1 1 0 0 1 1 1 9.6 9.6 0 0 0 .6 3.5 1 1 0 0 1-.2 1l-2 2z"/></svg>
-              <span id="footer-phone-number" class="tabular">910 000 000</span>
+              <span id="footer-phone-number" class="tabular">+34 608 97 59 06</span>
             </a>
 
             <a id="footer-whatsapp" href="#" target="_blank" rel="noopener" class="btn-whatsapp">
@@ -824,7 +841,7 @@
 
   <!-- ====================== BARRA FIJA (SOLO MÓVIL) ====================== -->
   <nav class="fixed inset-x-0 bottom-0 z-40 grid grid-cols-2 gap-3 border-t border-slate-200 bg-white px-5 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] md:hidden dark:border-slate-800 dark:bg-slate-950" aria-label="Acciones rápidas" data-i18n-aria-label="quickActions">
-    <a id="bar-call" href="tel:+34910000000" class="btn-outline px-4">
+    <a id="bar-call" href="tel:+34608975906" class="btn-outline px-4">
       <span class="call-icon">
         <svg class="call-phone h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6.6 10.8a12.8 12.8 0 0 0 5.6 5.6l2-2a1 1 0 0 1 1-.2 9.6 9.6 0 0 0 3.5.6 1 1 0 0 1 1 1V19a1 1 0 0 1-1 1A17 17 0 0 1 4 6a1 1 0 0 1 1-1h3.2a1 1 0 0 1 1 1 9.6 9.6 0 0 0 .6 3.5 1 1 0 0 1-.2 1l-2 2z"/></svg>
         <span class="call-waves" aria-hidden="true"><span></span><span></span><span></span></span>
