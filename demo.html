@@ -421,6 +421,160 @@
     #open-filter-btn:hover { color: #000; }
     .site-split { border-top: 2px solid #000; }
     #contenido { min-height: 100dvh; }
+    #booking-form .book-field { align-self: start; }
+    #booking-form .book-select-menu { display: flex; flex-direction: column; gap: 0.375rem; }
+    #booking-form .book-select-option { border: 1px solid transparent; background: transparent; }
+    #booking-form .book-select-option[aria-selected='true'],
+    #booking-form .book-select-option[aria-selected='true']:hover { border-color: transparent; background: #f1f5f9; }
+    #booking-form .book-select-option:hover { border-color: #0f172a; background: #ffffff; }
+    @media (prefers-color-scheme: dark) {
+      #booking-form .book-select-option[aria-selected='true'],
+      #booking-form .book-select-option[aria-selected='true']:hover { border-color: transparent; background: #1e293b; }
+      #booking-form .book-select-option:hover { border-color: #f8fafc; background: transparent; }
+    }
+    .book-wheel {
+      position: relative;
+      display: flex;
+      height: 9.75rem;
+      margin-top: 0.75rem;
+      overflow: hidden;
+      border-radius: 1.35rem;
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.95), 0 16px 36px -24px rgba(15, 23, 42, 0.45);
+      user-select: none;
+    }
+    .book-wheel::before,
+    .book-wheel::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 2.65rem;
+      z-index: 20;
+      pointer-events: none;
+    }
+    .book-wheel::before {
+      top: 0;
+      background: linear-gradient(to bottom, #ffffff 15%, rgba(255, 255, 255, 0));
+    }
+    .book-wheel::after {
+      bottom: 0;
+      background: linear-gradient(to top, #f8fafc 15%, rgba(248, 250, 252, 0));
+    }
+    .book-wheel-lens {
+      position: absolute;
+      top: 50%;
+      left: 0.7rem;
+      right: 0.7rem;
+      height: 2.55rem;
+      transform: translateY(-50%);
+      border-radius: 999px;
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .book-wheel-colon {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      z-index: 12;
+      transform: translate(-50%, -54%);
+      font-size: 0.95rem;
+      font-weight: 500;
+      line-height: 1;
+      letter-spacing: 0;
+      color: #94a3b8;
+      pointer-events: none;
+    }
+    .book-wheel-col {
+      position: relative;
+      z-index: 10;
+      width: 50%;
+      height: 100%;
+      min-height: 0;
+      overflow-y: auto;
+      overscroll-behavior-y: contain;
+      touch-action: pan-y;
+      text-align: center;
+      scroll-snap-type: y mandatory;
+    }
+    .book-wheel-single .book-wheel-col { width: 100%; }
+    .time-hour-item,
+    .time-minute-item,
+    .time-guest-item {
+      display: flex;
+      height: 2.5rem;
+      align-items: center;
+      justify-content: center;
+      scroll-snap-align: center;
+      font-variant-numeric: tabular-nums;
+      font-size: 0.95rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      color: #cbd5e1;
+      cursor: pointer;
+      transition: color .2s ease, font-size .2s ease, letter-spacing .2s ease;
+    }
+    .time-guest-item { letter-spacing: 0.04em; }
+    .time-hour-item[aria-selected="true"],
+    .time-minute-item[aria-selected="true"],
+    .time-guest-item[aria-selected="true"] {
+      font-size: 1.2rem;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      color: #0f172a;
+    }
+    .time-guest-item[aria-selected="true"] {
+      font-size: 1.02rem;
+      letter-spacing: 0.06em;
+    }
+    #book-time-pick,
+    #book-guests-pick {
+      min-height: 2.55rem;
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
+      color: #0f172a;
+      box-shadow: none;
+    }
+    #book-time-pick:hover:not(:disabled),
+    #book-guests-pick:hover:not(:disabled) {
+      transform: none;
+      border-color: #94a3b8;
+      background: #ffffff;
+      color: #0f172a;
+      box-shadow: none;
+    }
+    @media (prefers-color-scheme: dark) {
+      .book-wheel {
+        border-color: rgba(255, 255, 255, 0.08);
+        background: linear-gradient(180deg, #0f172a 0%, #020617 100%);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 16px 36px -24px rgba(0, 0, 0, 0.7);
+      }
+      .book-wheel::before { background: linear-gradient(to bottom, #0f172a 15%, rgba(15, 23, 42, 0)); }
+      .book-wheel::after { background: linear-gradient(to top, #020617 15%, rgba(2, 6, 23, 0)); }
+      .book-wheel-lens {
+        border-color: #64748b;
+        background: #ffffff;
+      }
+      .book-wheel-colon { color: #94a3b8; }
+      .time-hour-item,
+      .time-minute-item,
+      .time-guest-item { color: #475569; }
+      .time-hour-item[aria-selected="true"],
+      .time-minute-item[aria-selected="true"],
+      .time-guest-item[aria-selected="true"] { color: #020617; }
+      #book-time-pick,
+      #book-guests-pick,
+      #book-time-pick:hover:not(:disabled),
+      #book-guests-pick:hover:not(:disabled) {
+        border-color: #64748b;
+        background: #ffffff;
+        color: #020617;
+        box-shadow: none;
+      }
+    }
     @media (prefers-color-scheme: dark) {
       .site-split { border-top-color: #e7e5e4; }
     }
@@ -676,7 +830,7 @@
               <span data-i18n="bookPhone">Teléfono</span>
               <input id="book-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" required maxlength="20">
             </label>
-            <label class="book-field">
+            <div class="book-field">
               <span id="book-date-label" data-i18n="bookDate">Fecha</span>
               <div class="book-date-wrap">
                 <input type="text" id="fecha-reserva" placeholder="Selecciona una fecha" readonly required data-i18n-placeholder="bookDatePlaceholder" aria-labelledby="book-date-label">
@@ -686,7 +840,7 @@
                 </svg>
                 <input type="hidden" id="book-date" name="date" required>
               </div>
-            </label>
+            </div>
             <div class="book-field">
               <span id="book-time-label" data-i18n="bookTime">Hora</span>
               <input type="text" id="hora-reserva" placeholder="Elegir hora" readonly required data-i18n-placeholder="bookTimePlaceholder" aria-labelledby="book-time-label">
@@ -694,28 +848,26 @@
                 <select id="book-time" name="time" required tabindex="-1" aria-labelledby="book-time-label"></select>
               </div>
               <div id="time-picker" hidden>
-              <div class="relative mt-3 flex h-40 overflow-hidden bg-stone-50 dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 p-2 select-none">
-                <div class="absolute top-0 left-0 right-0 h-10 bg-gradient-to-b from-stone-50 dark:from-stone-900 to-transparent pointer-events-none z-20"></div>
-                <div class="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-stone-50 dark:from-stone-900 to-transparent pointer-events-none z-20"></div>
-                <div class="absolute top-1/2 left-4 right-4 -translate-y-1/2 h-10 border-y-2 border-stone-900/20 dark:border-stone-100/20 bg-stone-200/40 dark:bg-stone-800/40 rounded-xl pointer-events-none z-0"></div>
-                <span class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-xl font-bold text-stone-700 dark:text-stone-300 pointer-events-none z-10">:</span>
-                <div id="wheel-hours" class="min-h-0 w-1/2 h-full touch-pan-y overflow-y-auto overscroll-y-contain no-scrollbar text-center relative z-10" role="listbox" aria-labelledby="book-time-label">
-                  <div class="time-hour-item h-10 flex items-center justify-center snap-center text-base font-semibold text-stone-500 transition-all cursor-pointer" data-val="12" role="option">12</div>
-                  <div class="time-hour-item h-10 flex items-center justify-center snap-center text-base font-semibold text-stone-500 transition-all cursor-pointer" data-val="13" role="option">13</div>
-                  <div class="time-hour-item h-10 flex items-center justify-center snap-center text-base font-semibold text-stone-500 transition-all cursor-pointer" data-val="14" role="option">14</div>
-                  <div class="time-hour-item h-10 flex items-center justify-center snap-center text-base font-semibold text-stone-500 transition-all cursor-pointer" data-val="15" role="option">15</div>
-                  <div class="time-hour-item h-10 flex items-center justify-center snap-center text-base font-semibold text-stone-500 transition-all cursor-pointer" data-val="16" role="option">16</div>
-                  <div class="time-hour-item h-10 flex items-center justify-center snap-center text-base font-semibold text-stone-500 transition-all cursor-pointer" data-val="19" role="option">19</div>
-                  <div class="time-hour-item h-10 flex items-center justify-center snap-center text-base font-semibold text-stone-500 transition-all cursor-pointer" data-val="20" role="option">20</div>
-                  <div class="time-hour-item h-10 flex items-center justify-center snap-center text-base font-semibold text-stone-500 transition-all cursor-pointer" data-val="21" role="option">21</div>
-                  <div class="time-hour-item h-10 flex items-center justify-center snap-center text-base font-semibold text-stone-500 transition-all cursor-pointer" data-val="22" role="option">22</div>
-                  <div class="time-hour-item h-10 flex items-center justify-center snap-center text-base font-semibold text-stone-500 transition-all cursor-pointer" data-val="23" role="option">23</div>
+              <div class="book-wheel">
+                <div class="book-wheel-lens"></div>
+                <span class="book-wheel-colon" aria-hidden="true">:</span>
+                <div id="wheel-hours" class="book-wheel-col no-scrollbar" role="listbox" aria-labelledby="book-time-label">
+                  <div class="time-hour-item" data-val="12" role="option">12</div>
+                  <div class="time-hour-item" data-val="13" role="option">13</div>
+                  <div class="time-hour-item" data-val="14" role="option">14</div>
+                  <div class="time-hour-item" data-val="15" role="option">15</div>
+                  <div class="time-hour-item" data-val="16" role="option">16</div>
+                  <div class="time-hour-item" data-val="19" role="option">19</div>
+                  <div class="time-hour-item" data-val="20" role="option">20</div>
+                  <div class="time-hour-item" data-val="21" role="option">21</div>
+                  <div class="time-hour-item" data-val="22" role="option">22</div>
+                  <div class="time-hour-item" data-val="23" role="option">23</div>
                 </div>
-                <div id="wheel-minutes" class="min-h-0 w-1/2 h-full touch-pan-y overflow-y-auto overscroll-y-contain no-scrollbar text-center relative z-10" role="listbox" aria-label="Minutos">
-                  <div class="time-minute-item h-10 flex items-center justify-center snap-center text-base font-semibold text-stone-500 transition-all cursor-pointer" data-val="00" role="option">00</div>
-                  <div class="time-minute-item h-10 flex items-center justify-center snap-center text-base font-semibold text-stone-500 transition-all cursor-pointer" data-val="15" role="option">15</div>
-                  <div class="time-minute-item h-10 flex items-center justify-center snap-center text-base font-semibold text-stone-500 transition-all cursor-pointer" data-val="30" role="option">30</div>
-                  <div class="time-minute-item h-10 flex items-center justify-center snap-center text-base font-semibold text-stone-500 transition-all cursor-pointer" data-val="45" role="option">45</div>
+                <div id="wheel-minutes" class="book-wheel-col no-scrollbar" role="listbox" aria-label="Minutos">
+                  <div class="time-minute-item" data-val="00" role="option">00</div>
+                  <div class="time-minute-item" data-val="15" role="option">15</div>
+                  <div class="time-minute-item" data-val="30" role="option">30</div>
+                  <div class="time-minute-item" data-val="45" role="option">45</div>
                 </div>
               </div>
               <button type="button" id="book-time-pick" class="btn-primary mt-3 w-full">Seleccionar la hora</button>
@@ -728,11 +880,9 @@
                 <select id="book-guests" name="guests" required tabindex="-1" aria-labelledby="book-guests-label"></select>
               </div>
               <div id="guests-picker" hidden>
-                <div class="relative mt-3 flex h-40 overflow-hidden bg-stone-50 dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 p-2 select-none">
-                  <div class="absolute top-0 left-0 right-0 h-10 bg-gradient-to-b from-stone-50 dark:from-stone-900 to-transparent pointer-events-none z-20"></div>
-                  <div class="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-stone-50 dark:from-stone-900 to-transparent pointer-events-none z-20"></div>
-                  <div class="absolute top-1/2 left-4 right-4 -translate-y-1/2 h-10 border-y-2 border-stone-900/20 dark:border-stone-100/20 bg-stone-200/40 dark:bg-stone-800/40 rounded-xl pointer-events-none z-0"></div>
-                  <div id="wheel-guests" class="min-h-0 w-full h-full touch-pan-y overflow-y-auto overscroll-y-contain no-scrollbar text-center relative z-10" role="listbox" aria-labelledby="book-guests-label"></div>
+                <div class="book-wheel book-wheel-single">
+                  <div class="book-wheel-lens"></div>
+                  <div id="wheel-guests" class="book-wheel-col no-scrollbar" role="listbox" aria-labelledby="book-guests-label"></div>
                 </div>
                 <button type="button" id="book-guests-pick" class="btn-primary mt-3 w-full" data-i18n="bookGuestsPick">Seleccionar comensales</button>
               </div>

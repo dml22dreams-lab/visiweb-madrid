@@ -1098,7 +1098,7 @@
       opt.value = String(n);
       opt.textContent = guestLabel(n);
       select.appendChild(opt);
-      const item = el('div', 'time-guest-item h-10 flex items-center justify-center snap-center text-base font-semibold text-stone-500 transition-all cursor-pointer');
+      const item = el('div', 'time-guest-item');
       item.dataset.val = String(n);
       item.setAttribute('role', 'option');
       item.textContent = guestLabel(n);
@@ -1124,10 +1124,8 @@
     if (scroller._active === active) return;
     scroller._active = active;
     const kind = scroller.id === 'wheel-minutes' ? 'time-minute-item' : (scroller.id === 'wheel-guests' ? 'time-guest-item' : 'time-hour-item');
-    const on = kind + ' h-10 flex items-center justify-center snap-center text-base font-bold text-stone-900 dark:text-stone-100 scale-110 transition-all cursor-pointer';
-    const off = kind + ' h-10 flex items-center justify-center snap-center text-base font-semibold text-stone-500 transition-all cursor-pointer';
     scroller.querySelectorAll('[data-val]').forEach((node) => {
-      node.className = node === active ? on : off;
+      node.className = kind;
       node.setAttribute('aria-selected', node === active ? 'true' : 'false');
     });
   }
@@ -1297,7 +1295,10 @@
     if (!hours || !minutes) return;
     bindTimeColumn(hours);
     bindTimeColumn(minutes);
-    on('#hora-reserva', 'click', () => setTimePickerOpen(true));
+    on('#hora-reserva', 'click', () => {
+      const panel = $('#time-picker');
+      setTimePickerOpen(!(panel && !panel.hidden));
+    });
     on('#book-time-pick', 'click', commitTimeSelection);
   }
 
@@ -1347,7 +1348,10 @@
     const wheel = $('#wheel-guests');
     if (!wheel) return;
     bindTimeColumn(wheel);
-    on('#comensales-reserva', 'click', () => setGuestsPickerOpen(true));
+    on('#comensales-reserva', 'click', () => {
+      const panel = $('#guests-picker');
+      setGuestsPickerOpen(!(panel && !panel.hidden));
+    });
     on('#book-guests-pick', 'click', commitGuestSelection);
   }
 
@@ -1477,6 +1481,7 @@
       defaultDate: selected,
       minDate: 'today',
       disableMobile: true,
+      clickOpens: false,
       monthSelectorType: 'static',
       appendTo: document.body,
       disable: [
@@ -1505,6 +1510,11 @@
 
     if (!date.value) date.value = nextOpenYmd();
     initBookDatePicker();
+    on('#fecha-reserva', 'click', () => {
+      if (!bookDatePicker) return;
+      if (bookDatePicker.isOpen) bookDatePicker.close();
+      else bookDatePicker.open();
+    });
     fillGuestSelect();
     refreshBookingSlots();
     initBookSelects();
