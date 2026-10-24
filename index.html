@@ -276,7 +276,7 @@
 <body class="overflow-x-clip bg-[#FAF9F6] text-stone-900 antialiased selection:bg-[#E6D5C3] selection:text-stone-900 dark:bg-stone-950 dark:text-stone-200">
 
   <header class="sticky top-0 z-50 w-full border-b border-stone-200 bg-white/90 backdrop-blur-md transition-all duration-300 dark:border-stone-800 dark:bg-stone-950/90">
-    <div class="mx-auto flex w-full max-w-7xl items-center justify-between gap-2 px-3 sm:px-6 lg:px-8">
+    <div class="mx-auto flex w-full max-w-7xl items-center justify-center gap-2 px-3 sm:px-6 md:justify-between lg:px-8">
       <div class="hidden shrink-0 items-center gap-2 md:flex">
         <span class="text-lg font-semibold tracking-tight text-stone-900 dark:text-stone-100 sm:text-2xl">Visi<span class="text-[#8B5E34] dark:text-[#E6D5C3]">Web</span></span>
         <span class="hidden rounded-full border border-[#E6D5C3] bg-[#E6D5C3] px-2 py-0.5 text-xs font-semibold text-stone-900 sm:inline dark:border-stone-700 dark:bg-stone-800 dark:text-stone-200">Madrid</span>
@@ -981,15 +981,15 @@
         var toast = document.getElementById('plan-alert-toast');
         if (!toast) return;
         clearTimeout(planToastTimer);
-        toast.classList.add('-translate-y-12', 'opacity-0');
-        toast.classList.remove('translate-y-0', 'opacity-100');
+        toast.classList.add('-translate-y-12', 'opacity-0', 'pointer-events-none');
+        toast.classList.remove('translate-y-0', 'opacity-100', 'pointer-events-auto');
       }
 
       function showPlanToast() {
         var toast = document.getElementById('plan-alert-toast');
         if (!toast) return;
-        toast.classList.remove('-translate-y-12', 'opacity-0');
-        toast.classList.add('translate-y-0', 'opacity-100');
+        toast.classList.remove('-translate-y-12', 'opacity-0', 'pointer-events-none');
+        toast.classList.add('translate-y-0', 'opacity-100', 'pointer-events-auto');
         clearTimeout(planToastTimer);
         planToastTimer = setTimeout(hidePlanToast, 4000);
       }
@@ -1625,8 +1625,8 @@
       link.setAttribute('href', window.visiwebWa(link.getAttribute('data-wa-text')));
     });
   </script>
-  <div id="plan-alert-toast" class="fixed top-6 left-1/2 -translate-x-1/2 z-50 pointer-events-none transition-all duration-300 transform -translate-y-12 opacity-0">
-    <div class="pointer-events-auto flex items-center gap-2.5 px-5 py-3 rounded-full bg-stone-900/95 dark:bg-stone-100/95 text-stone-100 dark:text-stone-900 shadow-2xl border border-white/10 dark:border-stone-800 text-xs sm:text-sm font-medium backdrop-blur-md">
+  <div id="plan-alert-toast" class="pointer-events-none fixed top-20 left-1/2 z-[60] -translate-x-1/2 -translate-y-12 transform opacity-0 transition-all duration-300">
+    <div class="flex items-center gap-2.5 rounded-full border border-white/10 bg-stone-900/95 px-5 py-3 text-xs font-medium text-stone-100 shadow-2xl backdrop-blur-md dark:border-stone-800 dark:bg-stone-100/95 dark:text-stone-900 sm:text-sm">
       <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-amber-400 text-stone-950 text-xs font-bold shrink-0">!</span>
       <span>Selecciona al menos una web y un plan de mantenimiento para continuar.</span>
       <button type="button" id="close-toast-btn" class="ml-2 text-stone-400 hover:text-white dark:hover:text-stone-950 text-base leading-none transition-colors">✕</button>
