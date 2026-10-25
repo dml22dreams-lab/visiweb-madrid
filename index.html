@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>VisiWeb Madrid | Digitalización y Webs para Bares y Restaurantes</title>
   <meta name="description" content="Diseño web rápido, cartas digitales QR y posicionamiento en Google Maps para bares y restaurantes en Alcobendas, Sanse y Madrid.">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23171717'/%3E%3Cpath d='M7 9L15 24L23 9' stroke='%23ffffff' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3Ccircle cx='24' cy='8' r='3' fill='%2310b981'/%3E%3C/svg%3E">
   <script>
     try {
       if (localStorage.getItem('theme') === 'dark') document.documentElement.classList.add('dark');
@@ -16,7 +17,17 @@
   </script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
-    tailwind.config = { darkMode: 'class' };
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            serif: ['"Source Serif 4"', 'Georgia', 'serif'],
+            sans: ['"Source Sans 3"', 'ui-sans-serif', 'system-ui', 'sans-serif']
+          }
+        }
+      }
+    };
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -276,12 +287,20 @@
 <body class="overflow-x-clip bg-[#FAF9F6] text-stone-900 antialiased selection:bg-[#E6D5C3] selection:text-stone-900 dark:bg-stone-950 dark:text-stone-200">
 
   <header class="sticky top-0 z-50 w-full border-b border-stone-200 bg-white/90 backdrop-blur-md transition-all duration-300 dark:border-stone-800 dark:bg-stone-950/90">
-    <div class="mx-auto flex w-full max-w-7xl items-center justify-center gap-2 px-3 sm:px-6 md:justify-between lg:px-8">
-      <div class="hidden shrink-0 items-center gap-2 md:flex">
-        <span class="text-lg font-semibold tracking-tight text-stone-900 dark:text-stone-100 sm:text-2xl">Visi<span class="text-[#8B5E34] dark:text-[#E6D5C3]">Web</span></span>
-        <span class="hidden rounded-full border border-[#E6D5C3] bg-[#E6D5C3] px-2 py-0.5 text-xs font-semibold text-stone-900 sm:inline dark:border-stone-700 dark:bg-stone-800 dark:text-stone-200">Madrid</span>
-      </div>
-      <nav id="desktop-nav" class="flex w-full flex-nowrap items-center justify-center gap-2 py-2 sm:gap-3 md:w-auto md:justify-end" aria-label="Principal">
+    <div class="mx-auto flex w-full max-w-7xl items-center justify-between gap-2 px-3 sm:px-6 lg:px-8">
+      <a href="#" class="group flex shrink-0 items-center gap-2.5">
+        <div class="relative flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-stone-900 p-1.5 shadow-sm transition-transform group-hover:scale-105 dark:bg-stone-100">
+          <svg class="h-full w-full" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M5 7L11.5 20L18 7" stroke="#ffffff" class="dark:stroke-stone-900" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="19" cy="6" r="2.5" fill="#10b981"/>
+          </svg>
+        </div>
+        <div class="flex flex-col leading-none">
+          <span class="font-serif text-base font-bold tracking-tight text-stone-900 dark:text-stone-100">VisiWeb</span>
+          <span class="font-sans text-[10px] font-semibold uppercase tracking-widest text-stone-500">Madrid</span>
+        </div>
+      </a>
+      <nav id="desktop-nav" class="flex flex-nowrap items-center justify-end gap-2 py-2 sm:gap-3" aria-label="Principal">
       <button type="button" id="theme-toggle" class="grid h-11 w-11 shrink-0 place-items-center rounded-xl border border-stone-200 bg-white p-2 text-stone-800 transition-colors duration-300 hover:border-stone-400 dark:border-stone-800 dark:bg-stone-900 dark:text-stone-200" aria-label="Activar modo oscuro" aria-pressed="false">
         <svg class="hidden h-5 w-5 dark:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
           <circle cx="12" cy="12" r="4"></circle>
@@ -298,7 +317,7 @@
          aria-label="Contactar por WhatsApp"
          class="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-xl bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white shadow-sm transition-all hover:bg-emerald-700 active:scale-[0.98] cursor-pointer sm:min-h-11 sm:px-3.5 sm:py-2 sm:text-sm">
         <svg class="h-4 w-4 fill-current" viewBox="0 0 24 24" aria-hidden="true"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/></svg>
-        WhatsApp
+        <span class="hidden min-[380px]:inline">WhatsApp</span>
       </a>
       <a id="nav-ejemplo" href="demo.html" target="_blank" rel="noopener noreferrer" class="btn-ink hidden min-h-11 items-center gap-1 whitespace-nowrap rounded-lg bg-stone-800 px-3 py-2 text-xs font-semibold leading-none text-white hover:bg-stone-900 sm:px-4 sm:text-sm md:inline-flex">
         Ver demo

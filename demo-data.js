@@ -246,7 +246,8 @@ window.VISIWEB_DEMO = (function () {
   const DIET_TAGS = {
     recomendado: { name: { es: 'Recomendado', en: 'Recommended' } },
     picante: { name: { es: 'Picante', en: 'Spicy' } },
-    vegetariano: { name: { es: 'Vegetariano', en: 'Vegetarian' } }
+    vegetariano: { name: { es: 'Vegetariano', en: 'Vegetarian' } },
+    vegano: { name: { es: 'Vegano', en: 'Vegan' } }
   };
 
   /* --- Carta ---------------------------------------------------------
@@ -275,6 +276,8 @@ window.VISIWEB_DEMO = (function () {
           priceEn: '€7.50',
           allergens: ['huevos'],
           tags: ['recomendado', 'picante', 'vegetariano'],
+          isVegetarian: true,
+          isVegan: false,
           image: photo('bravas.jpg')
         },
         {
@@ -414,6 +417,8 @@ window.VISIWEB_DEMO = (function () {
           priceEn: 'Included',
           allergens: ['lacteos', 'huevos'],
           tags: ['vegetariano'],
+          isVegetarian: true,
+          isVegan: false,
           image: photo('postres.jpg')
         },
         {
@@ -455,6 +460,8 @@ window.VISIWEB_DEMO = (function () {
           priceEn: '€2.80',
           allergens: ['gluten'],
           tags: ['recomendado'],
+          isVegetarian: true,
+          isVegan: true,
           image: photo('cana.jpg')
         },
         {
@@ -468,6 +475,8 @@ window.VISIWEB_DEMO = (function () {
           priceEn: '€3.20',
           allergens: ['sulfitos'],
           tags: [],
+          isVegetarian: true,
+          isVegan: true,
           image: photo('rioja.jpg')
         },
         {
@@ -481,6 +490,8 @@ window.VISIWEB_DEMO = (function () {
           priceEn: '€3.60',
           allergens: ['sulfitos'],
           tags: ['recomendado'],
+          isVegetarian: true,
+          isVegan: true,
           image: photo('ribera.jpg')
         },
         {
@@ -494,7 +505,100 @@ window.VISIWEB_DEMO = (function () {
           priceEn: '€2.90',
           allergens: ['sulfitos'],
           tags: [],
+          isVegetarian: true,
+          isVegan: true,
           image: photo('vermut.jpg')
+        }
+      ]
+    },
+    {
+      id: 'veggie',
+      anchor: 'veggie',
+      name: { es: '🌱 Vegano / Vegetariano', en: '🌱 Vegan / Vegetarian' },
+      desc: {
+        es: 'Opciones 100% vegetales y vegetarianas elaboradas al momento.',
+        en: 'Fully plant-based and vegetarian dishes, cooked to order.'
+      },
+      items: [
+        {
+          id: 'bravas-vegetal',
+          name: { es: 'Patatas bravas con salsa vegetal', en: 'Patatas bravas with vegetable sauce' },
+          desc: {
+            es: 'Patata frita en dos tiempos y salsa brava de tomate y pimentón, sin huevo ni lácteos.',
+            en: 'Double-fried potatoes with a tomato and paprika brava sauce, no egg and no dairy.'
+          },
+          price: '7,20 €',
+          priceEn: '€7.20',
+          allergens: [],
+          tags: ['recomendado'],
+          dietType: 'vegano',
+          isVegetarian: true,
+          isVegan: true,
+          image: photo('bravas.jpg')
+        },
+        {
+          id: 'padron',
+          name: { es: 'Pimientos de Padrón', en: 'Padrón peppers' },
+          desc: {
+            es: 'Fritos en aceite de oliva y terminados con sal en escamas.',
+            en: 'Fried in olive oil and finished with sea salt flakes.'
+          },
+          price: '6,50 €',
+          priceEn: '€6.50',
+          allergens: [],
+          tags: [],
+          dietType: 'vegano',
+          isVegetarian: true,
+          isVegan: true,
+          image: 'https://images.unsplash.com/photo-1599940824399-b87987ceb72a?auto=format&fit=crop&w=400&q=80'
+        },
+        {
+          id: 'parrillada',
+          name: { es: 'Parrillada de verduras', en: 'Grilled vegetables' },
+          desc: {
+            es: 'Calabacín, berenjena, pimiento y cebolla a la brasa, con aceite de oliva.',
+            en: 'Chargrilled courgette, aubergine, pepper and onion, with olive oil.'
+          },
+          price: '9,80 €',
+          priceEn: '€9.80',
+          allergens: [],
+          tags: [],
+          dietType: 'vegano',
+          isVegetarian: true,
+          isVegan: true,
+          image: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=400&q=80'
+        },
+        {
+          id: 'tosta-aguacate',
+          name: { es: 'Tosta de aguacate y tomate seco', en: 'Avocado and sun-dried tomato toast' },
+          desc: {
+            es: 'Pan de masa madre, aguacate machacado, tomate seco y aceite de oliva.',
+            en: 'Sourdough, crushed avocado, sun-dried tomato and olive oil.'
+          },
+          price: '7,90 €',
+          priceEn: '€7.90',
+          allergens: ['gluten'],
+          tags: [],
+          dietType: 'vegano',
+          isVegetarian: true,
+          isVegan: true,
+          image: 'https://images.unsplash.com/photo-1541519227354-08fa5d50c44d?auto=format&fit=crop&w=400&q=80'
+        },
+        {
+          id: 'tortilla',
+          name: { es: 'Tortilla de patata', en: 'Spanish potato omelette' },
+          desc: {
+            es: 'Cuña de tortilla jugosa de patata y cebolla, hecha con huevo.',
+            en: 'A wedge of juicy potato and onion omelette, made with egg.'
+          },
+          price: '6,80 €',
+          priceEn: '€6.80',
+          allergens: ['huevos'],
+          tags: [],
+          dietType: 'vegetariano',
+          isVegetarian: true,
+          isVegan: false,
+          image: 'https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?auto=format&fit=crop&w=400&q=80'
         }
       ]
     }
@@ -610,6 +714,8 @@ window.VISIWEB_DEMO = (function () {
       menuTitle: 'La carta',
       menuSubtitle: 'Elaborada cada mañana con producto de mercado.',
       menuTabsLabel: 'Categorías de la carta',
+      dietVegetarian: '🌱 Vegetariano',
+      dietVegan: '🌿 Vegano',
       allergensInDish: 'Alérgenos:',
       noAllergens: 'Sin alérgenos de declaración obligatoria',
       allergenKey: 'Leyenda de alérgenos',
@@ -745,6 +851,8 @@ window.VISIWEB_DEMO = (function () {
       menuTitle: 'The menu',
       menuSubtitle: 'Cooked every morning with market produce.',
       menuTabsLabel: 'Menu categories',
+      dietVegetarian: '🌱 Vegetarian',
+      dietVegan: '🌿 Vegan',
       allergensInDish: 'Allergens:',
       noAllergens: 'No declarable allergens',
       allergenKey: 'Allergen key',

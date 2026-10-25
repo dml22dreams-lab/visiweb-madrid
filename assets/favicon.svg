@@ -1,4 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Taberna El Norte">
-  <rect width="64" height="64" rx="12" fill="#0f172a"/>
-  <text x="32" y="43" font-family="Georgia, 'Times New Roman', serif" font-size="30" font-weight="700" fill="#ffffff" text-anchor="middle">EN</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Taberna El Norte">
+  <rect width="32" height="32" rx="8" fill="#1c1917"/>
+  <path d="M11 7h10c0 5-3 8-5 8s-5-3-5-8z" fill="#f59e0b"/>
+  <path d="M16 15v8m-4 0h8" stroke="#f59e0b" stroke-width="2.5" stroke-linecap="round"/>
 </svg>

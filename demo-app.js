@@ -299,6 +299,10 @@
     const recommended = item.tags.indexOf('recomendado') >= 0;
     const li = el('li', 'flex items-start justify-between gap-3 border-b border-stone-300 py-2 dark:border-stone-600');
     li.dataset.allergens = item.allergens.join(',');
+    const vegan = !!(item.isVegan || item.tags.indexOf('vegano') >= 0);
+    const vegetarian = vegan || !!(item.isVegetarian || item.tags.indexOf('vegetariano') >= 0);
+    li.dataset.vegetarian = vegetarian ? '1' : '0';
+    li.dataset.vegan = vegan ? '1' : '0';
 
     const body = el('div', 'min-w-0 flex-1 pr-1');
     if (recommended) {
@@ -317,18 +321,16 @@
     const desc = el('p', 'mt-1 text-xs leading-snug text-stone-500 dark:text-stone-400 sm:text-sm');
     desc.textContent = L(item.desc);
     body.append(heading, desc);
+    if (item.dietType === 'vegano' || item.dietType === 'vegetariano') {
+      const vegan = item.dietType === 'vegano';
+      const diet = el('span', vegan
+        ? 'mb-2 mt-2 inline-flex items-center rounded-full border border-emerald-200 bg-emerald-100 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-800 dark:border-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300'
+        : 'diet-vegetarian mb-2 mt-2 inline-flex items-center rounded-full border px-2.5 py-0.5 text-[11px] font-semibold');
+      diet.textContent = L(D.dietTags[item.dietType].name);
+      body.appendChild(diet);
+    }
 
     const meta = el('div', 'mb-1');
-    const otherTags = item.tags.filter((key) => key !== 'recomendado');
-    if (otherTags.length) {
-      const tags = el('div', 'mt-1.5 flex flex-wrap gap-1.5');
-      otherTags.forEach((key) => {
-        const tag = el('span', 'pill-tag-soft');
-        tag.textContent = L(D.dietTags[key].name);
-        tags.appendChild(tag);
-      });
-      meta.appendChild(tags);
-    }
 
     const allergenId = 'dish-allergens-' + item.id;
     const toggle = el('button', 'toggle-allergens-btn mt-1 inline-flex cursor-pointer items-center gap-1.5 py-0.5 text-xs font-medium text-black');
@@ -387,6 +389,7 @@
       tab.setAttribute('aria-selected', String(index === 0));
       tab.tabIndex = index === 0 ? 0 : -1;
       tab.dataset.anchor = cat.anchor;
+      if (cat.id === 'veggie') tab.dataset.category = 'veggie';
       tab.textContent = L(cat.name);
       tabs.appendChild(tab);
       pinBilingual(tab, cat.name.es, cat.name.en);
@@ -398,9 +401,9 @@
       panel.tabIndex = 0;
       if (index !== 0) panel.hidden = true;
 
-      const desc = el('p', 'text-center text-xs italic text-slate-600 dark:text-slate-400 sm:text-sm');
+      const desc = el('p', 'pt-4 pb-6 text-center text-sm italic text-stone-500 sm:pt-6 sm:pb-8');
       desc.textContent = L(cat.desc);
-      const list = el('ul', 'mt-1');
+      const list = el('ul');
       cat.items.forEach((item) => list.appendChild(dishNode(item)));
       panel.append(desc, list);
       panels.appendChild(panel);
@@ -664,8 +667,9 @@
       });
     });
     if (empty) {
-      empty.classList.toggle('hidden', visible !== 0 || allergenFilters.size === 0);
-      empty.hidden = visible !== 0 || allergenFilters.size === 0;
+      const filtering = allergenFilters.size > 0;
+      empty.classList.toggle('hidden', visible !== 0 || !filtering);
+      empty.hidden = visible !== 0 || !filtering;
     }
     const clear = $('#clear-allergen-filters');
     if (clear) clear.hidden = allergenFilters.size === 0;
@@ -1849,7 +1853,7 @@
   renderAll();
   initTabs();
   initDishAllergenToggles();
-  initAllergenFilters();
+    initAllergenFilters();
   initBooking();
   applyHash({ quiet: true });
   initAllergenDialog();
