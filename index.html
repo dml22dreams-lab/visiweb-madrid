@@ -191,7 +191,23 @@
         transform: none;
       }
     }
-    @media (hover: none), (pointer: coarse) {
+    #nav-ejemplo { display: none; }
+    @media (pointer: coarse), (hover: none) {
+      #nav-planes,
+      #nav-ejemplo { display: none; }
+      #desktop-nav > a,
+      #desktop-nav > button { min-height: 44px; }
+      #planes article:hover,
+      #objeciones article:hover,
+      #planes [data-select-web]:hover,
+      #mantenimiento article:hover,
+      #mantenimiento [data-select-maint]:hover,
+      [data-extra]:hover,
+      #beneficios:hover .svc-izq,
+      #beneficios:hover .svc-der {
+        transform: none;
+        box-shadow: none;
+      }
       #objeciones-accordion [data-accordion-trigger][aria-expanded="false"] > span {
         color: #1c1917;
       }
@@ -206,6 +222,13 @@
       .dark #objeciones-accordion [data-accordion-trigger][aria-expanded="true"] > span {
         color: #E6D5C3;
       }
+    }
+    @media (pointer: fine) and (hover: hover) {
+      #nav-planes,
+      #nav-ejemplo { display: inline-flex; }
+    }
+    @media (orientation: landscape) and (max-height: 500px) {
+      #hero { min-height: 0; }
     }
     button.is-picked-btn {
       border-width: 2px !important;
@@ -315,11 +338,11 @@
          target="_blank"
          rel="noopener noreferrer"
          aria-label="Contactar por WhatsApp"
-         class="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-xl bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white shadow-sm transition-all hover:bg-emerald-700 active:scale-[0.98] cursor-pointer sm:min-h-11 sm:px-3.5 sm:py-2 sm:text-sm">
+         class="inline-flex min-h-11 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-xl bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white shadow-sm transition-all hover:bg-emerald-700 active:scale-[0.98] cursor-pointer sm:px-3.5 sm:py-2 sm:text-sm">
         <svg class="h-4 w-4 fill-current" viewBox="0 0 24 24" aria-hidden="true"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/></svg>
         <span class="hidden min-[380px]:inline">WhatsApp</span>
       </a>
-      <a id="nav-ejemplo" href="demo.html" target="_blank" rel="noopener noreferrer" class="btn-ink hidden min-h-11 items-center gap-1 whitespace-nowrap rounded-lg bg-stone-800 px-3 py-2 text-xs font-semibold leading-none text-white hover:bg-stone-900 sm:px-4 sm:text-sm md:inline-flex">
+      <a id="nav-ejemplo" href="demo.html" target="_blank" rel="noopener noreferrer" class="btn-ink min-h-11 items-center gap-1 whitespace-nowrap rounded-lg bg-stone-800 px-3 py-2 text-xs font-semibold leading-none text-white hover:bg-stone-900 sm:px-4 sm:text-sm">
         Ver demo
         <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M8 16 16 8M9 8h7v7"></path></svg>
       </a>

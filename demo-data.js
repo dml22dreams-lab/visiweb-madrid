@@ -550,7 +550,7 @@ window.VISIWEB_DEMO = (function () {
           dietType: 'vegano',
           isVegetarian: true,
           isVegan: true,
-          image: 'https://images.unsplash.com/photo-1599940824399-b87987ceb72a?auto=format&fit=crop&w=400&q=80'
+          image: 'https://images.unsplash.com/photo-1541544741938-0af808871cc0?auto=format&fit=crop&w=400&q=80'
         },
         {
           id: 'parrillada',

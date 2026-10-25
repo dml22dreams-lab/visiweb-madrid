@@ -606,6 +606,34 @@
       #open-filter-btn:hover { color: #fff; }
       #menu-tabs-bar { background-color: rgb(28 25 23 / 0.95); }
     }
+    @media (pointer: coarse), (hover: none) {
+      #btn-lang-toggle.lang-btn,
+      #header-call,
+      #sales-whatsapp,
+      #quick-bar a {
+        min-height: 44px;
+      }
+      #header-call { min-width: 44px; }
+      #btn-lang-toggle:hover .lang-text,
+      #header-call:hover .call-phone,
+      #bar-call:hover .call-phone,
+      #header-call:hover .call-waves span,
+      #bar-call:hover .call-waves span {
+        animation: none;
+        transform: none;
+      }
+      #quick-bar { display: grid; }
+    }
+    @media (pointer: fine) and (hover: hover) {
+      #quick-bar { display: none; }
+      #quick-spacer { height: 0; }
+    }
+    @media (orientation: landscape) and (max-height: 500px) {
+      #contenido { min-height: 0; }
+      #quick-bar { position: static; box-shadow: none; }
+      #quick-spacer { height: 0; }
+      #allergen-dialog { max-height: none; }
+    }
   </style>
 </head>
 <body class="bg-white text-slate-900 dark:bg-slate-950 dark:text-slate-100">
@@ -628,7 +656,7 @@
   </div>
   <header>
     <div class="mx-auto max-w-3xl px-5">
-      <div class="flex items-center justify-between gap-3 py-1.5">
+      <div class="flex items-center justify-between gap-3 border-b border-stone-200 py-3 dark:border-stone-800 sm:py-4">
         <a href="#inicio" class="flex min-w-0 items-center gap-2.5 rounded-sm no-underline">
           <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-stone-900 p-1.5 shadow-sm dark:bg-stone-800">
             <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -663,12 +691,12 @@
         </div>
       </div>
 
-      <nav class="site-nav no-scrollbar -mx-5 flex gap-1 overflow-x-auto border-t border-slate-200 px-5 dark:border-slate-800" aria-label="Secciones" data-i18n-aria-label="navLabel">
-        <a href="#inicio" data-nav="inicio" class="site-nav-link" aria-current="page" data-i18n="navHome">Inicio</a>
-        <a href="#carta" data-nav="carta" class="site-nav-link" data-i18n="navMenu">Carta</a>
-        <a href="#local" data-nav="local" class="site-nav-link" data-i18n="navLocal">El local</a>
-        <a href="#historia" data-nav="historia" class="site-nav-link" data-i18n="navHistory">Historia</a>
-        <a href="#reservas" data-nav="reservas" class="site-nav-link" data-i18n="navBook">Reservas</a>
+      <nav class="site-nav no-scrollbar -mx-5 flex items-center gap-6 overflow-x-auto px-5 py-2.5" aria-label="Secciones" data-i18n-aria-label="navLabel">
+        <a href="#inicio" data-nav="inicio" class="site-nav-link rounded-lg outline-none focus:outline-none focus-visible:ring-2 focus-visible:ring-stone-400/50 focus-visible:ring-offset-2" aria-current="page" data-i18n="navHome">Inicio</a>
+        <a href="#carta" data-nav="carta" class="site-nav-link rounded-lg outline-none focus:outline-none focus-visible:ring-2 focus-visible:ring-stone-400/50 focus-visible:ring-offset-2" data-i18n="navMenu">Carta</a>
+        <a href="#local" data-nav="local" class="site-nav-link rounded-lg outline-none focus:outline-none focus-visible:ring-2 focus-visible:ring-stone-400/50 focus-visible:ring-offset-2" data-i18n="navLocal">El local</a>
+        <a href="#historia" data-nav="historia" class="site-nav-link rounded-lg outline-none focus:outline-none focus-visible:ring-2 focus-visible:ring-stone-400/50 focus-visible:ring-offset-2" data-i18n="navHistory">Historia</a>
+        <a href="#reservas" data-nav="reservas" class="site-nav-link rounded-lg outline-none focus:outline-none focus-visible:ring-2 focus-visible:ring-stone-400/50 focus-visible:ring-offset-2" data-i18n="navBook">Reservas</a>
       </nav>
     </div>
   </header>
@@ -1007,11 +1035,11 @@
       </p>
     </div>
 
-    <div class="h-24 md:h-0" aria-hidden="true"></div>
+    <div id="quick-spacer" class="h-24 md:h-0" aria-hidden="true"></div>
   </footer>
 
   <!-- ====================== BARRA FIJA (SOLO MÓVIL) ====================== -->
-  <nav class="fixed inset-x-0 bottom-0 z-40 grid grid-cols-2 gap-3 border-t border-slate-200 bg-white px-5 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] md:hidden dark:border-slate-800 dark:bg-slate-950" aria-label="Acciones rápidas" data-i18n-aria-label="quickActions">
+  <nav id="quick-bar" class="fixed inset-x-0 bottom-0 z-40 grid grid-cols-2 gap-3 border-t border-slate-200 bg-white px-5 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] md:hidden dark:border-slate-800 dark:bg-slate-950" aria-label="Acciones rápidas" data-i18n-aria-label="quickActions">
     <a id="bar-call" href="tel:+34608975906" class="btn-outline px-4">
       <span class="call-icon">
         <svg class="call-phone h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6.6 10.8a12.8 12.8 0 0 0 5.6 5.6l2-2a1 1 0 0 1 1-.2 9.6 9.6 0 0 0 3.5.6 1 1 0 0 1 1 1V19a1 1 0 0 1-1 1A17 17 0 0 1 4 6a1 1 0 0 1 1-1h3.2a1 1 0 0 1 1 1 9.6 9.6 0 0 0 .6 3.5 1 1 0 0 1-.2 1l-2 2z"/></svg>
