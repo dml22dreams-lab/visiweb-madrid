@@ -8,7 +8,8 @@
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23171717'/%3E%3Cpath d='M7 9L15 24L23 9' stroke='%23ffffff' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3Ccircle cx='24' cy='8' r='3' fill='%2310b981'/%3E%3C/svg%3E">
   <script>
     try {
-      if (localStorage.getItem('theme') === 'dark') document.documentElement.classList.add('dark');
+      var mobile = window.matchMedia('(max-width: 767px)').matches;
+      if (!mobile && localStorage.getItem('theme') === 'dark') document.documentElement.classList.add('dark');
     } catch (e) {}
     window.WHATSAPP_PHONE = '34608975906';
     window.visiwebWa = function (text) {
@@ -55,7 +56,7 @@
       scrollbar-color: rgba(120, 113, 108, 0.6) rgba(214, 211, 209, 0.25);
     }
 
-    html { color-scheme: light; }
+    html { color-scheme: only light; }
     html.dark { color-scheme: dark; }
     body { font-family: 'Source Sans 3', sans-serif; }
     h1, h2, h3, h4 { font-family: 'Source Serif 4', Georgia, serif; }
@@ -519,8 +520,8 @@
       <button type="button" role="tab" data-plan-tab="vip" aria-selected="false" class="rounded-xl border-2 border-transparent px-2 py-3 text-center text-sm font-medium leading-tight text-stone-600 transition-[background-color,border-color,color,box-shadow] duration-300 ease-out hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100">Digitalización Total</button>
     </div>
 
-    <div id="planes" class="stagger mx-auto grid max-w-6xl scroll-mt-28 grid-cols-1 items-stretch gap-6 pt-1 md:grid-cols-3 md:pt-4">
-      <article data-web="basico" data-name="Básico" data-price="120" data-plazo="Entrega lista en 48h laborables" data-active="25" data-idle="border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900" class="reveal mb-8 hidden h-full min-h-fit w-full min-w-0 flex-col justify-between rounded-2xl border border-stone-200 bg-white p-6 opacity-0 shadow-sm hover:shadow-md dark:border-stone-800 dark:bg-stone-900 sm:p-8 md:flex">
+    <div id="planes" class="stagger mx-auto grid max-w-6xl scroll-mt-28 grid-cols-1 items-start gap-6 pt-1 md:grid-cols-3 md:pt-4">
+      <article data-web="basico" data-name="Básico" data-price="120" data-plazo="Entrega lista en 48h laborables" data-active="25" data-idle="border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900" class="reveal mb-8 hidden h-auto w-full min-w-0 self-start flex-col rounded-2xl border border-stone-200 bg-white p-6 opacity-0 shadow-sm hover:shadow-md dark:border-stone-800 dark:bg-stone-900 sm:p-8 md:flex">
         <header class="flex items-start justify-between gap-2">
           <div class="min-w-0">
             <h3 class="text-lg font-extrabold tracking-tight text-stone-900 dark:text-stone-100">Básico</h3>
@@ -533,7 +534,7 @@
           <p class="mt-2 text-sm font-medium leading-snug text-stone-700 dark:text-stone-300">+ Mantenimiento mensual a elegir en el siguiente paso.</p>
           <p class="mt-2.5 inline-flex max-w-full flex-wrap items-center gap-1.5 rounded-full border border-stone-200 bg-[#F3EDE4] px-2.5 py-1 text-[11px] font-semibold leading-tight text-stone-800 dark:border-stone-700 dark:bg-stone-800 dark:text-stone-200"><span aria-hidden="true">⏱️</span> Entrega lista en 48h laborables*</p>
         </div>
-        <ul class="mt-5 min-w-0 flex-1 space-y-2.5 break-words text-sm leading-snug text-stone-600 dark:text-stone-300">
+        <ul class="mt-5 min-w-0 space-y-2.5 break-words text-sm leading-snug text-stone-600 dark:text-stone-300">
           <li class="flex gap-2"><span class="shrink-0 text-[#8B5E34] dark:text-[#E6D5C3]" aria-hidden="true">✓</span> Web One-Page ultrarrápida adaptada a móvil</li>
           <li class="flex gap-2"><span class="shrink-0 text-[#8B5E34] dark:text-[#E6D5C3]" aria-hidden="true">✓</span> Digitalización de carta por categorías (raciones/bebidas)</li>
           <li class="flex gap-2"><span class="shrink-0 text-[#8B5E34] dark:text-[#E6D5C3]" aria-hidden="true">✓</span> Código QR oficial de alta resolución listo para imprimir</li>
@@ -547,7 +548,7 @@
         </button>
       </article>
 
-      <article id="gastro-premium" data-web="gastro" data-name="Gastro Premium" data-price="390" data-plazo="Entrega en 5 a 7 días laborables" data-active="85" data-idle="border-2 border-[#8B5E34] dark:border-[#C4A484] bg-white dark:bg-stone-900" class="reveal relative mb-8 block h-full min-h-fit w-full min-w-0 scroll-mt-28 flex-col justify-between rounded-2xl border-2 border-[#8B5E34] bg-white p-6 opacity-100 shadow-sm transition-opacity duration-200 ease-in-out hover:shadow-md dark:border-[#C4A484] dark:bg-stone-900 sm:p-8 md:flex">
+      <article id="gastro-premium" data-web="gastro" data-name="Gastro Premium" data-price="390" data-plazo="Entrega en 5 a 7 días laborables" data-active="85" data-idle="border-2 border-[#8B5E34] dark:border-[#C4A484] bg-white dark:bg-stone-900" class="reveal relative mb-8 block h-auto w-full min-w-0 self-start scroll-mt-28 flex-col rounded-2xl border-2 border-[#8B5E34] bg-white p-6 opacity-100 shadow-sm transition-opacity duration-200 ease-in-out hover:shadow-md dark:border-[#C4A484] dark:bg-stone-900 sm:p-8 md:flex">
         <span class="plan-badge absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-[#E6D5C3] px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-stone-900">Recomendado</span>
         <header class="pt-2">
           <h3 class="text-lg font-extrabold tracking-tight text-stone-900 dark:text-stone-100">Gastro Premium</h3>
@@ -558,7 +559,7 @@
           <p class="mt-2 text-sm font-medium leading-snug text-stone-700 dark:text-stone-300">+ Mantenimiento mensual a elegir en el siguiente paso.</p>
           <p class="mt-2.5 inline-flex max-w-full flex-wrap items-center gap-1.5 rounded-full border border-stone-200 bg-[#F3EDE4] px-2.5 py-1 text-[11px] font-semibold leading-tight text-stone-800 dark:border-stone-700 dark:bg-stone-800 dark:text-stone-200"><span aria-hidden="true">⏱️</span> Entrega en 5 a 7 días laborables*</p>
         </div>
-        <ul class="mt-5 min-w-0 flex-1 space-y-2.5 break-words text-sm leading-snug text-stone-600 dark:text-stone-300">
+        <ul class="mt-5 min-w-0 space-y-2.5 break-words text-sm leading-snug text-stone-600 dark:text-stone-300">
           <li class="flex gap-2"><span class="shrink-0 text-[#8B5E34] dark:text-[#E6D5C3]" aria-hidden="true">✓</span> Web corporativa multipágina (Carta, Salón/Terraza, Historia, Reservas)</li>
           <li class="flex gap-2"><span class="shrink-0 text-[#8B5E34] dark:text-[#E6D5C3]" aria-hidden="true">✓</span> Carta bilingüe interactiva (ES/EN) con filtros de alérgenos</li>
           <li class="flex gap-2"><span class="shrink-0 text-[#8B5E34] dark:text-[#E6D5C3]" aria-hidden="true">✓</span> Sesión fotográfica básica en el local (fachada, salón y 6 platos)</li>
@@ -571,23 +572,27 @@
         </button>
       </article>
 
-      <article data-web="vip" data-name="Digitalización Total" data-price="790" data-plazo="Entrega en 10 a 14 días laborables" data-active="85" data-idle="border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900" class="reveal mb-8 hidden h-full min-h-fit w-full min-w-0 flex-col justify-between rounded-2xl border border-stone-200 bg-white p-6 opacity-0 shadow-sm hover:shadow-md dark:border-stone-800 dark:bg-stone-900 sm:p-8 md:flex">
-        <header>
+      <article data-web="vip" data-name="Digitalización Total" data-price="790" data-plazo="Entrega en 10 a 14 días laborables" data-active="85" data-idle="border-2 border-stone-900 dark:border-stone-100 bg-white dark:bg-stone-900" class="reveal relative mb-8 hidden h-auto w-full min-w-0 self-start flex-col rounded-2xl border-2 border-stone-900 bg-white p-6 opacity-0 shadow-sm hover:shadow-md dark:border-stone-100 dark:bg-stone-900 sm:p-8 md:flex">
+        <span class="plan-badge absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-stone-900 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-white dark:bg-stone-100 dark:text-stone-900">Más completo</span>
+        <header class="pt-2">
           <h3 class="text-lg font-extrabold tracking-tight text-stone-900 dark:text-stone-100">Digitalización Total</h3>
           <p class="mt-1 text-xs text-stone-500 dark:text-stone-400">VIP, grupos y eventos</p>
         </header>
         <div class="mt-5 border-b border-stone-200 pb-5 dark:border-stone-800">
           <p class="text-3xl font-extrabold text-stone-900 dark:text-stone-100">790&nbsp;€ <span class="align-middle text-base font-bold text-stone-500 dark:text-stone-400">+ IVA</span></p>
+          <p class="mt-1 text-xs font-semibold text-emerald-700 dark:text-emerald-400">«Una comida de 25 cubiertos paga el montaje»</p>
           <p class="mt-2 text-sm font-medium leading-snug text-stone-700 dark:text-stone-300">+ Mantenimiento mensual a elegir en el siguiente paso.</p>
           <p class="mt-2.5 inline-flex max-w-full flex-wrap items-center gap-1.5 rounded-full border border-stone-200 bg-[#F3EDE4] px-2.5 py-1 text-[11px] font-semibold leading-tight text-stone-800 dark:border-stone-700 dark:bg-stone-800 dark:text-stone-200"><span aria-hidden="true">⏱️</span> Entrega en 10 a 14 días laborables*</p>
         </div>
-        <ul class="mt-5 min-w-0 flex-1 space-y-2.5 break-words text-sm leading-snug text-stone-600 dark:text-stone-300">
-          <li class="flex gap-2"><span class="shrink-0 text-[#8B5E34] dark:text-[#E6D5C3]" aria-hidden="true">✓</span> Web a medida de alto impacto visual (soporte multisede)</li>
-          <li class="flex gap-2"><span class="shrink-0 text-[#8B5E34] dark:text-[#E6D5C3]" aria-hidden="true">✓</span> Sección para eventos privados, bodas y cenas de empresa</li>
-          <li class="flex gap-2"><span class="shrink-0 text-[#8B5E34] dark:text-[#E6D5C3]" aria-hidden="true">✓</span> Sesión audiovisual completa (fotografías + clips de vídeo para reels)</li>
-          <li class="flex gap-2"><span class="shrink-0 text-[#8B5E34] dark:text-[#E6D5C3]" aria-hidden="true">✓</span> Carta interactiva multi-idioma con fotografías por plato</li>
-          <li class="flex gap-2"><span class="shrink-0 text-[#8B5E34] dark:text-[#E6D5C3]" aria-hidden="true">✓</span> Motor de reservas avanzado multisede</li>
-          <li class="flex gap-2"><span class="shrink-0 text-[#8B5E34] dark:text-[#E6D5C3]" aria-hidden="true">✓</span> Configuración avanzada de reputación online</li>
+        <ul class="mt-5 min-w-0 space-y-2.5 break-words text-sm leading-snug text-stone-600 dark:text-stone-300">
+          <li class="flex gap-2"><span class="shrink-0 text-[#8B5E34] dark:text-[#E6D5C3]" aria-hidden="true">✓</span> Todo lo incluido en Gastro Premium (carta, alérgenos, horario en vivo y reservas).</li>
+          <li class="flex gap-2"><span class="shrink-0 text-[#8B5E34] dark:text-[#E6D5C3]" aria-hidden="true">✓</span> Módulo exclusivo de Eventos y Grupos (sala, aforo y 3 menús cerrados con descarga en PDF).</li>
+          <li class="flex gap-2"><span class="shrink-0 text-[#8B5E34] dark:text-[#E6D5C3]" aria-hidden="true">✓</span> Canal directo de WhatsApp para grupos grandes con formulario de anticipo y fecha.</li>
+          <li class="flex gap-2"><span class="shrink-0 text-[#8B5E34] dark:text-[#E6D5C3]" aria-hidden="true">✓</span> Sesión presencial de fotos y vídeo: 20 fotos profesionales en WebP y 6 reels/vídeos verticales.</li>
+          <li class="flex gap-2"><span class="shrink-0 text-[#8B5E34] dark:text-[#E6D5C3]" aria-hidden="true">✓</span> Fotografía dedicada en los 12 platos estrella de la carta.</li>
+          <li class="flex gap-2"><span class="shrink-0 text-[#8B5E34] dark:text-[#E6D5C3]" aria-hidden="true">✓</span> Carta trilingüe completa (Español, Inglés y tercer idioma a elegir).</li>
+          <li class="flex gap-2"><span class="shrink-0 text-[#8B5E34] dark:text-[#E6D5C3]" aria-hidden="true">✓</span> 4 Códigos QR inteligentes con analítica por zonas: Barra, Sala, Terraza y Eventos.</li>
+          <li class="flex gap-2"><span class="shrink-0 text-[#8B5E34] dark:text-[#E6D5C3]" aria-hidden="true">✓</span> Optimización completa de Google Maps: enlace directo de reservas, menú cargado y 10 fotos iniciales.</li>
         </ul>
         <button type="button" data-select-web aria-pressed="false"
            class="mt-6 w-full rounded-xl border border-stone-300 bg-white px-4 py-3 text-center font-semibold text-stone-800 transition-colors duration-300 hover:border-stone-800 hover:bg-stone-50 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-200 dark:hover:bg-stone-800">
