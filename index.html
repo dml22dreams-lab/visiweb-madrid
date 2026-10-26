@@ -1303,14 +1303,6 @@
           document.querySelectorAll('[data-web]').forEach(function (other) {
             setPicked(other, !turnOff && other === card);
           });
-          if (!turnOff && card.getAttribute('data-web') === 'vip') {
-            var activaMaint = document.querySelector('[data-maint-plan="activa"]');
-            selectedMaintenance = activaMaint;
-            document.querySelectorAll('[data-maint-plan]').forEach(function (other) {
-              setPicked(other, other === activaMaint);
-            });
-            showMaintTab('activa');
-          }
           if (window.matchMedia('(max-width: 767px)').matches) showPlanTab(card.getAttribute('data-web'));
           renderPack();
           if (!turnOff) scrollToMaintCard();
