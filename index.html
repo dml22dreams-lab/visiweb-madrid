@@ -1234,35 +1234,42 @@
       };
 
       var phaseScroll = 0;
-      function scrollToPhase(id, block) {
-        var el = document.getElementById(id);
-        if (!el) return;
-        var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        var margin = parseFloat(getComputedStyle(el).scrollMarginTop) || 0;
-        var top = el.getBoundingClientRect().top + window.scrollY - (block === 'center' ? (window.innerHeight - el.offsetHeight) / 2 : margin);
+      function animateScrollTo(top, fast) {
         var max = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
         top = Math.max(0, Math.min(top, max));
+        var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         if (reduce) {
-          window.scrollTo(0, top);
+          cancelAnimationFrame(phaseScroll);
+          window.scrollTo({ top: top, behavior: 'auto' });
           return;
         }
         var from = window.scrollY;
         var distance = top - from;
         if (Math.abs(distance) < 2) return;
-        var duration = Math.min(480, Math.max(240, Math.abs(distance) * 0.32));
+        var duration = fast
+          ? Math.min(140, Math.max(60, Math.abs(distance) * 0.07))
+          : Math.min(480, Math.max(240, Math.abs(distance) * 0.32));
         var start = performance.now();
         cancelAnimationFrame(phaseScroll);
         (function step(now) {
           var t = Math.min(1, (now - start) / duration);
           var eased = 1 - Math.pow(1 - t, 3);
-          window.scrollTo(0, from + distance * eased);
+          window.scrollTo({ top: from + distance * eased, behavior: 'auto' });
           if (t < 1) phaseScroll = requestAnimationFrame(step);
         })(start);
       }
 
+      function scrollToPhase(id, block, fast) {
+        var el = document.getElementById(id);
+        if (!el) return;
+        var margin = parseFloat(getComputedStyle(el).scrollMarginTop) || 0;
+        var top = el.getBoundingClientRect().top + window.scrollY - (block === 'center' ? (window.innerHeight - el.offsetHeight) / 2 : margin);
+        animateScrollTo(top, fast);
+      }
+
       function scrollToMaintCard() {
         if (!window.matchMedia('(max-width: 767px)').matches) {
-          scrollToPhase('mantenimiento', 'start');
+          scrollToPhase('mantenimiento', 'start', true);
           return;
         }
         var activeCard = document.querySelector('#maint-planes [data-maint-plan]:not(.hidden)') || document.getElementById('mantenimiento');
@@ -1284,9 +1291,7 @@
         var targetY = (bottom - top) <= room
           ? window.scrollY + top - headerOffset - 8
           : window.scrollY + bottom - window.innerHeight + sheetOffset + margin;
-        var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        var max = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
-        window.scrollTo({ top: Math.max(0, Math.min(targetY, max)), behavior: reduce ? 'auto' : 'smooth' });
+        animateScrollTo(targetY, true);
       }
 
       document.querySelectorAll('[data-select-web]').forEach(function (button) {
@@ -1308,9 +1313,7 @@
           }
           if (window.matchMedia('(max-width: 767px)').matches) showPlanTab(card.getAttribute('data-web'));
           renderPack();
-          if (!turnOff) {
-            setTimeout(scrollToMaintCard, 300);
-          }
+          if (!turnOff) scrollToMaintCard();
         });
       });
 
