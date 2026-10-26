@@ -201,6 +201,15 @@
     @apply min-h-11 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-medium normal-case tracking-normal text-slate-900 shadow-sm outline-none transition-colors focus:border-slate-200 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 dark:focus:border-slate-700;
   }
 
+  .book-field input:focus,
+  .book-field input:focus-visible,
+  .book-field textarea:focus,
+  .book-field textarea:focus-visible {
+    border-radius: 0.75rem;
+    outline: none;
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  }
+
   .book-date-wrap {
     @apply relative;
   }

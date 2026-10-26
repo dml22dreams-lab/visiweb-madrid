@@ -1840,6 +1840,18 @@
     if (consent && consent.map) loadMap();
   }
 
+  function initSalesBar() {
+    const copy = $('#sales-copy');
+    if (!copy) return;
+    const bar = document.getElementById('sales-bar');
+    copy.addEventListener('click', () => {
+      if (!window.matchMedia('(max-width: 767px), (pointer: coarse), (hover: none)').matches) return;
+      const open = bar ? bar.classList.toggle('is-open') : copy.classList.toggle('is-open');
+      copy.setAttribute('aria-expanded', open ? 'true' : 'false');
+      syncStickyOffset();
+    });
+  }
+
   function syncStickyOffset() {
     var bar = document.querySelector('[data-site-sticky]');
     if (!bar) return;
@@ -1847,6 +1859,7 @@
   }
 
   /* --------------------------------- Arranque ------------------------------ */
+  initSalesBar();
   syncStickyOffset();
   window.addEventListener('resize', syncStickyOffset);
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(syncStickyOffset);
