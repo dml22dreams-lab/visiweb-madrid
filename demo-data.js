@@ -25,9 +25,9 @@ window.VISIWEB_DEMO = (function () {
     timezone: 'Europe/Madrid',
     priceRange: '€€',
     cuisine: ['Spanish', 'Tapas'],
-    phone: '+34608975906',
-    phoneDisplay: '+34 608 97 59 06',
-    whatsapp: '34608975906',
+    phone: '+34600000000',
+    phoneDisplay: '+34 600 00 00 00',
+    whatsapp: '34600000000',
     address: {
       street: { es: 'C. del Marqués de la Valdavia', en: 'C. del Marqués de la Valdavia' },
       postalCode: '28100',
