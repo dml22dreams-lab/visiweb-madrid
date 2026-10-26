@@ -291,7 +291,7 @@ window.VISIWEB_DEMO = (function () {
           priceEn: '€9.20',
           allergens: ['gluten', 'lacteos', 'huevos'],
           tags: [],
-          image: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=400&q=80'
+          image: 'https://images.unsplash.com/photo-1713517915303-ae3b3429f939?auto=format&fit=crop&w=400&q=80'
         },
         {
           id: 'calamares',
@@ -317,7 +317,7 @@ window.VISIWEB_DEMO = (function () {
           priceEn: '€13.80',
           allergens: ['huevos'],
           tags: [],
-          image: 'https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?auto=format&fit=crop&w=400&q=80'
+          image: 'https://images.unsplash.com/photo-1559394473-f5c8303a6d1f?auto=format&fit=crop&w=400&q=80'
         }
       ]
     },
@@ -341,7 +341,7 @@ window.VISIWEB_DEMO = (function () {
           priceEn: '€8.90',
           allergens: ['gluten', 'lacteos'],
           tags: ['recomendado'],
-          image: 'https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&w=400&q=80'
+          image: 'https://images.unsplash.com/photo-1774314809558-fca6938af8cb?auto=format&fit=crop&w=400&q=80'
         },
         {
           id: 'tosta-gulas',

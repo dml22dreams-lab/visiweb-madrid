@@ -193,7 +193,7 @@
     const figure = $('#hero-media');
     figure.textContent = '';
     if (D.images.hero) {
-      const img = el('img', 'h-full w-full object-cover');
+      const img = el('img', 'max-h-[460px] w-full rounded-2xl object-cover shadow-sm');
       img.src = D.images.hero;
       img.alt = L(D.images.heroAlt);
       img.width = 1600;

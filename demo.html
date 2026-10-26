@@ -658,6 +658,11 @@
       #quick-bar { display: none; }
       #quick-spacer { height: 0; }
     }
+    #hero-media img {
+      width: 100%;
+      max-height: clamp(180px, calc(100vh - 38rem), 460px);
+      object-fit: cover;
+    }
     @media (orientation: landscape) and (max-height: 500px) {
       #contenido { min-height: 0; }
       #quick-bar { position: static; box-shadow: none; }
@@ -736,7 +741,7 @@
 
     <!-- ============================== INICIO ============================== -->
     <div data-page="inicio">
-      <section class="mx-auto max-w-3xl px-5 pb-12 pt-12 sm:pb-16 sm:pt-16">
+      <section class="mx-auto max-w-3xl px-5 pt-8 pb-6 sm:pt-12 sm:pb-8">
         <p class="text-center text-[11px] font-semibold uppercase tracking-[.28em] text-slate-600 dark:text-slate-400" data-i18n="heroEyebrow">Alcobendas · Desde 1998</p>
 
         <h1 class="mt-5 text-center font-serif text-5xl font-semibold leading-[1.05] tracking-tight sm:text-7xl" data-i18n="heroTitle">El sabor de siempre.</h1>
@@ -748,9 +753,9 @@
           <a href="#carta" class="btn-outline w-full sm:w-auto" data-i18n="featuredCta">Ver la carta completa</a>
         </div>
 
-        <figure id="hero-media" class="mt-12 overflow-hidden rounded-xl bg-slate-100 dark:bg-slate-900" style="aspect-ratio:16/9"></figure>
+        <figure id="hero-media" class="mt-8 max-h-[460px] w-full overflow-hidden rounded-2xl bg-slate-100 shadow-sm dark:bg-slate-900"></figure>
 
-        <dl class="mt-10 grid grid-cols-2 gap-x-8 gap-y-6 sm:grid-cols-3">
+        <dl class="mt-4 grid grid-cols-2 gap-x-8 gap-y-6 sm:grid-cols-3">
           <div>
             <dt class="text-[10px] font-semibold uppercase tracking-[.18em] text-slate-600 dark:text-slate-400" data-i18n="labelAddress">Dirección</dt>
             <dd id="info-address" class="mt-1.5 text-sm leading-snug"></dd>
