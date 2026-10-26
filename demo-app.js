@@ -1842,13 +1842,23 @@
 
   function initSalesBar() {
     const copy = $('#sales-copy');
-    if (!copy) return;
     const bar = document.getElementById('sales-bar');
-    copy.addEventListener('click', () => {
-      if (!window.matchMedia('(max-width: 767px), (pointer: coarse), (hover: none)').matches) return;
-      const open = bar ? bar.classList.toggle('is-open') : copy.classList.toggle('is-open');
+    if (!copy || !bar) return;
+    const mobile = () => window.matchMedia('(max-width: 767px), (pointer: coarse), (hover: none)').matches;
+    function setOpen(open) {
+      bar.classList.toggle('is-open', open);
       copy.setAttribute('aria-expanded', open ? 'true' : 'false');
       syncStickyOffset();
+    }
+    copy.addEventListener('click', (event) => {
+      if (!mobile()) return;
+      event.stopPropagation();
+      setOpen(!bar.classList.contains('is-open'));
+    });
+    document.addEventListener('click', (event) => {
+      if (!mobile() || !bar.classList.contains('is-open')) return;
+      if (event.target.closest('#sales-copy')) return;
+      setOpen(false);
     });
   }
 
