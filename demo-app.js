@@ -12,7 +12,6 @@
 
   const TZ = D.business.timezone;
   const STORE_LANG = 'visiweb-demo-lang';
-  const STORE_CONSENT = 'visiweb-demo-consent';
   const SCHEMA_DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   const WEEK_ORDER = [1, 2, 3, 4, 5, 6, 0];
   const PAGES = ['inicio', 'carta', 'local', 'historia', 'reservas'];
@@ -236,11 +235,10 @@
         encodeURIComponent(t('salesWhatsappText'));
     }
 
-    const maps = mapsUrl();
-    ['#map-directions', '#footer-map'].forEach((sel) => {
-      const node = $(sel);
-      if (node) node.href = maps;
-    });
+    const footerMap = $('#footer-map');
+    if (footerMap) footerMap.href = mapsUrl();
+    const mapReserve = $('#map-reserve');
+    if (mapReserve) mapReserve.href = wa;
 
   }
 
@@ -949,84 +947,6 @@
       text.textContent = L(review.text);
       li.append(head, text);
       list.appendChild(li);
-    });
-  }
-
-  /* ----------------------------------- Mapa -------------------------------- */
-  function loadMap() {
-    const wrap = $('#map-wrap');
-    if (wrap.querySelector('iframe')) return;
-    const frame = el('iframe', 'h-full w-full border-0');
-    frame.title = t('mapFrameTitle');
-    frame.loading = 'lazy';
-    frame.referrerPolicy = 'no-referrer-when-downgrade';
-    frame.allowFullscreen = false;
-    frame.src = 'https://www.google.com/maps?q=' + encodeURIComponent(D.business.mapQuery) +
-      '&hl=' + lang + '&z=14&output=embed';
-    // El aviso de consentimiento se oculta, no se destruye: sus botones siguen vivos.
-    const consent = $('#map-consent');
-    if (consent) consent.hidden = true;
-    wrap.appendChild(frame);
-  }
-
-  /* --------------------------------- Cookies ------------------------------- */
-  function readConsent() {
-    try {
-      return JSON.parse(readStore(STORE_CONSENT) || 'null');
-    } catch (e) {
-      return null;
-    }
-  }
-
-  function saveConsent(consent) {
-    writeStore(STORE_CONSENT, JSON.stringify(Object.assign({ date: new Date().toISOString() }, consent)));
-  }
-
-  function applyConsent(consent) {
-    if (consent && consent.map) loadMap();
-  }
-
-  function initCookies() {
-    const banner = $('#cookie-banner');
-    const detail = $('#cookie-detail');
-    const saveBtn = $('#cookie-save');
-    const configureBtn = $('#cookie-configure');
-    const mapOpt = $('#cookie-map-opt');
-    const analyticsOpt = $('#cookie-analytics-opt');
-    const consent = readConsent();
-
-    function openBanner(showDetail) {
-      banner.hidden = false;
-      detail.hidden = !showDetail;
-      saveBtn.hidden = !showDetail;
-      configureBtn.hidden = showDetail;
-      const current = readConsent();
-      mapOpt.checked = !!(current && current.map);
-      analyticsOpt.checked = !!(current && current.analytics);
-    }
-
-    function closeBanner() {
-      banner.hidden = true;
-    }
-
-    function decide(next) {
-      saveConsent(next);
-      applyConsent(next);
-      closeBanner();
-    }
-
-    if (!consent) openBanner(false);
-    else applyConsent(consent);
-
-    configureBtn.addEventListener('click', () => openBanner(true));
-    on('#cookie-accept', 'click', () => decide({ map: true, analytics: true }));
-    on('#cookie-reject', 'click', () => decide({ map: false, analytics: false }));
-    saveBtn.addEventListener('click', () => decide({ map: mapOpt.checked, analytics: analyticsOpt.checked }));
-    on('#open-cookie-settings', 'click', () => openBanner(true));
-
-    on('#map-consent-btn', 'click', () => {
-      const current = readConsent() || { analytics: false };
-      decide({ map: true, analytics: !!current.analytics });
     });
   }
 
@@ -1836,8 +1756,6 @@
     writeStore(STORE_LANG, next);
     renderAll();
     applyHash({ quiet: true });
-    const consent = readConsent();
-    if (consent && consent.map) loadMap();
   }
 
   function initSalesBar() {
@@ -1880,7 +1798,6 @@
   initBooking();
   applyHash({ quiet: true });
   initAllergenDialog();
-  initCookies();
 
   const langToggle = document.getElementById('btn-lang-toggle');
   if (langToggle) langToggle.addEventListener('click', toggleIdioma);
