@@ -1446,12 +1446,14 @@
     initGuestWheel();
 
     date.addEventListener('change', refreshBookingSlots);
+    bindBookingPhoneInputs();
 
     form.addEventListener('submit', (event) => {
       event.preventDefault();
       const feedback = $('#book-feedback');
       const name = $('#book-name').value.trim();
-      const phone = $('#book-phone').value.replace(/\s/g, '');
+      const prefix = phoneDigits($('#book-prefix').value).slice(0, 4);
+      const local = phoneDigits($('#book-phone').value).slice(0, 9);
       const ymd = $('#book-date').value;
       const hour = $('#book-time').value;
       const guests = $('#book-guests').value;
@@ -1459,7 +1461,7 @@
       const notes = $('#book-notes').value.trim();
       const closed = !dayRanges(weekdayOfYmd(ymd)).length;
 
-      if (!name || phone.replace(/\D/g, '').length < 9 || !ymd || !hour || !guests || closed) {
+      if (!name || !prefix || local.length !== 9 || !ymd || !hour || !guests || closed) {
         feedback.hidden = false;
         feedback.textContent = closed ? t('bookClosed') : t('bookError');
         return;
@@ -1470,20 +1472,21 @@
         any: 'bookAreaAny', salon: 'bookAreaSalon', terrace: 'bookAreaTerrace', bar: 'bookAreaBar'
       }[area] || 'bookAreaAny');
       const intro = t('bookWaIntro', { name: name });
+      const phoneDisplay = formatBookingPhone(prefix, local);
       const rows = [
         [t('bookName'), name],
         [t('bookDate'), formatBookDate(ymd)],
         [t('bookTime'), hour],
         [t('bookGuests'), guestLabel(Number(guests))],
         [t('bookArea'), areaLabel],
-        [t('bookPhone'), $('#book-phone').value.trim()]
+        [t('bookPhone'), phoneDisplay]
       ];
       if (notes) rows.push([t('bookWaNote'), notes]);
       const textoWhatsApp = intro + '\n\n' + rows.map((row) => '*' + row[0] + ':* ' + row[1]).join('\n') + '\n';
       const html = '<p>' + esc(intro) + '</p>' + rows.map((row) =>
         '<p><strong class="font-semibold text-stone-900 dark:text-emerald-50">' + esc(row[0]) + ':</strong> ' + esc(row[1]) + '</p>'
       ).join('');
-      openBookingModal(html, textoWhatsApp);
+      openBookingModal(html, textoWhatsApp, prefix + local);
     });
 
     on('#booking-another', 'click', resetBookingForm);
@@ -1494,7 +1497,44 @@
     });
   }
 
-  function openBookingModal(html, textoWhatsApp) {
+  function phoneDigits(value) {
+    return String(value || '').replace(/\D/g, '');
+  }
+
+  function formatMobileGroups(digits) {
+    const d = phoneDigits(digits).slice(0, 9);
+    return [d.slice(0, 3), d.slice(3, 5), d.slice(5, 7), d.slice(7, 9)].filter(Boolean).join(' ');
+  }
+
+  function formatBookingPhone(prefix, localDigits) {
+    const grouped = formatMobileGroups(localDigits);
+    return '+' + prefix + (grouped ? ' ' + grouped : '');
+  }
+
+  function bindDigitsInput(input, maxDigits, format) {
+    if (!input || input.dataset.bound) return;
+    input.dataset.bound = '1';
+    input.addEventListener('input', () => {
+      const caret = input.selectionStart || 0;
+      const before = phoneDigits(input.value.slice(0, caret)).length;
+      const next = format(phoneDigits(input.value).slice(0, maxDigits));
+      input.value = next;
+      let pos = 0;
+      let seen = 0;
+      while (pos < next.length && seen < before) {
+        if (/\d/.test(next.charAt(pos))) seen += 1;
+        pos += 1;
+      }
+      input.setSelectionRange(pos, pos);
+    });
+  }
+
+  function bindBookingPhoneInputs() {
+    bindDigitsInput($('#book-prefix'), 4, (digits) => digits);
+    bindDigitsInput($('#book-phone'), 9, formatMobileGroups);
+  }
+
+  function openBookingModal(html, textoWhatsApp, waPhone) {
     const modal = $('#booking-modal');
     const body = $('#booking-wa-message');
     const stamp = $('#booking-wa-stamp');
@@ -1505,7 +1545,7 @@
       const now = new Date();
       stamp.textContent = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
     }
-    if (wa) wa.href = 'https://wa.me/' + D.business.whatsapp + '?text=' + encodeURIComponent(textoWhatsApp);
+    if (wa) wa.href = 'https://wa.me/' + waPhone + '?text=' + encodeURIComponent(textoWhatsApp);
     if (bookDatePicker && bookDatePicker.isOpen) bookDatePicker.close();
     setTimePickerOpen(false);
     setGuestsPickerOpen(false);

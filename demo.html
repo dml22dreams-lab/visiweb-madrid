@@ -960,10 +960,16 @@
               <span data-i18n="bookName">Nombre</span>
               <input id="book-name" name="name" type="text" autocomplete="name" required maxlength="80">
             </label>
-            <label class="book-field sm:col-span-2">
-              <span data-i18n="bookPhone">Teléfono</span>
-              <input id="book-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" required maxlength="20">
-            </label>
+            <div class="book-field sm:col-span-2">
+              <label id="book-phone-label" for="book-phone" data-i18n="bookPhone">Teléfono</label>
+              <div class="book-phone">
+                <div class="book-phone-prefix">
+                  <span class="book-phone-plus" aria-hidden="true">+</span>
+                  <input id="book-prefix" name="prefix" type="text" inputmode="numeric" autocomplete="tel-country-code" value="34" maxlength="4" required data-i18n-aria-label="bookPrefix" aria-label="Prefijo">
+                </div>
+                <input id="book-phone" name="phone" type="tel" autocomplete="tel-national" inputmode="numeric" required maxlength="12" placeholder="Número de teléfono" aria-labelledby="book-phone-label">
+              </div>
+            </div>
             <div class="book-field">
               <span id="book-date-label" data-i18n="bookDate">Fecha</span>
               <div class="book-date-wrap">
