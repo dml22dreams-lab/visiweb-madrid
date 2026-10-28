@@ -14,7 +14,7 @@
   const STORE_LANG = 'visiweb-demo-lang';
   const SCHEMA_DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   const WEEK_ORDER = [1, 2, 3, 4, 5, 6, 0];
-  const PAGES = ['inicio', 'carta', 'local', 'historia', 'reservas'];
+  const PAGES = ['inicio', 'carta', 'local', 'reservas'];
   const allergenFilters = new Set();
   const FILTER_OFF = ['bg-white', 'text-stone-700', 'border-stone-300', 'dark:bg-slate-950', 'dark:text-slate-300', 'dark:border-slate-600'];
   const FILTER_ON = ['bg-stone-900', 'text-white', 'border-stone-900', 'dark:bg-slate-100', 'dark:text-slate-900', 'dark:border-slate-100'];
@@ -372,6 +372,17 @@
     return li;
   }
 
+  const TAB_CHROME = 'select-none [-webkit-tap-highlight-color:transparent] focus:outline-none focus:ring-0 active:scale-95 transition-transform duration-100';
+  const TAB_ON = ['bg-stone-900', 'text-white', 'dark:bg-stone-100', 'dark:text-stone-900'];
+  const TAB_OFF = ['bg-stone-100', 'text-stone-700', 'dark:bg-stone-800', 'dark:text-stone-300'];
+
+  function paintCategoryTab(node, selected) {
+    node.setAttribute('aria-selected', String(selected));
+    node.tabIndex = selected ? 0 : -1;
+    TAB_ON.forEach((cls) => node.classList.toggle(cls, selected));
+    TAB_OFF.forEach((cls) => node.classList.toggle(cls, !selected));
+  }
+
   function renderMenu() {
     const tabs = $('#tabs');
     const panels = $('#panels');
@@ -379,16 +390,15 @@
     panels.textContent = '';
 
     D.menu.forEach((cat, index) => {
-      const tab = el('button', 'tab');
+      const tab = el('button', 'tab ' + TAB_CHROME + ' ' + (index === 0 ? TAB_ON : TAB_OFF).join(' '));
       tab.type = 'button';
       tab.id = 'tab-' + cat.id;
       tab.setAttribute('role', 'tab');
       tab.setAttribute('aria-controls', 'panel-' + cat.id);
-      tab.setAttribute('aria-selected', String(index === 0));
-      tab.tabIndex = index === 0 ? 0 : -1;
       tab.dataset.anchor = cat.anchor;
       if (cat.id === 'veggie') tab.dataset.category = 'veggie';
       tab.textContent = L(cat.name);
+      paintCategoryTab(tab, index === 0);
       tabs.appendChild(tab);
       pinBilingual(tab, cat.name.es, cat.name.en);
 
@@ -409,17 +419,28 @@
   }
 
   function selectTab(tab, focus, quiet) {
+    const panels = $('#panels');
     const all = Array.prototype.slice.call($('#tabs').children);
     all.forEach((node) => {
       const selected = node === tab;
-      node.setAttribute('aria-selected', String(selected));
-      node.tabIndex = selected ? 0 : -1;
-      $('#' + node.getAttribute('aria-controls')).hidden = !selected;
+      paintCategoryTab(node, selected);
+      const panel = document.getElementById(node.getAttribute('aria-controls'));
+      if (panel) panel.hidden = !selected;
     });
     applyAllergenFilter();
+    if (panels && !quiet) {
+      panels.classList.remove('opacity-100');
+      panels.classList.add('opacity-0');
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          panels.classList.remove('opacity-0');
+          panels.classList.add('opacity-100');
+        });
+      });
+    }
     if (focus) tab.focus();
     if (quiet) return;
-    tab.scrollIntoView({ block: 'nearest', inline: 'center' });
+    if (focus) tab.scrollIntoView({ block: 'nearest', inline: 'center' });
     history.replaceState(null, '', '#' + tab.dataset.anchor);
   }
 
@@ -480,10 +501,10 @@
       if (hours) hours.scrollIntoView({ block: 'start' });
       return;
     }
-    if (hash === 'ubicacion') {
+    if (hash === 'ubicacion' || hash === 'historia') {
       showPage('local', { quiet: true });
-      const map = $('#ubicacion');
-      if (!quiet && map) map.scrollIntoView({ block: 'start' });
+      const target = hash === 'historia' ? $('#historia') : $('#ubicacion');
+      if (target && (!quiet || hash === 'historia')) target.scrollIntoView({ block: 'start' });
       return;
     }
     const tab = menuTabByAnchor(hash);
