@@ -1465,60 +1465,89 @@
         return;
       }
 
+      feedback.hidden = true;
       const areaLabel = t({
         any: 'bookAreaAny', salon: 'bookAreaSalon', terrace: 'bookAreaTerrace', bar: 'bookAreaBar'
       }[area] || 'bookAreaAny');
-
-      const success = $('#booking-success');
-      const successText = $('#booking-success-text');
-      successText.textContent = t('bookSuccessText', {
-        guests: guests,
-        date: formatBookDate(ymd),
-        time: hour
-      });
-      form.hidden = true;
-      success.hidden = false;
-      success.classList.remove('hidden');
-      success.scrollIntoView({ block: 'start' });
-
-      const wa = $('#booking-whatsapp');
-      const message = (D.whatsappText[lang] || D.whatsappText.es)
-        .replace('[nº de comensales]', guests)
-        .replace('[number of guests]', guests)
-        .replace('[día]', formatBookDate(ymd))
-        .replace('[day]', formatBookDate(ymd))
-        .replace('[hora]', hour)
-        .replace('[time]', hour) +
-        (area !== 'any' ? ' (' + areaLabel + ')' : '') +
-        (notes ? ' — ' + notes : '');
-      wa.href = 'https://wa.me/' + D.business.whatsapp + '?text=' + encodeURIComponent(message);
+      const intro = t('bookWaIntro', { name: name });
+      const rows = [
+        [t('bookName'), name],
+        [t('bookDate'), formatBookDate(ymd)],
+        [t('bookTime'), hour],
+        [t('bookGuests'), guestLabel(Number(guests))],
+        [t('bookArea'), areaLabel],
+        [t('bookPhone'), $('#book-phone').value.trim()]
+      ];
+      if (notes) rows.push([t('bookWaNote'), notes]);
+      const textoWhatsApp = intro + '\n\n' + rows.map((row) => '*' + row[0] + ':* ' + row[1]).join('\n') + '\n';
+      const html = '<p>' + esc(intro) + '</p>' + rows.map((row) =>
+        '<p><strong class="font-semibold text-stone-900 dark:text-emerald-50">' + esc(row[0]) + ':</strong> ' + esc(row[1]) + '</p>'
+      ).join('');
+      openBookingModal(html, textoWhatsApp);
     });
 
-    on('#booking-another', 'click', () => {
-      form.hidden = false;
-      form.reset();
-      date.min = madridYMD(new Date());
-      date.value = nextOpenYmd();
-      const guestInput = $('#comensales-reserva');
-      const guestSelect = $('#book-guests');
-      const guestWheel = $('#wheel-guests');
-      if (guestInput) guestInput.value = '';
-      if (guestSelect) guestSelect.value = '';
-      if (guestWheel) guestWheel.dataset.aligned = '';
-      setGuestsPickerOpen(false);
-      fillGuestSelect();
-      const hours = $('#wheel-hours');
-      if (hours) hours.dataset.aligned = '';
-      const timeInput = $('#hora-reserva');
-      if (timeInput) timeInput.value = '';
-      setTimePickerOpen(false);
-      refreshBookingSlots();
-      const success = $('#booking-success');
-      success.hidden = true;
-      success.classList.add('hidden');
-      applyI18n();
-      applyI18nBookingOptions();
+    on('#booking-another', 'click', resetBookingForm);
+    on('#booking-modal-backdrop', 'click', resetBookingForm);
+    document.addEventListener('keydown', (event) => {
+      const modal = $('#booking-modal');
+      if (event.key === 'Escape' && modal && !modal.hidden) resetBookingForm();
     });
+  }
+
+  function openBookingModal(html, textoWhatsApp) {
+    const modal = $('#booking-modal');
+    const body = $('#booking-wa-message');
+    const stamp = $('#booking-wa-stamp');
+    const wa = $('#booking-whatsapp');
+    if (!modal || !body) return;
+    body.innerHTML = html;
+    if (stamp) {
+      const now = new Date();
+      stamp.textContent = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+    }
+    if (wa) wa.href = 'https://wa.me/' + D.business.whatsapp + '?text=' + encodeURIComponent(textoWhatsApp);
+    if (bookDatePicker && bookDatePicker.isOpen) bookDatePicker.close();
+    setTimePickerOpen(false);
+    setGuestsPickerOpen(false);
+    closeAllBookSelects();
+    modal.hidden = false;
+    document.body.classList.add('booking-modal-open');
+    const closeBtn = $('#booking-another');
+    if (closeBtn) closeBtn.focus();
+  }
+
+  function resetBookingForm() {
+    const form = $('#booking-form');
+    const date = $('#book-date');
+    const modal = $('#booking-modal');
+    if (modal) modal.hidden = true;
+    document.body.classList.remove('booking-modal-open');
+    if (!form || !date) return;
+    form.hidden = false;
+    form.reset();
+    date.min = madridYMD(new Date());
+    date.value = nextOpenYmd();
+    if (bookDatePicker) bookDatePicker.setDate(ymdToDate(date.value), false);
+    const guestInput = $('#comensales-reserva');
+    const guestSelect = $('#book-guests');
+    const guestWheel = $('#wheel-guests');
+    if (guestInput) guestInput.value = '';
+    if (guestSelect) guestSelect.value = '';
+    if (guestWheel) guestWheel.dataset.aligned = '';
+    setGuestsPickerOpen(false);
+    fillGuestSelect();
+    const hours = $('#wheel-hours');
+    if (hours) hours.dataset.aligned = '';
+    const timeInput = $('#hora-reserva');
+    if (timeInput) timeInput.value = '';
+    setTimePickerOpen(false);
+    const feedback = $('#book-feedback');
+    if (feedback) feedback.hidden = true;
+    refreshBookingSlots();
+    applyI18n();
+    applyI18nBookingOptions();
+    const submit = form.querySelector('[type="submit"]');
+    if (submit) submit.focus();
   }
 
   /* --------------------------------- JSON-LD ------------------------------- */

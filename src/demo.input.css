@@ -133,20 +133,24 @@
     @apply text-xs font-semibold uppercase tracking-wider text-slate-400;
   }
 
+  .footer-panel {
+    @apply flex h-full flex-col rounded-[1.75rem] border border-stone-200/80 bg-white px-7 py-8 dark:border-stone-800 dark:bg-stone-950;
+  }
+
   .hours-row {
-    @apply flex items-center justify-between gap-4 border-b border-dashed border-slate-200 py-3 text-sm last:border-b-0 dark:border-slate-800;
+    @apply flex items-baseline justify-between gap-6 border-b border-stone-100 py-3.5 text-sm last:border-b-0 dark:border-stone-800;
   }
 
   .hours-day {
-    @apply text-slate-600 dark:text-slate-400;
+    @apply text-stone-500 dark:text-stone-400;
   }
 
   .hours-time {
-    @apply text-right font-medium tabular text-slate-900 dark:text-slate-100;
+    @apply text-right font-medium tabular tracking-tight text-stone-900 dark:text-stone-100;
   }
 
   .hours-closed {
-    @apply rounded-full bg-rose-50 px-2 py-0.5 text-xs font-medium text-rose-600 dark:bg-rose-950/60 dark:text-rose-300;
+    @apply rounded-full bg-stone-100 px-2.5 py-0.5 text-[11px] font-medium tracking-wide text-stone-500 dark:bg-stone-800 dark:text-stone-400;
   }
 
   .btn-call {
