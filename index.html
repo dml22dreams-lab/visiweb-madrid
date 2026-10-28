@@ -161,15 +161,16 @@
     }
     #nav-ejemplo,
     #desktop-nav a[aria-label="Contactar por WhatsApp"] {
-      transition: transform .14s ease, background-color .2s ease, opacity .2s ease;
+      position: relative;
+      transition: background-color .2s ease, opacity .2s ease;
     }
     #nav-ejemplo:hover,
     #desktop-nav a[aria-label="Contactar por WhatsApp"]:hover {
-      transform: translateY(1px);
+      top: 1px;
     }
     #nav-ejemplo:active,
     #desktop-nav a[aria-label="Contactar por WhatsApp"]:active {
-      transform: translateY(2px);
+      top: 2px;
     }
     .plan-badge {
       z-index: 3;
@@ -314,7 +315,7 @@
 <body class="overflow-x-clip bg-[#FAF9F6] text-stone-900 antialiased selection:bg-[#E6D5C3] selection:text-stone-900 dark:bg-stone-950 dark:text-stone-200">
 
   <header class="sticky top-0 z-50 w-full border-b border-stone-200 bg-white/90 backdrop-blur-md transition-all duration-300 dark:border-stone-800 dark:bg-stone-950/90">
-    <div class="mx-auto flex w-full max-w-7xl items-center justify-between px-4 py-2.5 sm:px-6 lg:px-8">
+    <div class="mx-auto flex w-full max-w-7xl items-center justify-between overflow-hidden px-3 py-2 sm:px-4 sm:py-2.5">
       <a href="#" class="group flex min-w-0 items-center gap-2.5">
         <div class="relative flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-stone-900 p-1.5 shadow-sm transition-transform group-hover:scale-105 dark:bg-stone-100">
           <svg class="h-full w-full" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -327,8 +328,8 @@
           <span class="hidden font-sans text-[10px] font-semibold uppercase tracking-widest text-stone-500 sm:block">Madrid</span>
         </div>
       </a>
-      <nav id="desktop-nav" class="flex shrink-0 items-center justify-end gap-2 sm:gap-3" aria-label="Principal">
-      <button type="button" id="theme-toggle" class="theme-toggle hidden h-11 w-11 shrink-0 place-items-center rounded-full border border-stone-200 bg-white p-2 text-stone-800 transition-colors duration-300 hover:border-stone-400 dark:border-stone-800 dark:bg-stone-900 dark:text-stone-200 md:grid" aria-label="Activar modo oscuro" aria-pressed="false">
+      <nav id="desktop-nav" class="flex shrink-0 items-center gap-2 md:gap-3.5 lg:gap-4" aria-label="Principal">
+      <button type="button" id="theme-toggle" class="theme-toggle hidden h-9 w-9 shrink-0 items-center justify-center rounded-full border border-stone-200 bg-white text-stone-800 transition-colors duration-300 hover:border-stone-400 dark:border-stone-800 dark:bg-stone-900 dark:text-stone-200 md:flex" aria-label="Activar modo oscuro" aria-pressed="false">
         <svg class="hidden h-5 w-5 dark:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
           <circle cx="12" cy="12" r="4"></circle>
           <path stroke-linecap="round" d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path>
@@ -337,16 +338,16 @@
           <path stroke-linejoin="round" d="M21 14.5A8.5 8.5 0 1 1 9.5 3a7 7 0 0 0 11.5 11.5z"></path>
         </svg>
       </button>
-      <a id="nav-ejemplo" href="demo.html" class="order-1 inline-flex items-center whitespace-nowrap rounded-full bg-stone-900 px-3 py-1.5 text-xs font-semibold text-white shadow-sm transition-opacity hover:opacity-90 dark:bg-stone-100 dark:text-stone-900 md:order-4 md:min-h-11 md:gap-1 md:bg-stone-800 md:px-4 md:py-2 md:text-sm md:shadow-none md:hover:bg-stone-900 md:hover:opacity-100 md:dark:bg-stone-800 md:dark:text-white">
+      <a id="nav-ejemplo" href="demo.html" class="order-1 inline-flex items-center whitespace-nowrap rounded-full bg-stone-900 px-4 py-1.5 text-xs font-semibold text-white shadow-sm transition-opacity hover:opacity-90 dark:bg-stone-100 dark:text-stone-900 md:order-4 md:gap-1 md:bg-stone-800 md:text-sm md:shadow-none md:hover:bg-stone-900 md:hover:opacity-100 md:dark:bg-stone-800 md:dark:text-white">
         <span class="md:hidden">Ver demo ↗</span>
         <span class="hidden items-center gap-1 md:inline-flex">Ver demo<svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M8 16 16 8M9 8h7v7"></path></svg></span>
       </a>
-      <a id="nav-planes" href="#planes" class="order-2 hidden items-center whitespace-nowrap rounded-full border border-stone-300 px-3 py-1.5 text-xs font-semibold text-stone-800 transition-colors hover:bg-stone-100 dark:border-stone-700 dark:text-stone-200 dark:hover:bg-stone-800 sm:inline-flex md:order-2 md:min-h-11 md:px-4 md:py-2 md:text-sm">Planes</a>
+      <a id="nav-planes" href="#planes" class="order-first hidden min-[390px]:inline-flex items-center whitespace-nowrap rounded-full border border-stone-300 px-3.5 py-1.5 text-xs font-medium text-stone-800 transition-colors hover:bg-stone-100 dark:border-stone-700 dark:text-stone-200 dark:hover:bg-stone-800 md:order-2 md:text-sm">Planes</a>
       <a href="https://wa.me/34608975906?text=Hola%2C%20quer%C3%ADa%20haceros%20una%20consulta%20sobre%20las%20webs%20para%20bares"
          target="_blank"
          rel="noopener noreferrer"
          aria-label="Contactar por WhatsApp"
-         class="order-3 inline-flex items-center gap-1 whitespace-nowrap rounded-full bg-emerald-600 px-2.5 py-1.5 text-xs font-medium text-white sm:px-3 md:order-3 md:min-h-11 md:gap-1.5 md:px-3.5 md:py-2 md:text-sm md:font-semibold md:shadow-sm md:hover:bg-emerald-700">
+         class="order-3 inline-flex items-center gap-1.5 whitespace-nowrap rounded-full bg-emerald-600 px-3.5 py-1.5 text-xs font-medium text-white md:order-3 md:text-sm md:shadow-sm md:hover:bg-emerald-700">
         <svg class="h-4 w-4 fill-current" viewBox="0 0 24 24" aria-hidden="true"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/></svg>
         <span class="hidden min-[380px]:inline">WhatsApp</span>
       </a>
