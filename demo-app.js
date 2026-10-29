@@ -609,30 +609,317 @@
     });
   }
 
+  function gbpStars(score) {
+    const star = '<svg viewBox="0 0 24 24" class="h-3 w-3 shrink-0" fill="currentColor" aria-hidden="true"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z"/></svg>';
+    const full = Math.floor(score);
+    const frac = score - full;
+    let out = '';
+    for (let i = 1; i <= 5; i++) {
+      if (i <= full) {
+        out += '<span class="inline-flex">' + star + '</span>';
+      } else if (i === full + 1 && frac > 0) {
+        const pct = Math.round(frac * 100);
+        out += '<span class="relative inline-flex h-3 w-3 text-stone-300 dark:text-stone-600">' + star +
+          '<span class="absolute inset-y-0 left-0 overflow-hidden text-[#fbbc04]" style="width:' + pct + '%">' + star + '</span></span>';
+      } else {
+        out += '<span class="inline-flex text-stone-300 dark:text-stone-600">' + star + '</span>';
+      }
+    }
+    return out;
+  }
+
   function renderGbp() {
+    const name = $('#gbp-name');
     const cat = $('#gbp-category');
     const score = $('#gbp-score');
+    const hours = $('#gbp-hours');
     const attrs = $('#gbp-attrs');
     const photos = $('#gbp-photos');
     if (!cat || !score || !attrs || !photos) return;
 
-    cat.textContent = L(D.gbp.category);
+    if (name) name.textContent = D.business.name;
+    cat.textContent = L(D.gbp.category) + ' · ' + D.business.priceRange + ' · ' +
+      L(D.business.address.street) + ', ' + D.business.address.city;
+
     const value = D.reviews.score.toLocaleString(D.i18n[lang].locale, { minimumFractionDigits: 1 });
-    score.innerHTML = '<span class="flex items-center gap-0.5">' + stars(Math.round(D.reviews.score)) + '</span>';
-    score.appendChild(document.createTextNode(t('reviewsScore', { score: value, count: D.reviews.count })));
+    score.innerHTML = '<span class="font-medium text-stone-900 dark:text-stone-100">' + value + '</span>' +
+      '<span class="flex items-center gap-0.5 text-[#fbbc04]" aria-hidden="true">' + gbpStars(D.reviews.score) + '</span>' +
+      '<span class="text-stone-500">(' + D.reviews.count + ')</span>';
+
+    if (hours) {
+      hours.textContent = '';
+      const state = openState();
+      const status = el('span', state.open ? 'font-medium text-[#137333] dark:text-[#81c995]' : 'font-medium text-[#d93025] dark:text-[#f28b82]');
+      status.textContent = state.open ? t('gbpOpen') : t('gbpClosed');
+      hours.appendChild(status);
+      const detail = el('span', 'text-stone-500');
+      if (state.open && state.until) {
+        detail.textContent = ' ' + t('gbpCloses', { time: fromMin(toMin(state.until)) });
+        hours.appendChild(detail);
+      } else if (!state.open && state.at && state.day === undefined) {
+        detail.textContent = ' ' + t('gbpOpens', { time: state.at });
+        hours.appendChild(detail);
+      }
+    }
+
+    const directions = $('#gbp-directions');
+    if (directions) {
+      directions.href = 'https://www.google.com/maps/dir/?api=1&destination=' +
+        encodeURIComponent(L(D.business.address.street) + ', ' + D.business.address.city);
+    }
+    const call = $('#gbp-call');
+    if (call) call.href = 'tel:' + D.business.phone;
 
     attrs.textContent = '';
     D.gbp.attributes.forEach((attr) => {
-      const li = el('li', 'gbp-chip');
-      li.textContent = L(attr);
-      attrs.appendChild(li);
+      const span = el('span', 'flex items-center gap-1.5');
+      const mark = el('span', 'font-bold text-[#137333]');
+      mark.setAttribute('aria-hidden', 'true');
+      mark.textContent = '✓';
+      span.appendChild(mark);
+      span.appendChild(document.createTextNode(L(attr)));
+      attrs.appendChild(span);
     });
 
     photos.textContent = '';
-    D.local.rooms.forEach((room) => {
-      const img = imageOrPlaceholder(room.image, L(room.title), 120, 'h-[88px] w-[120px] shrink-0 rounded-lg object-cover');
-      photos.appendChild(img);
+    D.local.rooms.forEach((room, index) => {
+      const frame = el('div', 'relative h-20 w-full overflow-hidden rounded-lg sm:h-24');
+      const img = imageOrPlaceholder(room.image, L(room.title), null, 'h-full w-full object-cover');
+      if (img.tagName === 'IMG') {
+        img.loading = 'lazy';
+        img.width = 144;
+        img.height = 96;
+      }
+      frame.appendChild(img);
+      if (index === D.local.rooms.length - 1) {
+        const more = el('div', 'absolute inset-0 flex items-center justify-center bg-black/50 text-[11px] font-medium text-white sm:text-xs');
+        more.textContent = t('gbpMorePhotos');
+        frame.appendChild(more);
+      }
+      photos.appendChild(frame);
     });
+
+    renderGbpMenu();
+    renderGbpReviews();
+    renderGbpPhotos();
+    renderGbpAbout();
+  }
+
+  /* --- Ficha de Google · panel "Carta" ------------------------------------ */
+  function renderGbpMenu() {
+    const list = $('#gbp-menu-list');
+    if (!list) return;
+    list.textContent = '';
+    (D.featured || []).slice(0, 4).forEach((id) => {
+      const found = findDish(id);
+      if (!found) return;
+      const item = found.item;
+      const li = el('li', 'flex items-start justify-between gap-3 py-2.5');
+      const body = el('div', 'min-w-0');
+      const name = el('p', 'text-xs font-medium text-stone-900 dark:text-stone-100');
+      name.textContent = L(item.name);
+      const desc = el('p', 'mt-0.5 line-clamp-2 text-[11px] text-stone-500 dark:text-stone-400');
+      desc.textContent = L(item.desc);
+      body.append(name, desc);
+      const price = el('span', 'shrink-0 text-xs font-medium text-stone-700 dark:text-stone-300');
+      price.textContent = lang === 'en' ? item.priceEn : item.price;
+      li.append(body, price);
+      list.appendChild(li);
+    });
+  }
+
+  /* --- Ficha de Google · panel "Opiniones" -------------------------------- */
+  function renderGbpReviews() {
+    const scoreEl = $('#gbp-rv-score');
+    const starsEl = $('#gbp-rv-stars');
+    const countEl = $('#gbp-rv-count');
+    const bars = $('#gbp-rv-bars');
+    const list = $('#gbp-rv-list');
+    if (!scoreEl || !bars || !list) return;
+
+    scoreEl.textContent = D.reviews.score.toLocaleString(D.i18n[lang].locale, { minimumFractionDigits: 1 });
+    starsEl.innerHTML = gbpStars(D.reviews.score);
+    starsEl.setAttribute('aria-hidden', 'true');
+    countEl.textContent = D.reviews.count + ' ' + t('gbpReviews');
+
+    bars.textContent = '';
+    [[5, 82], [4, 13], [3, 3], [2, 1], [1, 1]].forEach(([stars, pct]) => {
+      const row = el('div', 'flex items-center gap-2');
+      const label = el('span', 'w-2 text-[11px] text-stone-500 dark:text-stone-400');
+      label.textContent = stars;
+      const track = el('div', 'h-2 flex-1 overflow-hidden rounded-full bg-stone-200 dark:bg-stone-700');
+      const fill = el('div', 'h-full rounded-full bg-[#fbbc04]');
+      fill.style.width = pct + '%';
+      track.appendChild(fill);
+      row.append(label, track);
+      bars.appendChild(row);
+    });
+
+    const AVATARS = ['bg-[#1a73e8]', 'bg-[#137333]', 'bg-[#c5221f]'];
+    list.textContent = '';
+    D.reviews.items.slice(0, 2).forEach((review, index) => {
+      const li = el('li', 'py-3');
+      const head = el('div', 'flex items-center gap-2.5');
+      const avatar = el('span', 'flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-medium text-white ' + AVATARS[index % AVATARS.length]);
+      avatar.setAttribute('aria-hidden', 'true');
+      avatar.textContent = review.author.charAt(0);
+      const who = el('div', 'min-w-0');
+      const name = el('p', 'text-xs font-medium text-stone-900 dark:text-stone-100');
+      name.textContent = review.author;
+      const meta = el('p', 'mt-0.5 flex items-center gap-1.5');
+      const rating = el('span', 'flex gap-0.5 text-[#fbbc04]');
+      rating.innerHTML = gbpStars(review.rating);
+      rating.setAttribute('role', 'img');
+      rating.setAttribute('aria-label', t('ratingOf', { rating: review.rating }));
+      const when = el('span', 'text-[11px] text-stone-500 dark:text-stone-400');
+      when.textContent = L(review.when);
+      meta.append(rating, when);
+      who.append(name, meta);
+      head.append(avatar, who);
+      const text = el('p', 'mt-2 text-[11px] leading-relaxed text-stone-600 dark:text-stone-400');
+      text.textContent = L(review.text);
+      li.append(head, text);
+      list.appendChild(li);
+    });
+  }
+
+  /* --- Ficha de Google · panel "Fotos" ------------------------------------ */
+  function gbpPhotoSet() {
+    const shots = D.local.rooms.map((room) => ({
+      image: room.image,
+      alt: L(room.title),
+      group: room.id === 'terraza' ? 'terrace' : 'ambience'
+    }));
+    (D.featured || []).forEach((id) => {
+      const found = findDish(id);
+      if (found && found.item.image) {
+        shots.push({ image: found.item.image, alt: L(found.item.name), group: 'food' });
+      }
+    });
+    return shots;
+  }
+
+  function renderGbpPhotos() {
+    const chips = $('#gbp-ph-chips');
+    const grid = $('#gbp-ph-grid');
+    if (!chips || !grid) return;
+    const shots = gbpPhotoSet();
+
+    const paint = (group) => {
+      grid.textContent = '';
+      shots.filter((s) => group === 'all' || s.group === group).forEach((shot) => {
+        const frame = el('div', 'h-20 w-full overflow-hidden rounded-lg sm:h-24');
+        const img = imageOrPlaceholder(shot.image, shot.alt, null, 'h-full w-full object-cover');
+        if (img.tagName === 'IMG') {
+          img.loading = 'lazy';
+          img.width = 160;
+          img.height = 96;
+        }
+        frame.appendChild(img);
+        grid.appendChild(frame);
+      });
+    };
+
+    const CHIP_ON = 'border-[#1a73e8] bg-blue-50/60 text-[#1a73e8] dark:bg-blue-950/30 dark:text-[#8ab4f8]';
+    const CHIP_OFF = 'border-stone-300 text-stone-600 dark:border-stone-700 dark:text-stone-300';
+    chips.textContent = '';
+    [['all', 'gbpPhotoAll'], ['food', 'gbpPhotoFood'], ['ambience', 'gbpPhotoAmbience'], ['terrace', 'gbpPhotoTerrace']].forEach(([group, key], index) => {
+      const chip = el('button', 'shrink-0 whitespace-nowrap rounded-full border px-3 py-1 text-[11px] font-medium ' + (index === 0 ? CHIP_ON : CHIP_OFF));
+      chip.type = 'button';
+      chip.textContent = t(key);
+      chip.addEventListener('click', () => {
+        Array.prototype.forEach.call(chips.children, (node) => {
+          node.className = 'shrink-0 whitespace-nowrap rounded-full border px-3 py-1 text-[11px] font-medium ' + (node === chip ? CHIP_ON : CHIP_OFF);
+        });
+        paint(group);
+      });
+      chips.appendChild(chip);
+    });
+    paint('all');
+  }
+
+  /* --- Ficha de Google · panel "Información" ------------------------------- */
+  function renderGbpAbout() {
+    const list = $('#gbp-about-list');
+    if (!list) return;
+    const ICONS = {
+      pin: '<path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/>',
+      clock: '<path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z"/>',
+      phone: '<path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>',
+      web: '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>'
+    };
+
+    const row = (icon, label, body) => {
+      const li = el('li', 'flex items-start gap-3 py-3');
+      const mark = el('span', 'mt-0.5 shrink-0 text-stone-500 dark:text-stone-400');
+      mark.innerHTML = '<svg class="h-4 w-4 fill-current" viewBox="0 0 24 24" aria-hidden="true">' + icon + '</svg>';
+      const content = el('div', 'min-w-0 flex-1');
+      const title = el('p', 'text-[11px] uppercase tracking-wide text-stone-400 dark:text-stone-500');
+      title.textContent = label;
+      content.append(title, body);
+      li.append(mark, content);
+      list.appendChild(li);
+    };
+
+    list.textContent = '';
+
+    const address = el('a', 'mt-0.5 block text-xs text-[#1a73e8] no-underline dark:text-[#8ab4f8]');
+    address.href = mapsUrl();
+    address.target = '_blank';
+    address.rel = 'noopener';
+    address.textContent = addressText();
+    row(ICONS.pin, t('gbpInfoAddress'), address);
+
+    const hours = el('dl', 'mt-1 space-y-1');
+    groupedHours().forEach((group) => {
+      const line = el('div', 'flex items-baseline justify-between gap-3');
+      const day = el('dt', 'text-xs text-stone-600 dark:text-stone-400');
+      day.textContent = group.label;
+      const time = el('dd', 'text-xs text-stone-700 dark:text-stone-300');
+      time.textContent = rangesText(group.ranges, ' · ');
+      line.append(day, time);
+      hours.appendChild(line);
+    });
+    row(ICONS.clock, t('gbpInfoHours'), hours);
+
+    const phone = el('a', 'mt-0.5 block text-xs text-[#1a73e8] no-underline dark:text-[#8ab4f8]');
+    phone.href = 'tel:' + D.business.phone;
+    phone.textContent = D.business.phoneDisplay;
+    row(ICONS.phone, t('gbpInfoPhone'), phone);
+
+    const web = el('a', 'mt-0.5 block text-xs text-[#1a73e8] no-underline dark:text-[#8ab4f8]');
+    web.href = '#inicio';
+    web.textContent = 'tabernaelnorte.visiwebmadrid.com';
+    row(ICONS.web, t('gbpInfoWebsite'), web);
+  }
+
+  /* --- Ficha de Google · pestañas ----------------------------------------- */
+  const GBP_TAB_ON = 'relative whitespace-nowrap font-semibold text-[#1a73e8] after:absolute after:-bottom-[11px] after:left-0 after:h-[3px] after:w-full after:rounded-full after:bg-[#1a73e8] after:content-[\'\'] dark:text-[#8ab4f8] dark:after:bg-[#8ab4f8]';
+  const GBP_TAB_OFF = 'whitespace-nowrap text-stone-500 hover:text-stone-700 dark:text-stone-400';
+
+  function cambiarPestanaGoogle(nombrePestana) {
+    const tabs = document.querySelectorAll('[data-gbp-tab]');
+    if (!tabs.length) return;
+    let target = nombrePestana;
+    if (!document.querySelector('[data-gbp-panel="' + target + '"]')) target = 'overview';
+
+    tabs.forEach((tab) => {
+      const active = tab.dataset.gbpTab === target;
+      tab.className = active ? GBP_TAB_ON : GBP_TAB_OFF;
+      tab.setAttribute('aria-selected', active ? 'true' : 'false');
+    });
+    document.querySelectorAll('[data-gbp-panel]').forEach((panel) => {
+      const active = panel.dataset.gbpPanel === target;
+      panel.hidden = !active;
+      panel.classList.toggle('block', active);
+    });
+  }
+
+  function initGbpTabs() {
+    document.querySelectorAll('[data-gbp-tab]').forEach((tab) => {
+      tab.addEventListener('click', () => cambiarPestanaGoogle(tab.dataset.gbpTab));
+    });
+    cambiarPestanaGoogle('overview');
   }
 
   function paintFilterButton(btn, active) {
@@ -1883,6 +2170,8 @@
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(syncStickyOffset);
   renderAll();
   initTabs();
+  initGbpTabs();
+  window.cambiarPestanaGoogle = cambiarPestanaGoogle;
   initDishAllergenToggles();
     initAllergenFilters();
   initBooking();

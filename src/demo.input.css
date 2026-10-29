@@ -186,17 +186,18 @@
   }
 
   .site-nav-link[aria-current='page'] {
-    @apply font-semibold text-stone-900 dark:text-stone-100;
+    @apply text-stone-900 dark:text-stone-100;
   }
 
   .site-nav-link[aria-current='page']::after {
     content: "";
     position: absolute;
-    left: 0;
-    right: 0;
+    left: 50%;
     bottom: 0;
+    width: 2.25rem;
     height: 2px;
-    border-radius: 0;
+    transform: translateX(-50%);
+    border-radius: 9999px;
     background-color: theme('colors.stone.900');
   }
 

@@ -129,14 +129,11 @@ window.VISIWEB_DEMO = (function () {
   };
 
   const GBP = {
-    category: { es: 'Cervecería · Raciones y tapas', en: 'Beer house · Tapas & sharing plates' },
+    category: { es: 'Restaurante español', en: 'Spanish restaurant' },
     attributes: [
       { es: 'Terraza', en: 'Outdoor seating' },
-      { es: 'Reservas', en: 'Takes reservations' },
-      { es: 'Menú del día', en: 'Set lunch' },
-      { es: 'Carta con alérgenos', en: 'Allergen-labelled menu' },
-      { es: 'Grupos', en: 'Group-friendly' },
-      { es: 'Pago con tarjeta', en: 'Card payments' }
+      { es: 'Acepta reservas', en: 'Takes reservations' },
+      { es: 'Comida para llevar', en: 'Takeaway' }
     ]
   };
 
@@ -612,6 +609,7 @@ window.VISIWEB_DEMO = (function () {
       {
         author: 'Marta G.',
         rating: 5,
+        when: { es: 'Hace 2 semanas', en: '2 weeks ago' },
         text: {
           es: 'Las croquetas son de las mejores que he probado en la zona y la caña entra helada. Trato cercano desde que cruzas la puerta.',
           en: 'The croquettes are among the best I have tried nearby and the beer arrives ice-cold. Warm welcome from the moment you walk in.'
@@ -620,6 +618,7 @@ window.VISIWEB_DEMO = (function () {
       {
         author: 'Javier R.',
         rating: 5,
+        when: { es: 'Hace 1 mes', en: '1 month ago' },
         text: {
           es: 'Vamos cada jueves al menú del día: raciones generosas, casero de verdad y sales por menos de quince euros.',
           en: 'We come every Thursday for the set menu: generous portions, genuinely homemade and under fifteen euros.'
@@ -628,6 +627,7 @@ window.VISIWEB_DEMO = (function () {
       {
         author: 'Lucía P.',
         rating: 4,
+        when: { es: 'Hace 3 meses', en: '3 months ago' },
         text: {
           es: 'Los huevos rotos, espectaculares. Los findes se llena, así que mejor reservar mesa con antelación.',
           en: 'The broken eggs are spectacular. It fills up at weekends, so it is better to book a table in advance.'
@@ -702,6 +702,32 @@ window.VISIWEB_DEMO = (function () {
       gbpTitle: 'Ficha de Google',
       gbpSubtitle: 'Así aparece el local en búsquedas de tapas y menú del día en Alcobendas.',
       gbpPhotos: 'Fotos del local',
+      gbpOpen: 'Abierto',
+      gbpClosed: 'Cerrado',
+      gbpCloses: '· Cierra a las {time}',
+      gbpOpens: '· Abre a las {time}',
+      gbpReviews: 'reseñas',
+      gbpDirections: 'Cómo llegar',
+      gbpCall: 'Llamar',
+      gbpWebsite: 'Sitio web',
+      gbpWebsiteBadge: 'Tu web aquí',
+      gbpSave: 'Guardar',
+      gbpTabOverview: 'Resumen',
+      gbpTabMenu: 'Carta',
+      gbpTabReviews: 'Opiniones',
+      gbpTabPhotos: 'Fotos',
+      gbpTabAbout: 'Información',
+      gbpMorePhotos: '+40 fotos',
+      gbpMenuHeading: 'Platos populares',
+      gbpMenuCta: 'Ver la carta digital',
+      gbpPhotoAll: 'Todo',
+      gbpPhotoFood: 'Comida',
+      gbpPhotoAmbience: 'Ambiente',
+      gbpPhotoTerrace: 'Terraza',
+      gbpInfoAddress: 'Dirección',
+      gbpInfoHours: 'Horario de apertura',
+      gbpInfoPhone: 'Teléfono',
+      gbpInfoWebsite: 'Sitio web',
       quickActions: 'Acciones rápidas',
       heroEyebrow: 'Alcobendas · Desde 1998',
       heroTitle: 'El sabor de siempre.',
@@ -843,6 +869,32 @@ window.VISIWEB_DEMO = (function () {
       gbpTitle: 'Google Business profile',
       gbpSubtitle: 'How the tavern appears for tapas and set-lunch searches in Alcobendas.',
       gbpPhotos: 'Venue photos',
+      gbpOpen: 'Open',
+      gbpClosed: 'Closed',
+      gbpCloses: '· Closes at {time}',
+      gbpOpens: '· Opens at {time}',
+      gbpReviews: 'reviews',
+      gbpDirections: 'Directions',
+      gbpCall: 'Call',
+      gbpWebsite: 'Website',
+      gbpWebsiteBadge: 'Your site here',
+      gbpSave: 'Save',
+      gbpTabOverview: 'Overview',
+      gbpTabMenu: 'Menu',
+      gbpTabReviews: 'Reviews',
+      gbpTabPhotos: 'Photos',
+      gbpTabAbout: 'About',
+      gbpMorePhotos: '+40 photos',
+      gbpMenuHeading: 'Popular dishes',
+      gbpMenuCta: 'Open the digital menu',
+      gbpPhotoAll: 'All',
+      gbpPhotoFood: 'Food',
+      gbpPhotoAmbience: 'Vibe',
+      gbpPhotoTerrace: 'Terrace',
+      gbpInfoAddress: 'Address',
+      gbpInfoHours: 'Opening hours',
+      gbpInfoPhone: 'Phone',
+      gbpInfoWebsite: 'Website',
       quickActions: 'Quick actions',
       heroEyebrow: 'Alcobendas · Since 1998',
       heroTitle: 'The flavour you remember.',

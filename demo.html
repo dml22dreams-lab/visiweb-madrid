@@ -913,13 +913,109 @@
           <h2 id="gbp-title" class="font-serif text-3xl font-semibold tracking-tight" data-i18n="gbpTitle">Ficha de Google</h2>
           <p class="mt-3 text-sm leading-relaxed text-slate-600 dark:text-slate-400" data-i18n="gbpSubtitle">Así aparece el local en búsquedas de tapas y menú del día en Alcobendas.</p>
 
-          <article class="contact-card mt-8">
-            <p class="font-serif text-2xl font-semibold tracking-tight">Taberna El Norte</p>
-            <p id="gbp-category" class="mt-1 text-sm text-slate-600 dark:text-slate-400"></p>
-            <p id="gbp-score" class="mt-3 flex flex-wrap items-center gap-2 text-sm text-slate-600 dark:text-slate-400"></p>
-            <ul id="gbp-attrs" class="mt-5 flex flex-wrap gap-1.5"></ul>
-            <p class="mt-6 text-[10px] font-semibold uppercase tracking-[.18em] text-slate-600 dark:text-slate-400" data-i18n="gbpPhotos">Fotos del local</p>
-            <div id="gbp-photos" class="no-scrollbar mt-3 flex gap-2 overflow-x-auto"></div>
+          <article class="mx-auto mt-8 max-w-xl select-none rounded-2xl border border-stone-200 bg-white p-4 font-sans antialiased shadow-sm dark:border-stone-800 dark:bg-[#202124] sm:p-5">
+
+            <!-- 1. PESTAÑAS OFICIALES GOOGLE (CON SEPARACIÓN REAL) -->
+            <div class="no-scrollbar mb-3.5 flex items-center gap-6 overflow-x-auto border-b border-stone-200 pb-2.5 text-xs font-medium dark:border-stone-700 sm:text-sm" role="tablist" aria-label="Ficha de Google">
+              <button type="button" role="tab" id="gbp-tab-overview" data-gbp-tab="overview" aria-selected="true" aria-controls="gbp-panel-overview" class="relative whitespace-nowrap font-semibold text-[#1a73e8] after:absolute after:-bottom-[11px] after:left-0 after:h-[3px] after:w-full after:rounded-full after:bg-[#1a73e8] after:content-[''] dark:text-[#8ab4f8] dark:after:bg-[#8ab4f8]" data-i18n="gbpTabOverview">Resumen</button>
+              <button type="button" role="tab" id="gbp-tab-menu" data-gbp-tab="menu" aria-selected="false" aria-controls="gbp-panel-menu" class="whitespace-nowrap text-stone-500 hover:text-stone-700 dark:text-stone-400" data-i18n="gbpTabMenu">Carta</button>
+              <button type="button" role="tab" id="gbp-tab-reviews" data-gbp-tab="reviews" aria-selected="false" aria-controls="gbp-panel-reviews" class="whitespace-nowrap text-stone-500 hover:text-stone-700 dark:text-stone-400" data-i18n="gbpTabReviews">Opiniones</button>
+              <button type="button" role="tab" id="gbp-tab-photos" data-gbp-tab="photos" aria-selected="false" aria-controls="gbp-panel-photos" class="whitespace-nowrap text-stone-500 hover:text-stone-700 dark:text-stone-400" data-i18n="gbpTabPhotos">Fotos</button>
+              <button type="button" role="tab" id="gbp-tab-about" data-gbp-tab="about" aria-selected="false" aria-controls="gbp-panel-about" class="whitespace-nowrap text-stone-500 hover:text-stone-700 dark:text-stone-400" data-i18n="gbpTabAbout">Información</button>
+            </div>
+
+            <!-- PANEL: RESUMEN -->
+            <div id="gbp-panel-overview" data-gbp-panel="overview" role="tabpanel" aria-labelledby="gbp-tab-overview" class="block">
+
+            <!-- 2. DATOS DEL RESTAURANTE -->
+            <div class="mb-4 space-y-1">
+              <h3 id="gbp-name" class="text-xl font-normal tracking-tight text-stone-900 dark:text-stone-100">Taberna El Norte</h3>
+              <div id="gbp-score" class="flex items-center gap-1.5 text-xs sm:text-sm"></div>
+              <p id="gbp-category" class="text-xs text-stone-600 dark:text-stone-400"></p>
+              <p id="gbp-hours" class="text-xs"></p>
+            </div>
+
+            <!-- 3. CUATRO BOTONES CIRCULARES (ESTILO GOOGLE MAPS) -->
+            <div class="my-4 grid grid-cols-4 gap-2 pt-1">
+
+              <!-- Cómo llegar -->
+              <a id="gbp-directions" href="https://www.google.com/maps/dir/?api=1&amp;destination=Calle+del+Marqu%C3%A9s+de+la+Valdavia+Alcobendas" target="_blank" rel="noopener" class="flex cursor-pointer flex-col items-center no-underline">
+                <div class="flex h-10 w-10 items-center justify-center rounded-full bg-[#1a73e8] text-white shadow-sm sm:h-11 sm:w-11">
+                  <svg class="h-5 w-5 fill-current" viewBox="0 0 24 24" aria-hidden="true"><path d="M21.71 11.29l-9-9a.996.996 0 0 0-1.41 0l-9 9a.996.996 0 0 0 0 1.41l9 9c.39.39 1.02.39 1.41 0l9-9a.996.996 0 0 0 0-1.41zM14 14.5V12h-4v3H8v-4c0-.55.45-1 1-1h5V7.5l3.5 3.5-3.5 3.5z"/></svg>
+                </div>
+                <span class="mt-1.5 text-center text-[11px] font-medium text-[#1a73e8] dark:text-[#8ab4f8]" data-i18n="gbpDirections">Cómo llegar</span>
+              </a>
+
+              <!-- Llamar -->
+              <a id="gbp-call" href="tel:+34600000000" class="flex cursor-pointer flex-col items-center no-underline">
+                <div class="flex h-10 w-10 items-center justify-center rounded-full border border-stone-300 text-[#1a73e8] dark:border-stone-700 dark:text-[#8ab4f8] sm:h-11 sm:w-11">
+                  <svg class="h-5 w-5 fill-current" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+                </div>
+                <span class="mt-1.5 text-center text-[11px] font-medium text-[#1a73e8] dark:text-[#8ab4f8]" data-i18n="gbpCall">Llamar</span>
+              </a>
+
+              <!-- Sitio web (con pulso sutil de destaque) -->
+              <a id="gbp-website" href="#inicio" class="relative flex cursor-pointer flex-col items-center no-underline">
+                <div class="relative flex h-10 w-10 items-center justify-center rounded-full border-2 border-[#1a73e8] bg-blue-50/60 text-[#1a73e8] dark:bg-blue-950/30 dark:text-[#8ab4f8] sm:h-11 sm:w-11">
+                  <svg class="h-5 w-5 fill-current" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                  <span class="absolute -right-1 -top-1 flex h-3 w-3" aria-hidden="true">
+                    <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-400 opacity-75"></span>
+                    <span class="relative inline-flex h-3 w-3 rounded-full bg-[#1a73e8]"></span>
+                  </span>
+                </div>
+                <span class="mt-1.5 text-center text-[11px] font-bold text-[#1a73e8] dark:text-[#8ab4f8]" data-i18n="gbpWebsite">Sitio web</span>
+              </a>
+
+              <!-- Guardar -->
+              <button type="button" id="gbp-save" class="flex cursor-pointer flex-col items-center">
+                <div class="flex h-10 w-10 items-center justify-center rounded-full border border-stone-300 text-[#1a73e8] dark:border-stone-700 dark:text-[#8ab4f8] sm:h-11 sm:w-11">
+                  <svg class="h-5 w-5 fill-none stroke-current stroke-2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg>
+                </div>
+                <span class="mt-1.5 text-center text-[11px] font-medium text-[#1a73e8] dark:text-[#8ab4f8]" data-i18n="gbpSave">Guardar</span>
+              </button>
+
+            </div>
+
+            <!-- 4. ATRIBUTOS CORRIDOS CON SEPARACIÓN LIMPIA -->
+            <div id="gbp-attrs" class="flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-stone-100 pb-3 pt-3 text-xs text-stone-600 dark:border-stone-800 dark:text-stone-300"></div>
+
+            <!-- 5. FOTOS EQUILIBRADAS SIN HUECOS VACÍOS (GRID DE 4) -->
+            <div id="gbp-photos" class="grid grid-cols-4 gap-2 pt-1"></div>
+            </div>
+
+            <!-- PANEL: CARTA -->
+            <div id="gbp-panel-menu" data-gbp-panel="menu" role="tabpanel" aria-labelledby="gbp-tab-menu" hidden>
+              <p class="text-xs font-medium text-stone-900 dark:text-stone-100" data-i18n="gbpMenuHeading">Platos populares</p>
+              <ul id="gbp-menu-list" class="mt-2 divide-y divide-stone-100 dark:divide-stone-800"></ul>
+              <a href="#carta" id="gbp-menu-cta" class="mt-3 inline-flex items-center gap-1.5 rounded-full border border-stone-300 px-3.5 py-1.5 text-xs font-medium text-[#1a73e8] no-underline dark:border-stone-700 dark:text-[#8ab4f8]">
+                <svg class="h-4 w-4 fill-current" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 7h2v2h-2V7zm0 4h2v6h-2v-6zm1-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+                <span data-i18n="gbpMenuCta">Ver la carta digital</span>
+              </a>
+            </div>
+
+            <!-- PANEL: OPINIONES -->
+            <div id="gbp-panel-reviews" data-gbp-panel="reviews" role="tabpanel" aria-labelledby="gbp-tab-reviews" hidden>
+              <div class="flex items-start gap-5">
+                <div class="shrink-0 text-center">
+                  <p id="gbp-rv-score" class="text-4xl font-normal leading-none text-stone-900 dark:text-stone-100">4,8</p>
+                  <div id="gbp-rv-stars" class="mt-1 flex justify-center gap-0.5 text-[#fbbc04]"></div>
+                  <p id="gbp-rv-count" class="mt-1 text-[11px] text-stone-500 dark:text-stone-400"></p>
+                </div>
+                <div id="gbp-rv-bars" class="min-w-0 flex-1 space-y-1"></div>
+              </div>
+              <ul id="gbp-rv-list" class="mt-4 divide-y divide-stone-100 border-t border-stone-100 dark:divide-stone-800 dark:border-stone-800"></ul>
+            </div>
+
+            <!-- PANEL: FOTOS -->
+            <div id="gbp-panel-photos" data-gbp-panel="photos" role="tabpanel" aria-labelledby="gbp-tab-photos" hidden>
+              <div id="gbp-ph-chips" class="no-scrollbar mb-3 flex gap-2 overflow-x-auto"></div>
+              <div id="gbp-ph-grid" class="grid grid-cols-3 gap-2"></div>
+            </div>
+
+            <!-- PANEL: INFORMACIÓN -->
+            <div id="gbp-panel-about" data-gbp-panel="about" role="tabpanel" aria-labelledby="gbp-tab-about" hidden>
+              <ul id="gbp-about-list" class="divide-y divide-stone-100 text-xs dark:divide-stone-800"></ul>
+            </div>
           </article>
         </section>
 
