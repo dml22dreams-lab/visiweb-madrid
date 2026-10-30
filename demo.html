@@ -343,17 +343,13 @@
     .call-waves span:nth-child(1) { width: 4px; height: 4px; }
     .call-waves span:nth-child(2) { width: 7px; height: 7px; }
     .call-waves span:nth-child(3) { width: 10px; height: 10px; }
-    #header-call:hover .call-phone,
     #bar-call:hover .call-phone {
       animation: phone-ring .5s ease-in-out infinite;
     }
-    #header-call:hover .call-waves span,
     #bar-call:hover .call-waves span {
       animation: wave-out .7s ease-out infinite;
     }
-    #header-call:hover .call-waves span:nth-child(2),
     #bar-call:hover .call-waves span:nth-child(2) { animation-delay: .12s; }
-    #header-call:hover .call-waves span:nth-child(3),
     #bar-call:hover .call-waves span:nth-child(3) { animation-delay: .24s; }
     @keyframes phone-ring {
       0%, 100% { transform: rotate(0deg); }
@@ -649,7 +645,6 @@
     @supports (justify-content: safe center) {
       #menu-chip-row { justify-content: safe center; }
     }
-    #header-call { min-height: 2rem; }
     .diet-vegetarian {
       border-color: #6b4630;
       background-color: #8a5a3c;
@@ -663,15 +658,11 @@
     }
     @media (pointer: coarse), (hover: none) {
       #btn-lang-toggle.lang-btn,
-      #header-call,
       #quick-bar a {
         min-height: 44px;
       }
-      #header-call { min-width: 44px; }
       #btn-lang-toggle:hover .lang-text,
-      #header-call:hover .call-phone,
       #bar-call:hover .call-phone,
-      #header-call:hover .call-waves span,
       #bar-call:hover .call-waves span {
         animation: none;
         transform: none;
@@ -709,9 +700,10 @@
         margin-left: auto;
       }
     }
+    body.pb-24 { padding-bottom: 6rem; }
     @media (pointer: fine) and (hover: hover) {
       #quick-bar { display: none; }
-      #quick-spacer { height: 0; }
+      body.pb-24 { padding-bottom: 0; }
     }
     #hero-media img {
       width: 100%;
@@ -721,12 +713,12 @@
     @media (orientation: landscape) and (max-height: 500px) {
       #contenido { min-height: 0; }
       #quick-bar { position: static; box-shadow: none; }
-      #quick-spacer { height: 0; }
+      body.pb-24 { padding-bottom: 0; }
       #allergen-dialog { max-height: none; }
     }
   </style>
 </head>
-<body class="bg-white text-slate-900 dark:bg-slate-950 dark:text-slate-100">
+<body class="bg-white pb-24 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
 
   <a href="#contenido" class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[80] focus:rounded-full focus:bg-slate-900 focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white dark:focus:bg-slate-100 dark:focus:text-slate-900" data-i18n="skipToContent">Ir al contenido</a>
 
@@ -770,14 +762,6 @@
               <span id="lang-text" class="lang-text">ES</span>
             </div>
           </button>
-
-          <a id="header-call" href="tel:+34600000000" class="btn-outline min-h-0 px-3 py-1.5 sm:px-4" data-i18n-aria-label="callLong">
-            <span class="call-icon">
-              <svg class="call-phone h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6.6 10.8a12.8 12.8 0 0 0 5.6 5.6l2-2a1 1 0 0 1 1-.2 9.6 9.6 0 0 0 3.5.6 1 1 0 0 1 1 1V19a1 1 0 0 1-1 1A17 17 0 0 1 4 6a1 1 0 0 1 1-1h3.2a1 1 0 0 1 1 1 9.6 9.6 0 0 0 .6 3.5 1 1 0 0 1-.2 1l-2 2z"/></svg>
-              <span class="call-waves" aria-hidden="true"><span></span><span></span><span></span></span>
-            </span>
-            <span class="hidden sm:inline" data-i18n="call">Llamar</span>
-          </a>
         </div>
       </div>
 
@@ -1206,7 +1190,6 @@
       </p>
     </div>
 
-    <div id="quick-spacer" class="h-24 md:h-0" aria-hidden="true"></div>
   </footer>
 
   <!-- ====================== BARRA FIJA (SOLO MÓVIL) ====================== -->
