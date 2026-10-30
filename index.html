@@ -161,16 +161,12 @@
     }
     #nav-ejemplo,
     #desktop-nav a[aria-label="Contactar por WhatsApp"] {
-      position: relative;
-      transition: background-color .2s ease, opacity .2s ease;
+      transition: transform .22s ease, box-shadow .22s ease, background-color .22s ease;
     }
     #nav-ejemplo:hover,
     #desktop-nav a[aria-label="Contactar por WhatsApp"]:hover {
-      top: 1px;
-    }
-    #nav-ejemplo:active,
-    #desktop-nav a[aria-label="Contactar por WhatsApp"]:active {
-      top: 2px;
+      transform: translateY(2px) scale(.985);
+      box-shadow: inset 0 3px 6px rgba(12, 10, 9, .45);
     }
     .plan-badge {
       z-index: 3;
@@ -231,6 +227,12 @@
       .dark #objeciones-accordion [data-accordion-trigger][aria-expanded="true"] > span {
         color: #E6D5C3;
       }
+    }
+    #garantia-pasos [data-accordion-trigger][aria-expanded="true"] > span {
+      color: #047857;
+    }
+    .dark #garantia-pasos [data-accordion-trigger][aria-expanded="true"] > span {
+      color: #34d399;
     }
     @media (orientation: landscape) and (max-height: 500px) {
       #hero { min-height: 0; }
@@ -522,11 +524,54 @@
   <section class="relative mx-auto w-full max-w-7xl px-4 pt-16 pb-16 sm:px-6 sm:pt-20 md:pt-28 lg:px-8">
     <div class="reveal mx-auto max-w-3xl text-center">
       <p class="mb-3 text-xs font-semibold uppercase tracking-widest text-[#8B5E34] dark:text-[#E6D5C3]">Planes y tarifas</p>
-      <h2 class="mb-4 break-words text-3xl font-bold leading-tight tracking-tight text-stone-900 dark:text-stone-100 sm:text-4xl md:text-5xl">Planes transparentes pensados para hostelería</h2>
-      <p class="mb-8 hyphens-auto break-words leading-relaxed text-stone-500 dark:text-stone-400 sm:mb-10">
-        Elige el montaje de la web (50% al inicio y 50% a la entrega) y pídenos la demo por WhatsApp.
-      </p>
+      <h2 class="mb-6 break-words text-3xl font-bold leading-tight tracking-tight text-stone-900 dark:text-stone-100 sm:mb-8 sm:text-4xl md:text-5xl">Planes transparentes pensados para hostelería</h2>
     </div>
+
+    <aside id="garantia-pago" class="reveal mx-auto mb-8 max-w-6xl rounded-3xl border border-stone-200 bg-white p-4 shadow-sm dark:border-stone-800 dark:bg-stone-900 sm:mb-10 sm:p-6" aria-label="Garantía de pago sin riesgo">
+      <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:gap-5">
+        <span class="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-emerald-50 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-400" aria-hidden="true">
+          <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v6c0 4.2 2.8 7.4 7 9 4.2-1.6 7-4.8 7-9V6l-7-3z"/><path d="m9 12 2 2 4-4"/></svg>
+        </span>
+        <div class="min-w-0">
+          <p class="text-xs font-semibold uppercase tracking-widest text-emerald-700 dark:text-emerald-400">Garantía de transparencia</p>
+          <h3 class="mt-1 text-2xl font-bold tracking-tight text-stone-900 dark:text-stone-100">Tranquilidad total. Cero riesgo.</h3>
+          <p class="mt-2 text-base font-medium leading-relaxed text-stone-800 dark:text-stone-200">No pagas nada hasta que ves tu web funcionando y nos das el visto bueno.</p>
+        </div>
+      </div>
+      <div id="garantia-pasos" class="mt-2 divide-y divide-stone-100 border-t border-stone-100 dark:divide-stone-800 dark:border-stone-800">
+        <div data-accordion-item>
+          <button type="button" data-accordion-trigger aria-expanded="false" class="flex w-full cursor-pointer items-center justify-between py-4 text-left group">
+            <span class="text-base font-bold text-stone-900 transition-colors dark:text-stone-100 sm:text-lg md:group-hover:text-[#C4A484] md:dark:group-hover:text-[#E6D5C3]">Demo real, 0 €</span>
+            <svg class="h-4 w-4 shrink-0 rotate-0 transform text-black transition-transform duration-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5.5 15.5 12 9 18.5"/></svg>
+          </button>
+          <div data-accordion-panel class="max-h-0 overflow-hidden opacity-0 transition-all duration-300">
+            <p class="pb-4 pt-1 text-sm leading-relaxed text-stone-600 dark:text-stone-400 sm:text-base">Diseñamos y te presentamos una demo interactiva y funcional con los datos de tu local. Ni un euro por adelantado.</p>
+          </div>
+        </div>
+        <div data-accordion-item>
+          <button type="button" data-accordion-trigger aria-expanded="false" class="flex w-full cursor-pointer items-center justify-between py-4 text-left group">
+            <span class="text-base font-bold text-stone-900 transition-colors dark:text-stone-100 sm:text-lg md:group-hover:text-[#C4A484] md:dark:group-hover:text-[#E6D5C3]">Primer 50% tras el aprobado</span>
+            <svg class="h-4 w-4 shrink-0 rotate-0 transform text-black transition-transform duration-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5.5 15.5 12 9 18.5"/></svg>
+          </button>
+          <div data-accordion-panel class="max-h-0 overflow-hidden opacity-0 transition-all duration-300">
+            <p class="pb-4 pt-1 text-sm leading-relaxed text-stone-600 dark:text-stone-400 sm:text-base">Solo abonas el primer 50% cuando has visto la demo en tu móvil y das el visto bueno. Si no te gusta, no pagas nada.</p>
+          </div>
+        </div>
+        <div data-accordion-item>
+          <button type="button" data-accordion-trigger aria-expanded="false" class="flex w-full cursor-pointer items-center justify-between py-4 text-left group">
+            <span class="text-base font-bold text-stone-900 transition-colors dark:text-stone-100 sm:text-lg md:group-hover:text-[#C4A484] md:dark:group-hover:text-[#E6D5C3]">Segundo 50% a la entrega</span>
+            <svg class="h-4 w-4 shrink-0 rotate-0 transform text-black transition-transform duration-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5.5 15.5 12 9 18.5"/></svg>
+          </button>
+          <div data-accordion-panel class="max-h-0 overflow-hidden opacity-0 transition-all duration-300">
+            <p class="pb-4 pt-1 text-sm leading-relaxed text-stone-600 dark:text-stone-400 sm:text-base">El resto se abona con la web terminada: dominio definitivo conectado, ficha de Google Maps con tu enlace y códigos QR listos.</p>
+          </div>
+        </div>
+      </div>
+      <p class="mt-5 flex items-start gap-2 text-sm leading-relaxed text-stone-600 dark:text-stone-300">
+        <svg class="mt-0.5 h-4 w-4 shrink-0 text-emerald-700 dark:text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+        <span>Pago 100% seguro: transferencia bancaria o Bizum tras dar el visto bueno a tu demo interactiva.</span>
+      </p>
+    </aside>
 
     <div id="plan-tabs" class="mb-6 grid grid-cols-3 gap-1 rounded-2xl bg-stone-200/80 p-1 dark:bg-stone-800/80 sm:mb-8 md:hidden" role="tablist" aria-label="Planes">
       <button type="button" role="tab" data-plan-tab="basico" aria-selected="false" class="rounded-xl border-2 border-transparent px-2 py-3 text-center text-sm font-medium leading-tight text-stone-600 transition-[background-color,border-color,color,box-shadow] duration-300 ease-out hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100">Básico</button>
@@ -750,7 +795,7 @@
           <svg class="h-4 w-4 shrink-0 text-black transition-transform duration-200 transform rotate-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5.5 15.5 12 9 18.5"/></svg>
         </button>
         <div data-accordion-panel class="max-h-0 opacity-0 overflow-hidden transition-all duration-300">
-          <p class="text-stone-600 dark:text-stone-400 text-sm sm:text-base leading-relaxed pb-4 pt-1">Ves tu carta y el diseño montados con tus platos y precios reales antes de la publicación definitiva. Si algo no encaja, lo ajustamos contigo y el segundo pago solo se abona cuando la web esté 100% lista y aprobada por ti.</p>
+          <p class="text-stone-600 dark:text-stone-400 text-sm sm:text-base leading-relaxed pb-4 pt-1">No pagas nada hasta que ves tu web funcionando en el móvil y nos das el visto bueno. Primero te enseñamos una demo interactiva con los datos de tu local, sin adelanto. El primer 50% solo si apruebas esa demo. El otro 50% cuando publicamos la web definitiva, con dominio, ficha de Google Maps y códigos QR listos. Si no te convence, no pagas nada. Pago 100% seguro: transferencia bancaria o Bizum tras dar el visto bueno a tu demo interactiva.</p>
         </div>
       </div>
       <div data-accordion-item>
@@ -766,32 +811,35 @@
   </section>
   <script>
     (function () {
-      var root = document.getElementById('objeciones-accordion');
-      if (!root) return;
-      root.querySelectorAll('[data-accordion-trigger]').forEach(function (trigger) {
-        trigger.addEventListener('click', function () {
-          var item = trigger.closest('[data-accordion-item]');
-          var wasOpen = trigger.getAttribute('aria-expanded') === 'true';
-          root.querySelectorAll('[data-accordion-item]').forEach(function (other) {
-            var button = other.querySelector('[data-accordion-trigger]');
-            var panel = other.querySelector('[data-accordion-panel]');
-            var icon = button.querySelector('svg');
-            button.setAttribute('aria-expanded', 'false');
-            panel.classList.add('max-h-0', 'opacity-0');
-            panel.classList.remove('max-h-40', 'opacity-100');
-            icon.classList.add('rotate-0');
-            icon.classList.remove('rotate-90');
+      function bindAccordion(root) {
+        if (!root) return;
+        root.querySelectorAll('[data-accordion-trigger]').forEach(function (trigger) {
+          trigger.addEventListener('click', function () {
+            var item = trigger.closest('[data-accordion-item]');
+            var wasOpen = trigger.getAttribute('aria-expanded') === 'true';
+            root.querySelectorAll('[data-accordion-item]').forEach(function (other) {
+              var button = other.querySelector('[data-accordion-trigger]');
+              var panel = other.querySelector('[data-accordion-panel]');
+              var icon = button.querySelector('svg');
+              button.setAttribute('aria-expanded', 'false');
+              panel.classList.add('max-h-0', 'opacity-0');
+              panel.classList.remove('max-h-96', 'opacity-100');
+              icon.classList.add('rotate-0');
+              icon.classList.remove('rotate-90');
+            });
+            if (wasOpen) return;
+            var panel = item.querySelector('[data-accordion-panel]');
+            var icon = trigger.querySelector('svg');
+            trigger.setAttribute('aria-expanded', 'true');
+            panel.classList.remove('max-h-0', 'opacity-0');
+            panel.classList.add('max-h-96', 'opacity-100');
+            icon.classList.remove('rotate-0');
+            icon.classList.add('rotate-90');
           });
-          if (wasOpen) return;
-          var panel = item.querySelector('[data-accordion-panel]');
-          var icon = trigger.querySelector('svg');
-          trigger.setAttribute('aria-expanded', 'true');
-          panel.classList.remove('max-h-0', 'opacity-0');
-          panel.classList.add('max-h-40', 'opacity-100');
-          icon.classList.remove('rotate-0');
-          icon.classList.add('rotate-90');
         });
-      });
+      }
+      bindAccordion(document.getElementById('objeciones-accordion'));
+      bindAccordion(document.getElementById('garantia-pasos'));
     })();
   </script>
 
@@ -807,7 +855,7 @@
             <div id="pack-extras" class="pack-figure space-y-1"></div>
           </div>
           <div class="mt-5 space-y-1 border-t border-stone-200 pt-4 text-sm dark:border-stone-800">
-            <p id="pack-setup" class="pack-figure font-semibold text-stone-900 dark:text-stone-100">Total montaje inicial: 0 € + IVA (Anticipo 50%: 0 € + IVA)</p>
+            <p id="pack-setup" class="pack-figure font-semibold text-stone-900 dark:text-stone-100">Total montaje inicial: 0 € + IVA (50% tras aprobar tu demo interactiva · 50% al publicar tu web definitiva)</p>
             <p id="pack-month" class="pack-figure font-semibold text-stone-900 dark:text-stone-100">Mantenimiento mensual: —</p>
           </div>
           <button type="button" id="pack-quote" class="mt-6 bg-emerald-600 font-bold text-white shadow-md transition-all duration-150 ease-out cursor-pointer hover:translate-y-0.5 hover:shadow-sm hover:scale-[0.99] hover:bg-emerald-700 active:translate-y-1 active:scale-[0.97] py-3.5 px-6 rounded-full w-full sm:w-auto">Pedir presupuesto de este Pack ↗</button>
@@ -866,7 +914,7 @@
       <p>El sitio web VisiWeb Madrid informa sobre servicios de digitalización y posicionamiento local para hostelería en Alcobendas, San Sebastián de los Reyes y Madrid.</p>
       <p>El titular opera bajo el nombre comercial VisiWeb Madrid. Los datos identificativos completos (razón social o nombre, NIF y domicilio) se facilitan antes de la contratación y a cualquier persona que los solicite por el canal de contacto de esta web.</p>
       <p>Los contenidos, textos, diseño y marca de este sitio son titularidad de VisiWeb Madrid. Queda prohibida su reproducción no autorizada.</p>
-      <p>Los precios publicados son orientativos de los planes descritos. El montaje se abona al 50% a la confirmación del proyecto y al 50% restante a la entrega y publicación de la web. La cuota de mantenimiento es mensual, con un compromiso inicial de 12 meses, e incluye soporte, actualizaciones, hosting y dominio. El dominio es en todo momento propiedad del cliente.</p>
+      <p>Los precios publicados son orientativos de los planes descritos. El montaje se abona al 50% tras aprobar tu demo interactiva y al 50% al publicar tu web definitiva. La demo se presenta antes, sin coste: si no das el visto bueno, no hay ningún pago. La cuota de mantenimiento es mensual, con un compromiso inicial de 12 meses, e incluye soporte, actualizaciones, hosting y dominio. El dominio es en todo momento propiedad del cliente. Los pagos se tramitan mediante transferencia bancaria estándar o Bizum tras la aceptación expresa de la demostración web.</p>
       <p>VisiWeb Madrid no se responsabiliza del uso que terceros hagan de los enlaces externos, incluido WhatsApp.</p>
     </div>
   </dialog>
@@ -879,11 +927,17 @@
     <div class="max-h-[70vh] space-y-4 overflow-y-auto px-6 py-5 text-sm leading-relaxed text-stone-500 dark:text-stone-300">
       <section class="space-y-2">
         <h3 class="font-semibold text-stone-900 dark:text-stone-100">1. Formato y condiciones de pago</h3>
-        <p>El desarrollo de la web se cobra al 50% de anticipo a la confirmación del proyecto y al 50% restante a la entrega y publicación de la web.</p>
+        <p>No pagas nada hasta que ves tu web funcionando y nos das el visto bueno. El pago va en tres pasos, sin adelanto a ciegas:</p>
+        <ul class="list-disc space-y-1 pl-5">
+          <li>Demo sin coste: diseñamos y presentamos una demo interactiva y funcional con los datos de tu local. Cero euros por adelantado.</li>
+          <li>Primer 50%: solo cuando has visto esa demo en tu móvil y das el visto bueno formal. Si no te convence, no pagas nada.</li>
+          <li>Segundo 50%: cuando la web está terminada, con el dominio definitivo conectado, la ficha de Google Maps optimizada con tu enlace y los códigos QR listos.</li>
+        </ul>
+        <p>Los pagos se tramitan mediante transferencia bancaria estándar o Bizum tras la aceptación expresa de la demostración web.</p>
       </section>
       <section class="space-y-2">
         <h3 class="font-semibold text-stone-900 dark:text-stone-100">2. Plazos estimados de entrega</h3>
-        <p>Los plazos de desarrollo comienzan a computar tras la recepción completa del material (carta de raciones, precios, fotos y accesos necesarios) y la confirmación del anticipo inicial.</p>
+        <p>La demo se prepara con tu carta, precios, fotos y accesos, sin pago previo. Los plazos de la web definitiva empiezan cuando das el visto bueno a esa demo y se recibe el primer 50%.</p>
         <ul class="list-disc space-y-1 pl-5">
           <li>Plan Básico: 48 horas laborables.</li>
           <li>Plan Gastro Premium: 5 a 7 días laborables.</li>
@@ -1185,7 +1239,7 @@
         extrasEl.innerHTML = extras.map(function (item) {
           return '<p>+ ' + item.label + ' (' + euroIva(item.price, item.suffix) + ')</p>';
         }).join('');
-        setupEl.textContent = 'Total montaje inicial: ' + euroIva(setup) + ' (Anticipo 50%: ' + euroIva(half) + ')';
+        setupEl.textContent = 'Total montaje inicial: ' + euroIva(setup) + ' (50% tras aprobar tu demo interactiva: ' + euroIva(half) + ' · 50% al publicar tu web definitiva: ' + euroIva(half) + ')';
         monthEl.textContent = 'Mantenimiento mensual: ' + (maint.name ? euroIva(maint.price, '/mes') : '—');
         [webEl, maintEl, extrasEl, setupEl, monthEl].forEach(pulse);
       }
@@ -1214,7 +1268,7 @@
           '- Web: ' + (web.name ? web.name + ' (' + euroIva(web.price) + ')' : 'Sin elegir'),
           '- Mantenimiento: ' + (maint.name ? maint.name + ' (' + euroIva(maint.price, '/mes') + ')' : 'Sin elegir'),
           '- Extras: ' + extraText,
-          '- Total montaje: ' + euroIva(setup) + ' (50% anticipo: ' + euroIva(half) + ')',
+          '- Total montaje: ' + euroIva(setup) + ' (50% tras aprobar tu demo interactiva: ' + euroIva(half) + ' · 50% al publicar tu web definitiva: ' + euroIva(half) + ')',
           '¿Podemos ver la demo y ponerlo en marcha?'
         ].join('\n');
       }

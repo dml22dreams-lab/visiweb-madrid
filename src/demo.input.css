@@ -81,6 +81,17 @@
     border-radius: 4px;
   }
 
+  #booking-form input:focus,
+  #booking-form input:focus-visible,
+  #booking-form textarea:focus,
+  #booking-form textarea:focus-visible,
+  #booking-form .book-select-trigger:focus,
+  #booking-form .book-select-trigger:focus-visible {
+    outline: none;
+    outline-offset: 0;
+    box-shadow: none;
+  }
+
   @media (prefers-color-scheme: dark) {
     :focus-visible {
       outline-color: theme('colors.slate.100');
