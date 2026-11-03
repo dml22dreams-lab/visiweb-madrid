@@ -2034,15 +2034,16 @@
   }
 
   function pinBilingual(node, a, b) {
-    if (typeof a !== 'string' || typeof b !== 'string' || !a || !b || a === b) return;
-    if (a.length > 48 || b.length > 48) return;
+    if (typeof a !== 'string' || typeof b !== 'string' || !a || !b || a === b) return 0;
+    if (a.length > 48 || b.length > 48) return 0;
     const cs = getComputedStyle(node);
     const extra = parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight)
       + parseFloat(cs.borderLeftWidth) + parseFloat(cs.borderRightWidth);
-    node.style.minWidth = Math.ceil(Math.max(labelWidth(node, a), labelWidth(node, b)) + extra) + 'px';
+    return Math.ceil(Math.max(labelWidth(node, a), labelWidth(node, b)) + extra);
   }
 
   function pinChromeLabels() {
+    const groups = new Map();
     document.querySelectorAll('[data-i18n]').forEach((node) => {
       if (node.childElementCount) return;
       if (node.closest('p, h1, h2, h3, h4, li, dd, dt, label')) return;
@@ -2052,7 +2053,22 @@
         || node.classList.contains('btn-outline')
         || node.classList.contains('tab');
       if (!inChrome) return;
-      pinBilingual(node, D.i18n.es[key], D.i18n.en[key]);
+      const width = pinBilingual(node, D.i18n.es[key], D.i18n.en[key]);
+      if (!width) return;
+      const parent = node.parentElement;
+      if (!groups.has(parent)) groups.set(parent, []);
+      groups.get(parent).push({ node, width });
+    });
+    groups.forEach((items, parent) => {
+      if (!parent) return;
+      const styles = getComputedStyle(parent);
+      const gap = parseFloat(styles.columnGap) || parseFloat(styles.gap) || 0;
+      const sum = items.reduce((total, item) => total + item.width, 0) + gap * Math.max(0, items.length - 1);
+      if (sum > parent.clientWidth) {
+        items.forEach((item) => { item.node.style.minWidth = ''; });
+        return;
+      }
+      items.forEach((item) => { item.node.style.minWidth = item.width + 'px'; });
     });
   }
 

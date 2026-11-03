@@ -4,8 +4,24 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>VisiWeb Madrid | Digitalización y Webs para Bares y Restaurantes</title>
-  <meta name="description" content="VisiWeb Madrid (también conocidos como Bisiweb o Visi Web). Agencia líder en diseño web y cartas digitales para hostelería y restaurantes en Alcobendas.">
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23171717'/%3E%3Cpath d='M7 9L15 24L23 9' stroke='%23ffffff' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3Ccircle cx='24' cy='8' r='3' fill='%2310b981'/%3E%3C/svg%3E">
+  <meta name="description" content="VisiWeb Madrid (a veces buscado como Bisiweb o Visi Web): diseño web profesional, cartas digitales interactivas con alérgenos y reservas para hostelería en Alcobendas y Madrid.">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": "VisiWeb Madrid",
+    "alternateName": ["Bisiweb", "Visi Web", "Visiwev", "Bisiweb Madrid", "Visi Web Madrid"],
+    "url": "https://visiwebmadrid.com",
+    "description": "Agencia especializada en cartas digitales, reservas y presencia web para restaurantes y hostelería.",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Alcobendas",
+      "addressRegion": "Madrid",
+      "addressCountry": "ES"
+    }
+  }
+  </script>
+  <link rel="icon" type="image/svg+xml" href="assets/visiweb-icon.svg">
   <script>
     try {
       var mobile = window.matchMedia('(max-width: 767px)').matches;
@@ -15,6 +31,24 @@
     window.visiwebWa = function (text) {
       return 'https://api.whatsapp.com/send?phone=' + window.WHATSAPP_PHONE + '&text=' + encodeURIComponent(text || '');
     };
+  </script>
+  <script>
+    (function () {
+      var Native = window.MutationObserver;
+      function Observer(callback) {
+        return new Native(function (records, observer) {
+          var relevant = [];
+          for (var i = 0; i < records.length; i++) {
+            var record = records[i];
+            if (record.type === 'attributes' && record.attributeName === 'class' && record.target === document.documentElement) continue;
+            relevant.push(record);
+          }
+          if (relevant.length) callback(relevant, observer);
+        });
+      }
+      Observer.prototype = Native.prototype;
+      window.MutationObserver = Observer;
+    })();
   </script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -58,6 +92,7 @@
 
     html { color-scheme: only light; }
     html.dark { color-scheme: dark; }
+    html.theme-swap, html.theme-swap * { transition: none !important; }
     body { font-family: 'Source Sans 3', sans-serif; }
     h1, h2, h3, h4 { font-family: 'Source Serif 4', Georgia, serif; }
 
@@ -904,7 +939,7 @@
     </div>
     <div class="border-t border-stone-200 px-4 py-4 text-center dark:border-stone-800">
       <p class="text-xs text-stone-500">© 2026 VisiWeb Madrid. Todos los derechos reservados.</p>
-      <p class="mt-1 text-[9px] text-stone-400 opacity-60">¿Buscabas Bisiweb, Visi Web o Visiwev? Has llegado al lugar correcto. Somos VisiWeb Madrid.</p>
+      <p class="mt-3 text-[10px] text-stone-400/60 text-center tracking-normal">¿Buscabas Bisiweb, Visi Web o Visiwev? Estás en el sitio oficial de VisiWeb Madrid.</p>
     </div>
   </footer>
 
@@ -1028,9 +1063,13 @@
 
       toggles.forEach(function (toggle) {
         toggle.addEventListener('click', function () {
+          root.classList.add('theme-swap');
           var dark = root.classList.toggle('dark');
           try { localStorage.setItem('theme', dark ? 'dark' : 'light'); } catch (e) {}
           syncToggle();
+          requestAnimationFrame(function () {
+            requestAnimationFrame(function () { root.classList.remove('theme-swap'); });
+          });
         });
       });
       syncToggle();
