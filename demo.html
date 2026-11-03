@@ -636,11 +636,14 @@
     @media (prefers-color-scheme: dark) {
       .site-split { border-top-color: #e7e5e4; }
     }
+    .site-nav { z-index: 50; }
     #menu-tabs-bar {
+      top: var(--site-nav-h, 0px);
       background-color: rgb(255 255 255 / 0.95);
       -webkit-backdrop-filter: blur(12px);
       backdrop-filter: blur(12px);
     }
+    #allergen-table thead th { top: var(--site-nav-h, 0px); }
     #allergen-filter-panel {
       display: grid;
       grid-template-rows: 0fr;
@@ -763,9 +766,9 @@
   <a href="#contenido" class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[80] focus:rounded-full focus:bg-slate-900 focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white dark:focus:bg-slate-100 dark:focus:text-slate-900" data-i18n="skipToContent">Ir al contenido</a>
 
   <!-- ============================ CABECERA ============================ -->
-  <div data-site-sticky class="border-b border-stone-200 bg-white shadow-sm dark:border-stone-800 dark:bg-stone-900">
+  <div data-site-sticky class="bg-white dark:bg-stone-900">
   <div id="demo-sales-banner" class="w-full border-b border-stone-100 bg-white/90 backdrop-blur-sm dark:border-stone-800 dark:bg-[#202124]/90">
-    <div class="mx-auto flex max-w-4xl items-center gap-2 px-3 py-2">
+    <div class="mx-auto flex max-w-4xl items-center gap-6 px-3 py-2">
       <div id="demo-banner-collapsed" class="flex shrink-0 cursor-pointer flex-col items-center text-stone-400 transition-colors hover:text-stone-600" onclick="toggleDemoBanner()">
         <svg class="mb-0.5 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
         <span class="text-[9px] font-semibold uppercase tracking-widest">Pulsa aquí</span>
@@ -824,15 +827,18 @@
         </div>
       </div>
 
-      <nav class="site-nav grid w-full grid-cols-4 items-end px-1 text-center sm:px-2" aria-label="Secciones" data-i18n-aria-label="navLabel">
-        <a href="#inicio" data-nav="inicio" class="site-nav-link rounded-lg px-0.5 text-xs font-medium outline-none focus:outline-none focus-visible:ring-2 focus-visible:ring-stone-400/50 focus-visible:ring-offset-2 sm:px-2 sm:text-sm" aria-current="page" data-i18n="navHome">Inicio</a>
-        <a href="#carta" data-nav="carta" class="site-nav-link rounded-lg px-0.5 text-xs font-medium outline-none focus:outline-none focus-visible:ring-2 focus-visible:ring-stone-400/50 focus-visible:ring-offset-2 sm:px-2 sm:text-sm" data-i18n="navMenu">Carta</a>
-        <a href="#local" data-nav="local" class="site-nav-link rounded-lg px-0.5 text-xs font-medium outline-none focus:outline-none focus-visible:ring-2 focus-visible:ring-stone-400/50 focus-visible:ring-offset-2 sm:px-2 sm:text-sm" data-i18n="navLocal">El local</a>
-        <a href="#reservas" data-nav="reservas" class="site-nav-link rounded-lg px-0.5 text-xs font-medium outline-none focus:outline-none focus-visible:ring-2 focus-visible:ring-stone-400/50 focus-visible:ring-offset-2 sm:px-2 sm:text-sm" data-i18n="navBook">Reservas</a>
-      </nav>
     </div>
   </header>
   </div>
+
+  <nav class="site-nav sticky top-0 z-50 border-b border-stone-200 bg-white shadow-sm dark:border-stone-800 dark:bg-stone-900" aria-label="Secciones" data-i18n-aria-label="navLabel">
+    <div class="mx-auto grid w-full max-w-3xl grid-cols-4 items-end px-6 text-center sm:px-7">
+      <a href="#inicio" data-nav="inicio" class="site-nav-link rounded-lg px-0.5 text-xs font-medium outline-none focus:outline-none focus-visible:ring-2 focus-visible:ring-stone-400/50 focus-visible:ring-offset-2 sm:px-2 sm:text-sm" aria-current="page" data-i18n="navHome">Inicio</a>
+      <a href="#carta" data-nav="carta" class="site-nav-link rounded-lg px-0.5 text-xs font-medium outline-none focus:outline-none focus-visible:ring-2 focus-visible:ring-stone-400/50 focus-visible:ring-offset-2 sm:px-2 sm:text-sm" data-i18n="navMenu">Carta</a>
+      <a href="#local" data-nav="local" class="site-nav-link rounded-lg px-0.5 text-xs font-medium outline-none focus:outline-none focus-visible:ring-2 focus-visible:ring-stone-400/50 focus-visible:ring-offset-2 sm:px-2 sm:text-sm" data-i18n="navLocal">El local</a>
+      <a href="#reservas" data-nav="reservas" class="site-nav-link rounded-lg px-0.5 text-xs font-medium outline-none focus:outline-none focus-visible:ring-2 focus-visible:ring-stone-400/50 focus-visible:ring-offset-2 sm:px-2 sm:text-sm" data-i18n="navBook">Reservas</a>
+    </div>
+  </nav>
 
   <main id="contenido">
 

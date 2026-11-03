@@ -2143,6 +2143,7 @@
     applyI18nBookingOptions();
     renderJsonLd();
     applyAllergenFilter();
+    syncStickyOffset();
   }
 
   function setLang(next) {
@@ -2178,9 +2179,9 @@
   }
 
   function syncStickyOffset() {
-    var bar = document.querySelector('[data-site-sticky]');
-    if (!bar) return;
-    document.documentElement.style.setProperty('--site-sticky-h', bar.offsetHeight + 'px');
+    var nav = document.querySelector('.site-nav');
+    if (!nav) return;
+    document.documentElement.style.setProperty('--site-nav-h', nav.offsetHeight + 'px');
   }
 
   /* --------------------------------- Arranque ------------------------------ */
