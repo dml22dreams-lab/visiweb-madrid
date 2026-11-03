@@ -39,7 +39,7 @@
     font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
-    padding-bottom: max(5.5rem, calc(4.5rem + env(safe-area-inset-bottom)));
+    padding-bottom: 0;
   }
 
   @media (pointer: fine) and (hover: hover) {
@@ -50,7 +50,7 @@
 
   @media (pointer: coarse), (hover: none) {
     body {
-      padding-bottom: max(5.5rem, calc(4.5rem + env(safe-area-inset-bottom)));
+      padding-bottom: 0;
     }
 
     .site-nav-link,

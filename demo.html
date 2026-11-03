@@ -271,12 +271,12 @@
       font-weight: 600;
       font-size: 13px;
       letter-spacing: 0.5px;
-      background: rgba(245, 246, 248, 0.8);
+      background: rgba(250, 250, 249, 0.4);
       background-image: none;
-      -webkit-backdrop-filter: blur(18px) saturate(180%);
-      backdrop-filter: blur(18px) saturate(180%);
-      border: 1px solid rgba(255, 255, 255, 0.7);
-      box-shadow: none;
+      -webkit-backdrop-filter: blur(16px) saturate(180%);
+      backdrop-filter: blur(16px) saturate(180%);
+      border: 1px solid rgba(231, 229, 228, 0.9);
+      box-shadow: 0 1px 2px rgba(28, 25, 23, 0.06);
     }
     #btn-lang-toggle .lang-text-wrapper {
       position: relative;
@@ -403,8 +403,8 @@
     }
     @media (prefers-color-scheme: dark) {
       #btn-lang-toggle.lang-btn {
-        background: rgba(30, 41, 59, 0.8);
-        border-color: rgba(255, 255, 255, 0.12);
+        background: rgba(41, 37, 36, 0.45);
+        border-color: rgba(87, 83, 78, 0.8);
       }
       #btn-lang-toggle .lang-text {
         color: #ffffff;
@@ -473,6 +473,7 @@
     }
     #contenido { min-height: 100dvh; }
     #booking-form .book-field { align-self: start; }
+    #comensales-reserva { cursor: pointer; padding-right: 3.5rem; }
     #booking-form .book-select-menu { display: flex; flex-direction: column; gap: 0.375rem; }
     #booking-form .book-select-option { border: 1px solid transparent; background: transparent; }
     #booking-form .book-select-option[aria-selected='true'],
@@ -700,42 +701,78 @@
         margin-left: auto;
       }
     }
-    body.pb-24 { padding-bottom: 6rem; }
+    footer { padding-bottom: calc(4.5rem + env(safe-area-inset-bottom)); }
     @media (pointer: fine) and (hover: hover) {
       #quick-bar { display: none; }
-      body.pb-24 { padding-bottom: 0; }
+      footer { padding-bottom: 5rem; }
     }
     #hero-media img {
       width: 100%;
       max-height: clamp(180px, calc(100vh - 38rem), 460px);
       object-fit: cover;
     }
+    @media (min-width: 640px) {
+      #hero-facts {
+        grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+      }
+      #hero-facts .fact-hours { text-align: center; }
+      #hero-facts .fact-price { padding-right: 1.75rem; text-align: right; }
+    }
     @media (orientation: landscape) and (max-height: 500px) {
       #contenido { min-height: 0; }
       #quick-bar { position: static; box-shadow: none; }
-      body.pb-24 { padding-bottom: 0; }
+      footer { padding-bottom: 0; }
       #allergen-dialog { max-height: none; }
+    }
+    a#plan-gastro-link {
+      display: inline-block;
+      text-decoration: none;
+      transition: transform .15s ease, box-shadow .15s ease;
+    }
+    a#plan-gastro-link:hover,
+    a#plan-gastro-link:active {
+      transform: translateY(3px) !important;
+      box-shadow: none !important;
     }
   </style>
 </head>
-<body class="bg-white pb-24 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
+<body class="bg-white text-slate-900 dark:bg-slate-950 dark:text-slate-100">
 
   <a href="#contenido" class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[80] focus:rounded-full focus:bg-slate-900 focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white dark:focus:bg-slate-100 dark:focus:text-slate-900" data-i18n="skipToContent">Ir al contenido</a>
 
   <!-- ============================ CABECERA ============================ -->
   <div data-site-sticky class="border-b border-stone-200 bg-white shadow-sm dark:border-stone-800 dark:bg-stone-900">
-  <div class="w-full bg-stone-900 text-xs text-stone-200 shadow-sm">
-    <div id="sales-bar" class="flex flex-wrap items-center gap-2 px-3 py-1.5 md:flex-nowrap md:gap-4 md:px-4">
-      <a href="index.html#gastro-premium" class="plan-pin shrink-0 rounded-full bg-amber-400 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-stone-950 no-underline" data-i18n="planBadge">Plan Gastro Premium</a>
-      <button type="button" id="sales-copy" class="min-w-0 flex-1 cursor-pointer border-0 bg-transparent p-0 text-left font-[inherit] leading-snug text-inherit" aria-expanded="false">
-        <span class="block truncate font-semibold" data-i18n="salesBar">Así quedaría tu local.</span>
-        <span class="block truncate text-[10px] text-stone-300" data-i18n="planBanner">Esta demo interactiva incluye las características del Plan Gastro Premium (390 € montaje. IVA no inc.).</span>
+  <div id="demo-sales-banner" class="w-full border-b border-stone-100 bg-white/90 backdrop-blur-sm dark:border-stone-800 dark:bg-[#202124]/90">
+    <div class="mx-auto flex max-w-4xl items-center px-3 py-2">
+      <div id="demo-banner-collapsed" class="flex shrink-0 cursor-pointer flex-col items-center text-stone-400 transition-colors hover:text-stone-600" onclick="toggleDemoBanner()">
+        <svg class="mb-0.5 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        <span class="text-[9px] font-semibold uppercase tracking-widest">Pulsa aquí</span>
+      </div>
+      <button type="button" id="demo-banner-close" onclick="toggleDemoBanner()" class="hidden shrink-0 rounded-full bg-stone-100 p-1 text-stone-400 transition-colors hover:bg-stone-200 hover:text-stone-700">
+        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
       </button>
-      <a id="sales-whatsapp" href="https://wa.me/34608975906?text=Hola%2C%20he%20visto%20la%20demo%20y%20quiero%20una%20as%C3%AD%20para%20mi%20local." target="_blank" rel="noopener" class="inline-flex h-9 shrink-0 items-center justify-center self-center whitespace-nowrap rounded-full bg-emerald-600 px-3.5 text-[11px] font-bold leading-none text-white no-underline hover:bg-emerald-500">
+      <div class="relative ml-8 shrink-0 sm:ml-12">
+        <a id="plan-gastro-link" href="https://visiwebmadrid.com/#gastro-premium" class="rounded-full border border-stone-200 bg-stone-50/50 px-3 py-1 text-[10px] font-bold uppercase tracking-wide text-stone-700 shadow-sm backdrop-blur-md dark:border-stone-700 dark:bg-stone-800/50 dark:text-stone-300 sm:text-xs">Plan Gastro Premium</a>
+        <span id="demo-banner-detail" class="absolute left-0 top-full mt-3 hidden whitespace-nowrap text-xs font-medium leading-snug text-stone-600 dark:text-stone-400 sm:text-sm">Así quedaría tu local. Esta demo es interactiva.</span>
+      </div>
+      <a id="sales-whatsapp" href="https://wa.me/34608975906?text=Hola%2C%20he%20visto%20la%20demo%20y%20quiero%20una%20as%C3%AD%20para%20mi%20local." target="_blank" rel="noopener" class="ml-auto inline-flex h-9 shrink-0 items-center justify-center self-center whitespace-nowrap rounded-full bg-emerald-600 px-3.5 text-[11px] font-bold leading-none text-white no-underline hover:bg-emerald-500">
         <span data-i18n="salesBarCta">Pide la tuya</span>
       </a>
     </div>
   </div>
+  <script>
+    function toggleDemoBanner() {
+      const collapsed = document.getElementById('demo-banner-collapsed');
+      const detail = document.getElementById('demo-banner-detail');
+      const closeBtn = document.getElementById('demo-banner-close');
+      const open = detail.classList.contains('hidden');
+      detail.classList.toggle('hidden', !open);
+      closeBtn.classList.toggle('hidden', !open);
+      collapsed.classList.toggle('hidden', open);
+      document.getElementById('demo-sales-banner').classList.toggle('pb-8', open);
+      window.dispatchEvent(new Event('resize'));
+    }
+  </script>
   <header>
     <div class="mx-auto max-w-3xl px-5">
       <div class="flex items-center justify-between gap-3 border-b border-stone-200 py-3 dark:border-stone-800 sm:py-4">
@@ -748,9 +785,9 @@
           </div>
           <span class="min-w-0">
           <p class="font-serif text-lg font-semibold leading-tight tracking-tight text-slate-900 dark:text-slate-100 sm:text-xl">Taberna El Norte</p>
-          <p id="status" class="mt-0.5 flex items-center gap-1.5 text-xs font-medium text-slate-600 dark:text-slate-400">
-            <span id="status-dot" class="live-dot h-1.5 w-1.5 shrink-0 rounded-full bg-slate-400"></span>
-            <span id="status-text">&nbsp;</span>
+          <p id="status" class="mt-0.5 flex items-center">
+            <span class="mr-1 text-[10px] text-[#137333]">●</span>
+            <span id="status-text" class="text-xs font-medium text-stone-600">Abierto ahora</span>
           </p>
           </span>
         </a>
@@ -786,26 +823,25 @@
 
         <p class="mx-auto mt-5 max-w-sm text-center text-base leading-relaxed text-slate-600 dark:text-slate-400 sm:text-lg" data-i18n="heroSubtitle">Raciones caseras en el corazón de Alcobendas.</p>
 
-        <div class="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
-          <a href="#reservas" class="btn-primary w-full sm:w-auto" data-i18n="reserve">Reservar mesa</a>
-          <a href="#carta" class="btn-outline w-full sm:w-auto" data-i18n="featuredCta">Ver la carta completa</a>
+        <div class="mt-9">
+          <a href="#carta" class="btn-outline w-full bg-white dark:bg-slate-950" data-i18n="featuredCta">Ver la carta completa</a>
         </div>
 
         <figure id="hero-media" class="mt-8 max-h-[460px] w-full overflow-hidden rounded-2xl bg-slate-100 shadow-sm dark:bg-slate-900"></figure>
 
-        <dl class="mt-4 grid grid-cols-2 gap-x-8 gap-y-6 sm:grid-cols-3">
+        <dl id="hero-facts" class="mt-4 grid grid-cols-2 gap-x-8 gap-y-6 sm:grid-cols-3">
           <div>
             <dt class="text-[10px] font-semibold uppercase tracking-[.18em] text-slate-600 dark:text-slate-400" data-i18n="labelAddress">Dirección</dt>
             <dd id="info-address" class="mt-1.5 text-sm leading-snug"></dd>
           </div>
-          <div>
+          <div class="fact-hours">
             <dt class="text-[10px] font-semibold uppercase tracking-[.18em] text-slate-600 dark:text-slate-400" data-i18n="labelToday">Horario de hoy</dt>
             <dd class="mt-1.5 text-sm leading-snug">
-              <span id="info-today" class="tabular"></span>
+              <div id="info-today" class="tabular whitespace-nowrap"></div>
               <a href="#horarios" class="mt-1 block text-xs text-slate-600 underline underline-offset-4 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100" data-i18n="allHours">Ver todos los horarios</a>
             </dd>
           </div>
-          <div class="col-span-2 sm:col-span-1">
+          <div class="fact-price col-span-2 sm:col-span-1">
             <dt class="text-[10px] font-semibold uppercase tracking-[.18em] text-slate-600 dark:text-slate-400" data-i18n="labelMenuDay">Menú del día</dt>
             <dd id="info-menu-price" class="mt-1.5 text-sm leading-snug tabular">13,50 €</dd>
           </div>
@@ -1091,8 +1127,9 @@
             </div>
             <div class="book-field">
               <span id="book-guests-label" data-i18n="bookGuests">Comensales</span>
-              <input type="text" id="comensales-reserva" placeholder="Elegir comensales" readonly required data-i18n-placeholder="bookGuestsPlaceholder" aria-labelledby="book-guests-label">
               <div class="book-select">
+                <input type="text" id="comensales-reserva" placeholder="Elegir comensales" readonly required data-i18n-placeholder="bookGuestsPlaceholder" aria-labelledby="book-guests-label">
+                <svg class="book-select-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5.5 15.5 12 9 18.5"/></svg>
                 <select id="book-guests" name="guests" required tabindex="-1" aria-labelledby="book-guests-label"></select>
               </div>
               <div id="guests-picker" hidden>
@@ -1136,7 +1173,14 @@
 
   <!-- ================================ PIE ================================ -->
   <footer class="site-split mt-20 bg-stone-50 dark:bg-stone-950">
-    <div class="mx-auto max-w-4xl px-6 py-16 sm:py-20">
+    <div class="mx-auto max-w-4xl px-6 pb-0 pt-16 sm:pt-20">
+
+      <div class="flex justify-center mb-6 w-full">
+        <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="flex items-center gap-1.5 text-sm text-stone-500 hover:text-stone-900 transition-colors cursor-pointer">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+          <span class="underline underline-offset-4 decoration-stone-300">Volver al inicio</span>
+        </button>
+      </div>
 
       <div class="grid items-stretch gap-5 md:grid-cols-2">
 
@@ -1157,7 +1201,7 @@
           </div>
 
           <div class="mt-8 flex flex-col gap-2.5">
-            <a href="#reservas" class="btn-primary w-full" data-i18n="reserve">Reservar mesa</a>
+            <a href="#reservas" class="btn-primary hidden w-full sm:flex" data-i18n="reserve">Reservar mesa</a>
             <a id="footer-phone" href="tel:+34600000000" class="btn-call justify-center">
               <svg class="h-4 w-4 shrink-0 text-stone-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6.6 10.8a12.8 12.8 0 0 0 5.6 5.6l2-2a1 1 0 0 1 1-.2 9.6 9.6 0 0 0 3.5.6 1 1 0 0 1 1 1V19a1 1 0 0 1-1 1A17 17 0 0 1 4 6a1 1 0 0 1 1-1h3.2a1 1 0 0 1 1 1 9.6 9.6 0 0 0 .6 3.5 1 1 0 0 1-.2 1l-2 2z"/></svg>
               <span id="footer-phone-number" class="tabular">+34 600 00 00 00</span>
@@ -1173,21 +1217,21 @@
         </section>
       </div>
 
-      <div class="mx-auto mt-14 h-px w-24 bg-stone-300 dark:bg-stone-700"></div>
+      <div class="mb-0 mt-8 flex flex-col items-center space-y-3 text-center text-[10px] text-stone-500 opacity-70 sm:text-xs">
+        <nav class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2" aria-label="Información legal" data-i18n-aria-label="legalTitle">
+          <a href="aviso-legal.html" class="transition-colors hover:text-stone-700 dark:hover:text-stone-200" data-i18n="legalNotice">Aviso legal</a>
+          <a href="politica-privacidad.html" class="transition-colors hover:text-stone-700 dark:hover:text-stone-200" data-i18n="privacy">Política de privacidad</a>
+          <a href="politica-cookies.html" class="transition-colors hover:text-stone-700 dark:hover:text-stone-200" data-i18n="cookies">Política de cookies</a>
+        </nav>
 
-      <nav class="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[11px] tracking-wide" aria-label="Información legal" data-i18n-aria-label="legalTitle">
-        <a href="aviso-legal.html" class="text-stone-400 transition-colors hover:text-stone-700 dark:hover:text-stone-200" data-i18n="legalNotice">Aviso legal</a>
-        <a href="politica-privacidad.html" class="text-stone-400 transition-colors hover:text-stone-700 dark:hover:text-stone-200" data-i18n="privacy">Política de privacidad</a>
-        <a href="politica-cookies.html" class="text-stone-400 transition-colors hover:text-stone-700 dark:hover:text-stone-200" data-i18n="cookies">Política de cookies</a>
-      </nav>
+        <p id="demo-notice" class="max-w-md leading-relaxed" data-i18n="demoNotice">Maqueta de ejemplo de VisiWeb Madrid. El negocio, los precios, los horarios y las reseñas son ficticios.</p>
 
-      <p id="demo-notice" class="mx-auto mt-6 max-w-md text-center text-xs leading-relaxed text-stone-400" data-i18n="demoNotice">Maqueta de ejemplo de VisiWeb Madrid. El negocio, los precios, los horarios y las reseñas son ficticios.</p>
-
-      <p class="mt-2 text-center text-xs text-stone-400">
-        <span data-i18n="demoCreditLead">Web demo desarrollada por</span>
-        <a href="https://visiwebmadrid.com" target="_blank" rel="noopener" class="underline transition-colors hover:text-slate-700 dark:hover:text-slate-200">VisiWeb Madrid</a>
-        <span data-i18n="demoCreditPlan">· Realizada con el Plan Gastro Premium</span>
-      </p>
+        <p class="mb-0">
+          <span data-i18n="demoCreditLead">Web demo desarrollada por</span>
+          <a href="https://visiwebmadrid.com" target="_blank" rel="noopener" class="underline transition-colors hover:text-slate-700 dark:hover:text-slate-200">VisiWeb Madrid</a>
+          <span data-i18n="demoCreditPlan">· Realizada con el Plan Gastro Premium</span>
+        </p>
+      </div>
     </div>
 
   </footer>
@@ -1251,6 +1295,6 @@
   </dialog>
 
   <script src="demo-data.js"></script>
-  <script src="demo-app.js"></script>
+  <script src="demo-app.js?v=24"></script>
 </body>
 </html>

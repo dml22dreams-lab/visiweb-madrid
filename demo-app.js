@@ -243,23 +243,14 @@
   }
 
   function renderStatus() {
-    const state = openState();
-    const dot = $('#status-dot');
     const text = $('#status-text');
-
-    dot.className = 'h-1.5 w-1.5 shrink-0 rounded-full ' +
-      (state.open ? 'live-dot bg-emerald-600 dark:bg-emerald-400' : 'bg-slate-400 dark:bg-slate-500');
-
-    if (state.open) text.textContent = t('statusOpen');
-    else if (state.at && state.day !== undefined) {
-      text.textContent = t('statusOpensDay', { day: D.i18n[lang].days[state.day], time: state.at });
-    } else if (state.at) text.textContent = t('statusOpensAt', { time: state.at });
-    else text.textContent = t('statusClosed');
+    if (text) text.textContent = t('statusOpen');
   }
 
   function renderToday() {
+    const node = $('#info-today');
     const today = dayRanges(nowInMadrid().day);
-    $('#info-today').textContent = today.length ? rangesText(today) : t('closedToday');
+    node.textContent = today.length ? rangesText(today) : t('closedToday');
   }
 
   function renderHoursList() {
@@ -272,7 +263,11 @@
       const dd = el('dd');
       if (group.ranges.length) {
         dd.className = 'hours-time';
-        dd.textContent = rangesText(group.ranges, ' · ').replace(/–/g, '-');
+        group.ranges.forEach((range) => {
+          const line = el('span', 'block whitespace-nowrap');
+          line.textContent = rangesText([range]).replace(/–/g, '-');
+          dd.appendChild(line);
+        });
       } else {
         const badge = el('span', 'hours-closed');
         badge.textContent = t('closed');
@@ -498,13 +493,13 @@
     }
     if (hash === 'horarios') {
       const hours = $('#horarios');
-      if (hours) hours.scrollIntoView({ block: 'start' });
+      if (hours && !quiet) hours.scrollIntoView({ block: 'start' });
       return;
     }
     if (hash === 'ubicacion' || hash === 'historia') {
       showPage('local', { quiet: true });
       const target = hash === 'historia' ? $('#historia') : $('#ubicacion');
-      if (target && (!quiet || hash === 'historia')) target.scrollIntoView({ block: 'start' });
+      if (target && !quiet) target.scrollIntoView({ block: 'start' });
       return;
     }
     const tab = menuTabByAnchor(hash);
@@ -1563,15 +1558,19 @@
 
   function setGuestsPickerOpen(open) {
     const panel = $('#guests-picker');
+    const wrap = panel && panel.parentElement.querySelector('.book-select');
     if (!panel || panel.hidden === !open) {
+      if (wrap) wrap.classList.toggle('is-open', panel && !panel.hidden);
       if (open) requestAnimationFrame(() => alignGuestWheel(false));
       return;
     }
     panel.hidden = !open;
+    if (wrap) wrap.classList.toggle('is-open', open);
     if (!open) return;
     const timePanel = $('#time-picker');
     if (timePanel) timePanel.hidden = true;
     closeAllBookSelects();
+    if (wrap) wrap.classList.add('is-open');
     if (bookDatePicker && bookDatePicker.isOpen) bookDatePicker.close();
     requestAnimationFrame(() => alignGuestWheel(false));
   }
@@ -1593,7 +1592,10 @@
     });
     const area = $('#book-area');
     if (area) syncBookSelect(area);
-    initBookDatePicker();
+    if (bookDatePicker) {
+      const locale = lang === 'es' && window.flatpickr && flatpickr.l10ns && flatpickr.l10ns.es ? 'es' : 'default';
+      bookDatePicker.set('locale', locale);
+    }
   }
 
   function closeAllBookSelects() {
@@ -2129,10 +2131,12 @@
 
   function setLang(next) {
     if (!D.i18n[next] || next === lang) return;
+    const y = window.scrollY;
     lang = next;
     writeStore(STORE_LANG, next);
     renderAll();
     applyHash({ quiet: true });
+    window.scrollTo(0, y);
   }
 
   function initSalesBar() {
