@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
   <title>Taberna El Norte · Cervecería y raciones en Alcobendas</title>
   <meta name="description" content="Taberna El Norte, cervecería y raciones en Alcobendas. Carta bilingüe con alérgenos, salón y terraza, historia del local y reservas online.">
   <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
@@ -31,20 +32,21 @@
 
   <link rel="preload" href="assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/cormorant-garamond-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="assets/demo.css">
+  <link rel="stylesheet" href="assets/demo.css?v=31">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
   <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
   <style>
     .flatpickr-calendar {
       z-index: 80;
-      width: 320px;
-      padding: 0.75rem 0.85rem 0.9rem;
+      width: min(308px, calc(100vw - 1.5rem));
+      max-width: calc(100vw - 1.5rem);
+      padding: 1.05rem 0.85rem 0.7rem;
       overflow: hidden;
-      border: 1px solid #e7e5e4;
-      border-radius: 1rem;
-      background: #fafaf9;
-      box-shadow: 0 25px 50px -12px rgb(15 23 42 / 0.18);
+      border: 1px solid #eceae6;
+      border-radius: 1.25rem;
+      background: #fff;
+      box-shadow: 0 16px 40px -28px rgb(28 25 23 / 0.45);
       font-family: Inter, ui-sans-serif, system-ui, sans-serif;
     }
     .flatpickr-calendar.arrowTop:before,
@@ -57,39 +59,46 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 0.15rem;
-      padding: 0.15rem 0 0.35rem;
       position: relative;
+      height: 40px;
+      padding: 0 2.25rem;
+      margin-bottom: 0.35rem;
+      border-bottom: 1px solid #f4f2ef;
     }
     .flatpickr-months .flatpickr-month {
-      flex: 0 0 auto;
+      flex: 1 1 auto;
       width: auto;
-      height: 32px;
+      height: 40px;
       overflow: visible;
       color: #1c1917;
     }
     .flatpickr-current-month {
       display: flex;
-      align-items: center;
+      align-items: baseline;
       justify-content: center;
+      gap: 0.35rem;
       position: static;
       left: auto;
       width: auto;
-      height: 32px;
+      height: 40px;
       padding: 0;
-      font-size: 13px;
+      font-family: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+      font-size: 1.45rem;
       font-weight: 500;
-      letter-spacing: 0;
+      line-height: 40px;
+      letter-spacing: -0.02em;
     }
     .flatpickr-current-month span.cur-month,
     .flatpickr-current-month .flatpickr-monthDropdown-months,
     .flatpickr-current-month input.cur-year {
-      font-size: 13px;
+      font-family: inherit;
+      font-size: inherit;
       font-weight: 500;
+      line-height: inherit;
       color: #1c1917;
     }
     .flatpickr-current-month .numInputWrapper {
-      width: 3.4em;
+      width: 2.6em;
     }
     .flatpickr-current-month .numInputWrapper:hover {
       background: transparent;
@@ -100,25 +109,28 @@
     }
     .flatpickr-current-month input.cur-year {
       background: transparent;
+      padding: 0;
     }
     .flatpickr-current-month span.cur-month:hover {
       background: transparent;
     }
     .flatpickr-months .flatpickr-prev-month,
     .flatpickr-months .flatpickr-next-month {
-      position: static;
-      top: auto;
-      left: auto;
-      right: auto;
-      height: 32px;
+      position: absolute;
+      top: 2px;
+      height: 36px;
+      width: 36px;
       display: flex;
       align-items: center;
-      padding: 0 2px;
-      color: #1c1917;
-      fill: #1c1917;
+      justify-content: center;
+      padding: 0;
+      color: #57534e;
+      fill: #57534e;
       background: transparent;
-      border-radius: 0;
+      border-radius: 999px;
     }
+    .flatpickr-months .flatpickr-prev-month { left: 0; }
+    .flatpickr-months .flatpickr-next-month { right: 0; }
     .flatpickr-months .flatpickr-prev-month.flatpickr-disabled,
     .flatpickr-months .flatpickr-next-month.flatpickr-disabled {
       display: none;
@@ -127,61 +139,63 @@
     .flatpickr-months .flatpickr-next-month svg {
       width: 12px;
       height: 12px;
-      fill: #1c1917;
+      fill: currentColor;
     }
     .flatpickr-months .flatpickr-prev-month:hover,
     .flatpickr-months .flatpickr-next-month:hover {
-      background: transparent;
-      color: #d6d3d1;
-    }
-    .flatpickr-months .flatpickr-prev-month:hover svg,
-    .flatpickr-months .flatpickr-next-month:hover svg {
-      fill: #d6d3d1;
+      background: #f6f4f1;
+      color: #1c1917;
     }
     .flatpickr-weekdays {
-      height: 28px;
-      margin-top: 0.15rem;
+      height: 32px;
+      margin-top: 0.35rem;
+    }
+    .flatpickr-weekdays,
+    .flatpickr-weekdaycontainer {
+      width: 100%;
     }
     span.flatpickr-weekday {
       color: #a8a29e;
-      font-size: 9px;
+      font-size: 10px;
       font-weight: 500;
-      letter-spacing: 0.12em;
+      letter-spacing: 0.16em;
       text-transform: uppercase;
     }
-    .flatpickr-days {
-      width: 100%;
-    }
+    .flatpickr-innerContainer,
+    .flatpickr-rContainer,
+    .flatpickr-days,
     .dayContainer {
       width: 100%;
       min-width: 100%;
       max-width: 100%;
     }
     .flatpickr-day {
-      height: 38px;
+      height: 40px;
+      max-width: 40px;
       line-height: 38px;
-      margin: 2px 0;
-      border: 0;
+      margin: 1px 0;
+      border: 1px solid transparent;
       border-radius: 999px;
-      color: #1c1917;
-      font-weight: 500;
+      color: #292524;
+      font-size: 13px;
+      font-weight: 400;
       transition: background-color 0.15s ease, color 0.15s ease;
     }
     .flatpickr-day:hover,
     .flatpickr-day:focus {
-      background: #f5f5f4;
+      background: #f6f4f1;
       border-color: transparent;
       color: #1c1917;
     }
     .flatpickr-day.today {
-      border: 1px solid #d6d3d1;
+      border-color: #e7e5e4;
       background: transparent;
-      font-weight: 600;
+      font-weight: 500;
     }
     .flatpickr-day.today:hover,
     .flatpickr-day.today:focus {
-      background: #f5f5f4;
-      border-color: #d6d3d1;
+      background: #f6f4f1;
+      border-color: #e7e5e4;
       color: #1c1917;
     }
     .flatpickr-day.selected,
@@ -191,23 +205,28 @@
       background: #1c1917;
       border-color: #1c1917;
       color: #fff;
-      font-weight: 600;
+      font-weight: 500;
     }
     .flatpickr-day.flatpickr-disabled,
-    .flatpickr-day.flatpickr-disabled:hover {
-      color: #e7e5e4;
-      background: transparent;
-      cursor: not-allowed;
-    }
+    .flatpickr-day.flatpickr-disabled:hover,
     .flatpickr-day.prevMonthDay,
     .flatpickr-day.nextMonthDay {
       color: #d6d3d1;
+      background: transparent;
+      border-color: transparent;
+    }
+    .flatpickr-day.flatpickr-disabled,
+    .flatpickr-day.flatpickr-disabled:hover {
+      cursor: not-allowed;
     }
     @media (prefers-color-scheme: dark) {
       .flatpickr-calendar {
-        border-color: #44403c;
+        border-color: #292524;
         background: #1c1917;
-        box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.45);
+        box-shadow: 0 18px 40px -28px rgb(0 0 0 / 0.7);
+      }
+      .flatpickr-months {
+        border-bottom-color: #292524;
       }
       .flatpickr-months .flatpickr-month,
       .flatpickr-current-month span.cur-month,
@@ -216,22 +235,18 @@
       .flatpickr-day {
         color: #fafaf9;
       }
+      span.flatpickr-weekday {
+        color: #78716c;
+      }
       .flatpickr-months .flatpickr-prev-month,
-      .flatpickr-months .flatpickr-next-month,
-      .flatpickr-months .flatpickr-prev-month svg,
-      .flatpickr-months .flatpickr-next-month svg {
-        color: #fafaf9;
-        fill: #fafaf9;
+      .flatpickr-months .flatpickr-next-month {
+        color: #d6d3d1;
         background: transparent;
       }
       .flatpickr-months .flatpickr-prev-month:hover,
       .flatpickr-months .flatpickr-next-month:hover {
-        background: transparent;
-        color: #a8a29e;
-      }
-      .flatpickr-months .flatpickr-prev-month:hover svg,
-      .flatpickr-months .flatpickr-next-month:hover svg {
-        fill: #a8a29e;
+        background: #292524;
+        color: #fafaf9;
       }
       .flatpickr-day:hover,
       .flatpickr-day:focus {
@@ -239,7 +254,7 @@
         color: #fafaf9;
       }
       .flatpickr-day.today {
-        border-color: #57534e;
+        border-color: #44403c;
       }
       .flatpickr-day.selected,
       .flatpickr-day.selected:hover,
@@ -250,9 +265,12 @@
         color: #1c1917;
       }
       .flatpickr-day.flatpickr-disabled,
-      .flatpickr-day.flatpickr-disabled:hover {
+      .flatpickr-day.flatpickr-disabled:hover,
+      .flatpickr-day.prevMonthDay,
+      .flatpickr-day.nextMonthDay {
         color: #44403c;
         background: transparent;
+        border-color: transparent;
       }
     }
 
@@ -480,6 +498,45 @@
     #booking-form .book-select-trigger,
     #booking-form .book-phone { min-width: 0; max-width: 100%; }
     #comensales-reserva { cursor: pointer; padding-right: 3.5rem; }
+    #booking-form .book-field > input,
+    #booking-form .book-date-wrap > input,
+    #booking-form .book-select > input,
+    #booking-form textarea,
+    #booking-form .book-select-trigger,
+    #booking-form .book-phone,
+    #booking-form .book-field > input:focus,
+    #booking-form .book-field > input:focus-visible,
+    #booking-form .book-date-wrap > input:focus,
+    #booking-form .book-date-wrap > input:focus-visible,
+    #booking-form .book-select > input:focus,
+    #booking-form .book-select > input:focus-visible,
+    #booking-form textarea:focus,
+    #booking-form textarea:focus-visible,
+    #booking-form .book-select-trigger:focus,
+    #booking-form .book-select-trigger:focus-visible,
+    #booking-form .book-select-trigger[aria-expanded='true'],
+    #booking-form .book-phone:focus-within {
+      border-radius: 0.75rem;
+    }
+    #booking-form .book-phone input,
+    #booking-form .book-phone input:focus,
+    #booking-form .book-phone input:focus-visible {
+      border-radius: 0;
+    }
+    #booking-form input:focus,
+    #booking-form input:focus-visible,
+    #booking-form textarea:focus,
+    #booking-form textarea:focus-visible,
+    #booking-form .book-select-trigger:focus,
+    #booking-form .book-select-trigger:focus-visible,
+    #booking-form .book-phone:focus,
+    #booking-form .book-phone:focus-visible,
+    #booking-form .book-phone:focus-within {
+      outline: 0 none transparent;
+      outline-width: 0;
+      outline-offset: 0;
+      box-shadow: none;
+    }
     #booking-form .book-select-menu { display: flex; flex-direction: column; gap: 0.375rem; }
     #booking-form .book-select-option { border: 1px solid transparent; background: transparent; }
     #booking-form .book-select-option[aria-selected='true'],
@@ -749,6 +806,7 @@
       footer { padding-bottom: 0; }
       #allergen-dialog { max-height: none; }
     }
+    #sales-whatsapp { margin-left: auto; }
     a#plan-gastro-link {
       display: inline-block;
       text-decoration: none;
@@ -759,6 +817,55 @@
       transform: translateY(3px) !important;
       box-shadow: none !important;
     }
+    #demo-sales-banner.is-open { padding-bottom: 2.5rem; }
+    @media (min-width: 768px) {
+      #demo-sales-banner > div { gap: 1.5rem; }
+      #plan-gastro-slot {
+        width: auto;
+        max-width: none;
+        flex: 1 1 0%;
+      }
+      a#plan-gastro-link {
+        display: inline-block;
+        width: auto;
+      }
+    }
+    html, body {
+      max-width: 100%;
+      overflow-x: clip;
+    }
+    img, video, iframe { max-width: 100%; }
+    footer .grid > *,
+    .footer-panel,
+    .hours-row,
+    .btn-call,
+    .btn-whatsapp,
+    .btn-primary,
+    .btn-outline {
+      min-width: 0;
+      max-width: 100%;
+    }
+    .hours-row {
+      flex-wrap: wrap;
+      row-gap: 0.25rem;
+    }
+    .btn-call,
+    .btn-whatsapp {
+      height: auto;
+      white-space: normal;
+      text-align: center;
+    }
+    #reviews-score {
+      flex-wrap: wrap;
+      white-space: normal;
+    }
+    @media (max-width: 639px) {
+      .footer-panel {
+        padding-left: 1.15rem;
+        padding-right: 1.15rem;
+      }
+      .site-nav-link { white-space: normal; }
+    }
   </style>
 </head>
 <body class="bg-white text-slate-900 dark:bg-slate-950 dark:text-slate-100">
@@ -768,7 +875,7 @@
   <!-- ============================ CABECERA ============================ -->
   <div data-site-sticky class="bg-white dark:bg-stone-900">
   <div id="demo-sales-banner" class="w-full border-b border-stone-100 bg-white/90 backdrop-blur-sm dark:border-stone-800 dark:bg-[#202124]/90">
-    <div class="mx-auto flex max-w-4xl items-center gap-6 px-3 py-2">
+    <div class="mx-auto flex max-w-3xl items-center gap-2 px-5 py-2">
       <div id="demo-banner-collapsed" class="flex shrink-0 cursor-pointer flex-col items-center text-stone-400 transition-colors hover:text-stone-600" onclick="toggleDemoBanner()">
         <svg class="mb-0.5 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
         <span class="text-[9px] font-semibold uppercase tracking-widest">Pulsa aquí</span>
@@ -776,9 +883,9 @@
       <button type="button" id="demo-banner-close" onclick="toggleDemoBanner()" class="hidden shrink-0 rounded-full bg-stone-100 p-1 text-stone-400 transition-colors hover:bg-stone-200 hover:text-stone-700">
         <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
       </button>
-      <div class="relative min-w-0 flex-1">
-        <a id="plan-gastro-link" href="https://visiwebmadrid.com/#gastro-premium" class="block max-w-full truncate rounded-full border border-stone-200 bg-stone-50/50 px-3 py-1 text-center text-[10px] font-bold uppercase tracking-wide text-stone-700 shadow-sm backdrop-blur-md dark:border-stone-700 dark:bg-stone-800/50 dark:text-stone-300 sm:text-xs">Plan Gastro Premium</a>
-        <span id="demo-banner-detail" class="absolute left-0 top-full z-10 mt-3 hidden max-w-[calc(100vw-1.5rem)] whitespace-normal text-xs font-medium leading-snug text-stone-600 dark:text-stone-400 sm:text-sm">Así quedaría tu local. Esta demo es interactiva.</span>
+      <div id="plan-gastro-slot" class="relative w-max min-w-0 max-w-full shrink">
+        <a id="plan-gastro-link" href="https://visiwebmadrid.com/#gastro-premium" class="block max-w-full truncate whitespace-nowrap rounded-full border border-stone-200 bg-stone-50/50 px-3 py-1 text-center text-[10px] font-bold uppercase tracking-wide text-stone-700 shadow-sm backdrop-blur-md dark:border-stone-700 dark:bg-stone-800/50 dark:text-stone-300 sm:text-xs">Plan Gastro Premium</a>
+        <span id="demo-banner-detail" class="absolute left-0 top-full z-10 mt-1 hidden max-w-[calc(100vw-1.5rem)] whitespace-normal text-xs font-medium leading-snug text-stone-600 dark:text-stone-400 sm:text-sm">Así quedaría tu local. Esta demo es interactiva.</span>
       </div>
       <a id="sales-whatsapp" href="https://wa.me/34608975906?text=Hola%2C%20he%20visto%20la%20demo%20y%20quiero%20una%20as%C3%AD%20para%20mi%20local." target="_blank" rel="noopener" class="inline-flex h-9 shrink-0 items-center justify-center self-center whitespace-nowrap rounded-full bg-emerald-600 px-3.5 text-[11px] font-bold leading-none text-white no-underline hover:bg-emerald-500">
         <span data-i18n="salesBarCta">Pide la tuya</span>
@@ -794,7 +901,7 @@
       detail.classList.toggle('hidden', !open);
       closeBtn.classList.toggle('hidden', !open);
       collapsed.classList.toggle('hidden', open);
-      document.getElementById('demo-sales-banner').classList.toggle('pb-8', open);
+      document.getElementById('demo-sales-banner').classList.toggle('is-open', open);
       window.dispatchEvent(new Event('resize'));
     }
   </script>
@@ -904,7 +1011,7 @@
         </div>
         <div id="allergen-filter-panel" class="mx-auto max-w-3xl px-5">
           <div class="overflow-hidden">
-            <p class="mb-2 mt-1 text-xs text-slate-500 dark:text-slate-400" data-i18n="allergenFilterHint">Oculta los platos que contienen el alérgeno seleccionado.</p>
+            <p class="mb-2 mt-1 text-xs" aria-hidden="true">&nbsp;</p>
             <div id="allergen-filters" class="mb-2 flex flex-wrap gap-1.5"></div>
             <button type="button" id="clear-allergen-filters" class="mb-2 text-xs font-medium text-slate-600 underline underline-offset-4 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100" hidden data-i18n="allergenFilterClear">Quitar filtros</button>
           </div>
@@ -932,8 +1039,11 @@
             <h2 id="reviews-title" class="font-serif text-3xl font-semibold tracking-tight" data-i18n="reviewsTitle">Opiniones</h2>
             <span class="rounded-full border border-slate-300 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-slate-700 dark:border-slate-600 dark:text-slate-300" data-i18n="reviewsDemo">Reseñas de demostración</span>
           </div>
-          <p id="reviews-score" class="mt-3 flex flex-wrap items-center gap-2 text-sm text-slate-600 dark:text-slate-400"></p>
-          <ul id="reviews-list" class="mt-7 divide-y divide-slate-200 dark:divide-slate-800"></ul>
+          <p id="reviews-score" class="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1"></p>
+          <ul id="reviews-list" class="mt-6 grid grid-cols-1 items-stretch gap-4 md:grid-cols-3"></ul>
+          <p class="text-center">
+            <button type="button" id="reviews-google" class="mt-6 inline-flex items-center gap-1 text-xs font-medium text-stone-500 transition-colors hover:text-stone-800"></button>
+          </p>
         </section>
       </div>
     </div>
@@ -964,7 +1074,7 @@
           <article class="mx-auto mt-8 max-w-xl select-none rounded-2xl border border-stone-200 bg-white p-4 font-sans antialiased shadow-sm dark:border-stone-800 dark:bg-[#202124] sm:p-5">
 
             <!-- 1. PESTAÑAS OFICIALES GOOGLE (CON SEPARACIÓN REAL) -->
-            <div class="no-scrollbar mb-3.5 flex items-center gap-6 overflow-x-auto border-b border-stone-200 pb-2.5 text-xs font-medium dark:border-stone-700 sm:text-sm" role="tablist" aria-label="Ficha de Google">
+            <div class="mb-3.5 flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-stone-200 pb-2.5 text-xs font-medium dark:border-stone-700 sm:text-sm" role="tablist" aria-label="Ficha de Google">
               <button type="button" role="tab" id="gbp-tab-overview" data-gbp-tab="overview" aria-selected="true" aria-controls="gbp-panel-overview" class="relative whitespace-nowrap font-semibold text-[#1a73e8] after:absolute after:-bottom-[11px] after:left-0 after:h-[3px] after:w-full after:rounded-full after:bg-[#1a73e8] after:content-[''] dark:text-[#8ab4f8] dark:after:bg-[#8ab4f8]" data-i18n="gbpTabOverview">Resumen</button>
               <button type="button" role="tab" id="gbp-tab-menu" data-gbp-tab="menu" aria-selected="false" aria-controls="gbp-panel-menu" class="whitespace-nowrap text-stone-500 hover:text-stone-700 dark:text-stone-400" data-i18n="gbpTabMenu">Carta</button>
               <button type="button" role="tab" id="gbp-tab-reviews" data-gbp-tab="reviews" aria-selected="false" aria-controls="gbp-panel-reviews" class="whitespace-nowrap text-stone-500 hover:text-stone-700 dark:text-stone-400" data-i18n="gbpTabReviews">Opiniones</button>
@@ -1323,6 +1433,6 @@
   </dialog>
 
   <script src="demo-data.js"></script>
-  <script src="demo-app.js?v=25"></script>
+  <script src="demo-app.js?v=33"></script>
 </body>
 </html>

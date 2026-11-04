@@ -14,6 +14,9 @@ module.exports = {
       fontFamily: {
         sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
         serif: ['"Cormorant Garamond"', 'Georgia', 'serif']
+      },
+      boxShadow: {
+        xs: '0 1px 2px 0 rgb(0 0 0 / 0.05)'
       }
     }
   },

@@ -279,12 +279,33 @@
   }
 
   /* ---------------------------------- Carta -------------------------------- */
+  function allergenName(key) {
+    const a = D.allergens[key];
+    if (!a) return key;
+    const name = L(a.name);
+    return a.kind === 'intolerance' ? name + ' · ' + t('intolerance') : name;
+  }
+
+  function dishWarningLabel(item) {
+    let allergen = false;
+    let intolerance = false;
+    (item.allergens || []).forEach((key) => {
+      const a = D.allergens[key];
+      if (!a) return;
+      if (a.kind === 'intolerance') intolerance = true;
+      else allergen = true;
+    });
+    if (allergen && intolerance) return t('allergensAndIntolerances');
+    if (intolerance) return t('intolerancesInDish');
+    return t('allergensInDish').replace(/:\s*$/, '');
+  }
+
   function allergenPill(key) {
     const a = D.allergens[key];
     const span = el('span', 'pill-allergen');
     span.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" ' +
       'stroke-linecap="round" stroke-linejoin="round" class="h-3.5 w-3.5" aria-hidden="true">' + a.icon + '</svg>';
-    span.appendChild(document.createTextNode(L(a.name)));
+    span.appendChild(document.createTextNode(allergenName(key)));
     return span;
   }
 
@@ -331,7 +352,7 @@
     toggle.setAttribute('aria-expanded', 'false');
     toggle.setAttribute('aria-controls', allergenId);
     const toggleLabel = el('span');
-    toggleLabel.textContent = t('allergensInDish').replace(/:\s*$/, '');
+    toggleLabel.textContent = dishWarningLabel(item);
     const chevron = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     chevron.setAttribute('class', 'w-3 h-3 text-black transition-transform duration-200 transform rotate-0');
     chevron.setAttribute('fill', 'none');
@@ -932,7 +953,7 @@
       existing.forEach((btn) => {
         const key = btn.dataset.filter;
         if (!D.allergens[key]) return;
-        btn.textContent = L(D.allergens[key].name);
+        btn.textContent = allergenName(key);
         paintFilterButton(btn, allergenFilters.has(key));
       });
     } else {
@@ -941,7 +962,7 @@
         const btn = el('button', 'filter-chip bg-white text-stone-700 border-stone-300 transition-colors duration-150');
         btn.type = 'button';
         btn.dataset.filter = key;
-        btn.textContent = L(D.allergens[key].name);
+        btn.textContent = allergenName(key);
         paintFilterButton(btn, allergenFilters.has(key));
         wrap.appendChild(btn);
       });
@@ -1040,7 +1061,7 @@
       const li = el('li', 'flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300');
       li.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" ' +
         'stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 shrink-0" aria-hidden="true">' + a.icon + '</svg>';
-      li.appendChild(document.createTextNode(L(a.name)));
+      li.appendChild(document.createTextNode(allergenName(key)));
       list.appendChild(li);
     });
   }
@@ -1062,7 +1083,7 @@
       th.scope = 'col';
       th.dataset.allergen = short;
       th.dataset.allergenCol = short;
-      th.innerHTML = '<abbr title="' + esc(L(D.allergens[key].name)) + '" class="no-underline">' +
+      th.innerHTML = '<abbr title="' + esc(allergenName(key)) + '" class="no-underline">' +
         esc(short) + '</abbr>';
       headRow.appendChild(th);
     });
@@ -1096,7 +1117,7 @@
           td.dataset.allergenCol = D.allergens[key].short;
           const has = item.allergens.indexOf(key) >= 0;
           td.innerHTML = has
-            ? '<span class="sr-only">' + esc(L(D.allergens[key].name)) + '</span><span aria-hidden="true">●</span>'
+            ? '<span class="sr-only">' + esc(allergenName(key)) + '</span><span aria-hidden="true">●</span>'
             : '<span class="sr-only">—</span><span aria-hidden="true" class="text-slate-400 dark:text-slate-600">·</span>';
           row.appendChild(td);
         });
@@ -1111,12 +1132,11 @@
 
   function allergenInfoName(short) {
     const extra = {
-      GLU: { es: 'Gluten / Cereales con gluten', en: 'Cereals containing gluten' },
       LAC: { es: 'Lácteos / Leche y derivados', en: 'Milk and dairy' }
     };
     if (extra[short]) return extra[short][lang] || extra[short].es;
     const key = Object.keys(D.allergens).find((id) => D.allergens[id].short === short);
-    return key ? L(D.allergens[key].name) : short;
+    return key ? allergenName(key) : short;
   }
 
   function showAllergenInfo(short) {
@@ -1218,11 +1238,12 @@
   }
 
   /* -------------------------------- Opiniones ------------------------------ */
-  function stars(rating) {
+  function stars(rating, size) {
+    const box = size || 'h-4 w-4';
     let out = '';
     for (let i = 1; i <= 5; i++) {
-      out += '<svg viewBox="0 0 24 24" class="h-4 w-4 ' +
-        (i <= rating ? 'text-slate-900 dark:text-slate-100' : 'text-slate-300 dark:text-slate-700') +
+      out += '<svg viewBox="0 0 24 24" class="' + box + ' ' +
+        (i <= rating ? 'text-amber-400' : 'text-stone-300') +
         '" fill="currentColor" aria-hidden="true"><path d="m12 3.6 2.6 5.5 5.9.8-4.3 4.2 1 6-5.2-2.9-5.2 2.9 1-6L3.5 9.9l5.9-.8L12 3.6Z"/></svg>';
     }
     return out;
@@ -1231,26 +1252,58 @@
   function renderReviews() {
     const score = D.reviews.score.toLocaleString(D.i18n[lang].locale, { minimumFractionDigits: 1 });
     const scoreEl = $('#reviews-score');
-    scoreEl.innerHTML = '<span class="flex items-center gap-0.5">' + stars(Math.round(D.reviews.score)) + '</span>';
-    scoreEl.appendChild(document.createTextNode(t('reviewsScore', { score: score, count: D.reviews.count })));
+    scoreEl.textContent = '';
+    const scoreText = el('span', 'text-base font-bold text-stone-900');
+    scoreText.textContent = score;
+    const starRow = el('span', 'flex items-center gap-0.5 text-sm text-amber-400');
+    starRow.innerHTML = stars(Math.round(D.reviews.score), 'h-3.5 w-3.5');
+    starRow.setAttribute('role', 'img');
+    starRow.setAttribute('aria-label', t('ratingOf', { rating: D.reviews.score }));
+    const summary = el('span', 'text-sm font-normal text-stone-500');
+    summary.textContent = t('reviewsScore', { count: D.reviews.count });
+    scoreEl.append(scoreText, starRow, summary);
 
     const list = $('#reviews-list');
     list.textContent = '';
     D.reviews.items.forEach((review) => {
-      const li = el('li', 'py-5');
-      const head = el('div', 'flex items-center gap-3');
-      const name = el('p', 'text-sm font-semibold');
-      name.textContent = review.author;
-      const rating = el('span', 'flex items-center gap-0.5');
-      rating.innerHTML = stars(review.rating);
+      const li = el('li', 'flex h-full flex-col rounded-2xl border border-stone-200/70 bg-white p-5 shadow-xs');
+      const head = el('div', 'flex items-start gap-2.5');
+      const avatar = el('img', 'h-9 w-9 shrink-0 rounded-full object-cover');
+      avatar.src = review.photo;
+      avatar.alt = '';
+      avatar.width = 36;
+      avatar.height = 36;
+      const who = el('div', 'min-w-0 flex-1');
+      const name = el('p', 'whitespace-nowrap text-sm font-semibold text-stone-900');
+      name.appendChild(document.createTextNode(review.author));
+      const guide = el('span', 'text-[11px] font-normal text-stone-400');
+      guide.textContent = ' · ' + t('localGuide');
+      name.appendChild(guide);
+      const meta = el('div', 'mt-0.5 flex items-center gap-2 whitespace-nowrap');
+      const rating = el('span', 'flex shrink-0 items-center gap-px text-xs text-amber-400');
+      rating.innerHTML = stars(review.rating, 'h-3 w-3');
       rating.setAttribute('role', 'img');
       rating.setAttribute('aria-label', t('ratingOf', { rating: review.rating }));
-      head.append(name, rating);
-      const text = el('p', 'mt-2 text-sm leading-relaxed text-slate-600 dark:text-slate-400');
+      const ago = el('span', 'text-xs text-stone-400');
+      ago.textContent = L(review.when);
+      meta.append(rating, ago);
+      who.append(name, meta);
+      head.append(avatar, who);
+      const text = el('p', 'mt-3 flex-grow text-xs leading-relaxed text-stone-700 sm:text-[13px]');
       text.textContent = L(review.text);
       li.append(head, text);
+      if (review.dish) {
+        const slot = el('div', 'mt-auto pt-3');
+        const tag = el('p', 'inline-flex w-fit rounded-full px-2 py-0.5 text-[11px] font-medium ' + review.dish.pill);
+        tag.textContent = L(review.dish);
+        slot.appendChild(tag);
+        li.appendChild(slot);
+      }
       list.appendChild(li);
     });
+
+    const more = $('#reviews-google');
+    if (more) more.textContent = t('reviewsOnGoogle', { count: D.reviews.count });
   }
 
   /* ------------------------------ Reservas --------------------------------- */

@@ -169,7 +169,8 @@ window.VISIWEB_DEMO = (function () {
   const ALLERGENS = {
     gluten: {
       short: 'GLU',
-      name: { es: 'Cereales con gluten', en: 'Cereals containing gluten' },
+      kind: 'intolerance',
+      name: { es: 'Gluten', en: 'Gluten' },
       icon: '<path d="M12 21v-8"/><path d="M12 13c-2.2 0-3.6-1.5-3.6-3.8 2.2 0 3.6 1.5 3.6 3.8Zm0 0c2.2 0 3.6-1.5 3.6-3.8-2.2 0-3.6 1.5-3.6 3.8Z"/><path d="M12 8.6c-2.2 0-3.6-1.5-3.6-3.8 2.2 0 3.6 1.5 3.6 3.8Zm0 0c2.2 0 3.6-1.5 3.6-3.8-2.2 0-3.6 1.5-3.6 3.8Z"/>'
     },
     crustaceos: {
@@ -609,7 +610,9 @@ window.VISIWEB_DEMO = (function () {
       {
         author: 'Marta G.',
         rating: 5,
-        when: { es: 'Hace 2 semanas', en: '2 weeks ago' },
+        when: { es: 'hace 2 semanas', en: '2 weeks ago' },
+        photo: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=128&h=128&q=80',
+        dish: { es: '🍽️ Croquetas y caña', en: '🍽️ Croquettes and a beer', pill: 'border border-amber-200/60 bg-amber-50 text-amber-900' },
         text: {
           es: 'Las croquetas son de las mejores que he probado en la zona y la caña entra helada. Trato cercano desde que cruzas la puerta.',
           en: 'The croquettes are among the best I have tried nearby and the beer arrives ice-cold. Warm welcome from the moment you walk in.'
@@ -618,7 +621,9 @@ window.VISIWEB_DEMO = (function () {
       {
         author: 'Javier R.',
         rating: 5,
-        when: { es: 'Hace 1 mes', en: '1 month ago' },
+        when: { es: 'hace 1 mes', en: '1 month ago' },
+        photo: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=128&h=128&q=80',
+        dish: { es: '🥘 Menú del día', en: '🥘 Set lunch', pill: 'border border-emerald-200/60 bg-emerald-50 text-emerald-900' },
         text: {
           es: 'Vamos cada jueves al menú del día: raciones generosas, casero de verdad y sales por menos de quince euros.',
           en: 'We come every Thursday for the set menu: generous portions, genuinely homemade and under fifteen euros.'
@@ -627,7 +632,9 @@ window.VISIWEB_DEMO = (function () {
       {
         author: 'Lucía P.',
         rating: 4,
-        when: { es: 'Hace 3 meses', en: '3 months ago' },
+        when: { es: 'hace 3 meses', en: '3 months ago' },
+        photo: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=128&h=128&q=80',
+        dish: { es: '🍳 Huevos rotos', en: '🍳 Broken eggs', pill: 'border border-rose-200/60 bg-rose-50 text-rose-900' },
         text: {
           es: 'Los huevos rotos, espectaculares. Los findes se llena, así que mejor reservar mesa con antelación.',
           en: 'The broken eggs are spectacular. It fills up at weekends, so it is better to book a table in advance.'
@@ -695,7 +702,6 @@ window.VISIWEB_DEMO = (function () {
       bookGuestOne: '1 persona',
       bookGuestMany: '{n} personas',
       allergenFilter: 'Filtrar por alérgenos',
-      allergenFilterHint: 'Oculta los platos que contienen el alérgeno seleccionado.',
       allergenFilterClear: 'Quitar filtros',
       allergenFilterEmpty: 'Ningún plato coincide con el filtro.',
       navLabel: 'Secciones',
@@ -746,6 +752,9 @@ window.VISIWEB_DEMO = (function () {
       dietVegetarian: '🌱 Vegetariano',
       dietVegan: '🌿 Vegano',
       allergensInDish: 'Alérgenos:',
+      intolerancesInDish: 'Intolerancias',
+      allergensAndIntolerances: 'Alérgenos e intolerancias',
+      intolerance: 'Intolerancia',
       noAllergens: 'Sin alérgenos de declaración obligatoria',
       allergenKey: 'Leyenda de alérgenos',
       allergenTableLink: 'Ver tabla completa de alérgenos',
@@ -759,7 +768,9 @@ window.VISIWEB_DEMO = (function () {
       vatNotice: 'Precios con IVA incluido. Pan y aceite: 1,20 € por persona (excepto en Menú del Día, donde está incluido).',
       reviewsTitle: 'Opiniones',
       reviewsDemo: 'Reseñas de demostración',
-      reviewsScore: '{score} sobre 5 · {count} opiniones',
+      reviewsScore: '· {count} opiniones en Google',
+      localGuide: 'Local Guide',
+      reviewsOnGoogle: 'Ver las {count} opiniones en Google ↗',
       ratingOf: '{rating} de 5 estrellas',
       mapTitle: 'Dónde estamos',
       openInMaps: 'Abrir en Google Maps ↗',
@@ -862,7 +873,6 @@ window.VISIWEB_DEMO = (function () {
       bookGuestOne: '1 guest',
       bookGuestMany: '{n} guests',
       allergenFilter: 'Filter by allergen',
-      allergenFilterHint: 'Hides dishes that contain the selected allergen.',
       allergenFilterClear: 'Clear filters',
       allergenFilterEmpty: 'No dishes match this filter.',
       navLabel: 'Sections',
@@ -913,6 +923,9 @@ window.VISIWEB_DEMO = (function () {
       dietVegetarian: '🌱 Vegetarian',
       dietVegan: '🌿 Vegan',
       allergensInDish: 'Allergens:',
+      intolerancesInDish: 'Intolerances',
+      allergensAndIntolerances: 'Allergens and intolerances',
+      intolerance: 'Intolerance',
       noAllergens: 'No declarable allergens',
       allergenKey: 'Allergen key',
       allergenTableLink: 'View the full allergen table',
@@ -926,7 +939,9 @@ window.VISIWEB_DEMO = (function () {
       vatNotice: 'Prices include VAT. Bread and olive oil: €1.20 per person (except on the Menu of the Day, where it is included).',
       reviewsTitle: 'Reviews',
       reviewsDemo: 'Sample reviews',
-      reviewsScore: '{score} out of 5 · {count} reviews',
+      reviewsScore: '· {count} reviews on Google',
+      localGuide: 'Local Guide',
+      reviewsOnGoogle: 'See all {count} reviews on Google ↗',
       ratingOf: '{rating} out of 5 stars',
       mapTitle: 'Where we are',
       openInMaps: 'Open in Google Maps ↗',
