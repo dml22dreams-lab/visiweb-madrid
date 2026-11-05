@@ -150,9 +150,6 @@
   const mapsUrl = () => 'https://www.google.com/maps/search/?api=1&query=' +
     encodeURIComponent(L(D.business.address.street) + ', ' + D.business.address.city + ', ' + D.business.address.region);
 
-  const whatsappUrl = () => 'https://wa.me/' + D.business.whatsapp + '?text=' +
-    encodeURIComponent(D.whatsappText[lang] || D.whatsappText.es);
-
   /* ------------------------------- Marcadores ------------------------------ */
   const CUTLERY = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true" class="h-7 w-7 text-slate-500 dark:text-slate-400"><path stroke-linecap="round" d="M7 3v7a2 2 0 0 0 2 2h0a2 2 0 0 0 2-2V3M9 12v9M15 21v-7m0 0c2 0 3-1.5 3-4.5V3c-2 .6-3 2.4-3 5.5V14Z"/></svg>';
 
@@ -225,10 +222,6 @@
     });
     $('#footer-phone-number').textContent = D.business.phoneDisplay;
 
-    const wa = whatsappUrl();
-    const footerWa = $('#footer-whatsapp');
-    if (footerWa) footerWa.href = wa;
-
     const salesWa = $('#sales-whatsapp');
     if (salesWa) {
       salesWa.href = 'https://wa.me/' + D.developer.whatsapp + '?text=' +
@@ -237,9 +230,6 @@
 
     const footerMap = $('#footer-map');
     if (footerMap) footerMap.href = mapsUrl();
-    const mapReserve = $('#map-reserve');
-    if (mapReserve) mapReserve.href = wa;
-
   }
 
   function renderStatus() {
@@ -309,6 +299,12 @@
     return span;
   }
 
+  function priceNode(text) {
+    const wrap = el('span', 'dish-price');
+    wrap.textContent = text;
+    return wrap;
+  }
+
   function dishNode(item) {
     const recommended = item.tags.indexOf('recomendado') >= 0;
     const li = el('li', 'flex items-start justify-between gap-3 border-b border-stone-300 py-2 dark:border-stone-600');
@@ -325,12 +321,10 @@
       body.appendChild(badge);
     }
 
-    const heading = el('div', 'flex items-start justify-between');
+    const heading = el('div', 'flex items-baseline justify-between gap-3');
     const title = el('h3', 'text-sm font-bold leading-snug text-stone-900 dark:text-stone-100 sm:text-base');
     title.textContent = L(item.name);
-    const price = el('span', 'ml-2 whitespace-nowrap text-sm font-bold text-stone-900 dark:text-stone-100 sm:text-base');
-    price.textContent = lang === 'en' ? item.priceEn : item.price;
-    heading.append(title, price);
+    heading.append(title, priceNode(lang === 'en' ? item.priceEn : item.price));
 
     const desc = el('p', 'mt-1 text-xs leading-snug text-stone-500 dark:text-stone-400 sm:text-sm');
     desc.textContent = L(item.desc);
@@ -556,8 +550,8 @@
       const body = el('div', 'min-w-0 flex-1');
       const name = el('p', 'text-[15px] font-semibold leading-snug text-slate-900 group-hover:text-slate-700 dark:text-slate-100');
       name.textContent = L(item.name);
-      const price = el('p', 'dish-price mt-1 text-lg');
-      price.textContent = lang === 'en' ? item.priceEn : item.price;
+      const price = priceNode(lang === 'en' ? item.priceEn : item.price);
+      price.classList.add('mt-1', 'block');
       body.append(name, price);
       link.appendChild(body);
       li.appendChild(link);
@@ -1279,12 +1273,12 @@
       const guide = el('span', 'text-[11px] font-normal text-stone-400');
       guide.textContent = ' · ' + t('localGuide');
       name.appendChild(guide);
-      const meta = el('div', 'mt-0.5 flex items-center gap-2 whitespace-nowrap');
-      const rating = el('span', 'flex shrink-0 items-center gap-px text-xs text-amber-400');
+      const meta = el('div', 'mt-0.5 min-w-0');
+      const rating = el('span', 'flex items-center gap-px text-xs text-amber-400');
       rating.innerHTML = stars(review.rating, 'h-3 w-3');
       rating.setAttribute('role', 'img');
       rating.setAttribute('aria-label', t('ratingOf', { rating: review.rating }));
-      const ago = el('span', 'text-xs text-stone-400');
+      const ago = el('span', 'mt-0.5 block text-xs leading-snug text-stone-400');
       ago.textContent = L(review.when);
       meta.append(rating, ago);
       who.append(name, meta);
@@ -1370,6 +1364,7 @@
     wheel.textContent = '';
     wheel._active = null;
     wheel.dataset.aligned = '';
+    wheel.dataset.looped = '';
     const blank = el('option');
     blank.value = '';
     select.appendChild(blank);
@@ -1384,6 +1379,7 @@
       item.textContent = guestLabel(n);
       wheel.appendChild(item);
     }
+    makeWheelLoop(wheel);
     select.value = keep;
     const visible = $('#comensales-reserva');
     if (visible) visible.value = keep ? guestLabel(Number(keep)) : '';
@@ -1448,6 +1444,7 @@
     select.value = value;
     const visible = $('#hora-reserva');
     if (visible) visible.value = value;
+    select.dispatchEvent(new Event('input', { bubbles: true }));
   }
 
   function commitTimeSelection() {
@@ -1463,13 +1460,62 @@
 
   function setTimePickerOpen(open) {
     const panel = $('#time-picker');
+    const field = $('#hora-reserva');
+    const wrap = field && field.parentElement;
     if (!panel) return;
     panel.hidden = !open;
+    if (wrap) wrap.classList.toggle('is-open', open);
     if (!open) return;
     setGuestsPickerOpen(false);
     closeAllBookSelects();
+    if (wrap) wrap.classList.add('is-open');
     if (bookDatePicker && bookDatePicker.isOpen) bookDatePicker.close();
     requestAnimationFrame(() => alignTimeWheels(false));
+  }
+
+  function makeWheelLoop(scroller) {
+    if (!scroller || scroller.dataset.looped === '1') return;
+    const base = Array.prototype.slice.call(scroller.querySelectorAll('[data-val]'));
+    if (base.length < 2) return;
+    const copies = 7;
+    scroller.dataset.cycle = String(base.length);
+    scroller.dataset.copies = String(copies);
+    for (let copy = 1; copy < copies; copy++) {
+      base.forEach((node) => scroller.appendChild(node.cloneNode(true)));
+    }
+    scroller.dataset.looped = '1';
+  }
+
+  function wheelCycleItem(scroller, val) {
+    const list = scroller.querySelectorAll('[data-val]');
+    const count = Number(scroller.dataset.cycle || 0);
+    const copies = Number(scroller.dataset.copies || 1);
+    if (!count || !list.length) return scroller.querySelector('[data-val="' + val + '"]');
+    const start = Math.floor(copies / 2) * count;
+    for (let i = start; i < start + count && i < list.length; i++) {
+      if (list[i].dataset.val === String(val)) return list[i];
+    }
+    return list[start] || list[0];
+  }
+
+  function recenterWheelLoop(scroller) {
+    if (!scroller || scroller.dataset.recentering === '1') return;
+    const count = Number(scroller.dataset.cycle || 0);
+    const copies = Number(scroller.dataset.copies || 1);
+    if (count < 2 || copies < 3) return;
+    const list = scroller.querySelectorAll('[data-val]');
+    const itemH = list[0] && list[0].offsetHeight;
+    if (!itemH) return;
+    const index = Math.round(scroller.scrollTop / itemH);
+    const copy = Math.floor(index / count);
+    if (copy > 0 && copy < copies - 1) return;
+    const within = ((index % count) + count) % count;
+    const next = Math.floor(copies / 2) * count + within;
+    if (next === index) return;
+    scroller.dataset.recentering = '1';
+    scroller.scrollTop += (next - index) * itemH;
+    if (scroller.dataset.index) scroller.dataset.index = String(Number(scroller.dataset.index) + (next - index));
+    scroller.dataset.recentering = '';
   }
 
   function padTimeWheel(scroller) {
@@ -1497,8 +1543,8 @@
     padTimeWheel(hours);
     padTimeWheel(minutes);
     if (!force && hours.dataset.aligned === '1') return;
-    const hourItem = hours.querySelector('[data-val="20"]') || hours.querySelector('[data-val]');
-    const minuteItem = minutes.querySelector('[data-val="30"]') || minutes.querySelector('[data-val]');
+    const hourItem = wheelCycleItem(hours, '20');
+    const minuteItem = wheelCycleItem(minutes, '30');
     if (hourItem) {
       centerWheelItem(hours, hourItem, false);
       paintWheelColumn(hours, hourItem);
@@ -1536,35 +1582,39 @@
       event.preventDefault();
       const list = items();
       if (!list.length) return;
+      recenterWheelLoop(scroller);
       const index = Number(scroller.dataset.index || 0);
-      const next = Math.min(Math.max(index + (event.deltaY > 0 ? 1 : -1), 0), list.length - 1);
-      if (next === index) return;
+      const next = index + (event.deltaY > 0 ? 1 : -1);
+      if (next < 0 || next >= list.length) return;
       scroller.dataset.index = String(next);
       centerWheelItem(scroller, list[next], true);
       paintWheelColumn(scroller, list[next]);
     }, { passive: false });
 
     scroller.addEventListener('click', (event) => {
-      const item = event.target.closest(selector);
-      if (!item) return;
+      const picked = event.target.closest(selector);
+      if (!picked) return;
       const list = items();
-      const found = Array.prototype.indexOf.call(list, item);
-      if (found >= 0) scroller.dataset.index = String(found);
+      const count = Number(scroller.dataset.cycle || 0);
+      const copies = Number(scroller.dataset.copies || 1);
+      const found = Array.prototype.indexOf.call(list, picked);
+      const mid = count ? Math.floor(copies / 2) * count + (found % count) : found;
+      const item = list[mid] || picked;
+      if (mid >= 0) scroller.dataset.index = String(mid);
       centerWheelItem(scroller, item, true);
       paintWheelColumn(scroller, item);
     });
 
     scroller.addEventListener('scroll', () => {
-      if (scroller.dataset.moving === '1') return;
+      if (scroller.dataset.moving === '1' || scroller.dataset.recentering === '1') return;
+      recenterWheelLoop(scroller);
       const item = centeredWheelItem(scroller);
       if (item) paintWheelColumn(scroller, item);
     }, { passive: true });
 
     scroller.addEventListener('scrollend', () => {
-      if (scroller.dataset.moving === '1') {
-        scroller.dataset.moving = '';
-        return;
-      }
+      if (scroller.dataset.moving === '1') scroller.dataset.moving = '';
+      recenterWheelLoop(scroller);
       settle();
     });
   }
@@ -1573,6 +1623,8 @@
     const hours = $('#wheel-hours');
     const minutes = $('#wheel-minutes');
     if (!hours || !minutes) return;
+    makeWheelLoop(hours);
+    makeWheelLoop(minutes);
     bindTimeColumn(hours);
     bindTimeColumn(minutes);
     on('#hora-reserva', 'click', () => {
@@ -1588,7 +1640,7 @@
     padTimeWheel(wheel);
     if (!force && wheel.dataset.aligned === '1') return;
     const current = $('#book-guests') && $('#book-guests').value;
-    const item = wheel.querySelector('[data-val="' + (current || '2') + '"]') || wheel.querySelector('[data-val]');
+    const item = wheelCycleItem(wheel, current || '2');
     if (!item) return;
     centerWheelItem(wheel, item, false);
     paintWheelColumn(wheel, item);
@@ -1606,6 +1658,7 @@
     if (select) select.value = String(n);
     const visible = $('#comensales-reserva');
     if (visible) visible.value = guestLabel(n);
+    if (select) select.dispatchEvent(new Event('input', { bubbles: true }));
     setGuestsPickerOpen(false);
   }
 
@@ -1776,6 +1829,26 @@
           return date.getDay() === 1;
         }
       ],
+      position: function (instance) {
+        const input = instance._input.getBoundingClientRect();
+        const cal = instance.calendarContainer;
+        cal.style.width = '';
+        cal.style.right = 'auto';
+        const width = cal.offsetWidth;
+        const gap = 6;
+        const height = cal.offsetHeight;
+        const spaceBelow = window.innerHeight - input.bottom;
+        const above = spaceBelow < height + gap && input.top > height + gap;
+        let left = input.left;
+        const time = document.querySelector('#hora-reserva');
+        if (time) {
+          const tb = time.getBoundingClientRect();
+          if (Math.abs(tb.top - input.top) < 12 && left + width > tb.left) left = tb.left - width - 8;
+        }
+        left = Math.max(8, Math.min(left, window.innerWidth - width - 8));
+        cal.style.left = (left + window.scrollX) + 'px';
+        cal.style.top = (window.scrollY + (above ? input.top - height - gap : input.bottom + gap)) + 'px';
+      },
       onOpen: function () {
         closeAllBookSelects();
         setTimePickerOpen(false);
@@ -1784,6 +1857,7 @@
       onChange: function (dates) {
         if (!dates[0]) return;
         hidden.value = madridYMD(dates[0]);
+        hidden.dispatchEvent(new Event('input', { bubbles: true }));
         refreshBookingSlots();
       }
     });
@@ -1816,7 +1890,7 @@
       const feedback = $('#book-feedback');
       const name = $('#book-name').value.trim();
       const prefix = phoneDigits($('#book-prefix').value).slice(0, 4);
-      const local = phoneDigits($('#book-phone').value).slice(0, 9);
+      const local = phoneDigits($('#book-phone').value);
       const ymd = $('#book-date').value;
       const hour = $('#book-time').value;
       const guests = $('#book-guests').value;
@@ -1824,9 +1898,13 @@
       const notes = $('#book-notes').value.trim();
       const closed = !dayRanges(weekdayOfYmd(ymd)).length;
 
-      if (!name || !prefix || local.length !== 9 || !ymd || !hour || !guests || closed) {
-        feedback.hidden = false;
-        feedback.textContent = closed ? t('bookClosed') : t('bookError');
+      if (!name || !prefix || !local || !ymd || !hour || !guests || closed) {
+        if (closed) {
+          feedback.hidden = false;
+          feedback.textContent = t('bookClosed');
+        } else if (feedback) {
+          feedback.hidden = true;
+        }
         return;
       }
 
@@ -1849,11 +1927,19 @@
       const html = '<p>' + esc(intro) + '</p>' + rows.map((row) =>
         '<p><strong class="font-semibold text-stone-900 dark:text-emerald-50">' + esc(row[0]) + ':</strong> ' + esc(row[1]) + '</p>'
       ).join('');
-      openBookingModal(html, textoWhatsApp, prefix + local);
+      window.__visiwebBookingPreview = { html: html, textoWhatsApp: textoWhatsApp, phone: prefix + local };
+      document.dispatchEvent(new CustomEvent('open-reserve-options'));
     });
 
     on('#booking-another', 'click', resetBookingForm);
     on('#booking-modal-backdrop', 'click', resetBookingForm);
+    on('#booking-whatsapp', 'click', (event) => {
+      event.preventDefault();
+      const url = whatsappSendUrl(bookingWaPhone, bookingWaText);
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      if (isMobile) window.location.href = url;
+      else window.open(url, '_blank', 'noopener');
+    });
     document.addEventListener('keydown', (event) => {
       const modal = $('#booking-modal');
       if (event.key === 'Escape' && modal && !modal.hidden) resetBookingForm();
@@ -1864,14 +1950,8 @@
     return String(value || '').replace(/\D/g, '');
   }
 
-  function formatMobileGroups(digits) {
-    const d = phoneDigits(digits).slice(0, 9);
-    return [d.slice(0, 3), d.slice(3, 5), d.slice(5, 7), d.slice(7, 9)].filter(Boolean).join(' ');
-  }
-
   function formatBookingPhone(prefix, localDigits) {
-    const grouped = formatMobileGroups(localDigits);
-    return '+' + prefix + (grouped ? ' ' + grouped : '');
+    return '+' + prefix + (localDigits ? ' ' + localDigits : '');
   }
 
   function bindDigitsInput(input, maxDigits, format) {
@@ -1880,7 +1960,8 @@
     input.addEventListener('input', () => {
       const caret = input.selectionStart || 0;
       const before = phoneDigits(input.value.slice(0, caret)).length;
-      const next = format(phoneDigits(input.value).slice(0, maxDigits));
+      const raw = phoneDigits(input.value);
+      const next = format(maxDigits > 0 ? raw.slice(0, maxDigits) : raw);
       input.value = next;
       let pos = 0;
       let seen = 0;
@@ -1894,8 +1975,26 @@
 
   function bindBookingPhoneInputs() {
     bindDigitsInput($('#book-prefix'), 4, (digits) => digits);
-    bindDigitsInput($('#book-phone'), 9, formatMobileGroups);
+    bindDigitsInput($('#book-phone'), 0, (digits) => digits);
   }
+
+  function cleanWaPhone(raw) {
+    let digits = String(raw || '').replace(/\D/g, '');
+    if (digits.startsWith('3434') && digits.length > 11) digits = digits.slice(2);
+    return digits;
+  }
+
+  function whatsappSendUrl(phone, text) {
+    const mensajeCodificado = encodeURIComponent(text || '');
+    const telefonoLimpio = cleanWaPhone(phone);
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    return isMobile
+      ? 'whatsapp://send?phone=' + telefonoLimpio + '&text=' + mensajeCodificado
+      : 'https://web.whatsapp.com/send?phone=' + telefonoLimpio + '&text=' + mensajeCodificado;
+  }
+
+  let bookingWaPhone = '';
+  let bookingWaText = '';
 
   function openBookingModal(html, textoWhatsApp, waPhone) {
     const modal = $('#booking-modal');
@@ -1908,7 +2007,9 @@
       const now = new Date();
       stamp.textContent = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
     }
-    if (wa) wa.href = 'https://wa.me/' + waPhone + '?text=' + encodeURIComponent(textoWhatsApp);
+    bookingWaPhone = cleanWaPhone(waPhone);
+    bookingWaText = textoWhatsApp || '';
+    if (wa) wa.href = whatsappSendUrl(bookingWaPhone, bookingWaText);
     if (bookDatePicker && bookDatePicker.isOpen) bookDatePicker.close();
     setTimePickerOpen(false);
     setGuestsPickerOpen(false);
@@ -1918,6 +2019,14 @@
     const closeBtn = $('#booking-another');
     if (closeBtn) closeBtn.focus();
   }
+
+  window.openBookingPreview = function () {
+    const preview = window.__visiwebBookingPreview;
+    if (!preview) return false;
+    openBookingModal(preview.html, preview.textoWhatsApp, preview.phone);
+    window.__visiwebBookingPreview = null;
+    return true;
+  };
 
   function resetBookingForm() {
     const form = $('#booking-form');
@@ -1951,6 +2060,7 @@
     applyI18nBookingOptions();
     const submit = form.querySelector('[type="submit"]');
     if (submit) submit.focus();
+    form.dispatchEvent(new Event('input', { bubbles: true }));
   }
 
   /* --------------------------------- JSON-LD ------------------------------- */
@@ -2066,8 +2176,14 @@
     document.querySelectorAll('[data-i18n-aria-label]').forEach((node) => {
       node.setAttribute('aria-label', t(node.dataset.i18nAriaLabel));
     });
+    ['aviso-legal.html', 'politica-privacidad.html', 'politica-cookies.html'].forEach((file) => {
+      document.querySelectorAll('a[href="' + file + '"], a[href^="' + file + '?"]').forEach((link) => {
+        link.setAttribute('href', lang === 'en' ? file + '?lang=en' : file);
+      });
+    });
     pinChromeLabels();
     actualizarBotonIdioma();
+    document.documentElement.dispatchEvent(new Event('langchange'));
   }
 
   function labelWidth(node, text) {
@@ -2234,7 +2350,7 @@
   function syncStickyOffset() {
     var nav = document.querySelector('.site-nav');
     if (!nav) return;
-    document.documentElement.style.setProperty('--site-nav-h', nav.offsetHeight + 'px');
+    document.documentElement.style.setProperty('--site-nav-h', nav.getBoundingClientRect().height + 'px');
   }
 
   /* --------------------------------- Arranque ------------------------------ */

@@ -172,7 +172,7 @@
   }
 
   .hours-closed {
-    @apply rounded-full bg-stone-100 px-2.5 py-0.5 text-[11px] font-medium tracking-wide text-stone-500 dark:bg-stone-800 dark:text-stone-400;
+    @apply rounded-full bg-red-50 px-2.5 py-0.5 text-[11px] font-medium tracking-wide text-red-600 dark:bg-red-950 dark:text-red-400;
   }
 
   .btn-call {
@@ -191,8 +191,10 @@
   }
 
   .dish-price {
-    @apply shrink-0 font-serif text-xl font-semibold tracking-tight text-slate-900 dark:text-slate-100;
-    font-variant-numeric: lining-nums;
+    @apply shrink-0 whitespace-nowrap text-right font-serif text-base font-semibold leading-none text-stone-900 dark:text-stone-100;
+    font-variant-numeric: lining-nums tabular-nums;
+    font-feature-settings: "lnum" 1, "tnum" 1;
+    min-width: 5.5rem;
   }
 
   .site-nav-link {

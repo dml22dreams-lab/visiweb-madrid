@@ -103,7 +103,7 @@ window.VISIWEB_DEMO = (function () {
     chapters: [
       {
         year: '1998',
-        title: { es: 'La primera caña', en: 'The first pint' },
+        title: { es: 'La primera caña', en: 'The first beer' },
         text: {
           es: 'Una barra corta, cuatro mesas y la receta de las bravas que aún no hemos tocado. El Norte nació para el mediodía de Alcobendas.',
           en: 'A short bar, four tables and the bravas recipe we still have not touched. El Norte was born for lunchtime in Alcobendas.'
@@ -306,10 +306,10 @@ window.VISIWEB_DEMO = (function () {
         },
         {
           id: 'huevos-rotos',
-          name: { es: 'Huevos rotos con jamón', en: 'Broken eggs with cured ham' },
+          name: { es: 'Huevos rotos con jamón', en: 'Huevos rotos with cured ham' },
           desc: {
             es: 'Patatas en bastones, dos huevos camperos rotos en mesa y virutas de jamón curado.',
-            en: 'Thick-cut potatoes, two free-range eggs broken at the table and cured ham shavings.'
+            en: 'Thick-cut potatoes, two free-range eggs cracked over them at the table and cured ham shavings.'
           },
           price: '13,80 €',
           priceEn: '€13.80',
@@ -322,7 +322,7 @@ window.VISIWEB_DEMO = (function () {
     {
       id: 'tostas',
       anchor: 'tostas',
-      name: { es: 'Tostas y montados', en: 'Toasts & rolls' },
+      name: { es: 'Tostas y montados', en: 'Toasts and montaditos' },
       desc: {
         es: 'Pan de hogaza tostado en plancha. Para la caña de media tarde.',
         en: 'Sourdough toasted on the griddle. Perfect with an afternoon beer.'
@@ -356,7 +356,7 @@ window.VISIWEB_DEMO = (function () {
         },
         {
           id: 'montado-lomo',
-          name: { es: 'Montado de lomo de orza', en: 'Confit pork loin roll' },
+          name: { es: 'Montado de lomo de orza', en: 'Confit pork loin montadito' },
           desc: {
             es: 'Lomo de cerdo confitado a baja temperatura, pimiento verde asado y sal en escamas.',
             en: 'Pork loin confit at low temperature, roasted green pepper and sea salt flakes.'
@@ -372,7 +372,7 @@ window.VISIWEB_DEMO = (function () {
     {
       id: 'menu-del-dia',
       anchor: 'menu-del-dia',
-      name: { es: 'Menú del día', en: 'Menu of the day' },
+      name: { es: 'Menú del día', en: 'Set lunch' },
       desc: {
         es: 'De martes a viernes, de 12:00 a 16:00. Alérgenos según el plato elegido.',
         en: 'Tuesday to Friday, 12:00 to 16:00. Allergens depend on the dishes you choose.'
@@ -482,7 +482,7 @@ window.VISIWEB_DEMO = (function () {
           name: { es: 'Copa de Ribera del Duero (D.O.)', en: 'Glass of Ribera del Duero (D.O.)' },
           desc: {
             es: 'Potente y aterciopelado. Nuestro imprescindible con los huevos rotos.',
-            en: 'Bold and velvety. Our must-have with the broken eggs.'
+            en: 'Bold and velvety. Our must-have with the huevos rotos.'
           },
           price: '3,60 €',
           priceEn: '€3.60',
@@ -634,10 +634,10 @@ window.VISIWEB_DEMO = (function () {
         rating: 4,
         when: { es: 'hace 3 meses', en: '3 months ago' },
         photo: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=128&h=128&q=80',
-        dish: { es: '🍳 Huevos rotos', en: '🍳 Broken eggs', pill: 'border border-rose-200/60 bg-rose-50 text-rose-900' },
+        dish: { es: '🍳 Huevos rotos', en: '🍳 Huevos rotos', pill: 'border border-rose-200/60 bg-rose-50 text-rose-900' },
         text: {
           es: 'Los huevos rotos, espectaculares. Los findes se llena, así que mejor reservar mesa con antelación.',
-          en: 'The broken eggs are spectacular. It fills up at weekends, so it is better to book a table in advance.'
+          en: 'The huevos rotos are spectacular. It fills up at weekends, so it is better to book a table in advance.'
         }
       }
     ]
@@ -698,7 +698,14 @@ window.VISIWEB_DEMO = (function () {
       bookTimePlaceholder: 'Elegir hora',
       bookDatePlaceholder: 'Selecciona una fecha',
       bookGuestsPlaceholder: 'Elegir comensales',
-      bookGuestsPick: 'Seleccionar comensales',
+      bookPhonePlaceholder: 'Número de teléfono',
+      bookPick: 'Seleccionar',
+      salesTap: 'Pulsa aquí',
+      salesBannerDetail: 'Así quedaría tu local. Esta demo es interactiva.',
+      allergenChip: 'Alérgenos',
+      mapSearchHint: 'Pulsa para buscarlo en Google Maps',
+      backHome: 'Volver al inicio',
+      bookGuestsPick: 'Seleccionar',
       bookGuestOne: '1 persona',
       bookGuestMany: '{n} personas',
       allergenFilter: 'Filtrar por alérgenos',
@@ -739,7 +746,16 @@ window.VISIWEB_DEMO = (function () {
       heroTitle: 'El sabor de siempre.',
       heroSubtitle: 'Raciones caseras en el corazón de Alcobendas.',
       reserve: 'Reservar mesa',
+      reserveReady: 'Confirmar mesa',
+      bookMissing: 'Faltan apartados por rellenar',
       reserveWhatsApp: 'Reservar mesa por WhatsApp',
+      reserveOptionsTitle: 'Haz tu reserva',
+      reserveOptionsLead: 'Integramos el sistema que mejor funcione para tu restaurante.',
+      reserveOnline: 'Reservar online',
+      reserveOnlineHint: 'Integración con TheFork, CoverManager, etc.',
+      reserveDirectWa: 'WhatsApp directo',
+      reserveDirectWaHint: 'Reserva directa sin comisiones',
+      reserveCallHint: 'Atención personalizada',
       directions: 'Cómo llegar',
       labelAddress: 'Dirección',
       labelToday: 'Horario de hoy',
@@ -819,13 +835,13 @@ window.VISIWEB_DEMO = (function () {
     en: {
       htmlLang: 'en',
       locale: 'en-GB',
-      metaTitle: 'Taberna El Norte · Beer house and tapas in Alcobendas',
+      metaTitle: 'Taberna El Norte · Beer house and sharing plates in Alcobendas',
       metaDescription: 'Taberna El Norte, a beer house in Alcobendas. Bilingual menu with allergens, dining room and terrace, our story, and online table booking.',
       days: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
       statusOpen: 'Open now',
       statusClosed: 'Closed now',
       statusOpensAt: 'Opens at {time}',
-      statusOpensDay: 'Opens {day} at {time}',
+      statusOpensDay: 'Opens on {day} at {time}',
       call: 'Call',
       callLong: 'Call the restaurant',
       langLabel: 'Language',
@@ -833,13 +849,13 @@ window.VISIWEB_DEMO = (function () {
       skipToContent: 'Skip to content',
       navHome: 'Home',
       navMenu: 'Menu',
-      navLocal: 'The rooms',
+      navLocal: 'The venue',
       navHistory: 'Our story',
       navBook: 'Book',
       featuredTitle: 'House favourites',
       featuredCta: 'See the full menu',
-      localTitle: 'The rooms',
-      localSubtitle: 'Dining room, bar and terrace. A neighbourhood tavern with tables you stay at.',
+      localTitle: 'The venue',
+      localSubtitle: 'Dining room, bar and terrace. A neighbourhood tavern, with a table worth staying for.',
       historyTitle: 'Our story',
       bookTitle: 'Book a table',
       bookSubtitle: 'Choose a day, time and party size. You will see an instant confirmation (demo).',
@@ -860,7 +876,7 @@ window.VISIWEB_DEMO = (function () {
       bookWaIntro: 'Hello, this is {name}. I would like to book a table at Taberna El Norte.',
       bookWaNote: 'Note',
       bookError: 'Please check the fields and try again.',
-      bookArea: 'Zone',
+      bookArea: 'Area',
       bookAreaAny: 'No preference',
       bookAreaSalon: 'Dining room',
       bookAreaTerrace: 'Terrace',
@@ -869,7 +885,14 @@ window.VISIWEB_DEMO = (function () {
       bookTimePlaceholder: 'Choose a time',
       bookDatePlaceholder: 'Select a date',
       bookGuestsPlaceholder: 'Choose guests',
-      bookGuestsPick: 'Select guests',
+      bookPhonePlaceholder: 'Phone number',
+      bookPick: 'Select',
+      salesTap: 'Tap here',
+      salesBannerDetail: 'This is how your place would look. This demo is interactive.',
+      allergenChip: 'Allergens',
+      mapSearchHint: 'Tap to find it on Google Maps',
+      backHome: 'Back to top',
+      bookGuestsPick: 'Select',
       bookGuestOne: '1 guest',
       bookGuestMany: '{n} guests',
       allergenFilter: 'Filter by allergen',
@@ -899,7 +922,7 @@ window.VISIWEB_DEMO = (function () {
       gbpMenuCta: 'Open the digital menu',
       gbpPhotoAll: 'All',
       gbpPhotoFood: 'Food',
-      gbpPhotoAmbience: 'Vibe',
+      gbpPhotoAmbience: 'Atmosphere',
       gbpPhotoTerrace: 'Terrace',
       gbpInfoAddress: 'Address',
       gbpInfoHours: 'Opening hours',
@@ -908,9 +931,18 @@ window.VISIWEB_DEMO = (function () {
       quickActions: 'Quick actions',
       heroEyebrow: 'Alcobendas · Since 1998',
       heroTitle: 'The flavour you remember.',
-      heroSubtitle: 'Homemade tapas in the heart of Alcobendas.',
+      heroSubtitle: 'Homemade sharing plates in the heart of Alcobendas.',
       reserve: 'Book a table',
+      reserveReady: 'Confirm table',
+      bookMissing: 'Some fields are still empty',
       reserveWhatsApp: 'Book a table on WhatsApp',
+      reserveOptionsTitle: 'Book your table',
+      reserveOptionsLead: 'We connect whichever system works best for your restaurant.',
+      reserveOnline: 'Book online',
+      reserveOnlineHint: 'TheFork, CoverManager and similar integrations.',
+      reserveDirectWa: 'Direct WhatsApp',
+      reserveDirectWaHint: 'Direct booking, no commission',
+      reserveCallHint: 'Personal service',
       directions: 'Get directions',
       labelAddress: 'Address',
       labelToday: "Today's hours",
@@ -926,7 +958,7 @@ window.VISIWEB_DEMO = (function () {
       intolerancesInDish: 'Intolerances',
       allergensAndIntolerances: 'Allergens and intolerances',
       intolerance: 'Intolerance',
-      noAllergens: 'No declarable allergens',
+      noAllergens: 'No allergens that must be declared',
       allergenKey: 'Allergen key',
       allergenTableLink: 'View the full allergen table',
       allergenTableTitle: 'Allergen table by dish',
@@ -935,8 +967,8 @@ window.VISIWEB_DEMO = (function () {
       allergenTableHint: 'Scroll the table sideways to see all fourteen allergens.',
       close: 'Close',
       dish: 'Dish',
-      staffNotice: 'Ask our staff for the complete information on the fourteen declarable allergens.',
-      vatNotice: 'Prices include VAT. Bread and olive oil: €1.20 per person (except on the Menu of the Day, where it is included).',
+      staffNotice: 'Ask our staff for the full information on the fourteen allergens that must be declared.',
+      vatNotice: 'Prices include VAT. Bread and olive oil: €1.20 per person (except on the set lunch, where it is included).',
       reviewsTitle: 'Reviews',
       reviewsDemo: 'Sample reviews',
       reviewsScore: '· {count} reviews on Google',
