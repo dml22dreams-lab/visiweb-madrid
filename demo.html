@@ -32,7 +32,7 @@
 
   <link rel="preload" href="assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/cormorant-garamond-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="assets/demo.css?v=36">
+  <link rel="stylesheet" href="assets/demo.css?v=39">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
   <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
@@ -1128,16 +1128,16 @@
           <article class="mx-auto mt-8 max-w-xl select-none rounded-2xl border border-stone-200 bg-white p-4 font-sans antialiased shadow-sm dark:border-stone-800 dark:bg-[#202124] sm:p-5">
 
             <!-- 1. PESTAÑAS OFICIALES GOOGLE (CON SEPARACIÓN REAL) -->
-            <div class="mb-3.5 flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-stone-200 pb-2.5 text-xs font-medium dark:border-stone-700 sm:text-sm" role="tablist" aria-label="Ficha de Google">
-              <button type="button" role="tab" id="gbp-tab-overview" data-gbp-tab="overview" aria-selected="true" aria-controls="gbp-panel-overview" class="relative whitespace-nowrap font-semibold text-[#1a73e8] after:absolute after:-bottom-[11px] after:left-0 after:h-[3px] after:w-full after:rounded-full after:bg-[#1a73e8] after:content-[''] dark:text-[#8ab4f8] dark:after:bg-[#8ab4f8]" data-i18n="gbpTabOverview">Resumen</button>
-              <button type="button" role="tab" id="gbp-tab-menu" data-gbp-tab="menu" aria-selected="false" aria-controls="gbp-panel-menu" class="whitespace-nowrap text-stone-500 hover:text-stone-700 dark:text-stone-400" data-i18n="gbpTabMenu">Carta</button>
-              <button type="button" role="tab" id="gbp-tab-reviews" data-gbp-tab="reviews" aria-selected="false" aria-controls="gbp-panel-reviews" class="whitespace-nowrap text-stone-500 hover:text-stone-700 dark:text-stone-400" data-i18n="gbpTabReviews">Opiniones</button>
-              <button type="button" role="tab" id="gbp-tab-photos" data-gbp-tab="photos" aria-selected="false" aria-controls="gbp-panel-photos" class="whitespace-nowrap text-stone-500 hover:text-stone-700 dark:text-stone-400" data-i18n="gbpTabPhotos">Fotos</button>
-              <button type="button" role="tab" id="gbp-tab-about" data-gbp-tab="about" aria-selected="false" aria-controls="gbp-panel-about" class="whitespace-nowrap text-stone-500 hover:text-stone-700 dark:text-stone-400" data-i18n="gbpTabAbout">Información</button>
+            <div class="no-scrollbar -mx-4 flex items-center gap-5 overflow-x-auto whitespace-nowrap border-b border-stone-200/60 px-4 pb-2 pt-1 text-xs font-medium dark:border-stone-700 sm:-mx-5 sm:px-5 sm:text-sm" role="tablist" aria-label="Ficha de Google">
+              <button type="button" role="tab" id="gbp-tab-overview" data-gbp-tab="overview" aria-selected="true" aria-controls="gbp-panel-overview" class="relative shrink-0 whitespace-nowrap font-semibold text-[#1a73e8] after:absolute after:-bottom-2 after:left-0 after:h-[3px] after:w-full after:rounded-full after:bg-[#1a73e8] after:content-[''] dark:text-[#8ab4f8] dark:after:bg-[#8ab4f8]" data-i18n="gbpTabOverview">Resumen</button>
+              <button type="button" role="tab" id="gbp-tab-menu" data-gbp-tab="menu" aria-selected="false" aria-controls="gbp-panel-menu" class="shrink-0 whitespace-nowrap text-stone-500 hover:text-stone-700 dark:text-stone-400" data-i18n="gbpTabMenu">Carta</button>
+              <button type="button" role="tab" id="gbp-tab-reviews" data-gbp-tab="reviews" aria-selected="false" aria-controls="gbp-panel-reviews" class="shrink-0 whitespace-nowrap text-stone-500 hover:text-stone-700 dark:text-stone-400" data-i18n="gbpTabReviews">Opiniones</button>
+              <button type="button" role="tab" id="gbp-tab-photos" data-gbp-tab="photos" aria-selected="false" aria-controls="gbp-panel-photos" class="shrink-0 whitespace-nowrap text-stone-500 hover:text-stone-700 dark:text-stone-400" data-i18n="gbpTabPhotos">Fotos</button>
+              <button type="button" role="tab" id="gbp-tab-about" data-gbp-tab="about" aria-selected="false" aria-controls="gbp-panel-about" class="shrink-0 whitespace-nowrap text-stone-500 hover:text-stone-700 dark:text-stone-400" data-i18n="gbpTabAbout">Información</button>
             </div>
 
             <!-- PANEL: RESUMEN -->
-            <div id="gbp-panel-overview" data-gbp-panel="overview" role="tabpanel" aria-labelledby="gbp-tab-overview" class="block">
+            <div id="gbp-panel-overview" data-gbp-panel="overview" role="tabpanel" aria-labelledby="gbp-tab-overview" class="block pb-28 md:pb-2">
 
             <!-- 2. DATOS DEL RESTAURANTE -->
             <div class="mb-4 space-y-1">
@@ -1148,14 +1148,14 @@
             </div>
 
             <!-- 3. CUATRO BOTONES CIRCULARES (ESTILO GOOGLE MAPS) -->
-            <div class="my-4 grid grid-cols-4 gap-2 pt-1">
+            <div class="my-4 grid grid-cols-4 items-start gap-2 pt-1">
 
               <!-- Cómo llegar -->
               <a id="gbp-directions" href="https://www.google.com/maps/dir/?api=1&amp;destination=Calle+del+Marqu%C3%A9s+de+la+Valdavia+Alcobendas" target="_blank" rel="noopener" class="flex cursor-pointer flex-col items-center no-underline">
                 <div class="flex h-10 w-10 items-center justify-center rounded-full bg-[#1a73e8] text-white shadow-sm sm:h-11 sm:w-11">
                   <svg class="h-5 w-5 fill-current" viewBox="0 0 24 24" aria-hidden="true"><path d="M21.71 11.29l-9-9a.996.996 0 0 0-1.41 0l-9 9a.996.996 0 0 0 0 1.41l9 9c.39.39 1.02.39 1.41 0l9-9a.996.996 0 0 0 0-1.41zM14 14.5V12h-4v3H8v-4c0-.55.45-1 1-1h5V7.5l3.5 3.5-3.5 3.5z"/></svg>
                 </div>
-                <span class="mt-1.5 text-center text-[11px] font-medium text-[#1a73e8] dark:text-[#8ab4f8]" data-i18n="gbpDirections">Cómo llegar</span>
+                <span class="mt-1.5 w-full text-center text-[11px] font-medium leading-tight text-[#1a73e8] dark:text-[#8ab4f8]" data-i18n="gbpDirections">Cómo llegar</span>
               </a>
 
               <!-- Llamar -->
@@ -1225,8 +1225,8 @@
             </div>
 
             <!-- PANEL: INFORMACIÓN -->
-            <div id="gbp-panel-about" data-gbp-panel="about" role="tabpanel" aria-labelledby="gbp-tab-about" hidden>
-              <ul id="gbp-about-list" class="divide-y divide-stone-100 text-xs dark:divide-stone-800"></ul>
+            <div id="gbp-panel-about" data-gbp-panel="about" role="tabpanel" aria-labelledby="gbp-tab-about" class="-mx-4 px-5 pb-5 pt-4 text-xs sm:-mx-5 sm:text-[13px]" hidden>
+              <ul id="gbp-about-list" class="space-y-4"></ul>
             </div>
           </article>
         </section>

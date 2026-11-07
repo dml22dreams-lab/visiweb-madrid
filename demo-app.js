@@ -126,7 +126,18 @@
       if (last && last.key === key) last.days.push(day);
       else groups.push({ key: key, days: [day], ranges: dayRanges(day) });
     });
-    return groups.map((g) => ({ label: daysLabel(g.days), ranges: g.ranges }));
+    return groups.map((g) => ({ label: daysLabel(g.days), days: g.days, ranges: g.ranges }));
+  }
+
+  function gbpDayLabel(days) {
+    const full = lang === 'es'
+      ? ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado']
+      : ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const short = lang === 'es'
+      ? ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb']
+      : ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    if (days.length === 1) return full[days[0]];
+    return short[days[0]] + ' - ' + short[days[days.length - 1]];
   }
 
   function daysLabel(days) {
@@ -860,11 +871,11 @@
     };
 
     const row = (icon, label, body) => {
-      const li = el('li', 'flex items-start gap-3 py-3');
-      const mark = el('span', 'mt-0.5 shrink-0 text-stone-500 dark:text-stone-400');
+      const li = el('li', 'flex items-start gap-3 border-b border-stone-100 pb-3 last:border-b-0 last:pb-0 dark:border-stone-800');
+      const mark = el('span', 'mt-0.5 h-4 w-4 shrink-0 text-stone-400');
       mark.innerHTML = '<svg class="h-4 w-4 fill-current" viewBox="0 0 24 24" aria-hidden="true">' + icon + '</svg>';
       const content = el('div', 'min-w-0 flex-1');
-      const title = el('p', 'text-[11px] uppercase tracking-wide text-stone-400 dark:text-stone-500');
+      const title = el('span', 'mb-0.5 block text-[10px] font-bold uppercase tracking-wider text-stone-400');
       title.textContent = label;
       content.append(title, body);
       li.append(mark, content);
@@ -873,39 +884,44 @@
 
     list.textContent = '';
 
-    const address = el('a', 'mt-0.5 block text-xs text-[#1a73e8] no-underline dark:text-[#8ab4f8]');
+    const address = el('a', 'mt-0.5 block leading-relaxed text-[#1a73e8] no-underline dark:text-[#8ab4f8]');
     address.href = mapsUrl();
     address.target = '_blank';
     address.rel = 'noopener';
     address.textContent = addressText();
     row(ICONS.pin, t('gbpInfoAddress'), address);
 
-    const hours = el('dl', 'mt-1 space-y-1');
+    const hours = el('div', 'mt-1 text-stone-700 dark:text-stone-300');
     groupedHours().forEach((group) => {
-      const line = el('div', 'flex items-baseline justify-between gap-3');
-      const day = el('dt', 'text-xs text-stone-600 dark:text-stone-400');
-      day.textContent = group.label;
-      const time = el('dd', 'text-xs text-stone-700 dark:text-stone-300');
-      time.textContent = rangesText(group.ranges, ' · ');
+      const closed = !group.ranges.length;
+      const line = el('div', 'flex items-baseline justify-between gap-2 border-b border-stone-100 py-1.5 last:border-b-0 dark:border-stone-800');
+      const day = el('span', 'shrink-0');
+      day.textContent = gbpDayLabel(group.days);
+      const time = el('span', closed
+        ? 'font-medium text-red-600 dark:text-red-400'
+        : 'text-right tabular-nums');
+      time.textContent = closed
+        ? t('closed')
+        : group.ranges.map(([a, b]) => fromMin(toMin(a)) + '–' + fromMin(toMin(b))).join(' · ');
       line.append(day, time);
       hours.appendChild(line);
     });
     row(ICONS.clock, t('gbpInfoHours'), hours);
 
-    const phone = el('a', 'mt-0.5 block text-xs text-[#1a73e8] no-underline dark:text-[#8ab4f8]');
+    const phone = el('a', 'mt-0.5 block text-[#1a73e8] no-underline dark:text-[#8ab4f8]');
     phone.href = 'tel:' + D.business.phone;
     phone.textContent = D.business.phoneDisplay;
     row(ICONS.phone, t('gbpInfoPhone'), phone);
 
-    const web = el('a', 'mt-0.5 block text-xs text-[#1a73e8] no-underline dark:text-[#8ab4f8]');
+    const web = el('a', 'mt-0.5 block break-all text-[#1a73e8] no-underline dark:text-[#8ab4f8]');
     web.href = '#inicio';
     web.textContent = 'tabernaelnorte.visiwebmadrid.com';
     row(ICONS.web, t('gbpInfoWebsite'), web);
   }
 
   /* --- Ficha de Google · pestañas ----------------------------------------- */
-  const GBP_TAB_ON = 'relative whitespace-nowrap font-semibold text-[#1a73e8] after:absolute after:-bottom-[11px] after:left-0 after:h-[3px] after:w-full after:rounded-full after:bg-[#1a73e8] after:content-[\'\'] dark:text-[#8ab4f8] dark:after:bg-[#8ab4f8]';
-  const GBP_TAB_OFF = 'whitespace-nowrap text-stone-500 hover:text-stone-700 dark:text-stone-400';
+  const GBP_TAB_ON = 'relative shrink-0 whitespace-nowrap font-semibold text-[#1a73e8] after:absolute after:-bottom-2 after:left-0 after:h-[3px] after:w-full after:rounded-full after:bg-[#1a73e8] after:content-[\'\'] dark:text-[#8ab4f8] dark:after:bg-[#8ab4f8]';
+  const GBP_TAB_OFF = 'shrink-0 whitespace-nowrap text-stone-500 hover:text-stone-700 dark:text-stone-400';
 
   function cambiarPestanaGoogle(nombrePestana) {
     const tabs = document.querySelectorAll('[data-gbp-tab]');
@@ -917,6 +933,13 @@
       const active = tab.dataset.gbpTab === target;
       tab.className = active ? GBP_TAB_ON : GBP_TAB_OFF;
       tab.setAttribute('aria-selected', active ? 'true' : 'false');
+      if (active && tab.parentElement) {
+        const bar = tab.parentElement;
+        const left = tab.offsetLeft;
+        const right = left + tab.offsetWidth;
+        if (left < bar.scrollLeft) bar.scrollLeft = left;
+        else if (right > bar.scrollLeft + bar.clientWidth) bar.scrollLeft = right - bar.clientWidth;
+      }
     });
     document.querySelectorAll('[data-gbp-panel]').forEach((panel) => {
       const active = panel.dataset.gbpPanel === target;
