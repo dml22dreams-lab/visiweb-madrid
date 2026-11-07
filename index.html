@@ -610,8 +610,8 @@
     <aside id="garantia-pago" class="reveal mx-auto mb-20 w-full max-w-5xl rounded-3xl border border-stone-200/80 bg-white p-6 shadow-sm sm:mb-24 sm:p-8 dark:border-stone-700 dark:bg-stone-900" aria-label="Cómo trabajamos">
       <h3 class="font-serif text-2xl font-bold text-stone-900 dark:text-stone-100">Cómo trabajamos</h3>
       <p class="mt-1 text-sm text-stone-500 dark:text-stone-400">Sin adelantos a ciegas. Validamos cada fase contigo antes de publicar.</p>
-      <ol id="garantia-pasos" class="mb-6 mt-6 grid list-none grid-cols-1 gap-4 p-0 sm:gap-5 md:grid-cols-3">
-        <li class="flex cursor-pointer flex-col justify-between rounded-2xl border border-stone-200/60 bg-stone-50/80 p-5 transition-transform duration-300 ease-out hover:-translate-y-1 hover:shadow-md dark:border-stone-700 dark:bg-stone-800/50">
+      <ol id="garantia-pasos" class="no-scrollbar mt-6 flex list-none snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-4 -mx-4 sm:mx-0 sm:px-0 md:grid md:grid-cols-3 md:overflow-visible">
+        <li class="flex w-[85%] min-w-[85%] shrink-0 snap-center cursor-pointer flex-col justify-between rounded-2xl border border-stone-200/60 bg-stone-50/80 p-5 transition-transform duration-300 ease-out hover:-translate-y-1 hover:shadow-md sm:w-[70%] sm:min-w-[70%] md:w-auto md:min-w-0 md:shrink dark:border-stone-700 dark:bg-stone-800/50">
           <div>
             <div class="flex items-center justify-between gap-2">
               <span class="shrink-0 rounded-md border border-stone-200 bg-white px-2 py-0.5 font-mono text-xs font-bold text-stone-500 dark:border-stone-600 dark:bg-stone-900 dark:text-stone-400">01</span>
@@ -621,7 +621,7 @@
           </div>
           <p class="text-xs leading-relaxed text-stone-600 dark:text-stone-400 sm:text-[13px]">Diseñamos la demo funcional adaptada a tu local para que veas el resultado real antes de comprometerte.</p>
         </li>
-        <li class="flex cursor-pointer flex-col justify-between rounded-2xl border border-stone-200/60 bg-stone-50/80 p-5 transition-transform duration-300 ease-out hover:-translate-y-1 hover:shadow-md dark:border-stone-700 dark:bg-stone-800/50">
+        <li class="flex w-[85%] min-w-[85%] shrink-0 snap-center cursor-pointer flex-col justify-between rounded-2xl border border-stone-200/60 bg-stone-50/80 p-5 transition-transform duration-300 ease-out hover:-translate-y-1 hover:shadow-md sm:w-[70%] sm:min-w-[70%] md:w-auto md:min-w-0 md:shrink dark:border-stone-700 dark:bg-stone-800/50">
           <div>
             <div class="flex items-center justify-between gap-2">
               <span class="shrink-0 rounded-md border border-stone-200 bg-white px-2 py-0.5 font-mono text-xs font-bold text-stone-500 dark:border-stone-600 dark:bg-stone-900 dark:text-stone-400">02</span>
@@ -631,7 +631,7 @@
           </div>
           <p class="text-xs leading-relaxed text-stone-600 dark:text-stone-400 sm:text-[13px]">Montamos la carta definitiva, optimización para móviles y reservas tras tu visto bueno.</p>
         </li>
-        <li class="flex cursor-pointer flex-col justify-between rounded-2xl border border-stone-200/60 bg-stone-50/80 p-5 transition-transform duration-300 ease-out hover:-translate-y-1 hover:shadow-md dark:border-stone-700 dark:bg-stone-800/50">
+        <li class="flex w-[85%] min-w-[85%] shrink-0 snap-center cursor-pointer flex-col justify-between rounded-2xl border border-stone-200/60 bg-stone-50/80 p-5 transition-transform duration-300 ease-out hover:-translate-y-1 hover:shadow-md sm:w-[70%] sm:min-w-[70%] md:w-auto md:min-w-0 md:shrink dark:border-stone-700 dark:bg-stone-800/50">
           <div>
             <div class="flex items-center justify-between gap-2">
               <span class="shrink-0 rounded-md border border-stone-200 bg-white px-2 py-0.5 font-mono text-xs font-bold text-stone-500 dark:border-stone-600 dark:bg-stone-900 dark:text-stone-400">03</span>
@@ -642,12 +642,12 @@
           <p class="text-xs leading-relaxed text-stone-600 dark:text-stone-400 sm:text-[13px]">Publicación en tu dominio propio, alta en Google y entrega final.</p>
         </li>
       </ol>
-      <div class="flex flex-wrap items-center justify-center gap-2 border-t border-stone-100 pt-4 text-xs text-stone-500 dark:border-stone-800 dark:text-stone-400">
-        <span>Métodos aceptados tras tu visto bueno:</span>
-        <span class="font-bold text-stone-900 dark:text-stone-100">Bizum</span>
-        <span>y</span>
-        <span class="font-bold text-stone-900 dark:text-stone-100">Transferencia</span>
+      <div id="garantia-pasos-dots" class="mt-2 flex items-center justify-center gap-1.5 md:hidden" role="tablist" aria-label="Pasos">
+        <button type="button" data-garantia-dot="0" aria-label="Maqueta inicial" aria-current="true" class="h-1.5 w-1.5 rounded-full bg-stone-800 transition-all dark:bg-stone-100"></button>
+        <button type="button" data-garantia-dot="1" aria-label="Desarrollo y ajustes" class="h-1.5 w-1.5 rounded-full bg-stone-300 transition-all dark:bg-stone-600"></button>
+        <button type="button" data-garantia-dot="2" aria-label="Lanzamiento y entrega" class="h-1.5 w-1.5 rounded-full bg-stone-300 transition-all dark:bg-stone-600"></button>
       </div>
+      <p class="mt-4 text-center text-xs text-stone-500 dark:text-stone-400">Métodos aceptados tras tu visto bueno: <span class="font-bold text-stone-900 dark:text-stone-100">Bizum</span> y <span class="font-bold text-stone-900 dark:text-stone-100">Transferencia</span></p>
     </aside>
 
     <div class="reveal mx-auto max-w-3xl text-center">
@@ -669,25 +669,16 @@
         </header>
         <div class="mt-5 border-b border-stone-200 pb-5 dark:border-stone-800">
           <p class="text-3xl font-extrabold text-stone-900 dark:text-stone-100">120&nbsp;€</p>
-          <p class="mt-2 text-sm font-medium leading-snug text-stone-700 dark:text-stone-300">+ Mantenimiento mensual a elegir en el siguiente paso.</p>
+          <p class="mt-2 text-xs text-stone-500 dark:text-stone-400">Web en propiedad · Sin permanencia</p>
           <p class="mt-2.5 inline-flex max-w-full flex-wrap items-center gap-1.5 rounded-full border border-stone-200 bg-[#F3EDE4] px-2.5 py-1 text-[11px] font-semibold leading-tight text-stone-800 dark:border-stone-700 dark:bg-stone-800 dark:text-stone-200"><span aria-hidden="true">⏱️</span> Entrega lista en 48h laborables*</p>
         </div>
-        <ul class="contents">
-          <li class="flex items-center gap-2 border-b border-stone-100 py-2.5 text-xs leading-snug text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="inline-flex w-4 shrink-0 justify-center font-bold leading-none text-emerald-600" aria-hidden="true">✓</span> Web One-Page ultrarrápida adaptada a móvil</li>
-          <li class="flex items-center gap-2 border-b border-stone-100 py-2.5 text-xs leading-snug text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="inline-flex w-4 shrink-0 justify-center font-bold leading-none text-emerald-600" aria-hidden="true">✓</span> Carta completa categorizada con precios</li>
-          <li class="flex items-center gap-2 border-b border-stone-100 py-2.5 text-xs leading-snug text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="inline-flex w-4 shrink-0 justify-center font-bold leading-none text-emerald-600" aria-hidden="true">✓</span> Código QR vectorial en alta resolución para imprimir</li>
-          <li class="flex items-center gap-2 border-b border-stone-100 py-2.5 text-xs leading-snug text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="inline-flex w-4 shrink-0 justify-center font-bold leading-none text-emerald-600" aria-hidden="true">✓</span> Vinculación del enlace web en la ficha de Google</li>
-          <li class="flex items-center gap-2 border-b border-stone-100 py-2.5 text-xs leading-snug text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="inline-flex w-4 shrink-0 justify-center font-bold leading-none text-emerald-600" aria-hidden="true">✓</span> Textos legales y aviso de privacidad RGPD</li>
-          <li class="flex items-center gap-2 border-b border-stone-100 py-2.5 text-xs leading-snug text-stone-400 last:border-b-0 dark:border-stone-800 dark:text-stone-500 sm:text-[13px]"><span class="inline-flex w-4 shrink-0 justify-center font-bold leading-none text-red-500 dark:text-red-400" aria-hidden="true">✕</span> Módulo de reserva directa por WhatsApp (No incluido)</li>
-          <li class="flex items-center gap-2 border-b border-stone-100 py-2.5 text-xs leading-snug text-stone-400 last:border-b-0 dark:border-stone-800 dark:text-stone-500 sm:text-[13px]"><span class="inline-flex w-4 shrink-0 justify-center font-bold leading-none text-red-500 dark:text-red-400" aria-hidden="true">✕</span> Filtro interactivo de alérgenos y platos destacados</li>
-          <li class="flex items-start gap-2 border-b border-stone-100 py-2.5 text-xs leading-snug text-stone-400 last:border-b-0 dark:border-stone-800 dark:text-stone-500 sm:text-[13px]"><span class="inline-flex w-4 shrink-0 justify-center font-bold leading-none text-red-500 dark:text-red-400" aria-hidden="true">✕</span> Sesión fotográfica presencial</li>
-          <li class="flex items-center gap-2 border-b border-stone-100 py-2.5 text-xs leading-snug text-stone-400 last:border-b-0 dark:border-stone-800 dark:text-stone-500 sm:text-[13px]"><span class="inline-flex w-4 shrink-0 justify-center font-bold leading-none text-red-500 dark:text-red-400" aria-hidden="true">✕</span> Diseño de cartelería física y peanas de mesa</li>
-          <li class="flex items-start gap-2 border-b border-stone-100 py-2.5 text-xs leading-snug text-stone-400 last:border-b-0 dark:border-stone-800 dark:text-stone-500 sm:text-[13px]"><span class="inline-flex w-4 shrink-0 justify-center font-bold leading-none text-red-500 dark:text-red-400" aria-hidden="true">✕</span> Fotografía de la carta completa</li>
-          <li class="flex items-start gap-2 border-b border-stone-100 py-2.5 text-xs leading-snug text-stone-400 last:border-b-0 dark:border-stone-800 dark:text-stone-500 sm:text-[13px]"><span class="inline-flex w-4 shrink-0 justify-center font-bold leading-none text-red-500 dark:text-red-400" aria-hidden="true">✕</span> Carta trilingüe interactiva (Español / Inglés / Francés)</li>
-          <li class="flex items-center gap-2 border-b border-stone-100 py-2.5 text-xs leading-snug text-stone-400 last:border-b-0 dark:border-stone-800 dark:text-stone-500 sm:text-[13px]"><span class="inline-flex w-4 shrink-0 justify-center font-bold leading-none text-red-500 dark:text-red-400" aria-hidden="true">✕</span> Módulo web para reserva de eventos privados y grupos</li>
-          <li class="flex items-start gap-2 border-b border-stone-100 py-2.5 text-xs leading-snug text-stone-400 last:border-b-0 dark:border-stone-800 dark:text-stone-500 sm:text-[13px]"><span class="inline-flex w-4 shrink-0 justify-center font-bold leading-none text-red-500 dark:text-red-400" aria-hidden="true">✕</span> Correo corporativo profesional (No incluido)</li>
-          <li class="flex items-start gap-2 border-b border-stone-100 py-2.5 text-xs leading-snug text-stone-400 last:border-b-0 dark:border-stone-800 dark:text-stone-500 sm:text-[13px]"><span class="inline-flex w-4 shrink-0 justify-center font-bold leading-none text-red-500 dark:text-red-400" aria-hidden="true">✕</span> Datos estructurados para buscador de Google</li>
-          <li class="flex items-start gap-2 border-b border-stone-100 py-2.5 text-xs leading-snug text-stone-400 last:border-b-0 dark:border-stone-800 dark:text-stone-500 sm:text-[13px]"><span class="inline-flex w-4 shrink-0 justify-center font-bold leading-none text-red-500 dark:text-red-400" aria-hidden="true">✕</span> Impresión y entrega de material físico</li>
+        <ul class="mt-5">
+          <li class="flex items-start border-b border-stone-100/70 py-2 text-xs leading-relaxed text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="mr-2.5 mt-1.5 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-stone-300 dark:bg-stone-600" aria-hidden="true"></span> Web One-Page ultrarrápida adaptada a móvil</li>
+          <li class="flex items-start border-b border-stone-100/70 py-2 text-xs leading-relaxed text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="mr-2.5 mt-1.5 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-stone-300 dark:bg-stone-600" aria-hidden="true"></span> Carta digital completa categorizada con precios</li>
+          <li class="flex items-start border-b border-stone-100/70 py-2 text-xs leading-relaxed text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="mr-2.5 mt-1.5 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-stone-300 dark:bg-stone-600" aria-hidden="true"></span> Botón directo de reserva y pedidos por WhatsApp</li>
+          <li class="flex items-start border-b border-stone-100/70 py-2 text-xs leading-relaxed text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="mr-2.5 mt-1.5 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-stone-300 dark:bg-stone-600" aria-hidden="true"></span> Código QR vectorial en alta resolución para imprimir</li>
+          <li class="flex items-start border-b border-stone-100/70 py-2 text-xs leading-relaxed text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="mr-2.5 mt-1.5 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-stone-300 dark:bg-stone-600" aria-hidden="true"></span> Enlace web vinculado en tu ficha de Google</li>
+          <li class="flex items-start border-b border-stone-100/70 py-2 text-xs leading-relaxed text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="mr-2.5 mt-1.5 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-stone-300 dark:bg-stone-600" aria-hidden="true"></span> Textos legales y aviso de privacidad RGPD</li>
         </ul>
         <div class="flex flex-col justify-end pt-6">
           <button type="button" data-select-web aria-pressed="false"
@@ -697,7 +688,7 @@
         </div>
       </article>
 
-      <article id="gastro-premium" data-web="gastro" data-name="Gastro Premium" data-price="390" data-plazo="Entrega en 5 a 7 días laborables" data-active="85" data-idle="border-2 border-[#8B5E34] dark:border-[#C4A484] bg-white dark:bg-stone-900" class="reveal relative mb-8 block h-full w-full min-w-0 scroll-mt-28 flex flex-col justify-between rounded-2xl border-2 border-[#8B5E34] bg-white p-6 opacity-100 shadow-sm transition-opacity duration-200 ease-in-out hover:shadow-md dark:border-[#C4A484] dark:bg-stone-900 sm:p-8 md:flex">
+      <article id="gastro-premium" data-web="gastro" data-name="Gastro Premium" data-price="390" data-plazo="Entrega en 5 a 7 días laborables" data-active="85" data-idle="border border-[#8B5E34] dark:border-[#C4A484] bg-white dark:bg-stone-900" class="reveal relative mb-8 block h-full w-full min-w-0 scroll-mt-28 flex flex-col justify-between rounded-2xl border border-[#8B5E34] bg-white p-6 opacity-100 shadow-sm transition-opacity duration-200 ease-in-out hover:shadow-md dark:border-[#C4A484] dark:bg-stone-900 sm:p-8 md:flex">
         <span class="plan-badge absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-[#E6D5C3] px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-stone-900">Recomendado</span>
         <header class="pt-2">
           <h3 class="text-lg font-extrabold tracking-tight text-stone-900 dark:text-stone-100">Gastro Premium</h3>
@@ -705,25 +696,17 @@
         </header>
         <div class="mt-5 border-b border-stone-200 pb-5 dark:border-stone-800">
           <p class="text-3xl font-extrabold text-stone-900 dark:text-stone-100">390&nbsp;€</p>
-          <p class="mt-2 text-sm font-medium leading-snug text-stone-700 dark:text-stone-300">+ Mantenimiento mensual a elegir en el siguiente paso.</p>
+          <p class="mt-2 text-xs text-stone-500 dark:text-stone-400">Web en propiedad · Sin permanencia</p>
           <p class="mt-2.5 inline-flex max-w-full flex-wrap items-center gap-1.5 rounded-full border border-stone-200 bg-[#F3EDE4] px-2.5 py-1 text-[11px] font-semibold leading-tight text-stone-800 dark:border-stone-700 dark:bg-stone-800 dark:text-stone-200"><span aria-hidden="true">⏱️</span> Entrega en 5 a 7 días laborables*</p>
         </div>
-        <ul class="contents">
-          <li class="flex items-center gap-2 border-b border-stone-100 py-2.5 text-xs leading-snug text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="inline-flex w-4 shrink-0 justify-center font-bold leading-none text-emerald-600" aria-hidden="true">✓</span> Web multipágina estructurada (Carta, Local, Reservas)</li>
-          <li class="flex items-center gap-2 border-b border-stone-100 py-2.5 text-xs leading-snug text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="inline-flex w-4 shrink-0 justify-center font-bold leading-none text-emerald-600" aria-hidden="true">✓</span> Carta completa categorizada con precios</li>
-          <li class="flex items-center gap-2 border-b border-stone-100 py-2.5 text-xs leading-snug text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="inline-flex w-4 shrink-0 justify-center font-bold leading-none text-emerald-600" aria-hidden="true">✓</span> Código QR vectorial en alta resolución para imprimir</li>
-          <li class="flex items-center gap-2 border-b border-stone-100 py-2.5 text-xs leading-snug text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="inline-flex w-4 shrink-0 justify-center font-bold leading-none text-emerald-600" aria-hidden="true">✓</span> Optimización completa de Google Maps (horarios, menú, datos)</li>
-          <li class="flex items-center gap-2 border-b border-stone-100 py-2.5 text-xs leading-snug text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="inline-flex w-4 shrink-0 justify-center font-bold leading-none text-emerald-600" aria-hidden="true">✓</span> Textos legales y aviso de privacidad RGPD</li>
-          <li class="flex items-center gap-2 border-b border-stone-100 py-2.5 text-xs leading-snug text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="inline-flex w-4 shrink-0 justify-center font-bold leading-none text-emerald-600" aria-hidden="true">✓</span> Módulo de reserva directa por WhatsApp (sin comisiones)</li>
-          <li class="flex items-center gap-2 border-b border-stone-100 py-2.5 text-xs leading-snug text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="inline-flex w-4 shrink-0 justify-center font-bold leading-none text-emerald-600" aria-hidden="true">✓</span> Filtro interactivo de alérgenos y platos destacados</li>
-          <li class="flex items-start gap-2 border-b border-stone-100 py-2.5 text-xs leading-snug text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="inline-flex w-4 shrink-0 justify-center font-bold leading-none text-emerald-600" aria-hidden="true">✓</span> Sesión presencial básica (local y 6 platos clave)</li>
-          <li class="flex items-center gap-2 border-b border-stone-100 py-2.5 text-xs leading-snug text-stone-400 last:border-b-0 dark:border-stone-800 dark:text-stone-500 sm:text-[13px]"><span class="inline-flex w-4 shrink-0 justify-center font-bold leading-none text-red-500 dark:text-red-400" aria-hidden="true">✕</span> Diseño de cartelería física y peanas de mesa</li>
-          <li class="flex items-start gap-2 border-b border-stone-100 py-2.5 text-xs leading-snug text-stone-400 last:border-b-0 dark:border-stone-800 dark:text-stone-500 sm:text-[13px]"><span class="inline-flex w-4 shrink-0 justify-center font-bold leading-none text-red-500 dark:text-red-400" aria-hidden="true">✕</span> Fotografía de la carta completa</li>
-          <li class="flex items-start gap-2 border-b border-stone-100 py-2.5 text-xs leading-snug text-stone-400 last:border-b-0 dark:border-stone-800 dark:text-stone-500 sm:text-[13px]"><span class="inline-flex w-4 shrink-0 justify-center font-bold leading-none text-red-500 dark:text-red-400" aria-hidden="true">✕</span> Carta trilingüe interactiva (Español / Inglés / Francés)</li>
-          <li class="flex items-center gap-2 border-b border-stone-100 py-2.5 text-xs leading-snug text-stone-400 last:border-b-0 dark:border-stone-800 dark:text-stone-500 sm:text-[13px]"><span class="inline-flex w-4 shrink-0 justify-center font-bold leading-none text-red-500 dark:text-red-400" aria-hidden="true">✕</span> Módulo web para reserva de eventos privados y grupos</li>
-          <li class="flex items-start gap-2 border-b border-stone-100 py-2.5 text-xs leading-snug text-stone-400 last:border-b-0 dark:border-stone-800 dark:text-stone-500 sm:text-[13px]"><span class="inline-flex w-4 shrink-0 justify-center font-bold leading-none text-red-500 dark:text-red-400" aria-hidden="true">✕</span> Correo corporativo profesional (No incluido)</li>
-          <li class="flex items-start gap-2 border-b border-stone-100 py-2.5 text-xs leading-snug text-stone-400 last:border-b-0 dark:border-stone-800 dark:text-stone-500 sm:text-[13px]"><span class="inline-flex w-4 shrink-0 justify-center font-bold leading-none text-red-500 dark:text-red-400" aria-hidden="true">✕</span> Datos estructurados para buscador de Google</li>
-          <li class="flex items-start gap-2 border-b border-stone-100 py-2.5 text-xs leading-snug text-stone-400 last:border-b-0 dark:border-stone-800 dark:text-stone-500 sm:text-[13px]"><span class="inline-flex w-4 shrink-0 justify-center font-bold leading-none text-red-500 dark:text-red-400" aria-hidden="true">✕</span> Impresión y entrega de material físico (solo diseño digital)</li>
+        <ul class="mt-5">
+          <li class="flex items-start border-b border-stone-100/70 py-2 text-xs leading-relaxed text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="mr-2.5 mt-1.5 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-stone-300 dark:bg-stone-600" aria-hidden="true"></span> Web multipágina estructurada (Carta, El Local, Reservas)</li>
+          <li class="flex items-start border-b border-stone-100/70 py-2 text-xs leading-relaxed text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="mr-2.5 mt-1.5 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-stone-300 dark:bg-stone-600" aria-hidden="true"></span> Sesión fotográfica presencial: local y 6 platos estrella</li>
+          <li class="flex items-start border-b border-stone-100/70 py-2 text-xs leading-relaxed text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="mr-2.5 mt-1.5 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-stone-300 dark:bg-stone-600" aria-hidden="true"></span> Carta bilingüe interactiva (Español / Inglés)</li>
+          <li class="flex items-start border-b border-stone-100/70 py-2 text-xs leading-relaxed text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="mr-2.5 mt-1.5 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-stone-300 dark:bg-stone-600" aria-hidden="true"></span> Filtro interactivo de alérgenos y platos recomendados</li>
+          <li class="flex items-start border-b border-stone-100/70 py-2 text-xs leading-relaxed text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="mr-2.5 mt-1.5 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-stone-300 dark:bg-stone-600" aria-hidden="true"></span> Módulo de reserva directa por WhatsApp sin comisiones</li>
+          <li class="flex items-start border-b border-stone-100/70 py-2 text-xs leading-relaxed text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="mr-2.5 mt-1.5 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-stone-300 dark:bg-stone-600" aria-hidden="true"></span> Optimización de horarios, carta y fotos en Google Maps</li>
+          <li class="flex items-start border-b border-stone-100/70 py-2 text-xs leading-relaxed text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="mr-2.5 mt-1.5 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-stone-300 dark:bg-stone-600" aria-hidden="true"></span> Código QR vectorial en alta resolución y textos legales RGPD</li>
         </ul>
         <div class="flex flex-col justify-end pt-6">
           <button type="button" data-select-web aria-pressed="false"
@@ -733,7 +716,7 @@
         </div>
       </article>
 
-      <article data-web="vip" data-name="Digitalización Total" data-price="790" data-plazo="Entrega en 10 a 14 días laborables" data-active="85" data-idle="border-2 border-stone-900 dark:border-stone-100 bg-white dark:bg-stone-900" class="reveal relative mb-8 hidden h-full w-full min-w-0 flex flex-col justify-between rounded-2xl border-2 border-stone-900 bg-white p-6 opacity-0 shadow-sm hover:shadow-md dark:border-stone-100 dark:bg-stone-900 sm:p-8 md:flex">
+      <article data-web="vip" data-name="Digitalización Total" data-price="790" data-plazo="Entrega en 10 a 14 días laborables" data-active="85" data-idle="border border-stone-900 dark:border-stone-100 bg-white dark:bg-stone-900" class="reveal relative mb-8 hidden h-full w-full min-w-0 flex flex-col justify-between rounded-2xl border border-stone-900 bg-white p-6 opacity-0 shadow-sm hover:shadow-md dark:border-stone-100 dark:bg-stone-900 sm:p-8 md:flex">
         <span class="plan-badge absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-stone-900 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-white dark:bg-stone-100 dark:text-stone-900">Más completo</span>
         <header class="pt-2">
           <h3 class="text-lg font-extrabold tracking-tight text-stone-900 dark:text-stone-100">Digitalización Total</h3>
@@ -741,25 +724,17 @@
         </header>
         <div class="mt-5 border-b border-stone-200 pb-5 dark:border-stone-800">
           <p class="text-3xl font-extrabold text-stone-900 dark:text-stone-100">790&nbsp;€</p>
-          <p class="mt-2 text-sm font-medium leading-snug text-stone-700 dark:text-stone-300">+ Mantenimiento mensual a elegir en el siguiente paso.</p>
+          <p class="mt-2 text-xs text-stone-500 dark:text-stone-400">Web en propiedad · Sin permanencia</p>
           <p class="mt-2.5 inline-flex max-w-full flex-wrap items-center gap-1.5 rounded-full border border-stone-200 bg-[#F3EDE4] px-2.5 py-1 text-[11px] font-semibold leading-tight text-stone-800 dark:border-stone-700 dark:bg-stone-800 dark:text-stone-200"><span aria-hidden="true">⏱️</span> Entrega en 10 a 14 días laborables*</p>
         </div>
-        <ul class="contents">
-          <li class="flex items-center gap-2 border-b border-stone-100 py-2.5 text-xs leading-snug text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="inline-flex w-4 shrink-0 justify-center font-bold leading-none text-emerald-600" aria-hidden="true">✓</span> Web multipágina corporativa con arquitectura a medida</li>
-          <li class="flex items-center gap-2 border-b border-stone-100 py-2.5 text-xs leading-snug text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="inline-flex w-4 shrink-0 justify-center font-bold leading-none text-emerald-600" aria-hidden="true">✓</span> Carta completa categorizada con precios</li>
-          <li class="flex items-center gap-2 border-b border-stone-100 py-2.5 text-xs leading-snug text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="inline-flex w-4 shrink-0 justify-center font-bold leading-none text-emerald-600" aria-hidden="true">✓</span> Código QR vectorial en alta resolución para imprimir</li>
-          <li class="flex items-center gap-2 border-b border-stone-100 py-2.5 text-xs leading-snug text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="inline-flex w-4 shrink-0 justify-center font-bold leading-none text-emerald-600" aria-hidden="true">✓</span> Optimización completa de Google Maps y posicionamiento local</li>
-          <li class="flex items-center gap-2 border-b border-stone-100 py-2.5 text-xs leading-snug text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="inline-flex w-4 shrink-0 justify-center font-bold leading-none text-emerald-600" aria-hidden="true">✓</span> Textos legales y aviso de privacidad RGPD</li>
-          <li class="flex items-center gap-2 border-b border-stone-100 py-2.5 text-xs leading-snug text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="inline-flex w-4 shrink-0 justify-center font-bold leading-none text-emerald-600" aria-hidden="true">✓</span> Módulo de reserva directa por WhatsApp (sin comisiones)</li>
-          <li class="flex items-center gap-2 border-b border-stone-100 py-2.5 text-xs leading-snug text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="inline-flex w-4 shrink-0 justify-center font-bold leading-none text-emerald-600" aria-hidden="true">✓</span> Filtro interactivo de alérgenos y platos destacados</li>
-          <li class="flex items-start gap-2 border-b border-stone-100 py-2.5 text-xs leading-snug text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="inline-flex w-4 shrink-0 justify-center font-bold leading-none text-emerald-600" aria-hidden="true">✓</span> Sesión fotográfica completa de local y ambiente</li>
-          <li class="flex items-center gap-2 border-b border-stone-100 py-2.5 text-xs leading-snug text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="inline-flex w-4 shrink-0 justify-center font-bold leading-none text-emerald-600" aria-hidden="true">✓</span> Diseño de cartelería física y peanas para barra y sala</li>
-          <li class="flex items-start gap-2 border-b border-stone-100 py-2.5 text-xs leading-snug text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="inline-flex w-4 shrink-0 justify-center font-bold leading-none text-emerald-600" aria-hidden="true">✓</span> Fotografía en alta resolución de todos los platos de la carta</li>
-          <li class="flex items-start gap-2 border-b border-stone-100 py-2.5 text-xs leading-snug text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="inline-flex w-4 shrink-0 justify-center font-bold leading-none text-emerald-600" aria-hidden="true">✓</span> Carta trilingüe con selector de idioma (Español / Inglés / Francés)</li>
-          <li class="flex items-center gap-2 border-b border-stone-100 py-2.5 text-xs leading-snug text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="inline-flex w-4 shrink-0 justify-center font-bold leading-none text-emerald-600" aria-hidden="true">✓</span> Módulo web específico para menús cerrados y eventos</li>
-          <li class="flex items-start gap-2 border-b border-stone-100 py-2.5 text-xs leading-snug text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="inline-flex w-4 shrink-0 justify-center font-bold leading-none text-emerald-600" aria-hidden="true">✓</span> Configuración de correo corporativo (ej: info/reservas@turestaurante.com)</li>
-          <li class="flex items-start gap-2 border-b border-stone-100 py-2.5 text-xs leading-snug text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="inline-flex w-4 shrink-0 justify-center font-bold leading-none text-emerald-600" aria-hidden="true">✓</span> Microdatos Schema de gastronomía (menú y horarios indexados en Google)</li>
-          <li class="flex items-start gap-2 border-b border-stone-100 py-2.5 text-xs leading-snug text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="inline-flex w-4 shrink-0 justify-center font-bold leading-none text-emerald-600" aria-hidden="true">✓</span> Pack físico: 15 peanas de mesa acrílicas con QR impresas y listas</li>
+        <ul class="mt-5">
+          <li class="flex items-start border-b border-stone-100/70 py-2 text-xs leading-relaxed text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="mr-2.5 mt-1.5 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-stone-300 dark:bg-stone-600" aria-hidden="true"></span> Web corporativa con diseño y arquitectura a medida</li>
+          <li class="flex items-start border-b border-stone-100/70 py-2 text-xs leading-relaxed text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="mr-2.5 mt-1.5 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-stone-300 dark:bg-stone-600" aria-hidden="true"></span> Sesión de fotos completa: ambiente, equipo y carta íntegra</li>
+          <li class="flex items-start border-b border-stone-100/70 py-2 text-xs leading-relaxed text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="mr-2.5 mt-1.5 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-stone-300 dark:bg-stone-600" aria-hidden="true"></span> Carta multilingüe (hasta 3 idiomas con selector)</li>
+          <li class="flex items-start border-b border-stone-100/70 py-2 text-xs leading-relaxed text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="mr-2.5 mt-1.5 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-stone-300 dark:bg-stone-600" aria-hidden="true"></span> Módulo web para reserva de eventos privados y grupos</li>
+          <li class="flex items-start border-b border-stone-100/70 py-2 text-xs leading-relaxed text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="mr-2.5 mt-1.5 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-stone-300 dark:bg-stone-600" aria-hidden="true"></span> Pack físico entregado: 15 peanas acrílicas con QR para mesa</li>
+          <li class="flex items-start border-b border-stone-100/70 py-2 text-xs leading-relaxed text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="mr-2.5 mt-1.5 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-stone-300 dark:bg-stone-600" aria-hidden="true"></span> Microdatos Schema de gastronomía y SEO local prioritario</li>
+          <li class="flex items-start border-b border-stone-100/70 py-2 text-xs leading-relaxed text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="mr-2.5 mt-1.5 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-stone-300 dark:bg-stone-600" aria-hidden="true"></span> Configuración de correo corporativo (ej: info@turestaurante.com)</li>
         </ul>
         <div class="flex flex-col justify-end pt-6">
           <button type="button" data-select-web aria-pressed="false"
@@ -803,12 +778,9 @@
               <p class="text-3xl font-extrabold text-stone-900 dark:text-stone-100">0&nbsp;€<span class="text-base font-semibold text-stone-500 dark:text-stone-400"> / mes</span></p>
             </div>
             <ul class="mt-5">
-              <li class="flex min-h-[4.25rem] items-center gap-2 border-b border-stone-200/70 py-2.5 text-xs leading-snug text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="inline-flex w-4 shrink-0 justify-center font-bold leading-none text-emerald-600" aria-hidden="true">✓</span> Hosting de alta velocidad y certificado SSL gratuito</li>
-              <li class="flex min-h-[4.25rem] items-center gap-2 border-b border-stone-200/70 py-2.5 text-xs leading-snug text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="inline-flex w-4 shrink-0 justify-center font-bold leading-none text-emerald-600" aria-hidden="true">✓</span> Web 100% en propiedad (código y diseño tuyos)</li>
-              <li class="flex min-h-[4.25rem] items-center gap-2 border-b border-stone-200/70 py-2.5 text-xs leading-snug text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="inline-flex w-4 shrink-0 justify-center font-bold leading-none text-emerald-600" aria-hidden="true">✓</span> 30 días de ajustes y soporte técnico tras la entrega</li>
-              <li class="flex min-h-[4.25rem] items-center gap-2 border-b border-stone-200/70 py-2.5 text-xs leading-snug text-stone-400 last:border-b-0 dark:border-stone-800 dark:text-stone-500 sm:text-[13px]"><span class="inline-flex w-4 shrink-0 justify-center font-bold leading-none text-red-500 dark:text-red-400" aria-hidden="true">✕</span> Cambios mensuales incluidos (ajustes puntuales bajo presupuesto)</li>
-              <li class="flex min-h-[4.25rem] items-center gap-2 border-b border-stone-200/70 py-2.5 text-xs leading-snug text-stone-400 last:border-b-0 dark:border-stone-800 dark:text-stone-500 sm:text-[13px]"><span class="inline-flex w-4 shrink-0 justify-center font-bold leading-none text-red-500 dark:text-red-400" aria-hidden="true">✕</span> Renovación anual de dominio (a cargo del cliente)</li>
-              <li class="flex min-h-[4.25rem] items-center gap-2 border-b border-stone-200/70 py-2.5 text-xs leading-snug text-stone-400 last:border-b-0 dark:border-stone-800 dark:text-stone-500 sm:text-[13px]"><span class="inline-flex w-4 shrink-0 justify-center font-bold leading-none text-red-500 dark:text-red-400" aria-hidden="true">✕</span> Gestión continua de Google Maps (No incluida)</li>
+              <li class="flex items-start border-b border-stone-100/70 py-2 text-xs leading-relaxed text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="mr-2.5 mt-1.5 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-stone-300 dark:bg-stone-600" aria-hidden="true"></span> Hosting de alta velocidad y certificado SSL gratuito</li>
+              <li class="flex items-start border-b border-stone-100/70 py-2 text-xs leading-relaxed text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="mr-2.5 mt-1.5 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-stone-300 dark:bg-stone-600" aria-hidden="true"></span> Web 100% en propiedad (código y diseño tuyos)</li>
+              <li class="flex items-start border-b border-stone-100/70 py-2 text-xs leading-relaxed text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="mr-2.5 mt-1.5 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-stone-300 dark:bg-stone-600" aria-hidden="true"></span> 30 días de ajustes y soporte técnico tras la entrega</li>
             </ul>
           </div>
         </article>
@@ -820,12 +792,11 @@
               <p class="text-3xl font-extrabold text-stone-900 dark:text-stone-100">25&nbsp;€<span class="text-base font-semibold text-stone-500 dark:text-stone-400"> / mes</span></p>
             </div>
             <ul class="mt-5">
-              <li class="flex min-h-[4.25rem] items-center gap-2 border-b border-stone-200/70 py-2.5 text-xs leading-snug text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="inline-flex w-4 shrink-0 justify-center font-bold leading-none text-emerald-600" aria-hidden="true">✓</span> Hosting de alta velocidad y certificado SSL incluido</li>
-              <li class="flex min-h-[4.25rem] items-center gap-2 border-b border-stone-200/70 py-2.5 text-xs leading-snug text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="inline-flex w-4 shrink-0 justify-center font-bold leading-none text-emerald-600" aria-hidden="true">✓</span> Web 100% en propiedad (código y diseño tuyos)</li>
-              <li class="flex min-h-[4.25rem] items-center gap-2 border-b border-stone-200/70 py-2.5 text-xs leading-snug text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="inline-flex w-4 shrink-0 justify-center font-bold leading-none text-emerald-600" aria-hidden="true">✓</span> Soporte técnico continuo durante todo el año</li>
-              <li class="flex min-h-[4.25rem] items-center gap-2 border-b border-stone-200/70 py-2.5 text-xs leading-snug text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="inline-flex w-4 shrink-0 justify-center font-bold leading-none text-emerald-600" aria-hidden="true">✓</span> Hasta 2 actualizaciones de carta o precios al mes</li>
-              <li class="flex min-h-[4.25rem] items-center gap-2 border-b border-stone-200/70 py-2.5 text-xs leading-snug text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="inline-flex w-4 shrink-0 justify-center font-bold leading-none text-emerald-600" aria-hidden="true">✓</span> Renovación anual de dominio incluida</li>
-              <li class="flex min-h-[4.25rem] items-center gap-2 border-b border-stone-200/70 py-2.5 text-xs leading-snug text-stone-400 last:border-b-0 dark:border-stone-800 dark:text-stone-500 sm:text-[13px]"><span class="inline-flex w-4 shrink-0 justify-center font-bold leading-none text-red-500 dark:text-red-400" aria-hidden="true">✕</span> Gestión continua de Google Maps (No incluida)</li>
+              <li class="flex items-start border-b border-stone-100/70 py-2 text-xs leading-relaxed text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="mr-2.5 mt-1.5 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-stone-300 dark:bg-stone-600" aria-hidden="true"></span> Hosting de alta velocidad y certificado SSL incluido</li>
+              <li class="flex items-start border-b border-stone-100/70 py-2 text-xs leading-relaxed text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="mr-2.5 mt-1.5 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-stone-300 dark:bg-stone-600" aria-hidden="true"></span> Web 100% en propiedad (código y diseño tuyos)</li>
+              <li class="flex items-start border-b border-stone-100/70 py-2 text-xs leading-relaxed text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="mr-2.5 mt-1.5 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-stone-300 dark:bg-stone-600" aria-hidden="true"></span> Soporte técnico continuo durante todo el año</li>
+              <li class="flex items-start border-b border-stone-100/70 py-2 text-xs leading-relaxed text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="mr-2.5 mt-1.5 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-stone-300 dark:bg-stone-600" aria-hidden="true"></span> Hasta 2 actualizaciones de carta o precios al mes</li>
+              <li class="flex items-start border-b border-stone-100/70 py-2 text-xs leading-relaxed text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="mr-2.5 mt-1.5 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-stone-300 dark:bg-stone-600" aria-hidden="true"></span> Renovación anual de dominio incluida</li>
             </ul>
           </div>
         </article>
@@ -838,12 +809,12 @@
               <p class="text-3xl font-extrabold text-stone-900 dark:text-stone-100">85&nbsp;€<span class="text-base font-semibold text-stone-500 dark:text-stone-400"> / mes</span></p>
             </div>
             <ul class="mt-5">
-              <li class="flex min-h-[4.25rem] items-center gap-2 border-b border-stone-200/70 py-2.5 text-xs leading-snug text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="inline-flex w-4 shrink-0 justify-center font-bold leading-none text-emerald-600" aria-hidden="true">✓</span> Hosting de alta velocidad y certificado SSL incluido</li>
-              <li class="flex min-h-[4.25rem] items-center gap-2 border-b border-stone-200/70 py-2.5 text-xs leading-snug text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="inline-flex w-4 shrink-0 justify-center font-bold leading-none text-emerald-600" aria-hidden="true">✓</span> Web 100% en propiedad (código y diseño tuyos)</li>
-              <li class="flex min-h-[4.25rem] items-center gap-2 border-b border-stone-200/70 py-2.5 text-xs leading-snug text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="inline-flex w-4 shrink-0 justify-center font-bold leading-none text-emerald-600" aria-hidden="true">✓</span> Soporte prioritario por WhatsApp directo (menos de 24h)</li>
-              <li class="flex min-h-[4.25rem] items-center gap-2 border-b border-stone-200/70 py-2.5 text-xs leading-snug text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="inline-flex w-4 shrink-0 justify-center font-bold leading-none text-emerald-600" aria-hidden="true">✓</span> Hasta 30 cambios de carta, precios y fotos al mes</li>
-              <li class="flex min-h-[4.25rem] items-center gap-2 border-b border-stone-200/70 py-2.5 text-xs leading-snug text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="inline-flex w-4 shrink-0 justify-center font-bold leading-none text-emerald-600" aria-hidden="true">✓</span> Renovación anual de dominio incluida</li>
-              <li class="flex min-h-[4.25rem] items-center gap-2 border-b border-stone-200/70 py-2.5 text-xs leading-snug text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="inline-flex w-4 shrink-0 justify-center font-bold leading-none text-emerald-600" aria-hidden="true">✓</span> Actualización mensual de fotos, platos y datos en Maps</li>
+              <li class="flex items-start border-b border-stone-100/70 py-2 text-xs leading-relaxed text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="mr-2.5 mt-1.5 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-stone-300 dark:bg-stone-600" aria-hidden="true"></span> Hosting de alta velocidad y certificado SSL incluido</li>
+              <li class="flex items-start border-b border-stone-100/70 py-2 text-xs leading-relaxed text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="mr-2.5 mt-1.5 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-stone-300 dark:bg-stone-600" aria-hidden="true"></span> Web 100% en propiedad (código y diseño tuyos)</li>
+              <li class="flex items-start border-b border-stone-100/70 py-2 text-xs leading-relaxed text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="mr-2.5 mt-1.5 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-stone-300 dark:bg-stone-600" aria-hidden="true"></span> Soporte prioritario por WhatsApp directo (menos de 24h)</li>
+              <li class="flex items-start border-b border-stone-100/70 py-2 text-xs leading-relaxed text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="mr-2.5 mt-1.5 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-stone-300 dark:bg-stone-600" aria-hidden="true"></span> Hasta 30 cambios de carta, precios y fotos al mes</li>
+              <li class="flex items-start border-b border-stone-100/70 py-2 text-xs leading-relaxed text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="mr-2.5 mt-1.5 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-stone-300 dark:bg-stone-600" aria-hidden="true"></span> Renovación anual de dominio incluida</li>
+              <li class="flex items-start border-b border-stone-100/70 py-2 text-xs leading-relaxed text-stone-700 last:border-b-0 dark:border-stone-800 dark:text-stone-300 sm:text-[13px]"><span class="mr-2.5 mt-1.5 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-stone-300 dark:bg-stone-600" aria-hidden="true"></span> Actualización mensual de fotos, platos y datos en Maps</li>
             </ul>
           </div>
         </article>
@@ -1851,6 +1822,48 @@
           dot.className = on
             ? 'h-2 w-2 rounded-full bg-stone-800 dark:bg-stone-100'
             : 'h-2 w-2 rounded-full bg-stone-300 dark:bg-stone-600';
+          if (on) dot.setAttribute('aria-current', 'true');
+          else dot.removeAttribute('aria-current');
+        });
+      }
+      function activeIndex() {
+        var box = slider.getBoundingClientRect();
+        var mid = box.left + box.width / 2;
+        var current = 0;
+        var best = Infinity;
+        cards.forEach(function (card, index) {
+          var rect = card.getBoundingClientRect();
+          var delta = Math.abs(rect.left + rect.width / 2 - mid);
+          if (delta < best) {
+            best = delta;
+            current = index;
+          }
+        });
+        return current;
+      }
+      slider.addEventListener('scroll', function () { paint(activeIndex()); }, { passive: true });
+      dots.forEach(function (dot, index) {
+        dot.addEventListener('click', function () {
+          var box = slider.getBoundingClientRect();
+          var rect = cards[index].getBoundingClientRect();
+          slider.scrollTo({ left: slider.scrollLeft + (rect.left - box.left) - (box.width - rect.width) / 2, behavior: 'smooth' });
+        });
+      });
+      paint(0);
+    })();
+  </script>
+  <script>
+    (function () {
+      var slider = document.getElementById('garantia-pasos');
+      if (!slider) return;
+      var dots = Array.prototype.slice.call(document.querySelectorAll('[data-garantia-dot]'));
+      var cards = Array.prototype.slice.call(slider.children);
+      var onClass = 'h-1.5 w-1.5 rounded-full bg-stone-800 transition-all dark:bg-stone-100';
+      var offClass = 'h-1.5 w-1.5 rounded-full bg-stone-300 transition-all dark:bg-stone-600';
+      function paint(active) {
+        dots.forEach(function (dot, index) {
+          var on = index === active;
+          dot.className = on ? onClass : offClass;
           if (on) dot.setAttribute('aria-current', 'true');
           else dot.removeAttribute('aria-current');
         });
