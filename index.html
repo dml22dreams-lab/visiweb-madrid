@@ -336,20 +336,37 @@
       cursor: default;
       pointer-events: none;
     }
-    #servicios-adicionales [data-extra-info],
-    #servicios-adicionales [data-extra-info] > span:first-child {
+    #servicios-adicionales [data-extra-info] {
       pointer-events: auto;
       cursor: pointer;
-    }
-    #servicios-adicionales [data-extra-info] > span:first-child {
       box-shadow: none;
       filter: none;
     }
-    #servicios-adicionales [data-extra-info]:hover > span:first-child,
-    #servicios-adicionales [data-extra-info]:active > span:first-child {
+    #servicios-adicionales [data-extra-info]:hover,
+    #servicios-adicionales [data-extra-info]:active {
       transform: translateY(1.5px) scale(0.9);
       background-color: #cbb49a;
       box-shadow: inset 0 2px 3px rgb(28 25 23 / 0.38);
+    }
+    #servicios-adicionales [data-extra] [data-extra-panel] {
+      display: none;
+      pointer-events: auto;
+    }
+    #servicios-adicionales [data-extra].is-help-open [data-extra-panel] {
+      display: block;
+    }
+    @media (min-width: 640px) {
+      #servicios-adicionales [data-extra-panel] {
+        position: absolute;
+        right: 0;
+        bottom: calc(100% + 0.5rem);
+        z-index: 50;
+        width: min(18rem, calc(100vw - 2rem));
+        margin-top: 0;
+        background: #fff;
+        color: #000;
+        border: 1px solid #000;
+      }
     }
     #servicios-adicionales [role="tooltip"] {
       background-color: #fff !important;
@@ -909,29 +926,72 @@
       <div class="mb-4">
         <h4 class="text-xs font-semibold uppercase tracking-wider text-black dark:text-white">Servicios Adicionales</h4>
       </div>
-      <div class="flex flex-wrap items-center justify-start gap-2.5">
-        <div data-extra="idioma" data-price="20" data-qty="0" data-label="Idioma extra" data-interest="Idioma extra" class="relative inline-flex max-w-full items-center gap-2 rounded-2xl border border-stone-200 bg-stone-50 p-3 text-left text-xs text-stone-700 dark:border-stone-800 dark:bg-stone-900 dark:text-stone-300 sm:text-sm">
-          <span data-idioma-inc data-idioma-idle class="font-medium">+ Idioma adicional <span class="font-semibold text-[#8B5E34] dark:text-[#E6D5C3]">(20&nbsp;€ / idioma)</span></span>
-          <span data-idioma-active class="hidden items-center gap-2 font-medium">
-            <span>Idiomas extra:</span>
-            <span data-idioma-dec class="grid h-6 w-6 shrink-0 place-items-center rounded-full border border-stone-300 bg-white text-sm font-bold text-stone-900" aria-hidden="true">−</span>
-            <span data-idioma-count class="min-w-[1.25rem] text-center text-sm font-bold tabular-nums">0</span>
-            <span data-idioma-inc class="grid h-6 w-6 shrink-0 place-items-center rounded-full border border-stone-300 bg-white text-sm font-bold text-stone-900" aria-hidden="true">+</span>
-          </span>
-          <span data-extra-info class="group/tooltip relative inline-flex h-5 w-5 shrink-0 items-center justify-center"><span class="grid h-5 w-5 place-items-center rounded-full bg-[#E6D5C3] text-xs font-bold text-stone-900 shadow-none transition-[transform,box-shadow,background-color] duration-100 ease-out" aria-hidden="true">?</span><span role="tooltip" class="pointer-events-none absolute bottom-full left-0 z-50 mb-2 block w-[min(18rem,calc(100vw-2.5rem))] max-w-[calc(100vw-2.5rem)] whitespace-normal break-words rounded-xl bg-stone-900 p-3 text-xs leading-relaxed text-stone-200 opacity-0 shadow-md transition-opacity duration-200 group-[.is-open]/tooltip:opacity-100 dark:bg-stone-800">Traducción y maquetación completa de toda tu carta digital a un idioma adicional (inglés, francés, alemán, etc.). Traducción integrada en 24-48h laborables.<span class="absolute top-[calc(100%-2px)] left-3 block h-0 w-0 border-x-[6px] border-b-0 border-t-[6px] border-x-transparent border-t-stone-900 dark:border-t-stone-800" aria-hidden="true"></span></span></span>
+      <div class="flex w-full flex-col gap-2.5 sm:flex-row sm:flex-wrap sm:items-start">
+        <div data-extra="idioma" data-price="20" data-qty="0" data-label="Idioma extra" data-interest="Idioma extra" class="relative flex w-full flex-col rounded-2xl border border-stone-200/70 bg-stone-50 p-3.5 dark:border-stone-800 dark:bg-stone-900 sm:w-auto">
+          <div class="flex w-full items-center justify-between gap-3">
+            <span class="min-w-0 flex-1 text-left text-xs font-medium leading-snug text-stone-800 dark:text-stone-200 sm:text-[13px]">
+              <span data-idioma-inc data-idioma-idle>+ Idioma adicional</span>
+              <span data-idioma-active class="hidden items-center gap-2">
+                <span>Idiomas extra:</span>
+                <span data-idioma-dec class="grid h-6 w-6 shrink-0 place-items-center rounded-full border border-stone-300 bg-white text-sm font-bold text-stone-900" aria-hidden="true">−</span>
+                <span data-idioma-count class="min-w-[1.25rem] text-center text-sm font-bold tabular-nums">0</span>
+                <span data-idioma-inc class="grid h-6 w-6 shrink-0 place-items-center rounded-full border border-stone-300 bg-white text-sm font-bold text-stone-900" aria-hidden="true">+</span>
+              </span>
+            </span>
+            <span class="flex shrink-0 items-center gap-2">
+              <span class="whitespace-nowrap text-xs font-semibold text-[#8B5E34] dark:text-[#E6D5C3] sm:text-[13px]">20&nbsp;€ / idioma</span>
+              <button type="button" data-extra-info aria-expanded="false" aria-label="Más información sobre idioma adicional" class="grid h-5 w-5 place-items-center rounded-full bg-[#E6D5C3] text-xs font-bold text-stone-900">?</button>
+            </span>
+          </div>
+          <p data-extra-panel class="mt-2 rounded-xl bg-stone-100/80 p-3 text-xs leading-relaxed text-stone-600 transition-all dark:bg-stone-800/80 dark:text-stone-300">Traducción y maquetación completa de toda tu carta digital a un idioma adicional (inglés, francés, alemán, etc.). Traducción integrada en 24-48h laborables.</p>
         </div>
-        <span data-extra="qr" data-price="60" data-label="Soportes QR" data-interest="Pack soportes físicos QR (metacrilato/madera)" class="relative inline-flex max-w-full flex-wrap items-center gap-2 rounded-2xl border border-stone-200 bg-stone-50 p-3 text-left text-xs text-stone-700 dark:border-stone-800 dark:bg-stone-900 dark:text-stone-300 sm:text-sm">Pack soportes físicos QR (metacrilato/madera) <span class="inline-flex items-center gap-1.5 whitespace-nowrap"><span class="font-semibold text-[#8B5E34] dark:text-[#E6D5C3]">60&nbsp;€</span><span data-extra-info class="group/tooltip relative inline-flex h-5 w-5 shrink-0 items-center justify-center"><span class="grid h-5 w-5 place-items-center rounded-full bg-[#E6D5C3] text-xs font-bold text-stone-900 shadow-none transition-[transform,box-shadow,background-color] duration-100 ease-out" aria-hidden="true">?</span><span role="tooltip" class="pointer-events-none absolute bottom-full right-0 z-50 mb-2 block w-[min(18rem,calc(100vw-2.5rem))] max-w-[calc(100vw-2.5rem)] whitespace-normal break-words rounded-xl bg-stone-900 p-3 text-xs leading-relaxed text-stone-200 opacity-0 shadow-md transition-opacity duration-200 group-[.is-open]/tooltip:opacity-100 dark:bg-stone-800">Fabricación y entrega de peanas o placas rígidas y resistentes con tu código QR para colocar en mesas y barra, listas para escanear. Plazo de entrega física: 5-7 días laborables.<span class="absolute top-[calc(100%-2px)] right-3 block h-0 w-0 border-x-[6px] border-b-0 border-t-[6px] border-x-transparent border-t-stone-900 dark:border-t-stone-800" aria-hidden="true"></span></span></span></span></span>
-        <span data-extra="foto" data-price="40" data-label="Sesión foto extra" data-interest="Sesión fotográfica extra" class="relative inline-flex max-w-full flex-wrap items-center gap-2 rounded-2xl border border-stone-200 bg-stone-50 p-3 text-left text-xs text-stone-700 dark:border-stone-800 dark:bg-stone-900 dark:text-stone-300 sm:text-sm">Sesión fotográfica extra <span class="inline-flex items-center gap-1.5 whitespace-nowrap"><span class="font-semibold text-[#8B5E34] dark:text-[#E6D5C3]">40&nbsp;€</span><span data-extra-info class="group/tooltip relative inline-flex h-5 w-5 shrink-0 items-center justify-center"><span class="grid h-5 w-5 place-items-center rounded-full bg-[#E6D5C3] text-xs font-bold text-stone-900 shadow-none transition-[transform,box-shadow,background-color] duration-100 ease-out" aria-hidden="true">?</span><span role="tooltip" class="pointer-events-none absolute bottom-full right-0 z-50 mb-2 block w-[min(18rem,calc(100vw-2.5rem))] max-w-[calc(100vw-2.5rem)] whitespace-normal break-words rounded-xl bg-stone-900 p-3 text-xs leading-relaxed text-stone-200 opacity-0 shadow-md transition-opacity duration-200 group-[.is-open]/tooltip:opacity-100 dark:bg-stone-800">Desplazamiento presencial a tu local para tomar fotografías nítidas de nuevos platos, terraza o salón para nutrir la web y Google Maps. Entrega y subida de fotos editadas en 48-72h tras la visita.<span class="absolute top-[calc(100%-2px)] right-3 block h-0 w-0 border-x-[6px] border-b-0 border-t-[6px] border-x-transparent border-t-stone-900 dark:border-t-stone-800" aria-hidden="true"></span></span></span></span></span>
-        <span data-extra="ads" data-price="150" data-label="Campaña Google Ads" data-interest="Campaña Google Ads local" class="relative inline-flex max-w-full flex-wrap items-center gap-2 rounded-2xl border border-stone-200 bg-stone-50 p-3 text-left text-xs text-stone-700 dark:border-stone-800 dark:bg-stone-900 dark:text-stone-300 sm:text-sm">Campaña Google Ads local <span class="inline-flex items-center gap-1.5 whitespace-nowrap"><span class="font-semibold text-[#8B5E34] dark:text-[#E6D5C3]">150&nbsp;€</span><span data-extra-info class="group/tooltip relative inline-flex h-5 w-5 shrink-0 items-center justify-center"><span class="grid h-5 w-5 place-items-center rounded-full bg-[#E6D5C3] text-xs font-bold text-stone-900 shadow-none transition-[transform,box-shadow,background-color] duration-100 ease-out" aria-hidden="true">?</span><span role="tooltip" class="pointer-events-none absolute bottom-full right-0 z-50 mb-2 block w-[min(18rem,calc(100vw-2.5rem))] max-w-[calc(100vw-2.5rem)] whitespace-normal break-words rounded-xl bg-stone-900 p-3 text-xs leading-relaxed text-stone-200 opacity-0 shadow-md transition-opacity duration-200 group-[.is-open]/tooltip:opacity-100 dark:bg-stone-800">Configuración de anuncios geolocalizados en Google para búsquedas de tu zona. El puesto depende de la puja y del presupuesto de Google, que va aparte. Campaña configurada en 48h.<span class="absolute top-[calc(100%-2px)] right-3 block h-0 w-0 border-x-[6px] border-b-0 border-t-[6px] border-x-transparent border-t-stone-900 dark:border-t-stone-800" aria-hidden="true"></span></span></span></span></span>
-        <div data-extra="horas" data-price="30" data-qty="0" data-label="Horas de desarrollo" data-interest="Horas de desarrollo fuera de cuota" class="relative inline-flex max-w-full items-center gap-2 rounded-2xl border border-stone-200 bg-stone-50 p-3 text-left text-xs text-stone-700 dark:border-stone-800 dark:bg-stone-900 dark:text-stone-300 sm:text-sm">
-          <span data-horas-inc data-horas-idle class="font-medium">+ Horas de desarrollo (30&nbsp;€/hora)</span>
-          <span data-horas-active class="hidden items-center gap-2 font-medium">
-            <span>Horas:</span>
-            <span data-horas-dec class="grid h-6 w-6 shrink-0 place-items-center rounded-full border border-stone-300 bg-white text-sm font-bold text-stone-900" aria-hidden="true">−</span>
-            <span data-horas-count class="min-w-[1.25rem] text-center text-sm font-bold tabular-nums">0</span>
-            <span data-horas-inc class="grid h-6 w-6 shrink-0 place-items-center rounded-full border border-stone-300 bg-white text-sm font-bold text-stone-900" aria-hidden="true">+</span>
-          </span>
-          <span data-extra-info class="group/tooltip relative inline-flex h-5 w-5 shrink-0 items-center justify-center"><span class="grid h-5 w-5 place-items-center rounded-full bg-[#E6D5C3] text-xs font-bold text-stone-900 shadow-none transition-[transform,box-shadow,background-color] duration-100 ease-out" aria-hidden="true">?</span><span role="tooltip" class="pointer-events-none absolute bottom-full right-0 z-50 mb-2 block w-[min(18rem,calc(100vw-2.5rem))] max-w-[calc(100vw-2.5rem)] whitespace-normal break-words rounded-xl bg-stone-900 p-3 text-xs leading-relaxed text-stone-200 opacity-0 shadow-md transition-opacity duration-200 group-[.is-open]/tooltip:opacity-100 dark:bg-stone-800">Bolsa de horas para modificaciones estructurales grandes o funciones especiales que queden fuera del mantenimiento mensual contratado.<span class="absolute top-[calc(100%-2px)] right-3 block h-0 w-0 border-x-[6px] border-b-0 border-t-[6px] border-x-transparent border-t-stone-900 dark:border-t-stone-800" aria-hidden="true"></span></span></span>
+        <div data-extra="qr" data-price="60" data-label="Soportes QR" data-interest="Pack soportes físicos QR (metacrilato/madera)" class="relative flex w-full flex-col rounded-2xl border border-stone-200/70 bg-stone-50 p-3.5 dark:border-stone-800 dark:bg-stone-900 sm:w-auto">
+          <div class="flex w-full items-center justify-between gap-3">
+            <span class="min-w-0 flex-1 text-left text-xs font-medium leading-snug text-stone-800 dark:text-stone-200 sm:text-[13px]">Pack soportes físicos QR (metacrilato/madera)</span>
+            <span class="flex shrink-0 items-center gap-2">
+              <span class="whitespace-nowrap text-xs font-semibold text-[#8B5E34] dark:text-[#E6D5C3] sm:text-[13px]">60&nbsp;€</span>
+              <button type="button" data-extra-info aria-expanded="false" aria-label="Más información sobre soportes QR" class="grid h-5 w-5 place-items-center rounded-full bg-[#E6D5C3] text-xs font-bold text-stone-900">?</button>
+            </span>
+          </div>
+          <p data-extra-panel class="mt-2 rounded-xl bg-stone-100/80 p-3 text-xs leading-relaxed text-stone-600 transition-all dark:bg-stone-800/80 dark:text-stone-300">Fabricación y entrega de peanas o placas rígidas y resistentes con tu código QR para colocar en mesas y barra, listas para escanear. Plazo de entrega física: 5-7 días laborables.</p>
+        </div>
+        <div data-extra="foto" data-price="40" data-label="Sesión foto extra" data-interest="Sesión fotográfica extra" class="relative flex w-full flex-col rounded-2xl border border-stone-200/70 bg-stone-50 p-3.5 dark:border-stone-800 dark:bg-stone-900 sm:w-auto">
+          <div class="flex w-full items-center justify-between gap-3">
+            <span class="min-w-0 flex-1 text-left text-xs font-medium leading-snug text-stone-800 dark:text-stone-200 sm:text-[13px]">Sesión fotográfica extra</span>
+            <span class="flex shrink-0 items-center gap-2">
+              <span class="whitespace-nowrap text-xs font-semibold text-[#8B5E34] dark:text-[#E6D5C3] sm:text-[13px]">40&nbsp;€</span>
+              <button type="button" data-extra-info aria-expanded="false" aria-label="Más información sobre la sesión fotográfica" class="grid h-5 w-5 place-items-center rounded-full bg-[#E6D5C3] text-xs font-bold text-stone-900">?</button>
+            </span>
+          </div>
+          <p data-extra-panel class="mt-2 rounded-xl bg-stone-100/80 p-3 text-xs leading-relaxed text-stone-600 transition-all dark:bg-stone-800/80 dark:text-stone-300">Desplazamiento presencial a tu local para tomar fotografías nítidas de nuevos platos, terraza o salón para nutrir la web y Google Maps. Entrega y subida de fotos editadas en 48-72h tras la visita.</p>
+        </div>
+        <div data-extra="ads" data-price="150" data-label="Campaña Google Ads" data-interest="Campaña Google Ads local" class="relative flex w-full flex-col rounded-2xl border border-stone-200/70 bg-stone-50 p-3.5 dark:border-stone-800 dark:bg-stone-900 sm:w-auto">
+          <div class="flex w-full items-center justify-between gap-3">
+            <span class="min-w-0 flex-1 text-left text-xs font-medium leading-snug text-stone-800 dark:text-stone-200 sm:text-[13px]">Campaña Google Ads local</span>
+            <span class="flex shrink-0 items-center gap-2">
+              <span class="whitespace-nowrap text-xs font-semibold text-[#8B5E34] dark:text-[#E6D5C3] sm:text-[13px]">150&nbsp;€</span>
+              <button type="button" data-extra-info aria-expanded="false" aria-label="Más información sobre Google Ads" class="grid h-5 w-5 place-items-center rounded-full bg-[#E6D5C3] text-xs font-bold text-stone-900">?</button>
+            </span>
+          </div>
+          <p data-extra-panel class="mt-2 rounded-xl bg-stone-100/80 p-3 text-xs leading-relaxed text-stone-600 transition-all dark:bg-stone-800/80 dark:text-stone-300">Configuración de anuncios geolocalizados en Google para búsquedas de tu zona. El puesto depende de la puja y del presupuesto de Google, que va aparte. Campaña configurada en 48h.</p>
+        </div>
+        <div data-extra="horas" data-price="30" data-qty="0" data-label="Horas de desarrollo" data-interest="Horas de desarrollo fuera de cuota" class="relative flex w-full flex-col rounded-2xl border border-stone-200/70 bg-stone-50 p-3.5 dark:border-stone-800 dark:bg-stone-900 sm:w-auto">
+          <div class="flex w-full items-center justify-between gap-3">
+            <span class="min-w-0 flex-1 text-left text-xs font-medium leading-snug text-stone-800 dark:text-stone-200 sm:text-[13px]">
+              <span data-horas-inc data-horas-idle>+ Horas de desarrollo</span>
+              <span data-horas-active class="hidden items-center gap-2">
+                <span>Horas:</span>
+                <span data-horas-dec class="grid h-6 w-6 shrink-0 place-items-center rounded-full border border-stone-300 bg-white text-sm font-bold text-stone-900" aria-hidden="true">−</span>
+                <span data-horas-count class="min-w-[1.25rem] text-center text-sm font-bold tabular-nums">0</span>
+                <span data-horas-inc class="grid h-6 w-6 shrink-0 place-items-center rounded-full border border-stone-300 bg-white text-sm font-bold text-stone-900" aria-hidden="true">+</span>
+              </span>
+            </span>
+            <span class="flex shrink-0 items-center gap-2">
+              <span class="whitespace-nowrap text-xs font-semibold text-[#8B5E34] dark:text-[#E6D5C3] sm:text-[13px]">30&nbsp;€/hora</span>
+              <button type="button" data-extra-info aria-expanded="false" aria-label="Más información sobre horas de desarrollo" class="grid h-5 w-5 place-items-center rounded-full bg-[#E6D5C3] text-xs font-bold text-stone-900">?</button>
+            </span>
+          </div>
+          <p data-extra-panel class="mt-2 rounded-xl bg-stone-100/80 p-3 text-xs leading-relaxed text-stone-600 transition-all dark:bg-stone-800/80 dark:text-stone-300">Bolsa de horas para modificaciones estructurales grandes o funciones especiales que queden fuera del mantenimiento mensual contratado.</p>
         </div>
       </div>
       <p class="mt-3 text-xs text-stone-400">Puedes incluir estos servicios al solicitar tu propuesta o añadirlos más adelante cuando los necesites.</p>
@@ -1735,22 +1795,35 @@
         });
       });
 
+      function closeExtraHelp() {
+        document.querySelectorAll('[data-extra-info].is-open').forEach(function (el) {
+          el.classList.remove('is-open');
+          el.setAttribute('aria-expanded', 'false');
+          var card = el.closest('[data-extra]');
+          if (card) card.classList.remove('is-help-open');
+        });
+      }
+
       document.querySelectorAll('[data-extra-info]').forEach(function (info) {
         info.addEventListener('click', function (event) {
           event.stopPropagation();
           var willOpen = !info.classList.contains('is-open');
-          document.querySelectorAll('[data-extra-info].is-open').forEach(function (el) {
-            el.classList.remove('is-open');
-          });
-          if (willOpen) info.classList.add('is-open');
+          closeExtraHelp();
+          if (!willOpen) return;
+          info.classList.add('is-open');
+          info.setAttribute('aria-expanded', 'true');
+          var card = info.closest('[data-extra]');
+          if (card) card.classList.add('is-help-open');
         });
       });
 
-      document.addEventListener('click', function () {
-        document.querySelectorAll('[data-extra-info].is-open').forEach(function (el) {
-          el.classList.remove('is-open');
+      document.querySelectorAll('[data-extra-panel]').forEach(function (panel) {
+        panel.addEventListener('click', function (event) {
+          event.stopPropagation();
         });
       });
+
+      document.addEventListener('click', closeExtraHelp);
 
       document.addEventListener('click', function (event) {
         if (!event.target.closest('[data-open-audit]')) return;
