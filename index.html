@@ -110,6 +110,47 @@
     }
     .fade-in-up { animation: fade-in-up .85s cubic-bezier(.22, 1, .36, 1) both; }
     .scale-in { animation: scale-in .7s cubic-bezier(.22, 1, .36, 1) both; }
+    @keyframes wizard-in {
+      from { opacity: 0; transform: translateX(12px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes wizard-back {
+      from { opacity: 0; transform: translateX(-12px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    [data-wizard-step].is-active { animation: wizard-in .28s ease; }
+    [data-wizard-step].is-back { animation: wizard-back .28s ease; }
+    #interest-form input:not([type="radio"]):focus {
+      background-color: #fff;
+      outline: none;
+      box-shadow: none;
+    }
+    #interest-form input:-webkit-autofill,
+    #interest-form input:-webkit-autofill:hover,
+    #interest-form input:-webkit-autofill:focus,
+    #interest-form input:-webkit-autofill:active {
+      -webkit-box-shadow: 0 0 0 1000px #fff inset !important;
+      box-shadow: 0 0 0 1000px #fff inset !important;
+      -webkit-text-fill-color: #1c1917;
+      caret-color: #1c1917;
+      transition: background-color 99999s ease-out;
+    }
+    html.dark #interest-form input:not([type="radio"]):focus {
+      background-color: #1c1917;
+    }
+    html.dark #interest-form input:-webkit-autofill,
+    html.dark #interest-form input:-webkit-autofill:hover,
+    html.dark #interest-form input:-webkit-autofill:focus,
+    html.dark #interest-form input:-webkit-autofill:active {
+      -webkit-box-shadow: 0 0 0 1000px #1c1917 inset !important;
+      box-shadow: 0 0 0 1000px #1c1917 inset !important;
+      -webkit-text-fill-color: #f5f5f4;
+      caret-color: #f5f5f4;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      [data-wizard-step].is-active,
+      [data-wizard-step].is-back { animation: none; }
+    }
     .delay-1 { animation-delay: .12s; }
     .delay-2 { animation-delay: .24s; }
     .delay-3 { animation-delay: .36s; }
@@ -1062,54 +1103,68 @@
     </div>
   </dialog>
 
-  <div id="interest-modal" class="pointer-events-none fixed inset-0 z-[90] hidden items-end justify-center p-4 sm:items-center" aria-hidden="true">
+  <div id="interest-modal" class="pointer-events-none fixed inset-0 z-[90] hidden items-center justify-center p-3 sm:p-4" aria-hidden="true">
     <button type="button" id="interest-backdrop" class="absolute inset-0 bg-stone-950/60 opacity-0 transition-opacity duration-300" aria-label="Cerrar"></button>
-    <form id="interest-form" novalidate role="dialog" aria-modal="true" aria-labelledby="interest-title" class="relative mb-16 max-h-[calc(100dvh-2rem)] w-full max-w-md overflow-y-auto rounded-2xl border border-stone-200 bg-white p-5 opacity-0 shadow-lg transition duration-300 dark:border-stone-800 dark:bg-stone-950 sm:mb-0 sm:p-6">
-      <div class="mb-4 flex items-start justify-between gap-3">
-        <div>
-          <h2 id="interest-title" class="text-lg font-semibold text-stone-900 dark:text-stone-100">Me interesa este plan</h2>
-          <p id="interest-plan" class="mt-1 text-sm text-stone-500 dark:text-stone-400"></p>
-        </div>
-        <button type="button" id="interest-close" class="grid h-9 w-9 shrink-0 place-items-center text-stone-400 transition-colors hover:text-black dark:text-stone-500 dark:hover:text-white" aria-label="Cerrar"><svg viewBox="0 0 24 24" class="h-[18px] w-[18px]" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    <form id="interest-form" novalidate role="dialog" aria-modal="true" aria-labelledby="interest-title" class="relative max-h-[calc(100dvh-1.5rem)] w-full max-w-md overflow-y-auto overscroll-contain rounded-2xl border border-stone-200 bg-white p-4 opacity-0 shadow-lg transition duration-300 dark:border-stone-800 dark:bg-stone-950 sm:p-5">
+      <div class="mb-2 flex items-center gap-2">
+        <button type="button" id="interest-back" class="hidden shrink-0 text-xs font-medium text-stone-500 transition-colors hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100">← Volver</button>
+        <p id="interest-progress-label" class="min-w-0 flex-1 truncate text-xs text-stone-500 dark:text-stone-400" aria-live="polite"></p>
+        <button type="button" id="interest-close" class="ml-auto grid h-8 w-8 shrink-0 place-items-center text-stone-400 transition-colors hover:text-black dark:text-stone-500 dark:hover:text-white" aria-label="Cerrar"><svg viewBox="0 0 24 24" class="h-[18px] w-[18px]" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
       </div>
-      <div id="interest-maint-wrap">
-        <div class="mb-2 flex items-center justify-between gap-2">
-          <label class="text-xs font-semibold text-stone-700">Mantenimiento mensual deseado</label>
-          <span class="shrink-0 text-stone-400" aria-hidden="true"><svg viewBox="0 0 24 24" class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
-          <button type="button" id="btn-ver-mantenimiento" class="shrink-0 text-right text-xs text-stone-500 underline transition-colors hover:text-stone-900">¿No sabes qué incluye? Pincha aquí</button>
-        </div>
+      <div id="interest-progress-track" class="mb-3 h-0.5 overflow-hidden rounded-full bg-stone-200 dark:bg-stone-800">
+        <div id="interest-progress-bar" class="h-full w-1/4 rounded-full bg-emerald-600 transition-[width] duration-300"></div>
+      </div>
+      <div id="interest-heading" class="mb-3">
+        <h2 id="interest-title" class="text-base font-semibold leading-snug text-stone-900 dark:text-stone-100">¿Qué nivel de mantenimiento prefieres?</h2>
+        <button type="button" id="btn-ver-mantenimiento" class="mt-1.5 block w-full text-right text-[11px] leading-none whitespace-nowrap text-stone-400 underline decoration-stone-300 underline-offset-2 transition-colors hover:text-stone-700">¿No sabes qué incluye? Ver detalles</button>
+      </div>
+      <p id="interest-plan" class="mb-3 hidden text-xs leading-snug text-stone-500 dark:text-stone-400"></p>
+      <div id="interest-maint-wrap" data-wizard-step="1">
         <div class="grid gap-2" role="radiogroup" aria-label="Mantenimiento mensual deseado">
-          <label class="flex cursor-pointer items-start gap-2.5 rounded-xl border border-stone-200 bg-white px-3 py-2.5 text-sm leading-snug text-stone-800 has-[:checked]:border-stone-900 has-[:checked]:bg-stone-50 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100 dark:has-[:checked]:border-stone-100 dark:has-[:checked]:bg-stone-800">
-            <input type="radio" name="mantenimiento" value="Sin cuota mensual (0 €/mes · soporte puntual)" class="mt-0.5 accent-stone-900" checked>
-            <span>Sin cuota mensual (0 €/mes · soporte puntual)</span>
+          <label class="flex cursor-pointer flex-col rounded-xl border border-stone-200 bg-white px-3.5 py-3 transition-colors has-[:checked]:border-emerald-700 has-[:checked]:bg-emerald-50 dark:border-stone-700 dark:bg-stone-900 dark:has-[:checked]:border-emerald-400 dark:has-[:checked]:bg-emerald-950/40">
+            <input type="radio" name="mantenimiento" value="Sin cuota mensual (0 €/mes · cambios puntuales bajo presupuesto)" class="sr-only">
+            <span class="text-sm font-semibold text-stone-900 dark:text-stone-100">Sin cuota mensual</span>
+            <span class="mt-0.5 text-xs leading-snug text-stone-500 dark:text-stone-400">0 €/mes · cambios puntuales bajo presupuesto</span>
           </label>
-          <label class="flex cursor-pointer items-start gap-2.5 rounded-xl border border-stone-200 bg-white px-3 py-2.5 text-sm leading-snug text-stone-800 has-[:checked]:border-stone-900 has-[:checked]:bg-stone-50 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100 dark:has-[:checked]:border-stone-100 dark:has-[:checked]:bg-stone-800">
-            <input type="radio" name="mantenimiento" value="Mantenimiento Técnico Base (25 €/mes)" class="mt-0.5 accent-stone-900">
-            <span>Mantenimiento Técnico Base (25 €/mes)</span>
+          <label class="flex cursor-pointer flex-col rounded-xl border border-stone-200 bg-white px-3.5 py-3 transition-colors has-[:checked]:border-emerald-700 has-[:checked]:bg-emerald-50 dark:border-stone-700 dark:bg-stone-900 dark:has-[:checked]:border-emerald-400 dark:has-[:checked]:bg-emerald-950/40">
+            <input type="radio" name="mantenimiento" value="Mantenimiento Técnico Base (25 €/mes · soporte continuo y carta al día)" class="sr-only">
+            <span class="text-sm font-semibold text-stone-900 dark:text-stone-100">Mantenimiento Técnico Base</span>
+            <span class="mt-0.5 text-xs leading-snug text-stone-500 dark:text-stone-400">25 €/mes · soporte continuo y carta al día</span>
           </label>
-          <label class="flex cursor-pointer items-start gap-2.5 rounded-xl border border-stone-200 bg-white px-3 py-2.5 text-sm leading-snug text-stone-800 has-[:checked]:border-stone-900 has-[:checked]:bg-stone-50 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100 dark:has-[:checked]:border-stone-100 dark:has-[:checked]:bg-stone-800">
-            <input type="radio" name="mantenimiento" value="Gestión Activa + Maps (85 €/mes)" class="mt-0.5 accent-stone-900">
-            <span>Gestión Activa + Maps (85 €/mes)</span>
+          <label class="flex cursor-pointer flex-col rounded-xl border border-stone-200 bg-white px-3.5 py-3 transition-colors has-[:checked]:border-emerald-700 has-[:checked]:bg-emerald-50 dark:border-stone-700 dark:bg-stone-900 dark:has-[:checked]:border-emerald-400 dark:has-[:checked]:bg-emerald-950/40">
+            <input type="radio" name="mantenimiento" value="Gestión Activa + Maps (85 €/mes · soporte prioritario y ficha de Google)" class="sr-only">
+            <span class="text-sm font-semibold text-stone-900 dark:text-stone-100">Gestión Activa + Maps</span>
+            <span class="mt-0.5 text-xs leading-snug text-stone-500 dark:text-stone-400">85 €/mes · soporte prioritario y ficha de Google</span>
           </label>
         </div>
+        <button type="button" id="interest-next" class="mt-3 hidden w-full rounded-full bg-stone-900 px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-stone-800 dark:bg-stone-100 dark:text-stone-900 dark:hover:bg-white">Siguiente paso →</button>
       </div>
-      <div id="interest-extras-wrap" class="mt-4">
-        <label class="mb-2 block text-xs font-semibold text-stone-700">Servicios adicionales opcionales</label>
+      <div id="interest-extras-wrap" data-wizard-step="2" class="hidden">
         <div id="interest-extras" class="flex flex-wrap gap-2">
-          <button type="button" data-extra-chip="idioma" aria-pressed="false" class="cursor-pointer rounded-lg border border-stone-200 bg-stone-50 px-3 py-1.5 text-xs text-stone-600 transition-colors hover:bg-stone-100">+ Idioma adicional (20 € / idioma)</button>
+          <button type="button" data-extra-chip="idioma" aria-pressed="false" class="cursor-pointer rounded-lg border border-stone-200 bg-stone-50 px-3 py-1.5 text-xs text-stone-600 transition-colors hover:bg-stone-100">+ Idioma adicional (20 € / ud)</button>
           <button type="button" data-extra-chip aria-pressed="false" class="cursor-pointer rounded-lg border border-stone-200 bg-stone-50 px-3 py-1.5 text-xs text-stone-600 transition-colors hover:bg-stone-100">Pack soportes físicos QR (60 €)</button>
           <button type="button" data-extra-chip aria-pressed="false" class="cursor-pointer rounded-lg border border-stone-200 bg-stone-50 px-3 py-1.5 text-xs text-stone-600 transition-colors hover:bg-stone-100">Sesión fotográfica extra (40 €)</button>
           <button type="button" data-extra-chip aria-pressed="false" class="cursor-pointer rounded-lg border border-stone-200 bg-stone-50 px-3 py-1.5 text-xs text-stone-600 transition-colors hover:bg-stone-100">Campaña Google Ads local (150 €)</button>
           <button type="button" data-extra-chip aria-pressed="false" class="cursor-pointer rounded-lg border border-stone-200 bg-stone-50 px-3 py-1.5 text-xs text-stone-600 transition-colors hover:bg-stone-100">Bolsa de horas desarrollo (30 €/h)</button>
         </div>
-        <input type="text" id="input-idiomas" placeholder="¿Qué idiomas necesitas? (ej. Inglés, Francés...)" class="mt-2 hidden w-full rounded-lg border border-stone-200 bg-white px-3 py-1.5 text-xs text-stone-800 outline-none placeholder:text-stone-400 focus:outline-none focus:ring-0">
+        <input type="text" id="input-idiomas" placeholder="¿Qué idiomas necesitas? (ej. Inglés, Francés...)" class="mt-2 hidden w-full rounded-lg border border-stone-200 bg-white px-3 py-2 text-sm text-stone-800 outline-none placeholder:text-stone-400 focus:outline-none focus:ring-0 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100">
+        <div class="mt-4 flex items-center justify-between gap-3">
+          <button type="button" id="interest-skip" class="text-sm font-medium text-stone-500 transition-colors hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100"><span class="underline decoration-stone-500 underline-offset-4 dark:decoration-stone-400">Omitir extras</span></button>
+          <button type="button" id="interest-continue" class="rounded-full bg-stone-900 px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-stone-800 dark:bg-stone-100 dark:text-stone-900 dark:hover:bg-white">Continuar →</button>
+        </div>
       </div>
-      <label id="interest-name-label" class="mt-4 block text-sm font-normal text-stone-800 dark:text-stone-200" for="interest-name">Nombre de tu bar o local</label>
-      <input id="interest-name" name="nombre" required autocomplete="organization" placeholder="Nombre de tu bar o local" class="mt-1.5 w-full rounded-xl border border-stone-300 bg-white px-3 py-3 text-base text-stone-900 outline-none focus:border-stone-300 focus:outline-none focus:ring-0 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100 dark:focus:border-stone-700">
-      <label id="interest-zone-label" class="mt-4 block text-sm font-normal text-stone-800 dark:text-stone-200" for="interest-zone">Zona o municipio (ej. Alcobendas, Sanse...)</label>
-      <input id="interest-zone" name="zona" required autocomplete="address-level2" placeholder="Zona o municipio (ej. Alcobendas, Sanse...)" class="mt-1.5 w-full rounded-xl border border-stone-300 bg-white px-3 py-3 text-base text-stone-900 outline-none focus:border-stone-300 focus:outline-none focus:ring-0 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100 dark:focus:border-stone-700">
-      <p id="interest-error" class="mt-3 hidden text-sm font-semibold text-red-600 dark:text-red-400" role="alert"></p>
-      <button type="submit" id="interest-submit" class="mt-5 flex w-full items-center justify-center rounded-xl bg-emerald-600 px-4 py-3.5 text-base font-semibold text-white shadow-sm transition-colors hover:bg-emerald-700">Pedir propuesta por WhatsApp</button>
+      <div id="interest-contact-wrap" data-wizard-step="3" class="hidden">
+        <label id="interest-name-label" class="block text-sm font-normal text-stone-800 dark:text-stone-200" for="interest-name">Nombre de tu bar o local</label>
+        <input id="interest-name" name="nombre" required autocomplete="off" placeholder="Nombre de tu bar o local" class="mt-1.5 w-full rounded-xl border border-stone-300 bg-white px-3 py-2.5 text-base text-stone-900 outline-none focus:border-stone-300 focus:outline-none focus:ring-0 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100 dark:focus:border-stone-700">
+        <label id="interest-zone-label" class="mt-3 block text-sm font-normal text-stone-800 dark:text-stone-200" for="interest-zone">Zona o municipio (ej. Alcobendas)</label>
+        <input id="interest-zone" name="zona" required autocomplete="off" placeholder="Zona o municipio (ej. Alcobendas)" class="mt-1.5 w-full rounded-xl border border-stone-300 bg-white px-3 py-2.5 text-base text-stone-900 outline-none focus:border-stone-300 focus:outline-none focus:ring-0 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100 dark:focus:border-stone-700">
+        <p id="interest-error" class="mt-3 hidden text-sm font-semibold text-red-600 dark:text-red-400" role="alert"></p>
+        <button type="button" id="interest-to-summary" class="mt-4 w-full rounded-full bg-stone-900 px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-stone-800 dark:bg-stone-100 dark:text-stone-900 dark:hover:bg-white">Continuar →</button>
+      </div>
+      <div id="interest-summary-wrap" data-wizard-step="4" class="hidden">
+        <div id="interest-summary" class="rounded-xl bg-stone-50 px-3 py-2.5 text-xs leading-relaxed text-stone-700 dark:bg-stone-900 dark:text-stone-300"></div>
+        <button type="submit" id="interest-submit" class="mt-4 flex w-full items-center justify-center rounded-xl bg-emerald-600 px-4 py-3.5 text-base font-semibold text-white shadow-sm transition-colors hover:bg-emerald-700">Pedir propuesta por WhatsApp</button>
+      </div>
     </form>
   </div>
   <script>
@@ -1292,6 +1347,94 @@
         return picked ? picked.value : '';
       }
 
+      var wizardStep = 1;
+      var contactWrap = document.getElementById('interest-contact-wrap');
+      var summaryWrap = document.getElementById('interest-summary-wrap');
+      var toSummaryBtn = document.getElementById('interest-to-summary');
+      var progressLabel = document.getElementById('interest-progress-label');
+      var progressTrack = document.getElementById('interest-progress-track');
+      var progressBar = document.getElementById('interest-progress-bar');
+      var backBtn = document.getElementById('interest-back');
+      var detailBtn = document.getElementById('btn-ver-mantenimiento');
+      var nextBtn = document.getElementById('interest-next');
+      var summaryEl = document.getElementById('interest-summary');
+      var stepTitles = [
+        '',
+        '¿Qué nivel de mantenimiento prefieres?',
+        '¿Necesitas algún extra para tu local?',
+        '¿Para qué bar o restaurante es?',
+        'Resumen de tu propuesta'
+      ];
+
+      function escapeHtml(value) {
+        return String(value).replace(/[&<>"']/g, function (ch) {
+          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch];
+        });
+      }
+
+      function setSubtitle(text) {
+        planLabel.textContent = text || '';
+        planLabel.classList.toggle('hidden', !text);
+      }
+
+      function syncNext() {
+        nextBtn.classList.toggle('hidden', !selectedMaintLabel());
+      }
+
+      function renderSummary() {
+        var extras = selectedExtraLabels();
+        summaryEl.innerHTML =
+          '<p><span class="text-stone-500 dark:text-stone-400">Plan · </span>' + escapeHtml(currentPlan) + '</p>' +
+          '<p><span class="text-stone-500 dark:text-stone-400">Mantenimiento · </span>' + escapeHtml(selectedMaintLabel()) + '</p>' +
+          '<p><span class="text-stone-500 dark:text-stone-400">Extras · </span>' + escapeHtml(extras.length ? extras.join(', ') : 'Ninguno') + '</p>' +
+          '<p><span class="text-stone-500 dark:text-stone-400">Local · </span>' + escapeHtml(nameInput.value.trim()) + '</p>' +
+          '<p><span class="text-stone-500 dark:text-stone-400">Zona · </span>' + escapeHtml(zoneInput.value.trim()) + '</p>';
+      }
+
+      function showWizardStep(step, direction) {
+        wizardStep = step;
+        if (submitBtn.parentNode !== summaryWrap) summaryWrap.appendChild(submitBtn);
+        submitBtn.classList.remove('hidden');
+        toSummaryBtn.classList.remove('hidden');
+        [maintWrap, extrasWrap, contactWrap, summaryWrap].forEach(function (panel, index) {
+          var on = index + 1 === step;
+          panel.classList.toggle('hidden', !on);
+          panel.classList.remove('is-active', 'is-back');
+          if (on) {
+            void panel.offsetWidth;
+            panel.classList.add(direction < 0 ? 'is-back' : 'is-active');
+          }
+        });
+        var planMode = mode === 'plan';
+        progressLabel.classList.toggle('hidden', !planMode);
+        progressTrack.classList.toggle('hidden', !planMode);
+        backBtn.classList.toggle('hidden', !planMode || step === 1);
+        detailBtn.classList.toggle('hidden', !planMode || step !== 1);
+        if (!planMode) return;
+        titleEl.textContent = stepTitles[step];
+        progressLabel.textContent = currentPlan + ' · Paso ' + step + ' de 4';
+        progressBar.style.width = (step * 100 / 4) + '%';
+        setSubtitle(step === 2 ? 'Opcional. Puedes añadirlo ahora o solicitarlo más adelante.' : '');
+        if (step === 4) renderSummary();
+        if (step === 3) nameInput.focus();
+        syncNext();
+      }
+
+      function showContactOnly() {
+        wizardStep = 3;
+        maintWrap.classList.add('hidden');
+        extrasWrap.classList.add('hidden');
+        summaryWrap.classList.add('hidden');
+        contactWrap.classList.remove('hidden');
+        toSummaryBtn.classList.add('hidden');
+        submitBtn.classList.remove('hidden');
+        contactWrap.appendChild(submitBtn);
+        progressLabel.classList.add('hidden');
+        progressTrack.classList.add('hidden');
+        backBtn.classList.add('hidden');
+        detailBtn.classList.add('hidden');
+      }
+
       function openInterest(plan, options) {
         options = options || {};
         mode = options.mode || 'plan';
@@ -1301,23 +1444,27 @@
         var pack = mode === 'pack';
         var demo = mode === 'demo';
         var lead = pack || demo;
-        titleEl.textContent = audit ? 'Auditoría de tu ficha' : lead ? 'Estás a un paso de tener la carta digital de tu local.' : 'Me interesa este plan';
-        planLabel.textContent = audit ? 'Te la enviamos gratis por WhatsApp.' : lead ? '' : plan;
-        planLabel.classList.toggle('hidden', lead);
+        var showMaint = mode === 'plan';
+        titleEl.textContent = audit ? 'Auditoría de tu ficha' : lead ? 'Estás a un paso de tener la carta digital de tu local.' : stepTitles[1];
         nameLabel.textContent = lead ? 'Nombre de tu bar / restaurante *' : 'Nombre de tu bar o local';
         nameInput.placeholder = lead ? 'Nombre de tu bar / restaurante' : 'Nombre de tu bar o local';
-        zoneLabel.textContent = lead ? 'Ciudad (ej. Alcobendas, Sanse, Tetuán...) *' : 'Zona o municipio (ej. Alcobendas, Sanse...)';
-        zoneInput.placeholder = lead ? 'Ciudad (ej. Alcobendas, Sanse, Tetuán...)' : 'Zona o municipio (ej. Alcobendas, Sanse...)';
+        zoneLabel.textContent = lead ? 'Ciudad (ej. Alcobendas, Sanse, Tetuán...) *' : 'Zona o municipio (ej. Alcobendas)';
+        zoneInput.placeholder = lead ? 'Ciudad (ej. Alcobendas, Sanse, Tetuán...)' : 'Zona o municipio (ej. Alcobendas)';
         submitBtn.textContent = lead ? 'Enviar mi solicitud por WhatsApp' : 'Pedir propuesta por WhatsApp';
         zoneLabel.classList.toggle('hidden', audit);
         zoneInput.classList.toggle('hidden', audit);
         zoneInput.required = !audit;
         if (audit) zoneInput.value = '';
-        var showMaint = mode === 'plan';
-        maintWrap.classList.toggle('hidden', !showMaint);
-        extrasWrap.classList.toggle('hidden', !showMaint);
-        maintInputs.forEach(function (input) { input.disabled = !showMaint; });
+        maintInputs.forEach(function (input) {
+          input.disabled = !showMaint;
+          if (showMaint) input.checked = false;
+        });
         if (showMaint) resetExtraChips();
+        if (showMaint) showWizardStep(1, 1);
+        else {
+          setSubtitle(audit ? 'Te la enviamos gratis por WhatsApp.' : '');
+          showContactOnly();
+        }
         hideInterestError();
         modal.classList.remove('hidden', 'pointer-events-none');
         modal.classList.add('flex');
@@ -1329,7 +1476,7 @@
           form.classList.add('opacity-100');
           form.classList.remove('opacity-0');
         });
-        nameInput.focus();
+        if (!showMaint) nameInput.focus();
       }
 
       function closeInterest() {
@@ -1572,6 +1719,38 @@
       });
 
       document.getElementById('interest-close').addEventListener('click', closeInterest);
+      backBtn.addEventListener('click', function () {
+        if (mode === 'plan' && wizardStep > 1) showWizardStep(wizardStep - 1, -1);
+      });
+      nextBtn.addEventListener('click', function () {
+        if (selectedMaintLabel()) showWizardStep(2, 1);
+      });
+      document.getElementById('interest-skip').addEventListener('click', function () {
+        resetExtraChips();
+        showWizardStep(3, 1);
+      });
+      document.getElementById('interest-continue').addEventListener('click', function () {
+        showWizardStep(3, 1);
+      });
+      function goToSummary() {
+        var name = nameInput.value.trim();
+        var zone = zoneInput.value.trim();
+        if (!name || !zone) {
+          showInterestError(!name && !zone
+            ? 'Indica el nombre de tu local y la zona.'
+            : !name
+              ? 'Indica el nombre de tu local.'
+              : 'Indica la zona.');
+          (!name ? nameInput : zoneInput).focus();
+          return;
+        }
+        hideInterestError();
+        showWizardStep(4, 1);
+      }
+      toSummaryBtn.addEventListener('click', goToSummary);
+      maintInputs.forEach(function (input) {
+        input.addEventListener('change', syncNext);
+      });
       document.getElementById('btn-ver-mantenimiento').addEventListener('click', function () {
         closeInterest();
         document.getElementById('seccion-mantenimiento')?.scrollIntoView({ behavior: 'smooth' });
@@ -1586,6 +1765,16 @@
 
       form.addEventListener('submit', function (event) {
         event.preventDefault();
+        if (mode === 'plan' && wizardStep < 4) {
+          if (wizardStep === 1 && selectedMaintLabel()) showWizardStep(2, 1);
+          else if (wizardStep === 2) showWizardStep(3, 1);
+          else if (wizardStep === 3) goToSummary();
+          return;
+        }
+        if (mode === 'plan' && !selectedMaintLabel()) {
+          showWizardStep(1, -1);
+          return;
+        }
         var name = nameInput.value.trim();
         var zone = zoneInput.value.trim();
         var audit = mode === 'audit';
