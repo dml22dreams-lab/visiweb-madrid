@@ -267,12 +267,6 @@
       background-color: #fafaf9;
     }
     .dark .is-picked { background-color: #292524; }
-    #seccion-mantenimiento [data-maint-plan="activa"].is-picked {
-      border-color: #E6D5C3 !important;
-    }
-    .dark #seccion-mantenimiento [data-maint-plan="activa"].is-picked {
-      border-color: #8C7A6B !important;
-    }
     @media (min-width: 768px) {
       [data-extra]:hover {
         transform: none;
@@ -808,10 +802,10 @@
       <div id="maint-tabs" class="mx-auto mb-6 mt-6 grid w-full max-w-3xl grid-cols-3 gap-1 rounded-2xl bg-stone-200/80 p-1 dark:bg-stone-800/80 md:hidden" role="tablist" aria-label="Mantenimiento">
         <button type="button" role="tab" data-maint-tab="cero" aria-selected="false" class="rounded-xl border-2 border-transparent px-2 py-3 text-center text-xs font-medium leading-tight text-stone-600 transition-[background-color,border-color,color,box-shadow] duration-300 ease-out hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100 sm:text-sm">Sin cuota</button>
         <button type="button" role="tab" data-maint-tab="base" aria-selected="false" class="rounded-xl border-2 border-transparent px-2 py-3 text-center text-xs font-medium leading-tight text-stone-600 transition-[background-color,border-color,color,box-shadow] duration-300 ease-out hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100 sm:text-sm">Base (25 €)</button>
-        <button type="button" role="tab" data-maint-tab="activa" aria-selected="true" class="rounded-xl border-2 border-[#E6D5C3] bg-white px-2 py-3 text-center text-xs font-bold leading-tight text-stone-900 shadow-sm transition-[background-color,border-color,color,box-shadow] duration-300 ease-out dark:border-[#8C7A6B] dark:bg-stone-900 dark:text-stone-100 sm:text-sm">Activa (85 €)</button>
+        <button type="button" role="tab" data-maint-tab="activa" aria-selected="true" class="rounded-xl border-2 border-stone-900 bg-white px-2 py-3 text-center text-xs font-bold leading-tight text-stone-900 shadow-sm transition-[background-color,border-color,color,box-shadow] duration-300 ease-out dark:border-stone-100 dark:bg-stone-900 dark:text-stone-100 sm:text-sm">Activa (85 €)</button>
       </div>
       <div id="maint-planes" class="mx-auto grid max-w-6xl grid-cols-1 items-stretch gap-6 pt-4 text-left md:mt-8 md:grid-cols-3">
-        <article data-maint-plan="cero" data-name="Sin cuota mensual" data-price="0" class="hidden h-full w-full flex-col rounded-2xl border border-stone-200/70 bg-stone-50 p-6 opacity-0 dark:border-stone-700 dark:bg-stone-900 md:flex">
+        <article data-maint-plan="cero" data-name="Sin cuota mensual" data-price="0" class="hidden h-full w-full flex-col rounded-2xl border border-stone-200 bg-white p-6 opacity-0 shadow-sm dark:border-stone-800 dark:bg-stone-900 md:flex">
           <div>
             <h3 class="flex min-h-[3.25rem] items-end text-lg font-extrabold tracking-tight text-stone-900 dark:text-stone-100">Sin cuota mensual</h3>
             <p class="mt-1 min-h-[1.25rem] text-xs text-stone-500 dark:text-stone-400">Bajo demanda</p>
@@ -825,10 +819,10 @@
             </ul>
           </div>
         </article>
-        <article data-maint-plan="base" data-name="Mantenimiento Base" data-price="25" class="hidden h-full w-full flex-col rounded-2xl border border-stone-200/70 bg-stone-50 p-6 opacity-0 dark:border-stone-700 dark:bg-stone-900 md:flex">
+        <article data-maint-plan="base" data-name="Mantenimiento Base" data-price="25" class="hidden h-full w-full flex-col rounded-2xl border border-[#8B5E34] bg-white p-6 opacity-0 shadow-sm dark:border-[#C4A484] dark:bg-stone-900 md:flex">
           <div>
             <h3 class="flex min-h-[3.25rem] items-end text-lg font-extrabold tracking-tight text-stone-900 dark:text-stone-100">Mantenimiento Base</h3>
-            <p class="mt-1 min-h-[1.25rem] text-xs text-stone-500 dark:text-stone-400">Tranquilidad técnica</p>
+            <p class="mt-1 min-h-[1.25rem] text-xs text-[#8B5E34] dark:text-[#E6D5C3]">Tranquilidad técnica</p>
             <div class="mt-5 border-b border-stone-200 pb-5 dark:border-stone-800">
               <p class="text-3xl font-extrabold text-stone-900 dark:text-stone-100">25&nbsp;€<span class="text-base font-semibold text-stone-500 dark:text-stone-400"> / mes</span></p>
             </div>
@@ -841,8 +835,8 @@
             </ul>
           </div>
         </article>
-        <article data-maint-plan="activa" data-name="Gestión Activa + Maps" data-price="85" class="relative block h-full w-full flex-col rounded-2xl border-2 border-[#E6D5C3] bg-stone-50 p-6 opacity-100 transition-opacity duration-200 ease-in-out dark:border-[#8C7A6B] dark:bg-stone-900 md:flex">
-          <span class="plan-badge absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-[#E6D5C3] px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-stone-900">Más completo</span>
+        <article data-maint-plan="activa" data-name="Gestión Activa + Maps" data-price="85" class="relative block h-full w-full flex-col rounded-2xl border border-stone-900 bg-white p-6 opacity-100 shadow-sm transition-opacity duration-200 ease-in-out dark:border-stone-100 dark:bg-stone-900 md:flex">
+          <span class="plan-badge absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-stone-900 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-white dark:bg-stone-100 dark:text-stone-900">Más completo</span>
           <div>
             <h3 class="flex min-h-[3.25rem] items-end text-lg font-extrabold tracking-tight text-stone-900 dark:text-stone-100">Gestión Activa + Maps</h3>
             <p class="mt-1 min-h-[1.25rem] text-xs text-stone-500 dark:text-stone-400">Crecimiento local</p>
@@ -901,7 +895,7 @@
     </aside>
   </section>
 
-  <section id="objeciones" class="mx-auto w-full max-w-7xl scroll-mt-24 px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
+  <section id="objeciones" class="mx-auto w-full max-w-7xl scroll-mt-24 px-4 pt-16 pb-0 sm:px-6 lg:px-8 lg:pt-20 lg:pb-0">
     <div class="reveal mx-auto mb-10 max-w-2xl text-center">
       <h2 class="break-words text-3xl font-bold leading-tight text-stone-900 dark:text-stone-100 sm:text-4xl">Antes de decir que no</h2>
       <p class="mt-3 text-sm leading-relaxed text-stone-600 dark:text-stone-300 sm:text-base">Sabemos lo que cuesta levantar la persiana cada día. Por eso trabajamos así:</p>
@@ -963,6 +957,9 @@
       </div>
     </div>
   </section>
+  <p class="px-4 py-16 text-center sm:py-20">
+    <a href="#planes" class="text-sm font-semibold text-stone-800 underline decoration-stone-400 underline-offset-4 transition-colors hover:text-stone-950 dark:text-stone-200 dark:decoration-stone-500 dark:hover:text-white">Volver a los planes</a>
+  </p>
   <script>
     (function () {
       function bindAccordion(root) {
@@ -1018,7 +1015,7 @@
   <dialog id="legal-aviso" class="w-[min(100%-2rem,40rem)] rounded-2xl border border-stone-200 bg-white p-0 text-stone-900 shadow-lg backdrop:bg-stone-950/60 open:flex open:flex-col dark:border-stone-800 dark:bg-stone-900 dark:text-stone-200">
     <div class="flex items-start justify-between gap-4 border-b border-stone-200 px-6 py-4 dark:border-stone-800">
       <h2 class="text-lg font-extrabold">Aviso Legal</h2>
-      <button type="button" class="rounded-lg px-2 py-1 text-sm font-semibold text-stone-500 hover:text-stone-900 dark:hover:text-stone-100" data-close-legal>Cerrar</button>
+      <button type="button" class="grid h-8 w-8 shrink-0 place-items-center text-stone-400 transition-colors hover:text-black dark:text-stone-500 dark:hover:text-white" data-close-legal aria-label="Cerrar"><svg viewBox="0 0 24 24" class="h-[18px] w-[18px]" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
     </div>
     <div class="max-h-[70vh] space-y-3 overflow-y-auto px-6 py-5 text-sm leading-relaxed text-stone-500 dark:text-stone-300">
       <p>El sitio web VisiWeb Madrid informa sobre servicios de digitalización y posicionamiento local para hostelería en Alcobendas, San Sebastián de los Reyes y Madrid.</p>
@@ -1032,7 +1029,7 @@
   <dialog id="legal-condiciones" class="w-[min(100%-2rem,40rem)] rounded-2xl border border-stone-200 bg-white p-0 text-stone-900 shadow-lg backdrop:bg-stone-950/60 open:flex open:flex-col dark:border-stone-800 dark:bg-stone-900 dark:text-stone-200">
     <div class="flex items-start justify-between gap-4 border-b border-stone-200 px-6 py-4 dark:border-stone-800">
       <h2 class="text-lg font-extrabold">Condiciones del Servicio y Contratación</h2>
-      <button type="button" class="rounded-lg px-2 py-1 text-sm font-semibold text-stone-500 hover:text-stone-900 dark:hover:text-stone-100" data-close-legal>Cerrar</button>
+      <button type="button" class="grid h-8 w-8 shrink-0 place-items-center text-stone-400 transition-colors hover:text-black dark:text-stone-500 dark:hover:text-white" data-close-legal aria-label="Cerrar"><svg viewBox="0 0 24 24" class="h-[18px] w-[18px]" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
     </div>
     <div class="max-h-[70vh] space-y-4 overflow-y-auto px-6 py-5 text-sm leading-relaxed text-stone-500 dark:text-stone-300">
       <section class="space-y-2">
@@ -1076,7 +1073,7 @@
   <dialog id="legal-privacidad" class="w-[min(100%-2rem,40rem)] rounded-2xl border border-stone-200 bg-white p-0 text-stone-900 shadow-lg backdrop:bg-stone-950/60 open:flex open:flex-col dark:border-stone-800 dark:bg-stone-900 dark:text-stone-200">
     <div class="flex items-start justify-between gap-4 border-b border-stone-200 px-6 py-4 dark:border-stone-800">
       <h2 class="text-lg font-extrabold">Política de Privacidad</h2>
-      <button type="button" class="rounded-lg px-2 py-1 text-sm font-semibold text-stone-500 hover:text-stone-900 dark:hover:text-stone-100" data-close-legal>Cerrar</button>
+      <button type="button" class="grid h-8 w-8 shrink-0 place-items-center text-stone-400 transition-colors hover:text-black dark:text-stone-500 dark:hover:text-white" data-close-legal aria-label="Cerrar"><svg viewBox="0 0 24 24" class="h-[18px] w-[18px]" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
     </div>
     <div class="max-h-[70vh] space-y-3 overflow-y-auto px-6 py-5 text-sm leading-relaxed text-stone-500 dark:text-stone-300">
       <p>Responsable: VisiWeb Madrid. Contacto a través del enlace de WhatsApp publicado en esta web.</p>
@@ -1093,7 +1090,7 @@
   <dialog id="legal-cookies" class="w-[min(100%-2rem,40rem)] rounded-2xl border border-stone-200 bg-white p-0 text-stone-900 shadow-lg backdrop:bg-stone-950/60 open:flex open:flex-col dark:border-stone-800 dark:bg-stone-900 dark:text-stone-200">
     <div class="flex items-start justify-between gap-4 border-b border-stone-200 px-6 py-4 dark:border-stone-800">
       <h2 class="text-lg font-extrabold">Política de Cookies</h2>
-      <button type="button" class="rounded-lg px-2 py-1 text-sm font-semibold text-stone-500 hover:text-stone-900 dark:hover:text-stone-100" data-close-legal>Cerrar</button>
+      <button type="button" class="grid h-8 w-8 shrink-0 place-items-center text-stone-400 transition-colors hover:text-black dark:text-stone-500 dark:hover:text-white" data-close-legal aria-label="Cerrar"><svg viewBox="0 0 24 24" class="h-[18px] w-[18px]" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
     </div>
     <div class="max-h-[70vh] space-y-3 overflow-y-auto px-6 py-5 text-sm leading-relaxed text-stone-500 dark:text-stone-300">
       <p>Este sitio utiliza únicamente cookies técnicas y funcionales estrictamente necesarias para la navegación, la seguridad (Cloudflare) y la preferencia de tema claro u oscuro.</p>
@@ -1108,6 +1105,7 @@
     <form id="interest-form" novalidate role="dialog" aria-modal="true" aria-labelledby="interest-title" class="relative max-h-[calc(100dvh-1.5rem)] w-full max-w-md overflow-y-auto overscroll-contain rounded-2xl border border-stone-200 bg-white p-4 opacity-0 shadow-lg transition duration-300 dark:border-stone-800 dark:bg-stone-950 sm:p-5">
       <div class="mb-2 flex items-center gap-2">
         <button type="button" id="interest-back" class="hidden shrink-0 text-xs font-medium text-stone-500 transition-colors hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100">← Volver</button>
+        <span id="interest-back-sep" class="hidden h-3 w-px shrink-0 self-center bg-stone-300 dark:bg-stone-600" aria-hidden="true"></span>
         <p id="interest-progress-label" class="min-w-0 flex-1 truncate text-xs text-stone-500 dark:text-stone-400" aria-live="polite"></p>
         <button type="button" id="interest-close" class="ml-auto grid h-8 w-8 shrink-0 place-items-center text-stone-400 transition-colors hover:text-black dark:text-stone-500 dark:hover:text-white" aria-label="Cerrar"><svg viewBox="0 0 24 24" class="h-[18px] w-[18px]" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
       </div>
@@ -1193,8 +1191,7 @@
       });
       syncToggle();
 
-      var planesLink = document.querySelector('a[href="#planes"]');
-      if (planesLink) {
+      document.querySelectorAll('a[href="#planes"]').forEach(function (planesLink) {
         planesLink.addEventListener('click', function (event) {
           var target = document.getElementById('planes');
           if (!target) return;
@@ -1204,7 +1201,7 @@
           window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
           history.pushState(null, '', '#planes');
         });
-      }
+      });
 
       document.querySelectorAll('[data-open-legal]').forEach(function (button) {
         button.addEventListener('click', function () {
@@ -1355,6 +1352,7 @@
       var progressTrack = document.getElementById('interest-progress-track');
       var progressBar = document.getElementById('interest-progress-bar');
       var backBtn = document.getElementById('interest-back');
+      var backSep = document.getElementById('interest-back-sep');
       var detailBtn = document.getElementById('btn-ver-mantenimiento');
       var nextBtn = document.getElementById('interest-next');
       var summaryEl = document.getElementById('interest-summary');
@@ -1409,6 +1407,7 @@
         progressLabel.classList.toggle('hidden', !planMode);
         progressTrack.classList.toggle('hidden', !planMode);
         backBtn.classList.toggle('hidden', !planMode || step === 1);
+        backSep.classList.toggle('hidden', !planMode || step === 1);
         detailBtn.classList.toggle('hidden', !planMode || step !== 1);
         if (!planMode) return;
         titleEl.textContent = stepTitles[step];
@@ -1432,6 +1431,7 @@
         progressLabel.classList.add('hidden');
         progressTrack.classList.add('hidden');
         backBtn.classList.add('hidden');
+        backSep.classList.add('hidden');
         detailBtn.classList.add('hidden');
       }
 
