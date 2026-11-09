@@ -227,7 +227,7 @@
     if (menuDay) $('#info-menu-price').textContent = lang === 'en' ? menuDay.priceEn : menuDay.price;
 
     const tel = 'tel:' + D.business.phone;
-    ['#bar-call', '#footer-phone'].forEach((sel) => {
+    ['#bar-call', '#footer-phone', '#header-call'].forEach((sel) => {
       const node = $(sel);
       if (node) node.href = tel;
     });

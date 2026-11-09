@@ -295,7 +295,7 @@
       overflow: hidden;
       cursor: pointer;
       font-weight: 600;
-      font-size: 13px;
+      font-size: 14px;
       letter-spacing: 0.5px;
       background: rgba(250, 250, 249, 0.4);
       background-image: none;
@@ -337,6 +337,38 @@
     }
     #btn-lang-toggle:hover .lang-text:not(.slide-out-up):not(.slide-in-bottom) {
       transform: translateY(-3px);
+    }
+    .header-call {
+      display: inline-flex;
+      height: 36px;
+      width: 36px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 9999px;
+      color: #4b5563;
+      text-decoration: none;
+      background: rgba(250, 250, 249, 0.4);
+      -webkit-backdrop-filter: blur(16px) saturate(180%);
+      backdrop-filter: blur(16px) saturate(180%);
+      border: 1px solid rgba(231, 229, 228, 0.9);
+      box-shadow: 0 1px 2px rgba(28, 25, 23, 0.06);
+    }
+    .header-call .call-phone {
+      transform-box: fill-box;
+      transform-origin: center center;
+    }
+    .header-call:hover .call-phone {
+      animation: phone-shake .22s ease-in-out infinite;
+    }
+    .header-call:hover .call-waves span {
+      animation: wave-out .7s ease-out infinite;
+    }
+    .header-call:hover .call-waves span:nth-child(2) { animation-delay: .12s; }
+    .header-call:hover .call-waves span:nth-child(3) { animation-delay: .24s; }
+    @keyframes phone-shake {
+      0%, 100% { transform: rotate(0deg); }
+      25% { transform: rotate(-14deg); }
+      75% { transform: rotate(14deg); }
     }
     .call-icon {
       position: relative;
@@ -433,6 +465,11 @@
         border-color: rgba(87, 83, 78, 0.8);
       }
       #btn-lang-toggle .lang-text {
+        color: #ffffff;
+      }
+      .header-call {
+        background: rgba(41, 37, 36, 0.45);
+        border-color: rgba(87, 83, 78, 0.8);
         color: #ffffff;
       }
     }
@@ -779,12 +816,15 @@
     }
     @media (pointer: coarse), (hover: none) {
       #btn-lang-toggle.lang-btn,
-      #quick-bar a {
+      #quick-bar a,
+      .header-call {
         min-height: 44px;
       }
       #btn-lang-toggle:hover .lang-text,
       #bar-call:hover .call-phone,
-      #bar-call:hover .call-waves span {
+      #bar-call:hover .call-waves span,
+      .header-call:hover .call-phone,
+      .header-call:hover .call-waves span {
         animation: none;
         transform: none;
       }
@@ -864,8 +904,9 @@
     #demo-restore-bar {
       position: fixed;
       bottom: 1.25rem;
-      left: 2.75rem;
-      z-index: 50;
+      left: max(4.25rem, calc(4.25rem + ((100vw - 48rem) / 2 + 1.25rem - 4.25rem - 5.8rem) / 2));
+      right: auto;
+      z-index: 80;
       display: flex;
       align-items: center;
       gap: 0.5rem;
@@ -874,7 +915,7 @@
       border: 1px solid rgba(28, 25, 23, 0.12);
       background: #fff;
       color: #000;
-      font-size: 0.75rem;
+      font-size: 0.795rem;
       font-weight: 500;
       line-height: 1;
       box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.12);
@@ -964,6 +1005,51 @@
       }
       .site-nav-link { white-space: normal; }
     }
+    .text-xs { font-size: 0.795rem; }
+    .text-sm,
+    .focus\:text-sm:focus,
+    .btn-primary,
+    .btn-outline,
+    .btn-whatsapp,
+    .hours-row,
+    .book-field input,
+    .book-field textarea,
+    .book-phone-plus,
+    .book-field .book-phone input,
+    .book-select-trigger,
+    .book-select-option { font-size: 0.928rem; }
+    .text-base,
+    .dish-price { font-size: 1.06rem; }
+    .text-lg { font-size: 1.193rem; }
+    .text-xl { font-size: 1.325rem; }
+    .text-2xl { font-size: 1.59rem; }
+    .text-3xl { font-size: 1.988rem; }
+    .text-4xl { font-size: 2.385rem; }
+    .text-5xl { font-size: 3.18rem; }
+    .text-\[1\.65rem\] { font-size: 1.749rem; }
+    .text-\[9px\] { font-size: 10px; }
+    .text-\[10px\] { font-size: 11px; }
+    .text-\[11px\],
+    .pill-allergen,
+    .hours-closed,
+    .book-field,
+    .filter-chip { font-size: 12px; }
+    .text-\[13px\] { font-size: 14px; }
+    .text-\[15px\] { font-size: 16px; }
+    .tab,
+    .site-nav-link { font-size: 0.795rem; }
+    @media (min-width: 640px) {
+      .sm\:text-xs { font-size: 0.795rem; }
+      .sm\:text-sm { font-size: 0.928rem; }
+      .sm\:text-base { font-size: 1.06rem; }
+      .sm\:text-lg { font-size: 1.193rem; }
+      .sm\:text-xl { font-size: 1.325rem; }
+      .sm\:text-4xl { font-size: 2.385rem; }
+      .sm\:text-7xl { font-size: 4.77rem; }
+      .sm\:text-\[13px\] { font-size: 14px; }
+      .tab,
+      .site-nav-link { font-size: 0.928rem; }
+    }
   </style>
 </head>
 <body class="bg-white text-slate-900 dark:bg-slate-950 dark:text-slate-100">
@@ -1022,7 +1108,7 @@
       window.dispatchEvent(new Event('resize'));
     }
   </script>
-  <button type="button" id="demo-restore-bar" onclick="toggleDemoSalesBar(event)" class="fixed bottom-5 left-5 z-50 flex items-center gap-2 bg-white text-black text-xs font-medium px-3.5 py-2 rounded-full shadow-lg transition-all duration-200 border border-stone-200 hover:scale-105 cursor-pointer" aria-label="ocultar">
+  <button type="button" id="demo-restore-bar" onclick="toggleDemoSalesBar(event)" class="fixed z-50 flex items-center gap-2 bg-white text-black text-xs font-medium px-3.5 py-2 rounded-full shadow-lg transition-all duration-200 border border-stone-200 hover:scale-105 cursor-pointer" aria-label="ocultar">
     <svg id="demo-restore-eye-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
     <svg id="demo-restore-eye-off" class="hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88"/></svg>
     <span id="demo-restore-label">ocultar</span>
@@ -1046,7 +1132,13 @@
           </span>
         </a>
 
-        <div class="flex shrink-0 items-center gap-2">
+        <div class="flex shrink-0 items-center gap-4">
+          <a id="header-call" href="tel:+34600000000" class="header-call" aria-label="Llamar al restaurante">
+            <span class="call-icon">
+              <svg class="call-phone h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6.6 10.8a12.8 12.8 0 0 0 5.6 5.6l2-2a1 1 0 0 1 1-.2 9.6 9.6 0 0 0 3.5.6 1 1 0 0 1 1 1V19a1 1 0 0 1-1 1A17 17 0 0 1 4 6a1 1 0 0 1 1-1h3.2a1 1 0 0 1 1 1 9.6 9.6 0 0 0 .6 3.5 1 1 0 0 1-.2 1l-2 2z"/></svg>
+              <span class="call-waves" aria-hidden="true"><span></span><span></span><span></span></span>
+            </span>
+          </a>
           <button type="button" id="btn-lang-toggle" class="lang-btn" data-i18n-aria-label="langLabel" aria-label="Idioma">
             <div class="lang-text-wrapper">
               <span class="lang-text-sizer" aria-hidden="true">Hello</span>
