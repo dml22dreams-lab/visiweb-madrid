@@ -312,13 +312,11 @@
       .dark #objeciones-accordion [data-accordion-trigger][aria-expanded="false"] > span {
         color: #f5f5f4;
       }
-      #objeciones-accordion [data-accordion-trigger][aria-expanded="false"]:active > span,
       #objeciones-accordion [data-accordion-trigger][aria-expanded="true"] > span {
-        color: #C4A484;
+        color: #8B5E34;
       }
-      .dark #objeciones-accordion [data-accordion-trigger][aria-expanded="false"]:active > span,
       .dark #objeciones-accordion [data-accordion-trigger][aria-expanded="true"] > span {
-        color: #E6D5C3;
+        color: #C4A484;
       }
     }
     @media (orientation: landscape) and (max-height: 500px) {
@@ -336,6 +334,14 @@
     #servicios-adicionales [data-extra] * {
       cursor: default;
       pointer-events: none;
+    }
+    #servicios-adicionales [data-extra="medida"],
+    #servicios-adicionales [data-extra="medida"] * {
+      pointer-events: auto;
+      cursor: pointer;
+    }
+    #servicios-adicionales [data-extra="medida"] [data-medida-input] {
+      cursor: text;
     }
     #servicios-adicionales [data-extra-info] {
       pointer-events: auto;
@@ -645,13 +651,13 @@
         <article class="flex h-full w-[82vw] max-w-[320px] shrink-0 snap-center flex-col justify-between rounded-3xl border border-stone-200/70 bg-white p-6 shadow-sm transition-shadow hover:shadow-md dark:border-stone-700 dark:bg-stone-900 md:w-auto md:max-w-none">
           <div class="mb-3 flex items-center justify-between gap-3">
             <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-stone-100 text-stone-700 dark:bg-stone-800 dark:text-stone-200">
-              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/><path d="m9 16 2 2 4-4"/></svg>
             </span>
-            <span class="rounded-full bg-emerald-50 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-emerald-800 dark:bg-emerald-950/50 dark:text-emerald-300">💬 Cero comisiones</span>
+            <span class="rounded-full bg-emerald-50 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-emerald-800 dark:bg-emerald-950/50 dark:text-emerald-300">✨ A tu medida</span>
           </div>
           <div>
-            <h3 class="mb-2 font-serif text-lg font-semibold leading-snug text-stone-900 dark:text-stone-100">Reservas directas por WhatsApp</h3>
-            <p class="text-[13px] leading-relaxed text-stone-600 dark:text-stone-400">Un solo toque para llamar o reservar por chat. Trato directo con tu cliente, sin pagar porcentajes a plataformas intermediarias.</p>
+            <h3 class="mb-2 font-serif text-lg font-semibold leading-snug text-stone-900 dark:text-stone-100">Tus reservas, a tu manera</h3>
+            <p class="text-[13px] leading-relaxed text-stone-600 dark:text-stone-400">Tanto si gestionas mesas por WhatsApp o llamada directa, como si usas plataformas como CoverManager o TheFork. Integramos tu método preferido a un solo toque para ponérselo fácil al cliente.</p>
           </div>
         </article>
         <article class="flex h-full w-[82vw] max-w-[320px] shrink-0 snap-center flex-col justify-between rounded-3xl border border-stone-200/70 bg-white p-6 shadow-sm transition-shadow hover:shadow-md dark:border-stone-700 dark:bg-stone-900 md:w-auto md:max-w-none">
@@ -821,14 +827,13 @@
       <button type="button" data-web-dot="vip" aria-label="Digitalización Total" class="h-2 w-2 rounded-full bg-stone-300 dark:bg-stone-600"></button>
     </div>
 
-    <section id="contacto" class="scroll-mt-28 max-w-2xl mx-auto mt-12 p-8 bg-stone-50 border border-stone-200/80 rounded-3xl text-center dark:bg-stone-900 dark:border-stone-800">
-      <h2 class="font-serif text-xl sm:text-2xl font-bold text-stone-900 mb-2 dark:text-stone-100">¿Tienes dudas sobre qué plan encaja mejor con tu local?</h2>
-      <p class="text-sm text-stone-600 mb-6 max-w-lg mx-auto dark:text-stone-400">Cuéntanos qué necesitas y te preparamos la demo sin ningún compromiso.</p>
-      <a href="https://wa.me/34608975906?text=Hola,%20tengo%20dudas%20sobre%20los%20planes%20de%20VisiWeb" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-stone-900 text-white font-medium text-sm rounded-xl hover:bg-stone-800 transition-all shadow-sm">
+    <section id="contacto" class="scroll-mt-28 mx-auto my-10 max-w-lg rounded-3xl border border-stone-200/80 bg-stone-50 px-6 py-8 text-center dark:border-stone-800 dark:bg-stone-900 sm:my-14 sm:px-8 sm:py-10">
+      <h2 class="mb-2.5 font-serif text-xl font-bold leading-tight text-stone-900 dark:text-stone-100 sm:text-2xl">¿Dudas con los planes?</h2>
+      <p class="mx-auto mb-2 max-w-sm text-sm text-stone-600 dark:text-stone-400">Escríbenos y te preparamos una demo sin compromiso.</p>
+      <a href="https://wa.me/34608975906?text=Hola,%20tengo%20dudas%20sobre%20los%20planes%20de%20VisiWeb" target="_blank" rel="noopener noreferrer" class="mt-6 mb-2 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-stone-900 px-6 py-3.5 text-sm font-medium text-white shadow-sm transition-all hover:bg-stone-800 sm:w-auto">
         <svg class="h-4 w-4 fill-current" viewBox="0 0 24 24" aria-hidden="true"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/></svg>
         Hablar directamente por WhatsApp
       </a>
-      <span class="text-xs text-stone-400 mt-4 block">Atención directa en Alcobendas y Madrid Norte · Respuesta habitual en menos de 2 horas</span>
     </section>
 
     <section id="seccion-mantenimiento" class="reveal mt-8 scroll-mt-28 text-center" aria-label="Planes de mantenimiento">
@@ -930,15 +935,25 @@
           </div>
           <p data-extra-panel class="mt-2 rounded-xl bg-stone-100/80 p-3 text-xs leading-relaxed text-stone-600 transition-all dark:bg-stone-800/80 dark:text-stone-300">Fabricación y entrega de peanas o placas rígidas y resistentes con tu código QR para colocar en mesas y barra, listas para escanear. Plazo de entrega física: 5-7 días laborables.</p>
         </div>
-        <div data-extra="foto" data-price="40" data-label="Sesión foto extra" data-interest="Sesión fotográfica extra" class="relative flex w-full flex-col rounded-2xl border border-stone-200/70 bg-stone-50 p-3.5 dark:border-stone-800 dark:bg-stone-900 sm:w-auto">
+        <div data-extra="retoque" data-price="40" data-label="Retoque y optimización de tus fotos" data-interest="Retoque y optimización de tus fotos" class="relative flex w-full min-w-0 flex-col rounded-2xl border border-stone-200/70 bg-stone-50 p-3.5 dark:border-stone-800 dark:bg-stone-900 sm:w-auto">
           <div class="flex w-full items-center justify-between gap-3">
-            <span class="min-w-0 flex-1 text-left text-xs font-medium leading-snug text-stone-800 dark:text-stone-200 sm:text-[13px]">Sesión fotográfica extra</span>
+            <span class="min-w-0 flex-1 break-words text-left text-xs font-medium leading-snug text-stone-800 dark:text-stone-200 sm:text-[13px]">Retoque y optimización de tus fotos</span>
             <span class="flex shrink-0 items-center gap-2">
               <span class="whitespace-nowrap text-xs font-semibold text-[#8B5E34] dark:text-[#E6D5C3] sm:text-[13px]">40&nbsp;€</span>
-              <button type="button" data-extra-info aria-expanded="false" aria-label="Más información sobre la sesión fotográfica" class="grid h-5 w-5 place-items-center rounded-full bg-[#E6D5C3] text-xs font-bold text-stone-900">?</button>
+              <button type="button" data-extra-info aria-expanded="false" aria-label="Más información sobre retoque y optimización de fotos" class="grid h-5 w-5 shrink-0 place-items-center rounded-full bg-[#E6D5C3] text-xs font-bold text-stone-900">?</button>
             </span>
           </div>
-          <p data-extra-panel class="mt-2 rounded-xl bg-stone-100/80 p-3 text-xs leading-relaxed text-stone-600 transition-all dark:bg-stone-800/80 dark:text-stone-300">Desplazamiento presencial a tu local para tomar fotografías nítidas de nuevos platos, terraza o salón para nutrir la web y Google Maps. Entrega y subida de fotos editadas en 48-72h tras la visita.</p>
+          <p data-extra-panel class="mt-2 rounded-xl bg-stone-100/80 p-3 text-xs leading-relaxed text-stone-600 transition-all dark:bg-stone-800/80 dark:text-stone-300">Tú sacas las fotos con tu móvil y nos las envías. Nosotros mejoramos la luz, ajustamos colores para que los platos luzcan apetecibles, recortamos encuadres, optimizamos el peso para carga ultrarrápida y las subimos directamente a tu web y ficha de Google (hasta 10 fotos).</p>
+        </div>
+        <div data-extra="foto" data-price="0" data-consult="desde 120 €" data-label="Fotografía profesional presencial" data-interest="Fotografía profesional presencial" class="relative flex w-full min-w-0 flex-col rounded-2xl border border-stone-200/70 bg-stone-50 p-3.5 dark:border-stone-800 dark:bg-stone-900 sm:w-auto">
+          <div class="flex w-full items-center justify-between gap-3">
+            <span class="min-w-0 flex-1 break-words text-left text-xs font-medium leading-snug text-stone-800 dark:text-stone-200 sm:text-[13px]">Fotografía profesional presencial</span>
+            <span class="flex shrink-0 items-center gap-2">
+              <span class="whitespace-nowrap text-xs font-semibold text-[#8B5E34] dark:text-[#E6D5C3] sm:text-[13px]">Desde 120&nbsp;€</span>
+              <button type="button" data-extra-info aria-expanded="false" aria-label="Más información sobre fotografía profesional presencial" class="grid h-5 w-5 shrink-0 place-items-center rounded-full bg-[#E6D5C3] text-xs font-bold text-stone-900">?</button>
+            </span>
+          </div>
+          <p data-extra-panel class="mt-2 rounded-xl bg-stone-100/80 p-3 text-xs leading-relaxed text-stone-600 transition-all dark:bg-stone-800/80 dark:text-stone-300">Desplazamiento presencial de un fotógrafo profesional a tu local para capturar platos estrella y espacios. Incluye selección y retoque digital de 10 fotografías en alta resolución, listas y optimizadas para tu web y Google Maps. Presupuesto exacto según ubicación y volumen de platos.</p>
         </div>
         <div data-extra="ads" data-price="150" data-label="Campaña Google Ads" data-interest="Campaña Google Ads local" class="relative flex w-full flex-col rounded-2xl border border-stone-200/70 bg-stone-50 p-3.5 dark:border-stone-800 dark:bg-stone-900 sm:w-auto">
           <div class="flex w-full items-center justify-between gap-3">
@@ -950,23 +965,26 @@
           </div>
           <p data-extra-panel class="mt-2 rounded-xl bg-stone-100/80 p-3 text-xs leading-relaxed text-stone-600 transition-all dark:bg-stone-800/80 dark:text-stone-300">Configuración de anuncios geolocalizados en Google para búsquedas de tu zona. El puesto depende de la puja y del presupuesto de Google, que va aparte. Campaña configurada en 48h.</p>
         </div>
-        <div data-extra="horas" data-price="30" data-qty="0" data-label="Horas de desarrollo" data-interest="Horas de desarrollo fuera de cuota" class="relative flex w-full flex-col rounded-2xl border border-stone-200/70 bg-stone-50 p-3.5 dark:border-stone-800 dark:bg-stone-900 sm:w-auto">
+        <div data-extra="medida" data-price="0" data-label="Funcionalidad a medida" data-interest="Funcionalidad a medida" aria-pressed="false" class="relative flex w-full flex-col rounded-2xl border border-stone-200/70 bg-stone-50 p-3.5 dark:border-stone-800 dark:bg-stone-900 sm:w-auto">
           <div class="flex w-full items-center justify-between gap-3">
-            <span class="min-w-0 flex-1 text-left text-xs font-medium leading-snug text-stone-800 dark:text-stone-200 sm:text-[13px]">
-              <span data-horas-inc data-horas-idle>+ Horas de desarrollo</span>
-              <span data-horas-active class="hidden items-center gap-2">
-                <span>Horas:</span>
-                <span data-horas-dec class="grid h-6 w-6 shrink-0 place-items-center rounded-full border border-stone-300 bg-white text-sm font-bold text-stone-900" aria-hidden="true">−</span>
-                <span data-horas-count class="min-w-[1.25rem] text-center text-sm font-bold tabular-nums">0</span>
-                <span data-horas-inc class="grid h-6 w-6 shrink-0 place-items-center rounded-full border border-stone-300 bg-white text-sm font-bold text-stone-900" aria-hidden="true">+</span>
-              </span>
-            </span>
+            <span class="min-w-0 flex-1 text-left text-xs font-medium leading-snug text-stone-800 dark:text-stone-200 sm:text-[13px]">Funcionalidad a medida</span>
             <span class="flex shrink-0 items-center gap-2">
-              <span class="whitespace-nowrap text-xs font-semibold text-[#8B5E34] dark:text-[#E6D5C3] sm:text-[13px]">30&nbsp;€/hora</span>
-              <button type="button" data-extra-info aria-expanded="false" aria-label="Más información sobre horas de desarrollo" class="grid h-5 w-5 place-items-center rounded-full bg-[#E6D5C3] text-xs font-bold text-stone-900">?</button>
+              <span class="whitespace-nowrap text-xs font-semibold text-[#8B5E34] dark:text-[#E6D5C3] sm:text-[13px]">A consultar</span>
+              <button type="button" data-extra-info aria-expanded="false" aria-label="Más información sobre funcionalidad a medida" class="grid h-5 w-5 place-items-center rounded-full bg-[#E6D5C3] text-xs font-bold text-stone-900">?</button>
             </span>
           </div>
-          <p data-extra-panel class="mt-2 rounded-xl bg-stone-100/80 p-3 text-xs leading-relaxed text-stone-600 transition-all dark:bg-stone-800/80 dark:text-stone-300">Bolsa de horas para modificaciones estructurales grandes o funciones especiales que queden fuera del mantenimiento mensual contratado.</p>
+          <p data-extra-panel class="mt-2 rounded-xl bg-stone-100/80 p-3 text-xs leading-relaxed text-stone-600 transition-all dark:bg-stone-800/80 dark:text-stone-300">Si necesitas una función específica que no esté en las opciones anteriores, descríbela y valoraremos su complejidad y presupuesto antes de empezar.</p>
+          <textarea data-medida-input rows="3" placeholder="Cuéntanos qué necesitas (ej: integración con sistema de reservas, carta interactiva especial, etc.)..." class="mt-2 hidden w-full resize-y rounded-xl border border-stone-200 bg-white px-3 py-2 text-sm text-stone-800 outline-none placeholder:text-stone-400 focus:outline-none focus:ring-0 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100"></textarea>
+        </div>
+        <div data-extra="tema" data-price="15" data-label="Modo claro y modo oscuro" data-interest="Modo claro y modo oscuro" class="relative flex w-full flex-col rounded-2xl border border-stone-200/70 bg-stone-50 p-3.5 dark:border-stone-800 dark:bg-stone-900 sm:w-auto">
+          <div class="flex w-full items-center justify-between gap-3">
+            <span class="min-w-0 flex-1 text-left text-xs font-medium leading-snug text-stone-800 dark:text-stone-200 sm:text-[13px]">Modo claro y modo oscuro</span>
+            <span class="flex shrink-0 items-center gap-2">
+              <span class="whitespace-nowrap text-xs font-semibold text-[#8B5E34] dark:text-[#E6D5C3] sm:text-[13px]">15&nbsp;€</span>
+              <button type="button" data-extra-info aria-expanded="false" aria-label="Más información sobre modo claro y modo oscuro" class="grid h-5 w-5 place-items-center rounded-full bg-[#E6D5C3] text-xs font-bold text-stone-900">?</button>
+            </span>
+          </div>
+          <p data-extra-panel class="mt-2 rounded-xl bg-stone-100/80 p-3 text-xs leading-relaxed text-stone-600 transition-all dark:bg-stone-800/80 dark:text-stone-300">La web de tu local con fondo claro y fondo oscuro, y un botón para que el cliente cambie entre los dos.</p>
         </div>
       </div>
       <p class="mt-3 text-xs text-stone-400">Puedes incluir estos servicios al solicitar tu propuesta o añadirlos más adelante cuando los necesites.</p>
@@ -984,7 +1002,7 @@
     <div id="objeciones-accordion" class="bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-3xl p-4 sm:p-6 shadow-sm max-w-3xl mx-auto divide-y divide-stone-100 dark:divide-stone-800">
       <div data-accordion-item>
         <button type="button" data-accordion-trigger aria-expanded="false" class="w-full flex items-center justify-between gap-4 py-4 text-left cursor-pointer group">
-          <span class="text-stone-900 dark:text-stone-100 font-bold text-base sm:text-lg md:group-hover:text-[#C4A484] md:dark:group-hover:text-[#E6D5C3] transition-colors">¿Por qué no usar una IA o un creador automático de plantillas para crear mi web?</span>
+          <span class="text-stone-900 dark:text-stone-100 font-bold text-base sm:text-lg transition-colors">¿Por qué no usar una IA o un creador automático de plantillas para crear mi web?</span>
           <svg class="h-4 w-4 shrink-0 text-black transition-transform duration-200 transform rotate-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5.5 15.5 12 9 18.5"/></svg>
         </button>
         <div data-accordion-panel class="max-h-0 opacity-0 overflow-hidden transition-all duration-300">
@@ -993,7 +1011,7 @@
       </div>
       <div data-accordion-item>
         <button type="button" data-accordion-trigger aria-expanded="false" class="w-full flex items-center justify-between py-4 text-left cursor-pointer group">
-          <span class="text-stone-900 dark:text-stone-100 font-bold text-base sm:text-lg md:group-hover:text-[#C4A484] md:dark:group-hover:text-[#E6D5C3] transition-colors">¿Ya tengo Instagram?</span>
+          <span class="text-stone-900 dark:text-stone-100 font-bold text-base sm:text-lg transition-colors">¿Ya tengo Instagram?</span>
           <svg class="h-4 w-4 shrink-0 text-black transition-transform duration-200 transform rotate-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5.5 15.5 12 9 18.5"/></svg>
         </button>
         <div data-accordion-panel class="max-h-0 opacity-0 overflow-hidden transition-all duration-300">
@@ -1002,7 +1020,7 @@
       </div>
       <div data-accordion-item>
         <button type="button" data-accordion-trigger aria-expanded="false" class="w-full flex items-center justify-between py-4 text-left cursor-pointer group">
-          <span class="text-stone-900 dark:text-stone-100 font-bold text-base sm:text-lg md:group-hover:text-[#C4A484] md:dark:group-hover:text-[#E6D5C3] transition-colors">¿Puedo seguir usando TheFork o mi propio sistema de reservas?</span>
+          <span class="text-stone-900 dark:text-stone-100 font-bold text-base sm:text-lg transition-colors">¿Puedo seguir usando TheFork o mi propio sistema de reservas?</span>
           <svg class="h-4 w-4 shrink-0 text-black transition-transform duration-200 transform rotate-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5.5 15.5 12 9 18.5"/></svg>
         </button>
         <div data-accordion-panel class="max-h-0 opacity-0 overflow-hidden transition-all duration-300">
@@ -1011,7 +1029,7 @@
       </div>
       <div data-accordion-item>
         <button type="button" data-accordion-trigger aria-expanded="false" class="w-full flex items-center justify-between py-4 text-left cursor-pointer group">
-          <span class="text-stone-900 dark:text-stone-100 font-bold text-base sm:text-lg md:group-hover:text-[#C4A484] md:dark:group-hover:text-[#E6D5C3] transition-colors">No tengo tiempo de cambiar la carta.</span>
+          <span class="text-stone-900 dark:text-stone-100 font-bold text-base sm:text-lg transition-colors">No tengo tiempo de cambiar la carta.</span>
           <svg class="h-4 w-4 shrink-0 text-black transition-transform duration-200 transform rotate-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5.5 15.5 12 9 18.5"/></svg>
         </button>
         <div data-accordion-panel class="max-h-0 opacity-0 overflow-hidden transition-all duration-300">
@@ -1020,7 +1038,7 @@
       </div>
       <div data-accordion-item>
         <button type="button" data-accordion-trigger aria-expanded="false" class="w-full flex items-center justify-between py-4 text-left cursor-pointer group">
-          <span class="text-stone-900 dark:text-stone-100 font-bold text-base sm:text-lg md:group-hover:text-[#C4A484] md:dark:group-hover:text-[#E6D5C3] transition-colors">¿Qué garantía tengo con el resultado?</span>
+          <span class="text-stone-900 dark:text-stone-100 font-bold text-base sm:text-lg transition-colors">¿Qué garantía tengo con el resultado?</span>
           <svg class="h-4 w-4 shrink-0 text-black transition-transform duration-200 transform rotate-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5.5 15.5 12 9 18.5"/></svg>
         </button>
         <div data-accordion-panel class="max-h-0 opacity-0 overflow-hidden transition-all duration-300">
@@ -1029,7 +1047,7 @@
       </div>
       <div data-accordion-item>
         <button type="button" data-accordion-trigger aria-expanded="false" class="w-full flex items-center justify-between py-4 text-left cursor-pointer group">
-          <span class="text-stone-900 dark:text-stone-100 font-bold text-base sm:text-lg md:group-hover:text-[#C4A484] md:dark:group-hover:text-[#E6D5C3] transition-colors">¿Y si ya tengo dominio propio o una web anterior?</span>
+          <span class="text-stone-900 dark:text-stone-100 font-bold text-base sm:text-lg transition-colors">¿Y si ya tengo dominio propio o una web anterior?</span>
           <svg class="h-4 w-4 shrink-0 text-black transition-transform duration-200 transform rotate-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5.5 15.5 12 9 18.5"/></svg>
         </button>
         <div data-accordion-panel class="max-h-0 opacity-0 overflow-hidden transition-all duration-300">
@@ -1222,11 +1240,14 @@
         <div id="interest-extras" class="flex flex-wrap gap-2">
           <button type="button" data-extra-chip="idioma" aria-pressed="false" class="cursor-pointer rounded-lg border border-stone-200 bg-stone-50 px-3 py-1.5 text-xs text-stone-600 transition-colors hover:bg-stone-100">+ Idioma adicional (20 € / ud)</button>
           <button type="button" data-extra-chip aria-pressed="false" class="cursor-pointer rounded-lg border border-stone-200 bg-stone-50 px-3 py-1.5 text-xs text-stone-600 transition-colors hover:bg-stone-100">Pack soportes físicos QR (60 €)</button>
-          <button type="button" data-extra-chip aria-pressed="false" class="cursor-pointer rounded-lg border border-stone-200 bg-stone-50 px-3 py-1.5 text-xs text-stone-600 transition-colors hover:bg-stone-100">Sesión fotográfica extra (40 €)</button>
+          <button type="button" data-extra-chip aria-pressed="false" class="cursor-pointer rounded-lg border border-stone-200 bg-stone-50 px-3 py-1.5 text-left text-xs text-stone-600 transition-colors hover:bg-stone-100">Retoque y optimización de tus fotos (40 €)</button>
+          <button type="button" data-extra-chip aria-pressed="false" class="cursor-pointer rounded-lg border border-stone-200 bg-stone-50 px-3 py-1.5 text-left text-xs text-stone-600 transition-colors hover:bg-stone-100">Fotografía profesional presencial (desde 120 €)</button>
           <button type="button" data-extra-chip aria-pressed="false" class="cursor-pointer rounded-lg border border-stone-200 bg-stone-50 px-3 py-1.5 text-xs text-stone-600 transition-colors hover:bg-stone-100">Campaña Google Ads local (150 €)</button>
-          <button type="button" data-extra-chip aria-pressed="false" class="cursor-pointer rounded-lg border border-stone-200 bg-stone-50 px-3 py-1.5 text-xs text-stone-600 transition-colors hover:bg-stone-100">Bolsa de horas desarrollo (30 €/h)</button>
+          <button type="button" data-extra-chip="medida" aria-pressed="false" class="cursor-pointer rounded-lg border border-stone-200 bg-stone-50 px-3 py-1.5 text-xs text-stone-600 transition-colors hover:bg-stone-100">Funcionalidad a medida (A consultar)</button>
+          <button type="button" data-extra-chip aria-pressed="false" class="cursor-pointer rounded-lg border border-stone-200 bg-stone-50 px-3 py-1.5 text-xs text-stone-600 transition-colors hover:bg-stone-100">Modo claro y modo oscuro (15 €)</button>
         </div>
         <input type="text" id="input-idiomas" placeholder="¿Qué idiomas necesitas? (ej. Inglés, Francés...)" class="mt-2 hidden w-full rounded-lg border border-stone-200 bg-white px-3 py-2 text-sm text-stone-800 outline-none placeholder:text-stone-400 focus:outline-none focus:ring-0 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100">
+        <textarea id="input-medida" data-medida-input rows="3" placeholder="Cuéntanos qué necesitas (ej: integración con sistema de reservas, carta interactiva especial, etc.)..." class="mt-2 hidden w-full resize-y rounded-xl border border-stone-200 bg-white px-3 py-2 text-sm text-stone-800 outline-none placeholder:text-stone-400 focus:outline-none focus:ring-0 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100"></textarea>
         <div class="mt-4 flex items-center justify-between gap-3">
           <button type="button" id="interest-skip" class="text-sm font-medium text-stone-500 transition-colors hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100"><span class="underline decoration-stone-500 underline-offset-4 dark:decoration-stone-400">Omitir extras</span></button>
           <button type="button" id="interest-continue" class="rounded-full bg-stone-900 px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-stone-800 dark:bg-stone-100 dark:text-stone-900 dark:hover:bg-white">Continuar →</button>
@@ -1397,6 +1418,8 @@
       var chipOn = ['bg-stone-900', 'border-stone-900', 'text-white', 'font-medium'];
 
       var idiomaInput = document.getElementById('input-idiomas');
+      var medidaText = '';
+      var medidaCard = document.querySelector('[data-extra="medida"]');
 
       function syncIdiomaInput(clear) {
         var chip = extrasWrap.querySelector('[data-extra-chip="idioma"]');
@@ -1405,16 +1428,29 @@
         if (!on && clear) idiomaInput.value = '';
       }
 
+      function syncMedidaInput(clear) {
+        var chip = extrasWrap.querySelector('[data-extra-chip="medida"]');
+        var on = chip && chip.getAttribute('aria-pressed') === 'true';
+        if (medidaCard) medidaCard.setAttribute('aria-pressed', on ? 'true' : 'false');
+        document.querySelectorAll('[data-medida-input]').forEach(function (field) {
+          field.classList.toggle('hidden', !on);
+          if (!on && clear) field.value = '';
+        });
+        if (!on && clear) medidaText = '';
+      }
+
       function setExtraChip(chip, on) {
         chip.setAttribute('aria-pressed', on ? 'true' : 'false');
         chipOff.forEach(function (cls) { chip.classList.toggle(cls, !on); });
         chipOn.forEach(function (cls) { chip.classList.toggle(cls, on); });
         if (chip.getAttribute('data-extra-chip') === 'idioma') syncIdiomaInput(false);
+        if (chip.getAttribute('data-extra-chip') === 'medida') syncMedidaInput(false);
       }
 
       function resetExtraChips() {
         extraChips.forEach(function (chip) { setExtraChip(chip, false); });
         syncIdiomaInput(true);
+        syncMedidaInput(true);
       }
 
       function selectedExtraLabels() {
@@ -1426,6 +1462,11 @@
             labels.push(text ? 'Idiomas adicionales (' + text + ')' : 'Idiomas adicionales');
             return;
           }
+          if (chip.getAttribute('data-extra-chip') === 'medida') {
+            var note = medidaText.trim();
+            labels.push(note ? 'Funcionalidad a medida: ' + note : 'Funcionalidad a medida (a consultar)');
+            return;
+          }
           labels.push(chip.textContent.trim());
         });
         return labels;
@@ -1434,6 +1475,21 @@
       extraChips.forEach(function (chip) {
         chip.addEventListener('click', function () {
           setExtraChip(chip, chip.getAttribute('aria-pressed') !== 'true');
+        });
+      });
+      if (medidaCard) {
+        medidaCard.addEventListener('click', function (event) {
+          if (event.target.closest('[data-extra-info], [data-extra-panel], [data-medida-input]')) return;
+          var chip = extrasWrap.querySelector('[data-extra-chip="medida"]');
+          if (chip) setExtraChip(chip, chip.getAttribute('aria-pressed') !== 'true');
+        });
+      }
+      document.querySelectorAll('[data-medida-input]').forEach(function (field) {
+        field.addEventListener('input', function () {
+          medidaText = field.value;
+          document.querySelectorAll('[data-medida-input]').forEach(function (other) {
+            if (other !== field) other.value = field.value;
+          });
         });
       });
       var errorEl = document.getElementById('interest-error');
@@ -1640,6 +1696,19 @@
           if (kind === 'horas') {
             label = qty === 1 ? '1 Hora de desarrollo' : qty + ' Horas de desarrollo';
           }
+          if (kind === 'medida') {
+            var note = medidaText.trim();
+            return {
+              label: note ? 'Funcionalidad a medida: ' + note : 'Funcionalidad a medida',
+              price: 0,
+              suffix: '',
+              consult: true
+            };
+          }
+          var consult = button.getAttribute('data-consult');
+          if (consult) {
+            return { label: label, price: 0, suffix: '', consult: true, consultLabel: consult };
+          }
           return {
             label: label,
             price: unit * qty,
@@ -1669,7 +1738,8 @@
         paintChoice(webEl, web.name, web.name + ' (' + euroIva(web.price) + ')');
         paintChoice(maintEl, maint.name, maint.name + ' (' + euroIva(maint.price, '/mes') + ')');
         extrasEl.innerHTML = extras.map(function (item) {
-          return '<p>+ ' + item.label + ' (' + euroIva(item.price, item.suffix) + ')</p>';
+          var cost = item.consult ? (item.consultLabel || 'a consultar') : euroIva(item.price, item.suffix);
+          return '<p>+ ' + item.label + ' (' + cost + ')</p>';
         }).join('');
         setupEl.textContent = 'Total montaje inicial: ' + euroIva(setup) + ' (50% tras aprobar tu demo interactiva: ' + euroIva(half) + ' · 50% al publicar tu web definitiva: ' + euroIva(half) + ')';
         monthEl.textContent = 'Mantenimiento mensual: ' + (maint.name ? euroIva(maint.price, '/mes') : '—');
@@ -1693,7 +1763,9 @@
         var setup = web.price + extras.reduce(function (sum, item) { return sum + item.price; }, 0);
         var half = Math.round(setup / 2);
         var extraText = extras.length
-          ? extras.map(function (item) { return item.label + ' (' + euroIva(item.price, item.suffix) + ')'; }).join(', ')
+          ? extras.map(function (item) {
+              return item.consult ? item.label + ' (' + (item.consultLabel || 'a consultar') + ')' : item.label + ' (' + euroIva(item.price, item.suffix) + ')';
+            }).join(', ')
           : 'Ninguno';
         return [
           'Hola, soy de ' + name + ' en ' + zone + '. He configurado este pack en la web:',
