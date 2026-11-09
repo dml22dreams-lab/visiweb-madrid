@@ -2,7 +2,7 @@
 <html lang="es" class="scroll-smooth scroll-pt-20 overflow-x-clip">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
   <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
   <title>VisiWeb Madrid | Digitalización y Webs para Bares y Restaurantes</title>
   <meta name="description" content="VisiWeb Madrid (a veces buscado como Bisiweb o Visi Web): diseño web profesional, cartas digitales interactivas con alérgenos y reservas para hostelería en Alcobendas y Madrid.">
@@ -197,6 +197,7 @@
       padding: 0;
       transform: none;
       flex-shrink: 0;
+      transition: background-color .3s ease;
     }
     @media (max-width: 767px) {
       #planes > article,
@@ -616,87 +617,61 @@
         <p class="mx-auto mt-3 max-w-xl hyphens-auto break-words text-stone-500">Sin tecnicismos raros ni cobros sorpresa. Directo al grano.</p>
       </div>
 
-      <div class="mt-8 md:hidden">
-        <div id="servicios-slider" class="flex overflow-x-auto snap-x snap-mandatory gap-4 pb-4 px-4 no-scrollbar -mx-4">
-        <article class="w-[85%] min-w-[85%] shrink-0 snap-center rounded-3xl p-6 bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 shadow-sm">
-          <div class="mb-5 w-fit rounded-2xl bg-[#F3EDE4] p-3 dark:bg-stone-800">
-            <svg class="h-7 w-7 text-[#8B5E34] dark:text-[#E6D5C3]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-              <rect x="7" y="2.5" width="10" height="19" rx="2"></rect>
-              <path stroke-linecap="round" d="M10 6.5h4M10 10h4M10 13.5h2.5"></path>
-            </svg>
+      <div id="servicios-slider" class="mx-auto mt-8 flex max-w-4xl snap-x snap-mandatory items-stretch gap-4 overflow-x-auto px-4 pb-2 no-scrollbar -mx-4 md:mx-auto md:grid md:grid-cols-2 md:gap-5 md:overflow-visible md:px-4">
+        <article class="flex h-full w-[82vw] max-w-[320px] shrink-0 snap-center flex-col justify-between rounded-3xl border border-stone-200/70 bg-white p-6 shadow-sm transition-shadow hover:shadow-md dark:border-stone-700 dark:bg-stone-900 md:w-auto md:max-w-none">
+          <div class="mb-3 flex items-center justify-between gap-3">
+            <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-stone-100 text-stone-700 dark:bg-stone-800 dark:text-stone-200">
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="5" height="5" x="3" y="3" rx="1"/><rect width="5" height="5" x="16" y="3" rx="1"/><rect width="5" height="5" x="3" y="16" rx="1"/><path d="M21 16h-3a2 2 0 0 0-2 2v3"/><path d="M21 21v.01"/><path d="M12 7v3a2 2 0 0 1-2 2H7"/><path d="M3 12h.01"/><path d="M12 3h.01"/><path d="M12 16v.01"/><path d="M16 12h1"/><path d="M21 12v.01"/><path d="M12 21v-1"/></svg>
+            </span>
+            <span class="rounded-full bg-emerald-50 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-emerald-800 dark:bg-emerald-950/50 dark:text-emerald-300">⚡ Carga en 0,8<span class="lowercase">s</span></span>
           </div>
-          <h3 class="text-xl font-bold text-stone-900 dark:text-stone-100">Carta Digital Instantánea</h3>
-          <p class="mt-3 text-sm leading-relaxed text-stone-600 dark:text-stone-400">
-            Olvídate de PDFs de 20 megas que nadie puede leer. Una carta adaptada a la pantalla de cualquier móvil que carga en menos de un segundo con código QR.
-          </p>
-        </article>
-        <article class="w-[85%] min-w-[85%] shrink-0 snap-center rounded-3xl p-6 bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 shadow-sm">
-          <div class="mb-5 w-fit rounded-2xl bg-[#F3EDE4] p-3 dark:bg-stone-800">
-            <svg class="h-7 w-7 text-[#8B5E34] dark:text-[#E6D5C3]" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <path d="M12 2.2a6.8 6.8 0 0 0-6.8 6.8c0 5.1 6.8 12.8 6.8 12.8s6.8-7.7 6.8-12.8A6.8 6.8 0 0 0 12 2.2zm0 9.2a2.4 2.4 0 1 1 0-4.8 2.4 2.4 0 0 1 0 4.8z"></path>
-            </svg>
+          <div>
+            <h3 class="mb-2 font-serif text-lg font-semibold leading-snug text-stone-900 dark:text-stone-100">Carta web sin PDF ni zoom</h3>
+            <p class="text-[13px] leading-relaxed text-stone-600 dark:text-stone-400">Adiós a descargar archivos pesados de 20 MB en la mesa. Tu carta abre al instante en cualquier teléfono con fotos, precios y alérgenos limpios.</p>
           </div>
-          <h3 class="text-xl font-bold text-stone-900 dark:text-stone-100">Posicionamiento en Google Maps</h3>
-          <p class="mt-3 text-sm leading-relaxed text-stone-600 dark:text-stone-400">
-            Dejamos tu ficha de Google completa: categorías, fotos al día, horario y el enlace de la carta.
-          </p>
         </article>
-        <article class="w-[85%] min-w-[85%] shrink-0 snap-center rounded-3xl p-6 bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 shadow-sm">
-          <div class="mb-5 w-fit rounded-2xl bg-[#F3EDE4] p-3 dark:bg-stone-800">
-            <svg class="h-7 w-7 text-[#8B5E34] dark:text-[#E6D5C3]" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <path d="M7.4 3.2c.4-.4 1-.5 1.5-.3l2.2.9c.5.2.8.7.8 1.2l-.1 2.1a1.3 1.3 0 0 1-.7 1.1l-1.2.6a10.6 10.6 0 0 0 5.1 5.1l.6-1.2c.2-.4.6-.6 1.1-.7l2.1-.1c.5 0 1 .3 1.2.8l.9 2.2c.2.5.1 1.1-.3 1.5l-1.3 1.3c-.4.4-1 .6-1.6.5C10.8 18.6 5.4 13.2 4.6 6.1c-.1-.6.1-1.2.5-1.6L7.4 3.2z"></path>
-            </svg>
+        <article class="flex h-full w-[82vw] max-w-[320px] shrink-0 snap-center flex-col justify-between rounded-3xl border border-stone-200/70 bg-white p-6 shadow-sm transition-shadow hover:shadow-md dark:border-stone-700 dark:bg-stone-900 md:w-auto md:max-w-none">
+          <div class="mb-3 flex items-center justify-between gap-3">
+            <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-stone-100 text-stone-700 dark:bg-stone-800 dark:text-stone-200">
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>
+            </span>
+            <span class="rounded-full bg-amber-50 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-amber-800 dark:bg-amber-950/40 dark:text-amber-300">📍 Clientes cerca</span>
           </div>
-          <h3 class="text-xl font-bold text-stone-900 dark:text-stone-100">Reservas a un solo toque</h3>
-          <p class="mt-3 text-sm leading-relaxed text-stone-600 dark:text-stone-400">
-            Botones directos para llamar al bar o enviar un WhatsApp con un clic. Menos pasos para el cliente, más mesas reservadas para ti.
-          </p>
+          <div>
+            <h3 class="mb-2 font-serif text-lg font-semibold leading-snug text-stone-900 dark:text-stone-100">Ficha de Google optimizada</h3>
+            <p class="text-[13px] leading-relaxed text-stone-600 dark:text-stone-400">Enlazamos tu carta oficial, ordenamos horarios y destacamos tus platos para que te elijan primero cuando busquen dónde comer en tu zona.</p>
+          </div>
         </article>
-        </div>
-        <div class="flex items-center justify-center gap-2" role="tablist" aria-label="Servicios">
-          <button type="button" data-servicio-dot="0" aria-label="Carta digital" class="h-2 w-2 rounded-full bg-stone-800 dark:bg-stone-100"></button>
-          <button type="button" data-servicio-dot="1" aria-label="Google Maps" class="h-2 w-2 rounded-full bg-stone-300 dark:bg-stone-600"></button>
-          <button type="button" data-servicio-dot="2" aria-label="Reservas" class="h-2 w-2 rounded-full bg-stone-300 dark:bg-stone-600"></button>
-        </div>
+        <article class="flex h-full w-[82vw] max-w-[320px] shrink-0 snap-center flex-col justify-between rounded-3xl border border-stone-200/70 bg-white p-6 shadow-sm transition-shadow hover:shadow-md dark:border-stone-700 dark:bg-stone-900 md:w-auto md:max-w-none">
+          <div class="mb-3 flex items-center justify-between gap-3">
+            <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-stone-100 text-stone-700 dark:bg-stone-800 dark:text-stone-200">
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>
+            </span>
+            <span class="rounded-full bg-emerald-50 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-emerald-800 dark:bg-emerald-950/50 dark:text-emerald-300">💬 Cero comisiones</span>
+          </div>
+          <div>
+            <h3 class="mb-2 font-serif text-lg font-semibold leading-snug text-stone-900 dark:text-stone-100">Reservas directas por WhatsApp</h3>
+            <p class="text-[13px] leading-relaxed text-stone-600 dark:text-stone-400">Un solo toque para llamar o reservar por chat. Trato directo con tu cliente, sin pagar porcentajes a plataformas intermediarias.</p>
+          </div>
+        </article>
+        <article class="flex h-full w-[82vw] max-w-[320px] shrink-0 snap-center flex-col justify-between rounded-3xl border border-stone-200/70 bg-white p-6 shadow-sm transition-shadow hover:shadow-md dark:border-stone-700 dark:bg-stone-900 md:w-auto md:max-w-none">
+          <div class="mb-3 flex items-center justify-between gap-3">
+            <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-stone-100 text-stone-700 dark:bg-stone-800 dark:text-stone-200">
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
+            </span>
+            <span class="rounded-full bg-amber-50 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-amber-800 dark:bg-amber-950/40 dark:text-amber-300">✏️ En el día</span>
+          </div>
+          <div>
+            <h3 class="mb-2 font-serif text-lg font-semibold leading-snug text-stone-900 dark:text-stone-100">Precios y platos al instante</h3>
+            <p class="text-[13px] leading-relaxed text-stone-600 dark:text-stone-400">¿Cambia el menú del día o se agota una ración? Se actualiza en minutos sin volver a imprimir peanas ni cambiar QRs físicos.</p>
+          </div>
+        </article>
       </div>
-
-      <div class="relative mx-auto hidden h-[320px] w-full max-w-5xl items-center justify-center md:flex">
-        <div class="svc-stack relative w-[320px] lg:w-[350px]">
-        <article class="svc-card svc-izq rounded-3xl border border-stone-200 bg-white p-7 dark:border-stone-800 dark:bg-stone-900">
-          <div class="mb-5 w-fit rounded-2xl bg-[#F3EDE4] p-3 dark:bg-stone-800">
-            <svg class="h-7 w-7 text-[#8B5E34] dark:text-[#E6D5C3]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-              <rect x="7" y="2.5" width="10" height="19" rx="2"></rect>
-              <path stroke-linecap="round" d="M10 6.5h4M10 10h4M10 13.5h2.5"></path>
-            </svg>
-          </div>
-          <h3 class="text-xl font-bold text-stone-900 dark:text-stone-100">Carta Digital Instantánea</h3>
-          <p class="mt-3 text-sm leading-relaxed text-stone-600 dark:text-stone-400">
-            Olvídate de PDFs de 20 megas que nadie puede leer. Una carta adaptada a la pantalla de cualquier móvil que carga en menos de un segundo con código QR.
-          </p>
-        </article>
-        <article class="svc-card svc-front relative z-20 rounded-3xl border border-stone-200 bg-white p-7 shadow-xl dark:border-stone-800 dark:bg-stone-900">
-          <div class="mb-5 w-fit rounded-2xl bg-[#F3EDE4] p-3 dark:bg-stone-800">
-            <svg class="h-7 w-7 text-[#8B5E34] dark:text-[#E6D5C3]" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <path d="M12 2.2a6.8 6.8 0 0 0-6.8 6.8c0 5.1 6.8 12.8 6.8 12.8s6.8-7.7 6.8-12.8A6.8 6.8 0 0 0 12 2.2zm0 9.2a2.4 2.4 0 1 1 0-4.8 2.4 2.4 0 0 1 0 4.8z"></path>
-            </svg>
-          </div>
-          <h3 class="text-xl font-bold text-stone-900 dark:text-stone-100">Posicionamiento en Google Maps</h3>
-          <p class="mt-3 text-sm leading-relaxed text-stone-600 dark:text-stone-400">
-            Dejamos tu ficha de Google completa: categorías, fotos al día, horario y el enlace de la carta.
-          </p>
-        </article>
-        <article class="svc-card svc-der rounded-3xl border border-stone-200 bg-white p-7 dark:border-stone-800 dark:bg-stone-900">
-          <div class="mb-5 w-fit rounded-2xl bg-[#F3EDE4] p-3 dark:bg-stone-800">
-            <svg class="h-7 w-7 text-[#8B5E34] dark:text-[#E6D5C3]" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <path d="M7.4 3.2c.4-.4 1-.5 1.5-.3l2.2.9c.5.2.8.7.8 1.2l-.1 2.1a1.3 1.3 0 0 1-.7 1.1l-1.2.6a10.6 10.6 0 0 0 5.1 5.1l.6-1.2c.2-.4.6-.6 1.1-.7l2.1-.1c.5 0 1 .3 1.2.8l.9 2.2c.2.5.1 1.1-.3 1.5l-1.3 1.3c-.4.4-1 .6-1.6.5C10.8 18.6 5.4 13.2 4.6 6.1c-.1-.6.1-1.2.5-1.6L7.4 3.2z"></path>
-            </svg>
-          </div>
-          <h3 class="text-xl font-bold text-stone-900 dark:text-stone-100">Reservas a un solo toque</h3>
-          <p class="mt-3 text-sm leading-relaxed text-stone-600 dark:text-stone-400">
-            Botones directos para llamar al bar o enviar un WhatsApp con un clic. Menos pasos para el cliente, más mesas reservadas para ti.
-          </p>
-        </article>
-        </div>
+      <div class="mt-3 flex items-center justify-center gap-2 md:hidden" role="tablist" aria-label="Servicios">
+        <button type="button" data-servicio-dot="0" aria-label="Carta web" aria-current="true" class="h-2 w-2 rounded-full bg-stone-800 transition-colors duration-300 dark:bg-stone-100"></button>
+        <button type="button" data-servicio-dot="1" aria-label="Ficha de Google" class="h-2 w-2 rounded-full bg-stone-300 transition-colors duration-300 dark:bg-stone-600"></button>
+        <button type="button" data-servicio-dot="2" aria-label="Reservas" class="h-2 w-2 rounded-full bg-stone-300 transition-colors duration-300 dark:bg-stone-600"></button>
+        <button type="button" data-servicio-dot="3" aria-label="Carta al día" class="h-2 w-2 rounded-full bg-stone-300 transition-colors duration-300 dark:bg-stone-600"></button>
       </div>
     </div>
   </section>
@@ -746,8 +721,8 @@
     </aside>
 
     <div class="reveal mx-auto max-w-3xl text-center">
-      <p class="mb-3 text-xs font-semibold uppercase tracking-widest text-[#8B5E34] dark:text-[#E6D5C3]">Planes y tarifas</p>
-      <h2 class="mb-12 break-words text-3xl font-bold leading-tight tracking-tight text-stone-900 dark:text-stone-100 sm:mb-16 sm:text-4xl md:text-5xl">Planes transparentes pensados para hostelería</h2>
+      <p class="text-[11px] font-bold uppercase tracking-wider text-amber-800 dark:text-amber-300">Planes y tarifas</p>
+      <h2 class="mb-6 mt-2 font-serif text-2xl font-bold leading-tight text-stone-900 dark:text-stone-100 sm:mb-8 sm:text-3xl">Precios claros, sin sorpresas</h2>
     </div>
 
     <div id="plan-tabs" class="mb-6 grid grid-cols-3 gap-1 rounded-2xl bg-stone-200/80 p-1 dark:bg-stone-800/80 sm:mb-8 md:hidden" role="tablist" aria-label="Planes">
@@ -1206,9 +1181,9 @@
     </div>
   </dialog>
 
-  <div id="interest-modal" class="pointer-events-none fixed inset-0 z-[90] hidden items-center justify-center p-3 sm:p-4" aria-hidden="true">
+  <div id="interest-modal" class="pointer-events-none fixed inset-0 z-[90] hidden items-start justify-center overflow-y-auto overscroll-contain px-4 pt-8 sm:items-center sm:pt-0" aria-hidden="true">
     <button type="button" id="interest-backdrop" class="absolute inset-0 bg-stone-950/60 opacity-0 transition-opacity duration-300" aria-label="Cerrar"></button>
-    <form id="interest-form" novalidate role="dialog" aria-modal="true" aria-labelledby="interest-title" class="relative max-h-[calc(100dvh-1.5rem)] w-full max-w-md overflow-y-auto overscroll-contain rounded-2xl border border-stone-200 bg-white p-4 opacity-0 shadow-lg transition duration-300 dark:border-stone-800 dark:bg-stone-950 sm:p-5">
+    <form id="interest-form" novalidate role="dialog" aria-modal="true" aria-labelledby="interest-title" class="relative max-h-[88vh] w-full max-w-md overflow-y-auto overscroll-contain rounded-2xl border border-stone-200 bg-white p-5 opacity-0 shadow-lg transition duration-300 dark:border-stone-800 dark:bg-stone-950 sm:p-6">
       <div class="mb-2 flex items-center gap-2">
         <button type="button" id="interest-back" class="hidden shrink-0 text-xs font-medium text-stone-500 transition-colors hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100">← Volver</button>
         <span id="interest-back-sep" class="hidden h-3 w-px shrink-0 self-center bg-stone-300 dark:bg-stone-600" aria-hidden="true"></span>
@@ -1257,13 +1232,17 @@
           <button type="button" id="interest-continue" class="rounded-full bg-stone-900 px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-stone-800 dark:bg-stone-100 dark:text-stone-900 dark:hover:bg-white">Continuar →</button>
         </div>
       </div>
-      <div id="interest-contact-wrap" data-wizard-step="3" class="hidden">
-        <label id="interest-name-label" class="block text-sm font-normal text-stone-800 dark:text-stone-200" for="interest-name">Nombre de tu bar o local</label>
-        <input id="interest-name" name="nombre" required autocomplete="off" placeholder="Nombre de tu bar o local" class="mt-1.5 w-full rounded-xl border border-stone-300 bg-white px-3 py-2.5 text-base text-stone-900 outline-none focus:border-stone-300 focus:outline-none focus:ring-0 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100 dark:focus:border-stone-700">
-        <label id="interest-zone-label" class="mt-3 block text-sm font-normal text-stone-800 dark:text-stone-200" for="interest-zone">Zona o municipio (ej. Alcobendas)</label>
-        <input id="interest-zone" name="zona" required autocomplete="off" placeholder="Zona o municipio (ej. Alcobendas)" class="mt-1.5 w-full rounded-xl border border-stone-300 bg-white px-3 py-2.5 text-base text-stone-900 outline-none focus:border-stone-300 focus:outline-none focus:ring-0 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100 dark:focus:border-stone-700">
-        <p id="interest-error" class="mt-3 hidden text-sm font-semibold text-red-600 dark:text-red-400" role="alert"></p>
-        <button type="button" id="interest-to-summary" class="mt-4 w-full rounded-full bg-stone-900 px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-stone-800 dark:bg-stone-100 dark:text-stone-900 dark:hover:bg-white">Continuar →</button>
+      <div id="interest-contact-wrap" data-wizard-step="3" class="hidden space-y-3.5">
+        <div>
+          <label id="interest-name-label" class="block text-sm font-normal text-stone-800 dark:text-stone-200" for="interest-name">Nombre de tu bar o local</label>
+          <input id="interest-name" name="nombre" required autocomplete="off" placeholder="Nombre de tu bar o local" class="mt-1.5 w-full rounded-xl border border-stone-300 bg-white px-3 py-2.5 text-base text-stone-900 outline-none focus:border-stone-300 focus:outline-none focus:ring-0 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100 dark:focus:border-stone-700">
+        </div>
+        <div>
+          <label id="interest-zone-label" class="block text-sm font-normal text-stone-800 dark:text-stone-200" for="interest-zone">Zona o municipio (ej. Alcobendas)</label>
+          <input id="interest-zone" name="zona" required autocomplete="off" placeholder="Zona o municipio (ej. Alcobendas)" class="mt-1.5 w-full rounded-xl border border-stone-300 bg-white px-3 py-2.5 text-base text-stone-900 outline-none focus:border-stone-300 focus:outline-none focus:ring-0 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100 dark:focus:border-stone-700">
+        </div>
+        <p id="interest-error" class="hidden text-sm font-semibold text-red-600 dark:text-red-400" role="alert"></p>
+        <button type="button" id="interest-to-summary" class="w-full rounded-full bg-stone-900 px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-stone-800 dark:bg-stone-100 dark:text-stone-900 dark:hover:bg-white">Continuar →</button>
       </div>
       <div id="interest-summary-wrap" data-wizard-step="4" class="hidden">
         <div id="interest-summary" class="rounded-xl bg-stone-50 px-3 py-2.5 text-xs leading-relaxed text-stone-700 dark:bg-stone-900 dark:text-stone-300"></div>
@@ -1359,6 +1338,30 @@
       var form = document.getElementById('interest-form');
       var nameInput = document.getElementById('interest-name');
       var zoneInput = document.getElementById('interest-zone');
+
+      function focusField(input) {
+        if (!input) return;
+        var winX = window.scrollX;
+        var winY = window.scrollY;
+        var overlayTop = modal.scrollTop;
+        input.focus({ preventScroll: true });
+        requestAnimationFrame(function () {
+          window.scrollTo(winX, winY);
+          modal.scrollTop = overlayTop;
+        });
+      }
+
+      [nameInput, zoneInput].forEach(function (input) {
+        input.addEventListener('focus', function () {
+          var winX = window.scrollX;
+          var winY = window.scrollY;
+          var overlayTop = modal.scrollTop;
+          requestAnimationFrame(function () {
+            window.scrollTo(winX, winY);
+            modal.scrollTop = overlayTop;
+          });
+        });
+      });
       var zoneLabel = document.getElementById('interest-zone-label');
       var planLabel = document.getElementById('interest-plan');
       var titleEl = document.getElementById('interest-title');
@@ -1521,7 +1524,7 @@
         progressBar.style.width = (step * 100 / 4) + '%';
         setSubtitle(step === 2 ? 'Opcional. Puedes añadirlo ahora o solicitarlo más adelante.' : '');
         if (step === 4) renderSummary();
-        if (step === 3) nameInput.focus();
+        if (step === 3) focusField(nameInput);
         syncNext();
       }
 
@@ -1582,7 +1585,7 @@
           form.classList.add('opacity-100');
           form.classList.remove('opacity-0');
         });
-        if (!showMaint) nameInput.focus();
+        if (!showMaint) focusField(nameInput);
       }
 
       function closeInterest() {
@@ -1860,7 +1863,7 @@
             : !name
               ? 'Indica el nombre de tu local.'
               : 'Indica la zona.');
-          (!name ? nameInput : zoneInput).focus();
+          focusField(!name ? nameInput : zoneInput);
           return;
         }
         hideInterestError();
@@ -1903,7 +1906,7 @@
             : !name
               ? 'Indica el nombre de tu local.'
               : 'Indica la zona.');
-          (!name ? nameInput : zoneInput).focus();
+          focusField(!name ? nameInput : zoneInput);
           return;
         }
         if (mode !== 'pack' && !currentPlan) return;
@@ -2128,8 +2131,8 @@
         dots.forEach(function (dot, index) {
           var on = index === active;
           dot.className = on
-            ? 'h-2 w-2 rounded-full bg-stone-800 dark:bg-stone-100'
-            : 'h-2 w-2 rounded-full bg-stone-300 dark:bg-stone-600';
+            ? 'h-2 w-2 rounded-full bg-stone-800 transition-colors duration-300 dark:bg-stone-100'
+            : 'h-2 w-2 rounded-full bg-stone-300 transition-colors duration-300 dark:bg-stone-600';
           if (on) dot.setAttribute('aria-current', 'true');
           else dot.removeAttribute('aria-current');
         });
