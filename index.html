@@ -132,9 +132,8 @@
     [data-wizard-step].is-active { animation: wizard-in .28s ease; }
     [data-wizard-step].is-back { animation: wizard-back .28s ease; }
     @media (max-width: 639px) {
-      #interest-form:focus-within:not(:has(input:not([type="radio"]):focus, textarea:focus)) {
-        --tw-translate-y: 0px;
-        transform: translateY(0);
+      #interest-form.is-raised {
+        transform: translateY(-2.5rem);
       }
     }
     #interest-form input:not([type="radio"]):focus {
@@ -1207,7 +1206,7 @@
 
   <div id="interest-modal" class="pointer-events-none fixed inset-0 z-[90] hidden min-h-screen items-center justify-center overflow-y-auto overscroll-contain px-4 pt-4 pb-4" aria-hidden="true">
     <button type="button" id="interest-backdrop" class="absolute inset-0 bg-stone-950/60 opacity-0 transition-opacity duration-300" aria-label="Cerrar"></button>
-    <form id="interest-form" novalidate role="dialog" aria-modal="true" aria-labelledby="interest-title" class="relative max-h-[90dvh] w-full max-w-md transform overflow-y-auto overscroll-contain rounded-2xl border border-stone-200 bg-white p-5 opacity-0 shadow-lg transition-transform duration-300 ease-out delay-150 focus-within:delay-0 focus-within:-translate-y-10 sm:focus-within:translate-y-0 dark:border-stone-800 dark:bg-stone-950 sm:p-6">
+    <form id="interest-form" novalidate role="dialog" aria-modal="true" aria-labelledby="interest-title" class="relative max-h-[90dvh] w-full max-w-md transform overflow-y-auto overscroll-contain rounded-2xl border border-stone-200 bg-white p-5 opacity-0 shadow-lg transition-transform duration-300 ease-out dark:border-stone-800 dark:bg-stone-950 sm:p-6 sm:translate-y-0">
       <div class="mb-2 flex items-center gap-2">
         <button type="button" id="interest-back" class="hidden shrink-0 text-xs font-medium text-stone-500 transition-colors hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100">← Volver</button>
         <span id="interest-back-sep" class="hidden h-3 w-px shrink-0 self-center bg-stone-300 dark:bg-stone-600" aria-hidden="true"></span>
@@ -1365,6 +1364,24 @@
       var form = document.getElementById('interest-form');
       var nameInput = document.getElementById('interest-name');
       var zoneInput = document.getElementById('interest-zone');
+      var raiseTimer = null;
+      function isTextField(el) {
+        if (!el || !el.tagName) return false;
+        var tag = el.tagName.toLowerCase();
+        if (tag === 'textarea') return true;
+        return tag === 'input' && el.type !== 'radio' && el.type !== 'checkbox' && el.type !== 'button' && el.type !== 'submit';
+      }
+      form.addEventListener('focusin', function (e) {
+        if (!isTextField(e.target)) return;
+        clearTimeout(raiseTimer);
+        form.classList.add('is-raised');
+      });
+      form.addEventListener('focusout', function () {
+        clearTimeout(raiseTimer);
+        raiseTimer = setTimeout(function () {
+          if (!isTextField(form.querySelector(':focus'))) form.classList.remove('is-raised');
+        }, 300);
+      });
 
       function focusField(input) {
         if (!input) return;
@@ -1649,6 +1666,8 @@
       }
 
       function closeInterest() {
+        clearTimeout(raiseTimer);
+        form.classList.remove('is-raised');
         backdrop.classList.remove('opacity-100');
         backdrop.classList.add('opacity-0');
         form.classList.remove('opacity-100');
