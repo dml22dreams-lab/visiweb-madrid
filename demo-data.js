@@ -265,7 +265,7 @@ window.VISIWEB_DEMO = (function () {
       items: [
         {
           id: 'bravas',
-          name: { es: 'Patatas bravas caseras con alioli', en: 'Homemade patatas bravas with aioli' },
+          name: { es: 'Patatas bravas', en: 'Patatas bravas' },
           desc: {
             es: 'Patata frita en dos tiempos, salsa brava de la casa y alioli montado al mortero.',
             en: 'Double-fried potatoes, our house brava sauce and aioli pounded in a mortar.'
@@ -280,7 +280,7 @@ window.VISIWEB_DEMO = (function () {
         },
         {
           id: 'croquetas',
-          name: { es: 'Croquetas cremosas de jamón ibérico', en: 'Creamy Ibérico ham croquettes' },
+          name: { es: 'Croquetas de jamón', en: 'Ham croquettes' },
           desc: {
             es: 'Seis unidades de bechamel fundente con jamón picado a cuchillo y rebozado crujiente.',
             en: 'Six pieces of silky béchamel with hand-cut ham in a crisp coating.'
@@ -330,7 +330,7 @@ window.VISIWEB_DEMO = (function () {
       items: [
         {
           id: 'tosta-solomillo',
-          name: { es: 'Tosta de solomillo con brie', en: 'Beef tenderloin and brie toast' },
+          name: { es: 'Tosta de solomillo', en: 'Tenderloin toast' },
           desc: {
             es: 'Medallones de solomillo a la plancha, brie fundido y cebolla caramelizada.',
             en: 'Griddled tenderloin medallions, melted brie and caramelised onion.'
@@ -406,7 +406,7 @@ window.VISIWEB_DEMO = (function () {
         },
         {
           id: 'postres',
-          name: { es: 'Postre casero o café', en: 'Homemade dessert or coffee' },
+          name: { es: 'Postre o café', en: 'Dessert or coffee' },
           desc: {
             es: 'Flan de huevo, arroz con leche, natillas o fruta de temporada.',
             en: 'Crème caramel, rice pudding, custard or seasonal fruit.'
@@ -464,7 +464,7 @@ window.VISIWEB_DEMO = (function () {
         },
         {
           id: 'rioja',
-          name: { es: 'Copa de Rioja crianza (D.O.)', en: 'Glass of Rioja Crianza (D.O.)' },
+          name: { es: 'Rioja crianza', en: 'Rioja Crianza' },
           desc: {
             es: 'Tempranillo con catorce meses en barrica. Fruta roja madura y final especiado.',
             en: 'Tempranillo aged fourteen months in oak. Ripe red fruit and a spiced finish.'
@@ -479,7 +479,7 @@ window.VISIWEB_DEMO = (function () {
         },
         {
           id: 'ribera',
-          name: { es: 'Copa de Ribera del Duero (D.O.)', en: 'Glass of Ribera del Duero (D.O.)' },
+          name: { es: 'Ribera del Duero', en: 'Ribera del Duero' },
           desc: {
             es: 'Potente y aterciopelado. Nuestro imprescindible con los huevos rotos.',
             en: 'Bold and velvety. Our must-have with the huevos rotos.'
@@ -520,7 +520,7 @@ window.VISIWEB_DEMO = (function () {
       items: [
         {
           id: 'bravas-vegetal',
-          name: { es: 'Patatas bravas con salsa vegetal', en: 'Patatas bravas with vegetable sauce' },
+          name: { es: 'Bravas vegetales', en: 'Vegetable bravas' },
           desc: {
             es: 'Patata frita en dos tiempos y salsa brava de tomate y pimentón, sin huevo ni lácteos.',
             en: 'Double-fried potatoes with a tomato and paprika brava sauce, no egg and no dairy.'
@@ -568,7 +568,7 @@ window.VISIWEB_DEMO = (function () {
         },
         {
           id: 'tosta-aguacate',
-          name: { es: 'Tosta de aguacate y tomate seco', en: 'Avocado and sun-dried tomato toast' },
+          name: { es: 'Tosta de aguacate', en: 'Avocado toast' },
           desc: {
             es: 'Pan de masa madre, aguacate machacado, tomate seco y aceite de oliva.',
             en: 'Sourdough, crushed avocado, sun-dried tomato and olive oil.'
@@ -744,7 +744,8 @@ window.VISIWEB_DEMO = (function () {
       quickActions: 'Acciones rápidas',
       heroEyebrow: 'Alcobendas · Desde 1998',
       heroTitle: 'El sabor de siempre.',
-      heroSubtitle: 'Raciones caseras en el corazón de Alcobendas.',
+      heroSubtitle: 'Raciones y cocina tradicional.',
+      heroKicker: 'Cocina tradicional desde 1998',
       reserve: 'Reservar mesa',
       reserveReady: 'Confirmar mesa',
       bookMissing: 'Faltan apartados por rellenar',
@@ -760,6 +761,9 @@ window.VISIWEB_DEMO = (function () {
       labelAddress: 'Dirección',
       labelToday: 'Horario de hoy',
       labelMenuDay: 'Menú del día',
+      menuDayNote: 'De lunes a viernes a mediodía',
+      menuDayCompact: 'Menú del día (L-V)',
+      hoursShort: 'Horarios',
       closedToday: 'Hoy cerrado',
       allHours: 'Ver todos los horarios',
       menuTitle: 'La carta',
@@ -931,7 +935,8 @@ window.VISIWEB_DEMO = (function () {
       quickActions: 'Quick actions',
       heroEyebrow: 'Alcobendas · Since 1998',
       heroTitle: 'The flavour you remember.',
-      heroSubtitle: 'Homemade sharing plates in the heart of Alcobendas.',
+      heroSubtitle: 'Sharing plates and traditional cooking.',
+      heroKicker: 'Traditional cooking since 1998',
       reserve: 'Book a table',
       reserveReady: 'Confirm table',
       bookMissing: 'Some fields are still empty',
@@ -947,6 +952,9 @@ window.VISIWEB_DEMO = (function () {
       labelAddress: 'Address',
       labelToday: "Today's hours",
       labelMenuDay: 'Set lunch',
+      menuDayNote: 'Weekday lunch, Monday to Friday',
+      menuDayCompact: 'Set lunch (Mon–Fri)',
+      hoursShort: 'Hours',
       closedToday: 'Closed today',
       allHours: 'See all opening hours',
       menuTitle: 'The menu',

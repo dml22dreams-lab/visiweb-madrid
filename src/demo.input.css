@@ -191,7 +191,7 @@
   }
 
   .dish-price {
-    @apply shrink-0 whitespace-nowrap text-right font-serif text-base font-semibold leading-none text-stone-900 dark:text-stone-100;
+    @apply relative -top-1 shrink-0 whitespace-nowrap text-right font-serif text-base font-semibold leading-none text-stone-900 dark:text-stone-100;
     font-variant-numeric: lining-nums tabular-nums;
     font-feature-settings: "lnum" 1, "tnum" 1;
     min-width: 5.5rem;

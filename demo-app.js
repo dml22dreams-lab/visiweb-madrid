@@ -226,9 +226,8 @@
       .items.filter((i) => i.id === 'menu-completo')[0];
     if (menuDay) {
       const price = lang === 'en' ? menuDay.priceEn : menuDay.price;
-      $('#info-menu-price').textContent = price;
       const badge = $('#info-menu-badge');
-      if (badge) badge.textContent = price.replace(/\s/g, '');
+      if (badge) badge.textContent = price;
     }
 
     const tel = 'tel:' + D.business.phone;
@@ -256,7 +255,7 @@
   function renderToday() {
     const node = $('#info-today');
     const today = dayRanges(nowInMadrid().day);
-    node.textContent = today.length ? rangesText(today) : t('closedToday');
+    node.textContent = today.length ? rangesText(today, ' · ') : t('closedToday');
   }
 
   function renderHoursList() {
@@ -292,29 +291,6 @@
     return a.kind === 'intolerance' ? name + ' · ' + t('intolerance') : name;
   }
 
-  function dishWarningLabel(item) {
-    let allergen = false;
-    let intolerance = false;
-    (item.allergens || []).forEach((key) => {
-      const a = D.allergens[key];
-      if (!a) return;
-      if (a.kind === 'intolerance') intolerance = true;
-      else allergen = true;
-    });
-    if (allergen && intolerance) return t('allergensAndIntolerances');
-    if (intolerance) return t('intolerancesInDish');
-    return t('allergensInDish').replace(/:\s*$/, '');
-  }
-
-  function allergenPill(key) {
-    const a = D.allergens[key];
-    const span = el('span', 'pill-allergen');
-    span.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" ' +
-      'stroke-linecap="round" stroke-linejoin="round" class="h-3.5 w-3.5" aria-hidden="true">' + a.icon + '</svg>';
-    span.appendChild(document.createTextNode(allergenName(key)));
-    return span;
-  }
-
   function priceNode(text) {
     const wrap = el('span', 'dish-price');
     wrap.textContent = text;
@@ -322,79 +298,33 @@
   }
 
   function dishNode(item) {
-    const recommended = item.tags.indexOf('recomendado') >= 0;
-    const li = el('li', 'flex items-start justify-between gap-3 border-b border-stone-300 py-2 dark:border-stone-600');
+    const li = el('li', 'border-b border-stone-300 py-2 dark:border-stone-600');
     li.dataset.allergens = item.allergens.join(',');
     const vegan = !!(item.isVegan || item.tags.indexOf('vegano') >= 0);
     const vegetarian = vegan || !!(item.isVegetarian || item.tags.indexOf('vegetariano') >= 0);
     li.dataset.vegetarian = vegetarian ? '1' : '0';
     li.dataset.vegan = vegan ? '1' : '0';
 
-    const body = el('div', 'min-w-0 flex-1 pr-1');
-    if (recommended) {
-      const badge = el('span', 'mb-1 inline-block rounded-full bg-emerald-100 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-emerald-800');
-      badge.textContent = L(D.dietTags.recomendado.name);
-      body.appendChild(badge);
-    }
-
+    const row = el('div', 'flex items-center gap-3');
+    const text = el('div', 'min-w-0 flex-1');
     const heading = el('div', 'flex items-baseline justify-between gap-3');
-    const title = el('h3', 'text-sm font-bold leading-snug text-stone-900 dark:text-stone-100 sm:text-base');
+    const title = el('h3', 'text-sm font-bold leading-tight text-stone-900 dark:text-stone-100 sm:text-base');
     title.textContent = L(item.name);
     heading.append(title, priceNode(lang === 'en' ? item.priceEn : item.price));
-
-    const desc = el('p', 'mt-1 text-xs leading-snug text-stone-500 dark:text-stone-400 sm:text-sm');
+    const desc = el('p', 'mt-0.5 text-xs leading-snug text-stone-500 dark:text-stone-400 sm:text-sm');
     desc.textContent = L(item.desc);
-    body.append(heading, desc);
+    text.append(heading, desc);
     if (item.dietType === 'vegano' || item.dietType === 'vegetariano') {
-      const vegan = item.dietType === 'vegano';
-      const diet = el('span', vegan
-        ? 'mb-2 mt-2 inline-flex items-center rounded-full border border-emerald-950 bg-emerald-900 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-50 dark:border-emerald-800 dark:bg-emerald-950 dark:text-emerald-100'
-        : 'diet-vegetarian mb-2 mt-2 inline-flex items-center rounded-full border px-2.5 py-0.5 text-[11px] font-semibold');
+      const veganDiet = item.dietType === 'vegano';
+      const diet = el('span', veganDiet
+        ? 'mb-1 mt-1.5 inline-flex items-center rounded-full border border-emerald-950 bg-emerald-900 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-50 dark:border-emerald-800 dark:bg-emerald-950 dark:text-emerald-100'
+        : 'diet-vegetarian mb-1 mt-1.5 inline-flex items-center rounded-full border px-2.5 py-0.5 text-[11px] font-semibold');
       diet.textContent = L(D.dietTags[item.dietType].name);
-      body.appendChild(diet);
+      text.appendChild(diet);
     }
-
-    const meta = el('div', 'mb-1');
-
-    const allergenId = 'dish-allergens-' + item.id;
-    const toggle = el('button', 'toggle-allergens-btn mt-1 inline-flex cursor-pointer items-center gap-1.5 py-0.5 text-xs font-medium text-black');
-    toggle.type = 'button';
-    toggle.setAttribute('aria-expanded', 'false');
-    toggle.setAttribute('aria-controls', allergenId);
-    const toggleLabel = el('span');
-    toggleLabel.textContent = dishWarningLabel(item);
-    const chevron = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    chevron.setAttribute('class', 'w-3 h-3 text-black transition-transform duration-200 transform rotate-0');
-    chevron.setAttribute('fill', 'none');
-    chevron.setAttribute('stroke', 'currentColor');
-    chevron.setAttribute('viewBox', '0 0 24 24');
-    chevron.setAttribute('aria-hidden', 'true');
-    const chevronPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    chevronPath.setAttribute('stroke-linecap', 'round');
-    chevronPath.setAttribute('stroke-linejoin', 'round');
-    chevronPath.setAttribute('stroke-width', '2');
-    chevronPath.setAttribute('d', 'M9 5l7 7-7 7');
-    chevron.appendChild(chevronPath);
-    toggle.append(toggleLabel, chevron);
-
-    const allergens = el('div', 'hidden');
-    allergens.id = allergenId;
-    if (item.allergenNote) {
-      const note = el('span', 'pill-allergen');
-      note.textContent = L(item.allergenNote);
-      allergens.appendChild(note);
-    } else if (item.allergens.length) {
-      item.allergens.forEach((key) => allergens.appendChild(allergenPill(key)));
-    } else {
-      const empty = el('span', 'text-xs text-stone-500 dark:text-stone-400');
-      empty.textContent = t('noAllergens');
-      allergens.appendChild(empty);
-    }
-    meta.append(toggle, allergens);
-    body.appendChild(meta);
-
     const image = imageOrPlaceholder(item.image, L(item.name), 72, 'h-[72px] w-[72px] shrink-0 rounded-2xl object-cover sm:h-20 sm:w-20');
-    li.append(body, image);
+    row.append(text, image);
+    li.appendChild(row);
     return li;
   }
 
@@ -428,7 +358,7 @@
       tabs.appendChild(tab);
       pinBilingual(tab, cat.name.es, cat.name.en);
 
-      const panel = el('section', 'focus:outline-none');
+      const panel = el('section', 'scroll-mt-32 focus:outline-none');
       panel.id = 'panel-' + cat.id;
       panel.setAttribute('role', 'tabpanel');
       panel.setAttribute('aria-labelledby', 'tab-' + cat.id);
@@ -537,7 +467,10 @@
     if (tab) {
       showPage('carta', { quiet: true });
       selectTab(tab, false, true);
-      if (!quiet) tab.scrollIntoView({ block: 'nearest', inline: 'center' });
+      if (!quiet) {
+        const panel = document.getElementById(tab.getAttribute('aria-controls'));
+        (panel || tab).scrollIntoView({ block: 'start' });
+      }
     }
   }
 
@@ -1027,27 +960,6 @@
     panel.classList.toggle('is-open', open);
     toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
     if (icon) icon.classList.toggle('rotate-90', open);
-  }
-
-  function initDishAllergenToggles() {
-    const panels = $('#panels');
-    if (!panels) return;
-    panels.addEventListener('click', (event) => {
-      const btn = event.target.closest('.toggle-allergens-btn');
-      if (!btn || !panels.contains(btn)) return;
-      const list = btn.nextElementSibling;
-      if (!list || list.id !== btn.getAttribute('aria-controls')) return;
-      const open = list.classList.contains('hidden');
-      list.className = open
-        ? 'flex flex-wrap gap-1.5 pt-2 transition-all duration-200'
-        : 'hidden';
-      const icon = btn.querySelector('svg');
-      if (icon) {
-        icon.classList.toggle('rotate-90', open);
-        icon.classList.toggle('rotate-0', !open);
-      }
-      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
-    });
   }
 
   function initAllergenFilters() {
@@ -2390,7 +2302,6 @@
   initTabs();
   initGbpTabs();
   window.cambiarPestanaGoogle = cambiarPestanaGoogle;
-  initDishAllergenToggles();
     initAllergenFilters();
   initBooking();
   applyHash({ quiet: true });
