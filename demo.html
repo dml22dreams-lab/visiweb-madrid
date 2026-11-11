@@ -860,6 +860,7 @@
       #sales-bar.is-open #sales-whatsapp {
         margin-left: auto;
       }
+      .header-call { display: none; }
     }
     footer { padding-bottom: calc(4.5rem + env(safe-area-inset-bottom)); }
     @media (pointer: fine) and (hover: hover) {
@@ -881,18 +882,88 @@
       padding-right: 0.75rem;
       text-align: center;
     }
+    #hero-facts {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-top: 1.25rem;
+    }
     #hero-facts > * { min-width: 0; }
+    .hero-fact {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      border-radius: 1.15rem;
+      background: #f3f1ed;
+      padding: 0.8rem 0.85rem;
+    }
+    .hero-fact-icon {
+      display: grid;
+      flex: none;
+      place-items: center;
+      width: 1.45rem;
+      color: #3d4a59;
+    }
+    .hero-fact-icon svg {
+      width: 1.35rem;
+      height: 1.35rem;
+    }
+    .hero-fact-body { min-width: 0; flex: 1 1 auto; }
+    .hero-fact dt {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: #5c6b7a;
+    }
+    .hero-fact dd {
+      margin-top: 0.12rem;
+      overflow: hidden;
+      font-size: 0.84rem;
+      line-height: 1.3;
+      letter-spacing: -0.01em;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      color: #1c2430;
+    }
+    .hero-fact-link {
+      flex: 0 0 5rem;
+      width: 5rem;
+      text-align: right;
+      font-size: 0.78rem;
+      line-height: 1.25;
+      color: #4b5563;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+    .hero-fact-link:hover { color: #111827; }
+    .hero-fact-badge {
+      flex: none;
+      margin-left: 0.5rem;
+      border-radius: 999px;
+      background: #fff;
+      padding: 0.42rem 0.9rem;
+      font-size: 0.98rem;
+      font-weight: 650;
+      letter-spacing: -0.01em;
+      line-height: 1.2;
+      color: #111827;
+      box-shadow: 0 1px 2px rgb(0 0 0 / 0.06);
+    }
+    @media (prefers-color-scheme: dark) {
+      .hero-fact { background: #1c1917; }
+      .hero-fact-icon { color: #d6d3d1; }
+      .hero-fact dt { color: #a8a29e; }
+      .hero-fact dd,
+      .hero-fact-link,
+      .hero-fact-badge { color: #f5f5f4; }
+      .hero-fact-link:hover { color: #fff; }
+      .hero-fact-badge { background: #0c0a09; }
+    }
     #hero-media img {
       width: 100%;
       max-height: clamp(180px, calc(100vh - 38rem), 460px);
       object-fit: cover;
-    }
-    @media (min-width: 640px) {
-      #hero-facts {
-        grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
-      }
-      #hero-facts .fact-hours { text-align: center; }
-      #hero-facts .fact-price { padding-right: 1.75rem; text-align: right; }
     }
     @media (orientation: landscape) and (max-height: 500px) {
       #contenido { min-height: 0; }
@@ -1007,8 +1078,14 @@
       max-width: 100%;
     }
     .hours-row {
-      flex-wrap: wrap;
-      row-gap: 0.25rem;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      column-gap: 1rem;
+    }
+    .hours-row > dd {
+      justify-self: end;
+      text-align: right;
     }
     .btn-call,
     .btn-whatsapp {
@@ -1201,21 +1278,29 @@
 
         <figure id="hero-media" class="mt-8 max-h-[460px] w-full overflow-hidden rounded-2xl bg-slate-100 shadow-sm dark:bg-slate-900"></figure>
 
-        <dl id="hero-facts" class="mt-4 grid grid-cols-2 gap-x-8 gap-y-6 sm:grid-cols-3">
-          <div>
-            <dt class="text-[10px] font-semibold uppercase tracking-[.18em] text-slate-600 dark:text-slate-400" data-i18n="labelAddress">Dirección</dt>
-            <dd id="info-address" class="mt-1.5 text-sm leading-snug"></dd>
+        <dl id="hero-facts">
+          <div class="hero-fact">
+            <span class="hero-fact-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21s7-6.1 7-11a7 7 0 1 0-14 0c0 4.9 7 11 7 11z"/><circle cx="12" cy="10" r="2.15"/></svg></span>
+            <div class="hero-fact-body">
+              <dt data-i18n="labelAddress">Dirección</dt>
+              <dd id="info-address"></dd>
+            </div>
           </div>
-          <div class="fact-hours">
-            <dt class="text-[10px] font-semibold uppercase tracking-[.18em] text-slate-600 dark:text-slate-400" data-i18n="labelToday">Horario de hoy</dt>
-            <dd class="mt-1.5 text-sm leading-snug">
-              <div id="info-today" class="tabular"></div>
-              <a href="#horarios" class="mt-1 block text-xs text-slate-600 underline underline-offset-4 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100" data-i18n="allHours">Ver todos los horarios</a>
-            </dd>
+          <div class="hero-fact">
+            <span class="hero-fact-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="8.25"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 7.75V12l3 1.75"/></svg></span>
+            <div class="hero-fact-body">
+              <dt data-i18n="labelToday">Horario de hoy</dt>
+              <dd id="info-today"></dd>
+            </div>
+            <a href="#horarios" class="hero-fact-link" data-i18n="allHours">Ver todos los horarios</a>
           </div>
-          <div class="fact-price col-span-2 sm:col-span-1">
-            <dt class="text-[10px] font-semibold uppercase tracking-[.18em] text-slate-600 dark:text-slate-400" data-i18n="labelMenuDay">Menú del día</dt>
-            <dd id="info-menu-price" class="mt-1.5 text-sm leading-snug tabular">13,50 €</dd>
+          <div class="hero-fact">
+            <span class="hero-fact-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M7 3.5v6.2a1.8 1.8 0 0 0 3.6 0V3.5M8.8 9.7V20.5M16.2 3.5c1.5 1.8 2.3 3.8 2.3 6.1 0 2.2-1.1 3.7-2.3 3.7V3.5zm0 9.8V20.5"/></svg></span>
+            <div class="hero-fact-body">
+              <dt data-i18n="labelMenuDay">Menú del día</dt>
+              <dd id="info-menu-price" class="tabular">13,50 €</dd>
+            </div>
+            <span id="info-menu-badge" class="hero-fact-badge tabular">13,50€</span>
           </div>
         </dl>
       </section>

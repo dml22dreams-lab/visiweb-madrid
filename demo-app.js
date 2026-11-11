@@ -224,7 +224,12 @@
 
     const menuDay = (D.menu.find((c) => c.id === 'menu-del-dia') || { items: [] })
       .items.filter((i) => i.id === 'menu-completo')[0];
-    if (menuDay) $('#info-menu-price').textContent = lang === 'en' ? menuDay.priceEn : menuDay.price;
+    if (menuDay) {
+      const price = lang === 'en' ? menuDay.priceEn : menuDay.price;
+      $('#info-menu-price').textContent = price;
+      const badge = $('#info-menu-badge');
+      if (badge) badge.textContent = price.replace(/\s/g, '');
+    }
 
     const tel = 'tel:' + D.business.phone;
     ['#bar-call', '#footer-phone', '#header-call'].forEach((sel) => {

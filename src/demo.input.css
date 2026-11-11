@@ -160,7 +160,7 @@
   }
 
   .hours-row {
-    @apply flex items-baseline justify-between gap-6 border-b border-stone-100 py-3.5 text-sm last:border-b-0 dark:border-stone-800;
+    @apply grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 border-b border-stone-100 py-3.5 text-sm last:border-b-0 dark:border-stone-800;
   }
 
   .hours-day {
@@ -168,7 +168,7 @@
   }
 
   .hours-time {
-    @apply text-right font-medium tabular tracking-tight text-stone-900 dark:text-stone-100;
+    @apply justify-self-end text-right font-medium tabular tracking-tight text-stone-900 dark:text-stone-100;
   }
 
   .hours-closed {
