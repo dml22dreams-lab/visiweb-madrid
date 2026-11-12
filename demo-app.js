@@ -274,9 +274,8 @@
           dd.appendChild(line);
         });
       } else {
-        const badge = el('span', 'hours-closed');
-        badge.textContent = t('closed');
-        dd.appendChild(badge);
+        dd.className = 'hours-time font-normal text-neutral-400 dark:text-stone-500';
+        dd.textContent = t('closed');
       }
       row.append(dt, dd);
       list.appendChild(row);
