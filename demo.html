@@ -32,7 +32,7 @@
 
   <link rel="preload" href="assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/cormorant-garamond-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="assets/demo.css?v=44">
+  <link rel="stylesheet" href="assets/demo.css?v=46">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
   <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
@@ -887,7 +887,7 @@
     #hero-facts {
       display: flex;
       flex-direction: column;
-      gap: 1.85rem;
+      gap: 0;
       margin-top: 1.25rem;
       border: 0;
       border-radius: 0;
@@ -897,8 +897,9 @@
     }
     #hero-facts > * { min-width: 0; }
     #hero-facts > a + a {
-      margin-top: 0;
-      border-top: 0;
+      margin-top: 0.925rem;
+      border-top: 1px solid rgb(229 229 229 / 0.7);
+      padding-top: 1.175rem;
     }
     a.hero-fact {
       color: inherit;
@@ -906,6 +907,10 @@
       cursor: pointer;
     }
     a.hero-fact:hover { background: transparent; }
+    a.hero-fact:hover .hero-fact-value,
+    a.hero-fact:hover .hero-fact-compact,
+    a.hero-fact:hover .hero-fact-link-short,
+    a.hero-fact:hover .hero-fact-badge { color: #000; }
     a.hero-fact:focus-visible {
       outline: 2px solid #a8a29e;
       outline-offset: 2px;
@@ -971,7 +976,7 @@
       text-align: right;
       text-decoration: none;
     }
-    a.hero-fact:nth-child(2):hover .hero-fact-link-short { color: #404040; }
+    a.hero-fact:nth-child(2):hover .hero-fact-link-short { color: #000; }
     .hero-fact-badge {
       flex: none;
       align-self: center;
@@ -991,12 +996,16 @@
       #hero-facts,
       a.hero-fact,
       .hero-fact { background: transparent; }
-      #hero-facts > a + a { border-top-color: transparent; }
+      #hero-facts > a + a { border-top-color: rgb(255 255 255 / 0.14); }
       .hero-fact-compact,
       .hero-fact-value { color: #d4d4d4; }
       .hero-fact-icon,
       .hero-fact-link-short { color: #a3a3a3; }
-      a.hero-fact:nth-child(2):hover .hero-fact-link-short { color: #e5e5e5; }
+      a.hero-fact:hover .hero-fact-compact,
+      a.hero-fact:hover .hero-fact-value,
+      a.hero-fact:hover .hero-fact-link-short,
+      a.hero-fact:hover .hero-fact-badge { color: #fafafa; }
+      a.hero-fact:nth-child(2):hover .hero-fact-link-short { color: #fafafa; }
       .hero-fact-badge {
         background: transparent;
         border: 0;
@@ -1007,6 +1016,7 @@
       width: 100%;
       max-height: clamp(180px, calc(100vh - 38rem), 460px);
       object-fit: cover;
+      object-position: center 60%;
     }
     .hero-kicker { display: none; }
     @media (max-width: 639px) {
@@ -1030,7 +1040,6 @@
       #hero-media img {
         height: 100%;
         max-height: none;
-        border-radius: 0;
       }
       .hero-kicker {
         display: block;
@@ -1772,24 +1781,26 @@
           <dl id="hours-list" class="divide-y divide-neutral-200/70"></dl>
         </section>
 
-        <section class="footer-panel is-split mt-6 border-0 border-t border-neutral-200/70 bg-transparent p-0 pt-6 md:mt-0 md:rounded-[1.75rem] md:border md:border-stone-200/80 md:bg-white md:px-7 md:py-8 md:pt-8 dark:border-stone-800/70 dark:md:border-stone-800 dark:md:bg-stone-950" aria-labelledby="contact-title">
-          <h2 id="contact-title" class="mb-3 font-serif text-xl font-semibold tracking-tight text-stone-900 dark:text-stone-100" data-i18n="locationTitle">Ubicación y reservas</h2>
+        <section class="footer-panel is-split mt-6 border-0 border-t border-neutral-200/70 bg-transparent p-0 pt-6 md:mt-0 md:justify-between md:rounded-[1.75rem] md:border md:border-stone-200/80 md:bg-white md:px-7 md:py-8 md:pt-8 dark:border-stone-800/70 dark:md:border-stone-800 dark:md:bg-stone-950" aria-labelledby="contact-title">
+          <div>
+            <h2 id="contact-title" class="mb-3 font-serif text-xl font-semibold tracking-tight text-stone-900 dark:text-stone-100 md:mb-5" data-i18n="locationTitle">Ubicación y reservas</h2>
 
-          <div class="space-y-1.5">
-            <address id="footer-address" class="text-sm font-medium not-italic leading-relaxed text-neutral-900 dark:text-stone-100"></address>
-            <div class="flex items-center gap-4">
-              <a id="footer-map" href="#" target="_blank" rel="noopener" class="inline-flex items-center gap-1 text-sm font-medium text-neutral-800 underline underline-offset-4 dark:text-stone-100">
-                <span data-i18n="viewOnMap">Ver en mapa ↗</span>
-              </a>
-              <a id="footer-phone" href="tel:+34600000000" class="hidden items-center text-sm text-stone-900 underline decoration-stone-300 underline-offset-4 transition-colors hover:decoration-stone-900 dark:text-stone-100 dark:decoration-stone-600 dark:hover:decoration-stone-100 md:inline-flex">
-                <span id="footer-phone-number" class="tabular">+34 600 00 00 00</span>
-              </a>
+            <div class="space-y-1.5 md:space-y-3">
+              <address id="footer-address" class="text-sm font-medium not-italic leading-relaxed text-neutral-900 dark:text-stone-100"></address>
+              <div class="flex items-center gap-4 md:gap-8">
+                <a id="footer-map" href="#" target="_blank" rel="noopener" class="inline-flex items-center gap-1 text-sm font-medium text-neutral-800 underline underline-offset-4 dark:text-stone-100">
+                  <span data-i18n="viewOnMap">Ver en mapa ↗</span>
+                </a>
+                <a id="footer-phone" href="tel:+34600000000" class="hidden items-center text-sm text-stone-900 underline decoration-stone-300 underline-offset-4 transition-colors hover:decoration-stone-900 dark:text-stone-100 dark:decoration-stone-600 dark:hover:decoration-stone-100 md:inline-flex">
+                  <span id="footer-phone-number" class="tabular">+34 600 00 00 00</span>
+                </a>
+              </div>
             </div>
           </div>
 
-          <a href="#" class="btn-primary js-reserve-open mt-6 hidden w-full sm:flex" data-i18n="reserve">Reservar mesa</a>
+          <a href="#" class="btn-primary js-reserve-open mt-6 hidden w-full sm:flex md:mt-0" data-i18n="reserve">Reservar mesa</a>
 
-          <p class="mt-5 text-xs leading-relaxed text-neutral-500 dark:text-stone-500" data-i18n="groupsNotice">Mesas de más de 8 personas con reserva previa de 24h.</p>
+          <p class="mt-5 text-xs leading-relaxed text-neutral-500 dark:text-stone-500 md:mt-0" data-i18n="groupsNotice">Mesas de más de 8 personas con reserva previa de 24h.</p>
         </section>
       </div>
 
@@ -1915,7 +1926,7 @@
   </div>
 
   <script src="demo-data.js?v=5"></script>
-  <script src="demo-app.js?v=52"></script>
+  <script src="demo-app.js?v=54"></script>
   <script>
     (function () {
       var modal = document.getElementById('reserve-options-modal');
