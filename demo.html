@@ -1109,6 +1109,12 @@
         line-height: 1.375;
       }
       [data-page="inicio"] { padding-bottom: 0; }
+      [data-page="carta"] > div:first-child,
+      [data-page="local"] > section,
+      [data-page="reservas"] > section {
+        padding-top: 1rem;
+      }
+      [data-page="reservas"] { padding-top: 0; }
     }
     @media (orientation: landscape) and (max-height: 500px) {
       #contenido { min-height: 0; }
@@ -1182,12 +1188,23 @@
       text-decoration: none;
       transition: transform .15s ease, box-shadow .15s ease;
     }
+    #demo-banner-detail {
+      left: 1.25rem;
+      right: 1.25rem;
+      top: 100%;
+      width: auto;
+      max-width: none;
+      margin-top: 0.15rem;
+      white-space: nowrap;
+      overflow: visible;
+      text-overflow: unset;
+    }
     a#plan-gastro-link:hover,
     a#plan-gastro-link:active {
       transform: translateY(3px) !important;
       box-shadow: none !important;
     }
-    #demo-sales-banner.is-open { padding-bottom: 2.5rem; }
+    #demo-sales-banner.is-open { padding-bottom: 1.7rem; }
     @media (min-width: 768px) {
       #demo-sales-banner > div { gap: 1.5rem; }
       #plan-gastro-slot {
@@ -1309,7 +1326,7 @@
   <!-- ============================ CABECERA ============================ -->
   <div data-site-sticky class="bg-white dark:bg-stone-900">
   <div id="demo-sales-banner" class="w-full border-b border-stone-100 bg-white/90 backdrop-blur-sm dark:border-stone-800 dark:bg-[#202124]/90">
-    <div id="demo-banner-row" class="mx-auto flex max-w-3xl items-center gap-2 px-5 py-2">
+    <div id="demo-banner-row" class="relative mx-auto flex max-w-3xl items-center gap-2 px-5 py-2">
       <div id="demo-banner-content" class="flex min-w-0 flex-1 items-center gap-2">
       <div id="demo-banner-collapsed" class="flex shrink-0 cursor-pointer flex-col items-center text-stone-400 transition-colors hover:text-stone-600" onclick="toggleDemoBanner()">
         <svg class="mb-0.5 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
@@ -1318,9 +1335,9 @@
       <button type="button" id="demo-banner-close" onclick="toggleDemoBanner()" class="hidden shrink-0 rounded-full bg-stone-100 p-1 text-stone-400 transition-colors hover:bg-stone-200 hover:text-stone-700">
         <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
       </button>
-      <div id="plan-gastro-slot" class="relative w-max min-w-0 max-w-full shrink">
+      <div id="plan-gastro-slot" class="w-max min-w-0 max-w-full shrink">
         <a id="plan-gastro-link" href="https://visiwebmadrid.com/#gastro-premium" class="block max-w-full truncate whitespace-nowrap rounded-full border border-stone-200 bg-stone-50/50 px-3 py-1 text-center text-[10px] font-bold uppercase tracking-wide text-stone-700 shadow-sm backdrop-blur-md dark:border-stone-700 dark:bg-stone-800/50 dark:text-stone-300 sm:text-xs" data-i18n="planBadge">Plan Gastro Premium</a>
-        <span id="demo-banner-detail" class="absolute left-0 top-full z-10 mt-1 hidden max-w-[calc(100vw-1.5rem)] whitespace-normal text-xs font-medium leading-snug text-stone-600 dark:text-stone-400 sm:text-sm" data-i18n="salesBannerDetail">Así quedaría tu local. Esta demo es interactiva.</span>
+        <span id="demo-banner-detail" class="absolute z-10 hidden whitespace-nowrap text-xs font-medium leading-snug text-stone-600 dark:text-stone-400 sm:text-sm" data-i18n="salesBannerDetail">Así quedaría tu local. Esta demo es interactiva.</span>
       </div>
       <a id="sales-whatsapp" href="https://wa.me/34608975906?text=Hola%2C%20he%20visto%20la%20demo%20y%20quiero%20una%20as%C3%AD%20para%20mi%20local." target="_blank" rel="noopener" class="inline-flex h-9 shrink-0 items-center justify-center self-center whitespace-nowrap rounded-full bg-emerald-600 px-3.5 text-[11px] font-bold leading-none text-white no-underline hover:bg-emerald-500">
         <span data-i18n="salesBarCta">Pide la tuya</span>
@@ -1347,6 +1364,15 @@
       window.dispatchEvent(new Event('resize'));
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
+    function fitBannerDetail() {
+      var detail = document.getElementById('demo-banner-detail');
+      if (!detail || detail.classList.contains('hidden')) return;
+      detail.style.fontSize = '';
+      var max = detail.clientWidth;
+      var size = parseFloat(getComputedStyle(detail).fontSize);
+      if (!max || detail.scrollWidth <= max + 1) return;
+      detail.style.fontSize = (size * max / detail.scrollWidth) + 'px';
+    }
     function toggleDemoBanner() {
       const collapsed = document.getElementById('demo-banner-collapsed');
       const detail = document.getElementById('demo-banner-detail');
@@ -1356,8 +1382,11 @@
       closeBtn.classList.toggle('hidden', !open);
       collapsed.classList.toggle('hidden', open);
       document.getElementById('demo-sales-banner').classList.toggle('is-open', open);
+      fitBannerDetail();
       window.dispatchEvent(new Event('resize'));
     }
+    window.addEventListener('resize', fitBannerDetail);
+    document.documentElement.addEventListener('langchange', fitBannerDetail);
   </script>
   <button type="button" id="demo-restore-bar" onclick="toggleDemoSalesBar(event)" class="fixed z-50 flex items-center gap-2 text-black text-xs font-medium px-3.5 py-2 rounded-full cursor-pointer" aria-label="ocultar">
     <svg id="demo-restore-eye-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
@@ -1852,7 +1881,7 @@
       </span>
       <span data-i18n="call">Llamar</span>
     </a>
-    <a href="#" class="btn-primary js-reserve-open min-w-0 px-3" data-i18n="reserve">Reservar mesa</a>
+    <a href="#reservas" class="btn-primary js-reserve-open min-w-0 px-3" data-i18n="reserve">Reservar mesa</a>
   </nav>
 
   <!-- ====================== TABLA DE ALÉRGENOS (MODAL) ====================== -->
@@ -1969,6 +1998,12 @@
 
       document.querySelectorAll('.js-reserve-open').forEach(function (node) {
         node.addEventListener('click', function (event) {
+          if (window.matchMedia('(max-width: 767px)').matches) {
+            event.preventDefault();
+            if (location.hash !== '#reservas') location.hash = 'reservas';
+            else window.scrollTo(0, 0);
+            return;
+          }
           event.preventDefault();
           window.__visiwebBookingPreview = null;
           openModal(node);
