@@ -158,8 +158,31 @@
   const addressText = () => L(D.business.address.street) + ', ' + D.business.address.postalCode + ' ' +
     D.business.address.city + ' (' + D.business.address.region + ')';
 
-  const mapsUrl = () => 'https://www.google.com/maps/search/?api=1&query=' +
-    encodeURIComponent(L(D.business.address.street) + ', ' + D.business.address.city + ', ' + D.business.address.region);
+  function showDemoNote(key) {
+    const note = $('#demo-action-note');
+    if (!note) return;
+    note.textContent = t(key);
+    note.hidden = false;
+    clearTimeout(showDemoNote.timer);
+    showDemoNote.timer = setTimeout(() => { note.hidden = true; }, 3400);
+  }
+  window.visiwebDemoNote = showDemoNote;
+
+  function bindDemoActions() {
+    const guard = (selector, key) => {
+      document.querySelectorAll(selector).forEach((node) => {
+        if (node.dataset.demoGuard) return;
+        node.dataset.demoGuard = '1';
+        node.addEventListener('click', (event) => {
+          event.preventDefault();
+          showDemoNote(key);
+        });
+      });
+    };
+    guard('#header-call, #footer-phone, #bar-call, #gbp-call', 'demoCallNote');
+    guard('#gbp-directions, #map-directions, #footer-map', 'demoRouteNote');
+    guard('#gbp-save', 'demoSaveNote');
+  }
 
   /* ------------------------------- Marcadores ------------------------------ */
   const CUTLERY = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true" class="h-7 w-7 text-slate-500 dark:text-slate-400"><path stroke-linecap="round" d="M7 3v7a2 2 0 0 0 2 2h0a2 2 0 0 0 2-2V3M9 12v9M15 21v-7m0 0c2 0 3-1.5 3-4.5V3c-2 .6-3 2.4-3 5.5V14Z"/></svg>';
@@ -230,10 +253,9 @@
       if (badge) badge.textContent = price;
     }
 
-    const tel = 'tel:' + D.business.phone;
-    ['#bar-call', '#footer-phone', '#header-call'].forEach((sel) => {
+    ['#bar-call', '#footer-phone', '#header-call', '#gbp-call'].forEach((sel) => {
       const node = $(sel);
-      if (node) node.href = tel;
+      if (node) node.href = '#';
     });
     $('#footer-phone-number').textContent = D.business.phoneDisplay;
 
@@ -244,7 +266,7 @@
     }
 
     const footerMap = $('#footer-map');
-    if (footerMap) footerMap.href = mapsUrl();
+    if (footerMap) footerMap.href = '#';
   }
 
   function renderStatus() {
@@ -422,6 +444,8 @@
     });
   }
 
+  let hashNavOpts = null;
+
   function showPage(id, opts) {
     document.querySelectorAll('[data-page]').forEach((page) => {
       page.hidden = page.dataset.page !== id;
@@ -430,7 +454,12 @@
       if (link.dataset.nav === id) link.setAttribute('aria-current', 'page');
       else link.removeAttribute('aria-current');
     });
-    if (!opts || !opts.quiet) window.scrollTo(0, 0);
+    if (opts && opts.quiet) return;
+    if (opts && opts.smooth) {
+      if (window.scrollY > 0) window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+    window.scrollTo(0, 0);
   }
 
   function menuTabByAnchor(hash) {
@@ -439,14 +468,16 @@
   }
 
   function applyHash(opts) {
-    const quiet = !!(opts && opts.quiet);
+    const navOpts = opts || hashNavOpts;
+    hashNavOpts = null;
+    const quiet = !!(navOpts && navOpts.quiet);
     const hash = decodeURIComponent(window.location.hash.replace('#', ''));
     if (!hash || hash === 'inicio') {
-      showPage('inicio', opts);
+      showPage('inicio', navOpts);
       return;
     }
     if (PAGES.indexOf(hash) >= 0) {
-      showPage(hash, opts);
+      showPage(hash, navOpts);
       if (hash === 'carta') applyAllergenFilter();
       if (hash === 'reservas') refreshBookingSlots();
       return;
@@ -497,7 +528,8 @@
       link.appendChild(imageOrPlaceholder(item.image, L(item.name), 88, 'h-[88px] w-[88px] shrink-0 rounded-lg object-cover'));
       const body = el('div', 'min-w-0 flex-1');
       const name = el('p', 'text-[15px] font-semibold leading-snug text-slate-900 group-hover:text-slate-700 dark:text-slate-100');
-      name.textContent = L(item.name);
+      name.style.whiteSpace = 'pre-line';
+      name.textContent = L(item.name).replace(' con jamón', '\ncon jamón');
       const price = priceNode(lang === 'en' ? item.priceEn : item.price);
       price.classList.add('mt-1', 'block');
       body.append(name, price);
@@ -621,12 +653,9 @@
     }
 
     const directions = $('#gbp-directions');
-    if (directions) {
-      directions.href = 'https://www.google.com/maps/dir/?api=1&destination=' +
-        encodeURIComponent(L(D.business.address.street) + ', ' + D.business.address.city);
-    }
+    if (directions) directions.href = '#';
     const call = $('#gbp-call');
-    if (call) call.href = 'tel:' + D.business.phone;
+    if (call) call.href = '#';
 
     attrs.textContent = '';
     D.gbp.attributes.forEach((attr) => {
@@ -821,11 +850,10 @@
 
     list.textContent = '';
 
-    const address = el('a', 'mt-0.5 block leading-relaxed text-[#1a73e8] no-underline dark:text-[#8ab4f8]');
-    address.href = mapsUrl();
-    address.target = '_blank';
-    address.rel = 'noopener';
+    const address = el('button', 'mt-0.5 block text-left leading-relaxed text-[#1a73e8] dark:text-[#8ab4f8]');
+    address.type = 'button';
     address.textContent = addressText();
+    address.addEventListener('click', () => showDemoNote('demoRouteNote'));
     row(ICONS.pin, t('gbpInfoAddress'), address);
 
     const hours = el('div', 'mt-1 text-stone-700 dark:text-stone-300');
@@ -845,9 +873,10 @@
     });
     row(ICONS.clock, t('gbpInfoHours'), hours);
 
-    const phone = el('a', 'mt-0.5 block text-[#1a73e8] no-underline dark:text-[#8ab4f8]');
-    phone.href = 'tel:' + D.business.phone;
+    const phone = el('button', 'mt-0.5 block text-left text-[#1a73e8] dark:text-[#8ab4f8]');
+    phone.type = 'button';
     phone.textContent = D.business.phoneDisplay;
+    phone.addEventListener('click', () => showDemoNote('demoCallNote'));
     row(ICONS.phone, t('gbpInfoPhone'), phone);
 
     const web = el('a', 'mt-0.5 block break-all text-[#1a73e8] no-underline dark:text-[#8ab4f8]');
@@ -1198,20 +1227,15 @@
 
     const list = $('#reviews-list');
     list.textContent = '';
-    D.reviews.items.forEach((review) => {
+    D.reviews.items.forEach((review, index) => {
       const li = el('li', 'flex h-full flex-col rounded-2xl border border-stone-200/70 bg-white p-5 shadow-xs');
       const head = el('div', 'flex items-start gap-2.5');
-      const avatar = el('img', 'h-9 w-9 shrink-0 rounded-full object-cover');
-      avatar.src = review.photo;
-      avatar.alt = '';
-      avatar.width = 36;
-      avatar.height = 36;
+      const avatar = el('span', 'flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-semibold text-white ' + ['bg-stone-700', 'bg-stone-500', 'bg-stone-800'][index % 3]);
+      avatar.setAttribute('aria-hidden', 'true');
+      avatar.textContent = review.author.charAt(0);
       const who = el('div', 'min-w-0 flex-1');
       const name = el('p', 'whitespace-nowrap text-sm font-semibold text-stone-900');
       name.appendChild(document.createTextNode(review.author));
-      const guide = el('span', 'text-[11px] font-normal text-stone-400');
-      guide.textContent = ' · ' + t('localGuide');
-      name.appendChild(guide);
       const meta = el('div', 'mt-0.5 min-w-0');
       const rating = el('span', 'flex items-center gap-px text-xs text-amber-400');
       rating.innerHTML = stars(review.rating, 'h-3 w-3');
@@ -1235,8 +1259,6 @@
       list.appendChild(li);
     });
 
-    const more = $('#reviews-google');
-    if (more) more.textContent = t('reviewsOnGoogle', { count: D.reviews.count });
   }
 
   /* ------------------------------ Reservas --------------------------------- */
@@ -2035,7 +2057,6 @@
         addressRegion: D.business.address.region,
         addressCountry: D.business.address.country
       },
-      geo: { '@type': 'GeoCoordinates', latitude: D.business.geo.lat, longitude: D.business.geo.lng },
       openingHoursSpecification: spec,
       acceptsReservations: 'True',
       image: [D.images.hero, D.images.facade, D.images.salon, D.images.terrace].filter(Boolean)
@@ -2292,8 +2313,60 @@
     document.documentElement.style.setProperty('--site-nav-h', nav.getBoundingClientRect().height + 'px');
   }
 
+  function blocksPageSwipe(target) {
+    const node = target && target.nodeType === 1 ? target : target && target.parentElement;
+    if (!node || !node.closest) return false;
+    if (node.closest('[data-no-swipe], .overflow-x-auto')) return true;
+    let el = node;
+    while (el && el !== document.documentElement) {
+      const overflowX = window.getComputedStyle(el).overflowX;
+      if ((overflowX === 'auto' || overflowX === 'scroll') && el.scrollWidth > el.clientWidth) return true;
+      el = el.parentElement;
+    }
+    return false;
+  }
+
+  function initPageSwipe() {
+    const MIN = 50;
+    let tracking = false;
+    let startX = 0;
+    let startY = 0;
+
+    document.addEventListener('touchstart', (event) => {
+      tracking = false;
+      if (window.innerWidth >= 768 || event.touches.length !== 1) return;
+      if (blocksPageSwipe(event.target)) return;
+      tracking = true;
+      startX = event.touches[0].clientX;
+      startY = event.touches[0].clientY;
+    }, { passive: true });
+
+    document.addEventListener('touchend', (event) => {
+      if (!tracking) return;
+      tracking = false;
+      if (window.innerWidth >= 768) return;
+      const touch = event.changedTouches[0];
+      if (!touch) return;
+      const deltaX = touch.clientX - startX;
+      const deltaY = touch.clientY - startY;
+      if (Math.abs(deltaX) <= Math.abs(deltaY) * 1.5 || Math.abs(deltaX) <= MIN) return;
+      const visible = document.querySelector('[data-page]:not([hidden])');
+      const index = PAGES.indexOf(visible ? visible.dataset.page : 'inicio');
+      if (index < 0) return;
+      const next = deltaX < 0 ? index + 1 : index - 1;
+      if (next < 0 || next >= PAGES.length) return;
+      const id = PAGES[next];
+      hashNavOpts = { smooth: true };
+      if (window.location.hash === '#' + id) applyHash();
+      else window.location.hash = id;
+    }, { passive: true });
+
+    document.addEventListener('touchcancel', () => { tracking = false; }, { passive: true });
+  }
+
   /* --------------------------------- Arranque ------------------------------ */
   initSalesBar();
+  bindDemoActions();
   syncStickyOffset();
   window.addEventListener('resize', syncStickyOffset);
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(syncStickyOffset);
@@ -2310,6 +2383,7 @@
   if (langToggle) langToggle.addEventListener('click', toggleIdioma);
 
   window.addEventListener('hashchange', () => applyHash());
+  initPageSwipe();
   window.setInterval(() => {
     renderStatus();
     renderToday();

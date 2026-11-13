@@ -1122,7 +1122,26 @@
       footer { padding-bottom: 0; }
       #allergen-dialog { max-height: none; }
     }
-    #plan-gastro-slot { margin-left: 1.25rem; }
+    #demo-action-note {
+      position: fixed;
+      left: 50%;
+      z-index: 70;
+      max-width: min(20rem, calc(100vw - 2rem));
+      transform: translateX(-50%);
+      border-radius: 999px;
+      background: #1c1917;
+      color: #fff;
+      padding: 0.55rem 0.9rem;
+      text-align: center;
+      font-size: 0.75rem;
+      line-height: 1.35;
+      box-shadow: 0 10px 30px -12px rgb(0 0 0 / 0.45);
+      bottom: 1.25rem;
+    }
+    @media (max-width: 767px) {
+      #demo-action-note { bottom: calc(5.25rem + env(safe-area-inset-bottom)); }
+    }
+    #plan-gastro-slot { margin-left: 0; }
     #demo-restore-bar {
       position: fixed;
       bottom: 1.25rem;
@@ -1198,11 +1217,6 @@
       white-space: nowrap;
       overflow: visible;
       text-overflow: unset;
-    }
-    a#plan-gastro-link:hover,
-    a#plan-gastro-link:active {
-      transform: translateY(3px) !important;
-      box-shadow: none !important;
     }
     #demo-sales-banner.is-open { padding-bottom: 1.7rem; }
     @media (min-width: 768px) {
@@ -1325,74 +1339,15 @@
 
   <!-- ============================ CABECERA ============================ -->
   <div data-site-sticky class="bg-white dark:bg-stone-900">
-  <div id="demo-sales-banner" class="w-full border-b border-stone-100 bg-white/90 backdrop-blur-sm dark:border-stone-800 dark:bg-[#202124]/90">
-    <div id="demo-banner-row" class="relative mx-auto flex max-w-3xl items-center gap-2 px-5 py-2">
-      <div id="demo-banner-content" class="flex min-w-0 flex-1 items-center gap-2">
-      <div id="demo-banner-collapsed" class="flex shrink-0 cursor-pointer flex-col items-center text-stone-400 transition-colors hover:text-stone-600" onclick="toggleDemoBanner()">
-        <svg class="mb-0.5 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-        <span class="text-[9px] font-semibold uppercase tracking-widest" data-i18n="salesTap">Pulsa aquí</span>
-      </div>
-      <button type="button" id="demo-banner-close" onclick="toggleDemoBanner()" class="hidden shrink-0 rounded-full bg-stone-100 p-1 text-stone-400 transition-colors hover:bg-stone-200 hover:text-stone-700">
-        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-      </button>
-      <div id="plan-gastro-slot" class="w-max min-w-0 max-w-full shrink">
-        <a id="plan-gastro-link" href="https://visiwebmadrid.com/#gastro-premium" class="block max-w-full truncate whitespace-nowrap rounded-full border border-stone-200 bg-stone-50/50 px-3 py-1 text-center text-[10px] font-bold uppercase tracking-wide text-stone-700 shadow-sm backdrop-blur-md dark:border-stone-700 dark:bg-stone-800/50 dark:text-stone-300 sm:text-xs" data-i18n="planBadge">Plan Gastro Premium</a>
-        <span id="demo-banner-detail" class="absolute z-10 hidden whitespace-nowrap text-xs font-medium leading-snug text-stone-600 dark:text-stone-400 sm:text-sm" data-i18n="salesBannerDetail">Así quedaría tu local. Esta demo es interactiva.</span>
-      </div>
-      <a id="sales-whatsapp" href="https://wa.me/34608975906?text=Hola%2C%20he%20visto%20la%20demo%20y%20quiero%20una%20as%C3%AD%20para%20mi%20local." target="_blank" rel="noopener" class="inline-flex h-9 shrink-0 items-center justify-center self-center whitespace-nowrap rounded-full bg-emerald-600 px-3.5 text-[11px] font-bold leading-none text-white no-underline hover:bg-emerald-500">
+  <div id="demo-sales-banner" class="w-full border-b border-stone-200 bg-stone-50 dark:border-stone-800 dark:bg-stone-900">
+    <div class="mx-auto flex max-w-3xl items-center gap-2 px-5 py-2">
+      <p class="min-w-0 flex-1 truncate text-[11px] font-medium text-stone-600 dark:text-stone-300" data-i18n="salesBar">Demo de VisiWeb Madrid</p>
+      <a id="plan-gastro-link" href="https://visiwebmadrid.com/#gastro-premium" class="shrink-0 whitespace-nowrap rounded-full border border-stone-200 bg-white px-3 py-1 text-center text-[10px] font-bold uppercase tracking-wide text-stone-700 no-underline dark:border-stone-700 dark:bg-stone-800 dark:text-stone-300 sm:text-xs" data-i18n="planBadge">Plan Gastro Premium</a>
+      <a id="sales-whatsapp" href="https://wa.me/34608975906?text=Hola%2C%20he%20visto%20la%20demo%20y%20quiero%20una%20as%C3%AD%20para%20mi%20local." target="_blank" rel="noopener" class="inline-flex h-8 shrink-0 items-center justify-center whitespace-nowrap rounded-full bg-emerald-600 px-3.5 text-[11px] font-bold leading-none text-white no-underline hover:bg-emerald-500">
         <span data-i18n="salesBarCta">Pide la tuya</span>
       </a>
-      </div>
     </div>
   </div>
-  <script>
-    function toggleDemoSalesBar(event) {
-      if (event) {
-        event.preventDefault();
-        event.stopPropagation();
-      }
-      var banner = document.getElementById('demo-sales-banner');
-      var restore = document.getElementById('demo-restore-bar');
-      var hide = !banner.classList.contains('is-collapsed');
-      if (hide && banner.classList.contains('is-open')) toggleDemoBanner();
-      banner.classList.toggle('is-collapsed', hide);
-      banner.setAttribute('aria-hidden', hide ? 'true' : 'false');
-      document.getElementById('demo-restore-label').textContent = hide ? 'mostrar barra' : 'ocultar';
-      document.getElementById('demo-restore-eye-on').classList.toggle('hidden', hide);
-      document.getElementById('demo-restore-eye-off').classList.toggle('hidden', !hide);
-      restore.setAttribute('aria-label', hide ? 'mostrar barra' : 'ocultar');
-      window.dispatchEvent(new Event('resize'));
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-    function fitBannerDetail() {
-      var detail = document.getElementById('demo-banner-detail');
-      if (!detail || detail.classList.contains('hidden')) return;
-      detail.style.fontSize = '';
-      var max = detail.clientWidth;
-      var size = parseFloat(getComputedStyle(detail).fontSize);
-      if (!max || detail.scrollWidth <= max + 1) return;
-      detail.style.fontSize = (size * max / detail.scrollWidth) + 'px';
-    }
-    function toggleDemoBanner() {
-      const collapsed = document.getElementById('demo-banner-collapsed');
-      const detail = document.getElementById('demo-banner-detail');
-      const closeBtn = document.getElementById('demo-banner-close');
-      const open = detail.classList.contains('hidden');
-      detail.classList.toggle('hidden', !open);
-      closeBtn.classList.toggle('hidden', !open);
-      collapsed.classList.toggle('hidden', open);
-      document.getElementById('demo-sales-banner').classList.toggle('is-open', open);
-      fitBannerDetail();
-      window.dispatchEvent(new Event('resize'));
-    }
-    window.addEventListener('resize', fitBannerDetail);
-    document.documentElement.addEventListener('langchange', fitBannerDetail);
-  </script>
-  <button type="button" id="demo-restore-bar" onclick="toggleDemoSalesBar(event)" class="fixed z-50 flex items-center gap-2 text-black text-xs font-medium px-3.5 py-2 rounded-full cursor-pointer" aria-label="ocultar">
-    <svg id="demo-restore-eye-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-    <svg id="demo-restore-eye-off" class="hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88"/></svg>
-    <span id="demo-restore-label">ocultar</span>
-  </button>
   <header>
     <div class="mx-auto max-w-3xl px-5">
       <div class="flex items-center justify-between gap-3 border-b border-stone-200 py-3 dark:border-stone-800 sm:py-4">
@@ -1413,7 +1368,7 @@
         </a>
 
         <div class="flex shrink-0 items-center gap-4">
-          <a id="header-call" href="tel:+34600000000" class="header-call" aria-label="Llamar al restaurante">
+          <a id="header-call" href="#" class="header-call" aria-label="Llamar al restaurante">
             <span class="call-icon">
               <svg class="call-phone h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6.6 10.8a12.8 12.8 0 0 0 5.6 5.6l2-2a1 1 0 0 1 1-.2 9.6 9.6 0 0 0 3.5.6 1 1 0 0 1 1 1V19a1 1 0 0 1-1 1A17 17 0 0 1 4 6a1 1 0 0 1 1-1h3.2a1 1 0 0 1 1 1 9.6 9.6 0 0 0 .6 3.5 1 1 0 0 1-.2 1l-2 2z"/></svg>
               <span class="call-waves" aria-hidden="true"><span></span><span></span><span></span></span>
@@ -1480,8 +1435,8 @@
             <span class="hero-fact-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M7 3.5v6.2a1.8 1.8 0 0 0 3.6 0V3.5M8.8 9.7V20.5M16.2 3.5c1.5 1.8 2.3 3.8 2.3 6.1 0 2.2-1.1 3.7-2.3 3.7V3.5zm0 9.8V20.5"/></svg></span>
             <div class="hero-fact-body">
               <p class="hero-fact-label" data-i18n="labelMenuDay">Menú del día</p>
-              <p class="hero-fact-value hero-fact-note" data-i18n="menuDayNote">De lunes a viernes a mediodía</p>
-              <p class="hero-fact-compact" data-i18n="menuDayCompact">Menú del día (L-V)</p>
+              <p class="hero-fact-value hero-fact-note" data-i18n="menuDayNote">De martes a viernes a mediodía</p>
+              <p class="hero-fact-compact" data-i18n="menuDayCompact">Menú del día (M-V)</p>
             </div>
             <span id="info-menu-badge" class="hero-fact-badge">13,50 €</span>
           </a>
@@ -1546,9 +1501,6 @@
           </div>
           <p id="reviews-score" class="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1"></p>
           <ul id="reviews-list" class="mt-6 grid grid-cols-1 items-stretch gap-4 md:grid-cols-3"></ul>
-          <p class="text-center">
-            <button type="button" id="reviews-google" class="mt-6 inline-flex items-center gap-1 text-xs font-medium text-stone-500 transition-colors hover:text-stone-800"></button>
-          </p>
         </section>
       </div>
     </div>
@@ -1573,8 +1525,11 @@
         </section>
 
         <section class="mt-16 border-t border-slate-200 pt-12 dark:border-slate-800" aria-labelledby="gbp-title">
-          <h2 id="gbp-title" class="font-serif text-3xl font-semibold tracking-tight" data-i18n="gbpTitle">Ficha de Google</h2>
-          <p class="mt-3 text-sm leading-relaxed text-slate-600 dark:text-slate-400" data-i18n="gbpSubtitle">Así aparece el local en búsquedas de tapas y menú del día en Alcobendas.</p>
+          <div class="flex flex-wrap items-baseline justify-between gap-3">
+            <h2 id="gbp-title" class="font-serif text-3xl font-semibold tracking-tight" data-i18n="gbpTitle">Ficha de Google</h2>
+            <span class="rounded-full border border-slate-300 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-slate-700 dark:border-slate-600 dark:text-slate-300" data-i18n="gbpDemo">Vista previa</span>
+          </div>
+          <p class="mt-3 text-sm leading-relaxed text-slate-600 dark:text-slate-400" data-i18n="gbpSubtitle">Vista previa de ejemplo. El teléfono, la dirección y las opiniones son ficticios.</p>
 
           <article class="mx-auto mt-8 max-w-xl select-none rounded-2xl border border-stone-200 bg-white p-4 font-sans antialiased shadow-sm dark:border-stone-800 dark:bg-[#202124] sm:p-5" style="padding-top:0.5rem">
 
@@ -1602,7 +1557,7 @@
             <div class="my-4 grid grid-cols-4 items-start gap-2 pt-1">
 
               <!-- Cómo llegar -->
-              <a id="gbp-directions" href="https://www.google.com/maps/dir/?api=1&amp;destination=Calle+del+Marqu%C3%A9s+de+la+Valdavia+Alcobendas" target="_blank" rel="noopener" class="flex cursor-pointer flex-col items-center no-underline">
+              <a id="gbp-directions" href="#" class="flex cursor-pointer flex-col items-center no-underline">
                 <div class="flex h-10 w-10 items-center justify-center rounded-full bg-[#1a73e8] text-white shadow-sm sm:h-11 sm:w-11">
                   <svg class="h-5 w-5 fill-current" viewBox="0 0 24 24" aria-hidden="true"><path d="M21.71 11.29l-9-9a.996.996 0 0 0-1.41 0l-9 9a.996.996 0 0 0 0 1.41l9 9c.39.39 1.02.39 1.41 0l9-9a.996.996 0 0 0 0-1.41zM14 14.5V12h-4v3H8v-4c0-.55.45-1 1-1h5V7.5l3.5 3.5-3.5 3.5z"/></svg>
                 </div>
@@ -1610,7 +1565,7 @@
               </a>
 
               <!-- Llamar -->
-              <a id="gbp-call" href="tel:+34600000000" class="flex cursor-pointer flex-col items-center no-underline">
+              <a id="gbp-call" href="#" class="flex cursor-pointer flex-col items-center no-underline">
                 <div class="flex h-10 w-10 items-center justify-center rounded-full border border-stone-300 text-[#1a73e8] dark:border-stone-700 dark:text-[#8ab4f8] sm:h-11 sm:w-11">
                   <svg class="h-5 w-5 fill-current" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
                 </div>
@@ -1686,15 +1641,15 @@
           <h2 id="map-title" class="font-serif text-3xl font-semibold tracking-tight" data-i18n="mapTitle">Dónde estamos</h2>
           <p id="map-address" class="mt-3 text-sm leading-relaxed text-slate-600 dark:text-slate-400"></p>
 
-          <a href="https://www.google.com/maps/search/?api=1&query=Calle+del+Marqu%C3%A9s+de+la+Valdavia+Alcobendas" target="_blank" rel="noopener noreferrer" class="group relative mt-6 block w-full cursor-pointer">
-            <span class="mb-2 block text-right text-xs font-medium text-stone-600 dark:text-stone-300 sm:absolute sm:right-4 sm:top-4 sm:z-10 sm:mb-0 sm:rounded-full sm:border sm:border-stone-200 sm:bg-white/95 sm:px-3 sm:py-1.5 sm:text-stone-700 sm:shadow-sm sm:backdrop-blur-sm sm:dark:border-stone-700 sm:dark:bg-stone-900/95 sm:dark:text-stone-200" data-i18n="mapSearchHint">Pulsa para buscarlo en Google Maps</span>
+          <div class="relative mt-6 block w-full">
+            <span class="mb-2 block text-right text-xs font-medium text-stone-600 dark:text-stone-300 sm:absolute sm:right-4 sm:top-4 sm:z-10 sm:mb-0 sm:rounded-full sm:border sm:border-stone-200 sm:bg-white/95 sm:px-3 sm:py-1.5 sm:text-stone-700 sm:shadow-sm sm:backdrop-blur-sm sm:dark:border-stone-700 sm:dark:bg-stone-900/95 sm:dark:text-stone-200" data-i18n="mapSearchHint">En la web del local, este mapa abre la ruta.</span>
             <div class="relative aspect-[16/9] overflow-hidden rounded-2xl border border-stone-200 dark:border-stone-800 sm:aspect-[21/9]">
-              <img src="assets/demo/alcobendas-mapa.jpg" alt="" class="h-full w-full object-cover brightness-95 transition-transform duration-500 group-hover:scale-105 dark:brightness-75" width="1400" height="788">
+              <img src="assets/demo/alcobendas-mapa.jpg" alt="" class="h-full w-full object-cover brightness-95 dark:brightness-75" width="1400" height="788">
             </div>
-          </a>
+          </div>
 
           <div class="mt-5 flex flex-col gap-3 sm:flex-row">
-            <a id="map-directions" href="https://www.google.com/maps/dir/?api=1&destination=Calle+del+Marqu%C3%A9s+de+la+Valdavia+Alcobendas" target="_blank" rel="noopener" class="btn-outline w-full sm:w-auto" data-i18n="directions">Cómo llegar</a>
+            <a id="map-directions" href="#" class="btn-outline w-full sm:w-auto" data-i18n="directions">Cómo llegar</a>
             <a id="map-reserve" href="#" class="btn-primary js-reserve-open w-full sm:w-auto" data-i18n="reserve">Reservar mesa</a>
           </div>
         </section>
@@ -1706,7 +1661,7 @@
       <section class="mx-auto max-w-3xl px-5 pb-16 pt-12">
         <div class="text-center">
           <h1 class="font-serif text-3xl font-semibold tracking-tight sm:text-4xl" data-i18n="bookTitle">Reservar mesa</h1>
-          <p class="mx-auto mt-3 max-w-md text-sm leading-relaxed text-slate-600 dark:text-slate-400" data-i18n="bookSubtitle">Elige día, hora y comensales. Recibirás la confirmación al instante (demostración).</p>
+          <p class="mx-auto mt-3 max-w-md text-sm leading-relaxed text-slate-600 dark:text-slate-400" data-i18n="bookSubtitle">Elige día, hora y comensales. Verás el mensaje que recibiría el local.</p>
         </div>
 
         <form id="booking-form" class="contact-card mx-auto mt-10 max-w-lg" novalidate>
@@ -1811,7 +1766,7 @@
           <p id="book-feedback" class="mt-4 text-sm text-rose-600 dark:text-rose-300" role="status" hidden></p>
           <p id="error-reserva" class="mt-2 hidden text-sm font-medium text-red-600"></p>
           <button type="submit" id="btn-reserva" class="btn-primary mt-6 w-full">Reservar mesa</button>
-          <p class="mt-4 text-xs leading-relaxed text-slate-500" data-i18n="bookDemoNote">En un entorno real, este botón envía la solicitud estructurada directamente a tu WhatsApp, sin comisiones por comensal ni pasarelas intermedias.</p>
+          <p class="mt-4 text-xs leading-relaxed text-slate-500" data-i18n="bookDemoNote">Vista previa. El mensaje solo sale si abres WhatsApp.</p>
           <p class="mt-2 text-xs leading-relaxed text-slate-500" data-i18n="groupsNotice">Mesas de más de 8 personas con reserva previa de 24h.</p>
         </form>
       </section>
@@ -1837,10 +1792,10 @@
             <div class="space-y-1.5 md:space-y-3">
               <address id="footer-address" class="text-sm font-medium not-italic leading-relaxed text-neutral-900 dark:text-stone-100"></address>
               <div class="flex items-center gap-4 md:gap-8">
-                <a id="footer-map" href="#" target="_blank" rel="noopener" class="inline-flex items-center gap-1 text-sm font-medium text-neutral-800 underline underline-offset-4 dark:text-stone-100">
+                <a id="footer-map" href="#" class="inline-flex items-center gap-1 text-sm font-medium text-neutral-800 underline underline-offset-4 dark:text-stone-100">
                   <span data-i18n="viewOnMap">Ver en mapa ↗</span>
                 </a>
-                <a id="footer-phone" href="tel:+34600000000" class="hidden items-center text-sm text-stone-900 underline decoration-stone-300 underline-offset-4 transition-colors hover:decoration-stone-900 dark:text-stone-100 dark:decoration-stone-600 dark:hover:decoration-stone-100 md:inline-flex">
+                <a id="footer-phone" href="#" class="hidden items-center text-sm text-stone-900 underline decoration-stone-300 underline-offset-4 transition-colors hover:decoration-stone-900 dark:text-stone-100 dark:decoration-stone-600 dark:hover:decoration-stone-100 md:inline-flex">
                   <span id="footer-phone-number" class="tabular">+34 600 00 00 00</span>
                 </a>
               </div>
@@ -1873,8 +1828,10 @@
   </footer>
 
   <!-- ====================== BARRA FIJA (SOLO MÓVIL) ====================== -->
+  <p id="demo-action-note" hidden></p>
+
   <nav id="quick-bar" class="fixed inset-x-0 bottom-0 z-40 grid grid-cols-2 gap-3 border-t border-slate-200 bg-white px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] md:hidden dark:border-slate-800 dark:bg-slate-950" aria-label="Acciones rápidas" data-i18n-aria-label="quickActions">
-    <a id="bar-call" href="tel:+34600000000" class="btn-outline min-w-0 px-3">
+    <a id="bar-call" href="#" class="btn-outline min-w-0 px-3">
       <span class="call-icon">
         <svg class="call-phone h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6.6 10.8a12.8 12.8 0 0 0 5.6 5.6l2-2a1 1 0 0 1 1-.2 9.6 9.6 0 0 0 3.5.6 1 1 0 0 1 1 1V19a1 1 0 0 1-1 1A17 17 0 0 1 4 6a1 1 0 0 1 1-1h3.2a1 1 0 0 1 1 1 9.6 9.6 0 0 0 .6 3.5 1 1 0 0 1-.2 1l-2 2z"/></svg>
         <span class="call-waves" aria-hidden="true"><span></span><span></span><span></span></span>
@@ -1891,8 +1848,8 @@
       <div class="booking-wa-mark" aria-hidden="true">
         <svg class="h-6 w-6" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm5.2 14c-.2.6-1.2 1.2-1.8 1.2-.5 0-1.1 0-2.4-.6a11 11 0 0 1-4.4-3.9c-.7-1.1-.8-2-.6-2.6.2-.5.8-1.1 1.2-1.2.3-.1.7 0 .9.4l.7 1.5c.1.3 0 .5-.2.7l-.4.5c-.1.2-.2.4 0 .7.4.7 1.4 1.8 2.5 2.3.3.1.5.1.7-.1l.5-.6c.2-.2.4-.2.7-.1l1.5.7c.3.2.5.5.4.9Z"/></svg>
       </div>
-      <h2 id="booking-modal-title" class="mt-4 font-serif text-2xl font-semibold tracking-tight" data-i18n="bookSuccessTitle">¡Solicitud lista para enviar!</h2>
-      <p class="mt-2 text-sm leading-relaxed text-stone-600 dark:text-stone-300" data-i18n="bookSuccessLead">Así es como entra la reserva directa a tu teléfono, sin comisiones de intermediarios:</p>
+      <h2 id="booking-modal-title" class="mt-4 font-serif text-2xl font-semibold tracking-tight" data-i18n="bookSuccessTitle">Así llega la reserva</h2>
+      <p class="mt-2 text-sm leading-relaxed text-stone-600 dark:text-stone-300" data-i18n="bookSuccessLead">Este es el mensaje que recibiría el local por WhatsApp. No se envía hasta que abras WhatsApp.</p>
       <div class="booking-wa-thread mt-5">
         <div class="booking-wa-bubble">
           <div id="booking-wa-message" class="text-[13px] leading-relaxed text-stone-800 dark:text-emerald-50"></div>
@@ -1900,8 +1857,8 @@
         </div>
       </div>
       <div class="mt-6 flex flex-col gap-2.5">
-        <button type="button" id="booking-another" class="btn-primary w-full" data-i18n="bookWaClose">Cerrar simulación</button>
-        <a id="booking-whatsapp" href="#" target="_blank" rel="noopener" class="btn-whatsapp w-full" data-i18n="bookWaTry">Probar en mi WhatsApp</a>
+        <button type="button" id="booking-another" class="btn-primary w-full" data-i18n="bookWaClose">Cerrar</button>
+        <a id="booking-whatsapp" href="#" target="_blank" rel="noopener" class="btn-whatsapp w-full" data-i18n="bookWaTry">Abrir el mensaje en WhatsApp</a>
       </div>
     </div>
   </div>
@@ -1936,7 +1893,7 @@
       <div class="flex items-start justify-between gap-3">
         <div class="min-w-0">
           <h2 id="reserve-options-title" class="text-xl font-serif font-bold text-stone-900" data-i18n="reserveOptionsTitle">Haz tu reserva</h2>
-          <p class="mt-1 text-sm text-stone-500" data-i18n="reserveOptionsLead">Integramos el sistema que mejor funcione para tu restaurante.</p>
+          <p class="mt-1 text-sm text-stone-500" data-i18n="reserveOptionsLead">Elige cómo quieres reservar.</p>
         </div>
         <button type="button" id="reserve-options-close" class="grid h-8 w-8 shrink-0 place-items-center rounded-full text-stone-500 transition-colors hover:bg-stone-100 hover:text-stone-900" data-i18n-aria-label="close" aria-label="Cerrar">
           <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
@@ -1949,7 +1906,7 @@
           </span>
           <span class="min-w-0">
             <span class="block text-sm font-semibold text-stone-900" data-i18n="reserveOnline">Reservar online</span>
-            <span class="mt-0.5 block text-xs text-stone-500" data-i18n="reserveOnlineHint">Integración con TheFork, CoverManager, etc.</span>
+            <span class="mt-0.5 block text-xs text-stone-500" data-i18n="reserveOnlineHint">Día, hora y comensales, en esta misma página.</span>
           </span>
         </button>
         <button type="button" class="flex w-full cursor-pointer items-center gap-3 rounded-xl border border-emerald-100 bg-emerald-50 px-4 py-3 text-left transition-all hover:shadow-md" data-reserve-option="whatsapp">
@@ -1958,7 +1915,7 @@
           </span>
           <span class="min-w-0">
             <span class="block text-sm font-semibold text-stone-900" data-i18n="reserveDirectWa">WhatsApp directo</span>
-            <span class="mt-0.5 block text-xs text-stone-500" data-i18n="reserveDirectWaHint">Reserva directa sin comisiones</span>
+            <span class="mt-0.5 block text-xs text-stone-500" data-i18n="reserveDirectWaHint">El mensaje llega directo al local.</span>
           </span>
         </button>
         <button type="button" class="flex w-full cursor-pointer items-center gap-3 rounded-xl border border-stone-200 bg-stone-50 px-4 py-3 text-left transition-all hover:shadow-md" data-reserve-option="phone">
@@ -1967,15 +1924,15 @@
           </span>
           <span class="min-w-0">
             <span class="block text-sm font-semibold text-stone-900" data-i18n="callLong">Llamar al restaurante</span>
-            <span class="mt-0.5 block text-xs text-stone-500" data-i18n="reserveCallHint">Atención personalizada</span>
+            <span class="mt-0.5 block text-xs text-stone-500" data-i18n="reserveCallHint">En esta demo el número es de ejemplo.</span>
           </span>
         </button>
       </div>
     </div>
   </div>
 
-  <script src="demo-data.js?v=5"></script>
-  <script src="demo-app.js?v=56"></script>
+  <script src="demo-data.js?v=6"></script>
+  <script src="demo-app.js?v=59"></script>
   <script>
     (function () {
       var modal = document.getElementById('reserve-options-modal');
@@ -2036,12 +1993,10 @@
             window.openBookingPreview();
             return;
           }
-          var lang = document.documentElement.lang === 'en' ? 'en' : 'es';
-          var text = (data.whatsappText && (data.whatsappText[lang] || data.whatsappText.es)) || '';
-          window.open('https://wa.me/' + data.business.whatsapp + '?text=' + encodeURIComponent(text), '_blank', 'noopener');
+          if (location.hash !== '#reservas') location.hash = 'reservas';
           return;
         }
-        if (kind === 'phone') window.location.href = 'tel:' + data.business.phone;
+        if (kind === 'phone' && window.visiwebDemoNote) window.visiwebDemoNote('demoCallNote');
       });
     })();
   </script>

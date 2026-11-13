@@ -29,15 +29,15 @@ window.VISIWEB_DEMO = (function () {
     phoneDisplay: '+34 600 00 00 00',
     whatsapp: '34600000000',
     address: {
-      street: { es: 'C. del Marqués de la Valdavia', en: 'C. del Marqués de la Valdavia' },
+      street: { es: 'Calle de la Taberna, 12', en: '12 Calle de la Taberna' },
       postalCode: '28100',
       city: 'Alcobendas',
       region: 'Madrid',
       country: 'ES'
     },
-    // Centro aproximado de Alcobendas: no corresponde a ningún local real
-    geo: { lat: 40.5411, lng: -3.6417 },
-    mapQuery: 'Alcobendas, Madrid, España'
+    // Dirección inventada. No abrir un mapa real con este dato.
+    geo: null,
+    mapQuery: ''
   };
 
   /* --- Imágenes ------------------------------------------------------
@@ -64,25 +64,25 @@ window.VISIWEB_DEMO = (function () {
     rooms: [
       {
         id: 'fachada',
-        image: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=80',
+        image: photo('fachada.jpg'),
         title: { es: 'Fachada', en: 'Façade' },
         desc: { es: 'En el corazón de Alcobendas, con la puerta abierta al barrio.', en: 'In the heart of Alcobendas, with the door open to the neighbourhood.' }
       },
       {
         id: 'salon',
-        image: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=80',
+        image: photo('salon.jpg'),
         title: { es: 'El salón', en: 'The dining room' },
         desc: { es: 'Madera, luz baja y mesas para quedarse. 42 cubiertos en sala.', en: 'Wood, low light and tables you want to linger at. 42 covers inside.' }
       },
       {
         id: 'barra',
-        image: 'https://images.unsplash.com/photo-1514933651103-005eec06c04b?auto=format&fit=crop&w=800&q=80',
+        image: photo('barra.jpg'),
         title: { es: 'La barra', en: 'The bar' },
         desc: { es: 'Caña doble bien fría y el vermut de grifo. El sitio de siempre.', en: 'An ice-cold double draught and vermouth on tap. The usual spot.' }
       },
       {
         id: 'terraza',
-        image: 'https://images.unsplash.com/photo-1543007630-9710e4a00a20?auto=format&fit=crop&w=800&q=80',
+        image: photo('terraza.jpg'),
         title: { es: 'Terraza', en: 'Terrace' },
         desc: { es: '16 plazas al aire. Reservas de terraza, preferencia al mediodía.', en: '16 seats outdoors. Terrace bookings are easiest at lunchtime.' }
       }
@@ -289,7 +289,7 @@ window.VISIWEB_DEMO = (function () {
           priceEn: '€9.20',
           allergens: ['gluten', 'lacteos', 'huevos'],
           tags: [],
-          image: 'https://images.unsplash.com/photo-1713517915303-ae3b3429f939?auto=format&fit=crop&w=400&q=80'
+          image: photo('croquetas.jpg')
         },
         {
           id: 'calamares',
@@ -302,7 +302,7 @@ window.VISIWEB_DEMO = (function () {
           priceEn: '€12.90',
           allergens: ['gluten', 'moluscos'],
           tags: [],
-          image: 'https://images.unsplash.com/photo-1599488615731-7e5c2823ff28?auto=format&fit=crop&w=400&q=80'
+          image: photo('calamares.jpg')
         },
         {
           id: 'huevos-rotos',
@@ -315,7 +315,7 @@ window.VISIWEB_DEMO = (function () {
           priceEn: '€13.80',
           allergens: ['huevos'],
           tags: [],
-          image: 'https://images.unsplash.com/photo-1559394473-f5c8303a6d1f?auto=format&fit=crop&w=400&q=80'
+          image: photo('huevos.jpg')
         }
       ]
     },
@@ -339,7 +339,7 @@ window.VISIWEB_DEMO = (function () {
           priceEn: '€8.90',
           allergens: ['gluten', 'lacteos'],
           tags: ['recomendado'],
-          image: 'https://images.unsplash.com/photo-1774314809558-fca6938af8cb?auto=format&fit=crop&w=400&q=80'
+          image: photo('solomillo.jpg')
         },
         {
           id: 'tosta-gulas',
@@ -352,7 +352,7 @@ window.VISIWEB_DEMO = (function () {
           priceEn: '€7.60',
           allergens: ['gluten', 'pescado', 'soja'],
           tags: ['picante'],
-          image: 'https://images.unsplash.com/photo-1509722747041-616f39b57569?auto=format&fit=crop&w=400&q=80'
+          image: photo('gulas.jpg')
         },
         {
           id: 'montado-lomo',
@@ -365,7 +365,7 @@ window.VISIWEB_DEMO = (function () {
           priceEn: '€6.40',
           allergens: ['gluten'],
           tags: [],
-          image: 'https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=400&q=80'
+          image: photo('lomo.jpg')
         }
       ]
     },
@@ -402,7 +402,7 @@ window.VISIWEB_DEMO = (function () {
           priceEn: 'Included',
           allergens: ['pescado', 'huevos', 'gluten', 'apio'],
           tags: [],
-          image: 'https://images.unsplash.com/photo-1532550907401-a500c9a57435?auto=format&fit=crop&w=400&q=80'
+          image: photo('segundos.jpg')
         },
         {
           id: 'postres',
@@ -548,7 +548,7 @@ window.VISIWEB_DEMO = (function () {
           dietType: 'vegano',
           isVegetarian: true,
           isVegan: true,
-          image: 'https://images.unsplash.com/photo-1541544741938-0af808871cc0?auto=format&fit=crop&w=400&q=80'
+          image: null
         },
         {
           id: 'parrillada',
@@ -564,7 +564,7 @@ window.VISIWEB_DEMO = (function () {
           dietType: 'vegano',
           isVegetarian: true,
           isVegan: true,
-          image: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=400&q=80'
+          image: null
         },
         {
           id: 'tosta-aguacate',
@@ -580,7 +580,7 @@ window.VISIWEB_DEMO = (function () {
           dietType: 'vegano',
           isVegetarian: true,
           isVegan: true,
-          image: 'https://images.unsplash.com/photo-1541519227354-08fa5d50c44d?auto=format&fit=crop&w=400&q=80'
+          image: null
         },
         {
           id: 'tortilla',
@@ -596,7 +596,7 @@ window.VISIWEB_DEMO = (function () {
           dietType: 'vegetariano',
           isVegetarian: true,
           isVegan: false,
-          image: 'https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?auto=format&fit=crop&w=400&q=80'
+          image: null
         }
       ]
     }
@@ -611,7 +611,6 @@ window.VISIWEB_DEMO = (function () {
         author: 'Marta G.',
         rating: 5,
         when: { es: 'hace 2 semanas', en: '2 weeks ago' },
-        photo: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=128&h=128&q=80',
         dish: { es: '🍽️ Croquetas y caña', en: '🍽️ Croquettes and a beer', pill: 'border border-amber-200/60 bg-amber-50 text-amber-900' },
         text: {
           es: 'Las croquetas son de las mejores que he probado en la zona y la caña entra helada. Trato cercano desde que cruzas la puerta.',
@@ -622,7 +621,6 @@ window.VISIWEB_DEMO = (function () {
         author: 'Javier R.',
         rating: 5,
         when: { es: 'hace 1 mes', en: '1 month ago' },
-        photo: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=128&h=128&q=80',
         dish: { es: '🥘 Menú del día', en: '🥘 Set lunch', pill: 'border border-emerald-200/60 bg-emerald-50 text-emerald-900' },
         text: {
           es: 'Vamos cada jueves al menú del día: raciones generosas, casero de verdad y sales por menos de quince euros.',
@@ -633,7 +631,6 @@ window.VISIWEB_DEMO = (function () {
         author: 'Lucía P.',
         rating: 4,
         when: { es: 'hace 3 meses', en: '3 months ago' },
-        photo: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=128&h=128&q=80',
         dish: { es: '🍳 Huevos rotos', en: '🍳 Huevos rotos', pill: 'border border-rose-200/60 bg-rose-50 text-rose-900' },
         text: {
           es: 'Los huevos rotos, espectaculares. Los findes se llena, así que mejor reservar mesa con antelación.',
@@ -671,7 +668,7 @@ window.VISIWEB_DEMO = (function () {
       localSubtitle: 'Salón, barra y terraza. Como una taberna de barrio, con mesa para quedarse.',
       historyTitle: 'Nuestra historia',
       bookTitle: 'Reservar mesa',
-      bookSubtitle: 'Elige día, hora y comensales. Recibirás la confirmación al instante (demostración).',
+      bookSubtitle: 'Elige día, hora y comensales. Verás el mensaje que recibiría el local.',
       bookName: 'Nombre',
       bookPhone: 'Teléfono',
       bookPrefix: 'Prefijo',
@@ -682,10 +679,10 @@ window.VISIWEB_DEMO = (function () {
       bookSubmit: 'Confirmar reserva',
       bookClosed: 'Ese día no hay cocina. Elige otro.',
       bookNoSlots: 'No quedan horarios en esa fecha.',
-      bookSuccessTitle: '¡Solicitud lista para enviar!',
-      bookSuccessLead: 'Así es como entra la reserva directa a tu teléfono, sin comisiones de intermediarios:',
-      bookWaClose: 'Cerrar simulación',
-      bookWaTry: 'Probar en mi WhatsApp',
+      bookSuccessTitle: 'Así llega la reserva',
+      bookSuccessLead: 'Este es el mensaje que recibiría el local por WhatsApp. No se envía hasta que abras WhatsApp.',
+      bookWaClose: 'Cerrar',
+      bookWaTry: 'Abrir el mensaje en WhatsApp',
       bookWaIntro: 'Hola, soy {name}. Me gustaría reservar mesa en Taberna El Norte.',
       bookWaNote: 'Comentario',
       bookError: 'Revisa los campos e inténtalo de nuevo.',
@@ -694,7 +691,7 @@ window.VISIWEB_DEMO = (function () {
       bookAreaSalon: 'Salón',
       bookAreaTerrace: 'Terraza',
       bookAreaBar: 'Barra',
-      bookDemoNote: 'En un entorno real, este botón envía la solicitud estructurada directamente a tu WhatsApp, sin comisiones por comensal ni pasarelas intermedias.',
+      bookDemoNote: 'Vista previa. El mensaje solo sale si abres WhatsApp.',
       bookTimePlaceholder: 'Elegir hora',
       bookDatePlaceholder: 'Selecciona una fecha',
       bookGuestsPlaceholder: 'Elegir comensales',
@@ -703,7 +700,7 @@ window.VISIWEB_DEMO = (function () {
       salesTap: 'Pulsa aquí',
       salesBannerDetail: 'Así quedaría tu local. Esta demo es interactiva.',
       allergenChip: 'Alérgenos',
-      mapSearchHint: 'Pulsa para buscarlo en Google Maps',
+      mapSearchHint: 'En la web del local, este mapa abre la ruta.',
       backHome: 'Volver al inicio',
       bookGuestsPick: 'Seleccionar',
       bookGuestOne: '1 persona',
@@ -713,7 +710,8 @@ window.VISIWEB_DEMO = (function () {
       allergenFilterEmpty: 'Ningún plato coincide con el filtro.',
       navLabel: 'Secciones',
       gbpTitle: 'Ficha de Google',
-      gbpSubtitle: 'Así aparece el local en búsquedas de tapas y menú del día en Alcobendas.',
+      gbpSubtitle: 'Vista previa de ejemplo. El teléfono, la dirección y las opiniones son ficticios.',
+      gbpDemo: 'Vista previa',
       gbpPhotos: 'Fotos del local',
       gbpOpen: 'Abierto',
       gbpClosed: 'Cerrado',
@@ -751,18 +749,18 @@ window.VISIWEB_DEMO = (function () {
       bookMissing: 'Faltan apartados por rellenar',
       reserveWhatsApp: 'Reservar mesa por WhatsApp',
       reserveOptionsTitle: 'Haz tu reserva',
-      reserveOptionsLead: 'Integramos el sistema que mejor funcione para tu restaurante.',
+      reserveOptionsLead: 'Elige cómo quieres reservar.',
       reserveOnline: 'Reservar online',
-      reserveOnlineHint: 'Integración con TheFork, CoverManager, etc.',
+      reserveOnlineHint: 'Día, hora y comensales, en esta misma página.',
       reserveDirectWa: 'WhatsApp directo',
-      reserveDirectWaHint: 'Reserva directa sin comisiones',
-      reserveCallHint: 'Atención personalizada',
+      reserveDirectWaHint: 'El mensaje llega directo al local.',
+      reserveCallHint: 'En esta demo el número es de ejemplo.',
       directions: 'Cómo llegar',
       labelAddress: 'Dirección',
       labelToday: 'Horario de hoy',
       labelMenuDay: 'Menú del día',
-      menuDayNote: 'De lunes a viernes a mediodía',
-      menuDayCompact: 'Menú del día (L-V)',
+      menuDayNote: 'De martes a viernes a mediodía',
+      menuDayCompact: 'Menú del día (M-V)',
       hoursShort: 'Horarios',
       closedToday: 'Hoy cerrado',
       allHours: 'Ver todos los horarios',
@@ -788,7 +786,10 @@ window.VISIWEB_DEMO = (function () {
       vatNotice: 'Precios con IVA incluido. Pan y aceite: 1,20 € por persona (excepto en Menú del Día, donde está incluido).',
       reviewsTitle: 'Opiniones',
       reviewsDemo: 'Reseñas de demostración',
-      reviewsScore: '· {count} opiniones en Google',
+      reviewsScore: '· {count} opiniones de ejemplo',
+      demoCallNote: 'Número de ejemplo. En la web del local, este botón llama de verdad.',
+      demoRouteNote: 'Dirección de ejemplo. En la web del local, esto abre la ruta.',
+      demoSaveNote: 'Vista previa. En la ficha real, esto guarda el local en Google.',
       localGuide: 'Local Guide',
       reviewsOnGoogle: 'Ver las {count} opiniones en Google ↗',
       ratingOf: '{rating} de 5 estrellas',
@@ -807,7 +808,7 @@ window.VISIWEB_DEMO = (function () {
       planBadge: 'Plan Gastro Premium',
       planBanner: 'Esta demo interactiva incluye las características del Plan Gastro Premium (390 € montaje. IVA no inc.).',
       planCta: 'Ver planes y contratar ↗',
-      salesBar: 'Así quedaría tu local.',
+      salesBar: 'Demo de VisiWeb Madrid',
       salesBarCta: 'Pide la tuya',
       salesWhatsappText: 'Hola, he visto la demo y quiero una así para mi local.',
       planHero: 'Demo Carta Digital · Nivel Gastro Premium',
@@ -862,7 +863,7 @@ window.VISIWEB_DEMO = (function () {
       localSubtitle: 'Dining room, bar and terrace. A neighbourhood tavern, with a table worth staying for.',
       historyTitle: 'Our story',
       bookTitle: 'Book a table',
-      bookSubtitle: 'Choose a day, time and party size. You will see an instant confirmation (demo).',
+      bookSubtitle: 'Choose a day, time and party size. You will see the message the venue would receive.',
       bookName: 'Name',
       bookPhone: 'Phone',
       bookPrefix: 'Prefix',
@@ -873,10 +874,10 @@ window.VISIWEB_DEMO = (function () {
       bookSubmit: 'Confirm booking',
       bookClosed: 'The kitchen is closed that day. Please pick another.',
       bookNoSlots: 'No times left on that date.',
-      bookSuccessTitle: 'Request ready to send!',
-      bookSuccessLead: 'This is how a direct booking reaches your phone, with no intermediary commission:',
-      bookWaClose: 'Close simulation',
-      bookWaTry: 'Try it on my WhatsApp',
+      bookSuccessTitle: 'This is the booking',
+      bookSuccessLead: 'This is the WhatsApp message the venue would get. Nothing is sent until you open WhatsApp.',
+      bookWaClose: 'Close',
+      bookWaTry: 'Open the message in WhatsApp',
       bookWaIntro: 'Hello, this is {name}. I would like to book a table at Taberna El Norte.',
       bookWaNote: 'Note',
       bookError: 'Please check the fields and try again.',
@@ -885,7 +886,7 @@ window.VISIWEB_DEMO = (function () {
       bookAreaSalon: 'Dining room',
       bookAreaTerrace: 'Terrace',
       bookAreaBar: 'Bar',
-      bookDemoNote: 'In a real setting, this button sends the structured request straight to your WhatsApp, with no per-guest commission and no intermediate payment gateways.',
+      bookDemoNote: 'Preview. The message only leaves if you open WhatsApp.',
       bookTimePlaceholder: 'Choose a time',
       bookDatePlaceholder: 'Select a date',
       bookGuestsPlaceholder: 'Choose guests',
@@ -894,7 +895,7 @@ window.VISIWEB_DEMO = (function () {
       salesTap: 'Tap here',
       salesBannerDetail: 'This is how your place would look. This demo is interactive.',
       allergenChip: 'Allergens',
-      mapSearchHint: 'Tap to find it on Google Maps',
+      mapSearchHint: 'On the real site, this map opens the route.',
       backHome: 'Back to top',
       bookGuestsPick: 'Select',
       bookGuestOne: '1 guest',
@@ -904,7 +905,8 @@ window.VISIWEB_DEMO = (function () {
       allergenFilterEmpty: 'No dishes match this filter.',
       navLabel: 'Sections',
       gbpTitle: 'Google Business profile',
-      gbpSubtitle: 'How the tavern appears for tapas and set-lunch searches in Alcobendas.',
+      gbpSubtitle: 'Sample preview. The phone, address and reviews are fictional.',
+      gbpDemo: 'Preview',
       gbpPhotos: 'Venue photos',
       gbpOpen: 'Open',
       gbpClosed: 'Closed',
@@ -942,18 +944,18 @@ window.VISIWEB_DEMO = (function () {
       bookMissing: 'Some fields are still empty',
       reserveWhatsApp: 'Book a table on WhatsApp',
       reserveOptionsTitle: 'Book your table',
-      reserveOptionsLead: 'We connect whichever system works best for your restaurant.',
+      reserveOptionsLead: 'Choose how you want to book.',
       reserveOnline: 'Book online',
-      reserveOnlineHint: 'TheFork, CoverManager and similar integrations.',
+      reserveOnlineHint: 'Day, time and party size, on this page.',
       reserveDirectWa: 'Direct WhatsApp',
-      reserveDirectWaHint: 'Direct booking, no commission',
-      reserveCallHint: 'Personal service',
+      reserveDirectWaHint: 'The message goes straight to the venue.',
+      reserveCallHint: 'The number in this demo is a sample.',
       directions: 'Get directions',
       labelAddress: 'Address',
       labelToday: "Today's hours",
       labelMenuDay: 'Set lunch',
-      menuDayNote: 'Weekday lunch, Monday to Friday',
-      menuDayCompact: 'Set lunch (Mon–Fri)',
+      menuDayNote: 'Tuesday to Friday, at lunch',
+      menuDayCompact: 'Set lunch (Tue–Fri)',
       hoursShort: 'Hours',
       closedToday: 'Closed today',
       allHours: 'See all opening hours',
@@ -979,7 +981,10 @@ window.VISIWEB_DEMO = (function () {
       vatNotice: 'Prices include VAT. Bread and olive oil: €1.20 per person (except on the set lunch, where it is included).',
       reviewsTitle: 'Reviews',
       reviewsDemo: 'Sample reviews',
-      reviewsScore: '· {count} reviews on Google',
+      reviewsScore: '· {count} sample reviews',
+      demoCallNote: 'Sample number. On the real site, this button places the call.',
+      demoRouteNote: 'Sample address. On the real site, this opens the route.',
+      demoSaveNote: 'Preview. On the real listing, this saves the place in Google.',
       localGuide: 'Local Guide',
       reviewsOnGoogle: 'See all {count} reviews on Google ↗',
       ratingOf: '{rating} out of 5 stars',
@@ -998,7 +1003,7 @@ window.VISIWEB_DEMO = (function () {
       planBadge: 'Gastro Premium Plan',
       planBanner: 'This interactive demo includes the features of the Gastro Premium Plan (€390 setup. VAT not included).',
       planCta: 'See plans and sign up ↗',
-      salesBar: 'This is how your place would look.',
+      salesBar: 'VisiWeb Madrid demo',
       salesBarCta: 'Request yours',
       salesWhatsappText: 'Hello, I have seen the demo and I want one like this for my place.',
       planHero: 'Digital menu demo · Gastro Premium',
