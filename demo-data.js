@@ -144,7 +144,7 @@ window.VISIWEB_DEMO = (function () {
     areas: ['any', 'salon', 'terrace', 'bar']
   };
 
-  const FEATURED = ['bravas', 'croquetas', 'huevos-rotos', 'tosta-solomillo', 'cana-doble', 'menu-completo'];
+  const FEATURED = ['costillas', 'solomillo', 'tosta-aguacate', 'cana-doble', 'rioja', 'ribera'];
 
   /* --- Horarios: FUENTE ÚNICA ----------------------------------------
      Clave = día de la semana JS (0 domingo … 6 sábado).
@@ -264,6 +264,32 @@ window.VISIWEB_DEMO = (function () {
       },
       items: [
         {
+          id: 'costillas',
+          name: { es: 'Costillas a la brasa', en: 'Charcoal pork ribs' },
+          desc: {
+            es: 'Costillar glaseado, patatas fritas, tomate y encurtidos.',
+            en: 'Glazed pork ribs with chips, tomato and pickles.'
+          },
+          price: '14,90 €',
+          priceEn: '€14.90',
+          allergens: [],
+          tags: ['recomendado'],
+          image: photo('lomo.jpg')
+        },
+        {
+          id: 'solomillo',
+          name: { es: 'Solomillo con patatas', en: 'Sirloin with chips' },
+          desc: {
+            es: 'Solomillo a la plancha, patatas fritas y tomate.',
+            en: 'Griddled sirloin with chips and tomato.'
+          },
+          price: '16,50 €',
+          priceEn: '€16.50',
+          allergens: [],
+          tags: ['recomendado'],
+          image: photo('solomillo.jpg')
+        },
+        {
           id: 'bravas',
           name: { es: 'Patatas bravas', en: 'Patatas bravas' },
           desc: {
@@ -276,7 +302,7 @@ window.VISIWEB_DEMO = (function () {
           tags: ['recomendado', 'picante', 'vegetariano'],
           isVegetarian: true,
           isVegan: false,
-          image: photo('bravas.jpg')
+          image: null
         },
         {
           id: 'croquetas',
@@ -289,7 +315,7 @@ window.VISIWEB_DEMO = (function () {
           priceEn: '€9.20',
           allergens: ['gluten', 'lacteos', 'huevos'],
           tags: [],
-          image: photo('croquetas.jpg')
+          image: null
         },
         {
           id: 'calamares',
@@ -302,7 +328,7 @@ window.VISIWEB_DEMO = (function () {
           priceEn: '€12.90',
           allergens: ['gluten', 'moluscos'],
           tags: [],
-          image: photo('calamares.jpg')
+          image: null
         },
         {
           id: 'huevos-rotos',
@@ -315,7 +341,7 @@ window.VISIWEB_DEMO = (function () {
           priceEn: '€13.80',
           allergens: ['huevos'],
           tags: [],
-          image: photo('huevos.jpg')
+          image: null
         }
       ]
     },
@@ -329,19 +355,6 @@ window.VISIWEB_DEMO = (function () {
       },
       items: [
         {
-          id: 'tosta-solomillo',
-          name: { es: 'Tosta de solomillo', en: 'Tenderloin toast' },
-          desc: {
-            es: 'Medallones de solomillo a la plancha, brie fundido y cebolla caramelizada.',
-            en: 'Griddled tenderloin medallions, melted brie and caramelised onion.'
-          },
-          price: '8,90 €',
-          priceEn: '€8.90',
-          allergens: ['gluten', 'lacteos'],
-          tags: ['recomendado'],
-          image: photo('solomillo.jpg')
-        },
-        {
           id: 'tosta-gulas',
           name: { es: 'Tosta de gulas al ajillo', en: 'Garlic baby-eel-style toast' },
           desc: {
@@ -352,7 +365,7 @@ window.VISIWEB_DEMO = (function () {
           priceEn: '€7.60',
           allergens: ['gluten', 'pescado', 'soja'],
           tags: ['picante'],
-          image: photo('gulas.jpg')
+          image: null
         },
         {
           id: 'montado-lomo',
@@ -365,7 +378,7 @@ window.VISIWEB_DEMO = (function () {
           priceEn: '€6.40',
           allergens: ['gluten'],
           tags: [],
-          image: photo('lomo.jpg')
+          image: null
         }
       ]
     },
@@ -389,7 +402,7 @@ window.VISIWEB_DEMO = (function () {
           priceEn: 'Included',
           allergens: ['gluten', 'huevos', 'apio', 'lacteos'],
           tags: [],
-          image: photo('primeros.jpg')
+          image: null
         },
         {
           id: 'segundos',
@@ -402,7 +415,7 @@ window.VISIWEB_DEMO = (function () {
           priceEn: 'Included',
           allergens: ['pescado', 'huevos', 'gluten', 'apio'],
           tags: [],
-          image: photo('segundos.jpg')
+          image: null
         },
         {
           id: 'postres',
@@ -417,7 +430,7 @@ window.VISIWEB_DEMO = (function () {
           tags: ['vegetariano'],
           isVegetarian: true,
           isVegan: false,
-          image: photo('postres.jpg')
+          image: null
         },
         {
           id: 'menu-completo',
@@ -434,7 +447,7 @@ window.VISIWEB_DEMO = (function () {
             en: 'Depends on the dishes you choose'
           },
           tags: ['recomendado'],
-          image: photo('menu.jpg')
+          image: null
         }
       ]
     },
@@ -505,7 +518,7 @@ window.VISIWEB_DEMO = (function () {
           tags: [],
           isVegetarian: true,
           isVegan: true,
-          image: photo('vermut.jpg')
+          image: null
         }
       ]
     },
@@ -532,7 +545,7 @@ window.VISIWEB_DEMO = (function () {
           dietType: 'vegano',
           isVegetarian: true,
           isVegan: true,
-          image: photo('bravas.jpg')
+          image: null
         },
         {
           id: 'padron',
@@ -568,19 +581,19 @@ window.VISIWEB_DEMO = (function () {
         },
         {
           id: 'tosta-aguacate',
-          name: { es: 'Tosta de aguacate', en: 'Avocado toast' },
+          name: { es: 'Tosta de aguacate y huevo', en: 'Avocado and egg toast' },
           desc: {
-            es: 'Pan de masa madre, aguacate machacado, tomate seco y aceite de oliva.',
-            en: 'Sourdough, crushed avocado, sun-dried tomato and olive oil.'
+            es: 'Pan de hogaza, aguacate, huevo cocido y hojas verdes.',
+            en: 'Country bread, avocado, boiled egg and greens.'
           },
           price: '7,90 €',
           priceEn: '€7.90',
-          allergens: ['gluten'],
+          allergens: ['gluten', 'huevos'],
           tags: [],
-          dietType: 'vegano',
+          dietType: 'vegetariano',
           isVegetarian: true,
-          isVegan: true,
-          image: null
+          isVegan: false,
+          image: photo('huevos.jpg')
         },
         {
           id: 'tortilla',
