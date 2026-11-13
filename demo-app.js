@@ -61,10 +61,7 @@
   function initialLang() {
     const fromUrl = new URLSearchParams(window.location.search).get('lang');
     if (fromUrl && D.i18n[fromUrl]) return fromUrl;
-    const stored = readStore(STORE_LANG);
-    if (stored && D.i18n[stored]) return stored;
-    const nav = (navigator.language || 'es').slice(0, 2).toLowerCase();
-    return D.i18n[nav] ? nav : 'es';
+    return 'es';
   }
 
   let lang = initialLang();

@@ -32,7 +32,7 @@
 
   <link rel="preload" href="assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/cormorant-garamond-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="assets/demo.css?v=46">
+  <link rel="stylesheet" href="assets/demo.css?v=49">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
   <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
@@ -844,8 +844,6 @@
         justify-content: center;
         align-self: center;
         flex: none;
-        height: 2.25rem;
-        padding: 0 0.85rem;
         line-height: 1;
         white-space: nowrap;
       }
@@ -1203,7 +1201,6 @@
       }
     }
     a#plan-gastro-link {
-      display: inline-block;
       text-decoration: none;
       -webkit-tap-highlight-color: transparent;
       transition: transform .15s ease, box-shadow .15s ease, background-color .15s ease, border-color .15s ease;
@@ -1352,10 +1349,13 @@
   <!-- ============================ CABECERA ============================ -->
   <div data-site-sticky class="bg-white dark:bg-stone-900">
   <div id="demo-sales-banner" class="w-full border-b border-stone-200 bg-stone-50 dark:border-stone-800 dark:bg-stone-900">
-    <div class="mx-auto flex max-w-3xl items-center gap-2 px-5 py-2">
-      <p class="min-w-0 flex-1 truncate text-[11px] font-medium text-stone-600 dark:text-stone-300" data-i18n="salesBar">Demo de VisiWeb Madrid</p>
-      <a id="plan-gastro-link" href="https://visiwebmadrid.com/#gastro-premium" class="shrink-0 whitespace-nowrap rounded-full border border-stone-200 bg-white px-3 py-1 text-center text-[10px] font-bold uppercase tracking-wide text-stone-700 no-underline dark:border-stone-700 dark:bg-stone-800 dark:text-stone-300 sm:text-xs" data-i18n="planBadge">Plan Gastro Premium</a>
-      <a id="sales-whatsapp" href="https://wa.me/34608975906?text=Hola%2C%20he%20visto%20la%20demo%20y%20quiero%20una%20as%C3%AD%20para%20mi%20local." target="_blank" rel="noopener" class="inline-flex h-8 shrink-0 items-center justify-center whitespace-nowrap rounded-full bg-emerald-600 px-3.5 text-[11px] font-bold leading-none text-white no-underline hover:bg-emerald-500">
+    <div class="mx-auto flex max-w-3xl items-center justify-between gap-2 px-3 py-2">
+      <p class="min-w-0 text-[11px] font-medium text-stone-600 dark:text-stone-300">
+        <span class="sm:hidden" data-i18n="salesBarShort">Demo VisiWeb</span>
+        <span class="hidden sm:inline" data-i18n="salesBar">Demo de VisiWeb Madrid</span>
+      </p>
+      <a id="plan-gastro-link" href="https://visiwebmadrid.com/#gastro-premium" class="hidden shrink-0 whitespace-nowrap rounded-full border border-stone-200 bg-white px-3 py-1 text-center text-xs font-bold uppercase tracking-wide text-stone-700 no-underline dark:border-stone-700 dark:bg-stone-800 dark:text-stone-300 sm:inline-flex" data-i18n="planBadge">Plan Gastro Premium</a>
+      <a id="sales-whatsapp" href="https://wa.me/34608975906?text=Hola%2C%20he%20visto%20la%20demo%20y%20quiero%20una%20as%C3%AD%20para%20mi%20local." target="_blank" rel="noopener" class="inline-flex shrink-0 items-center justify-center whitespace-nowrap rounded-full bg-emerald-600 px-3 py-1 text-xs font-bold leading-none text-white no-underline hover:bg-emerald-500">
         <span data-i18n="salesBarCta">Pide la tuya</span>
       </a>
     </div>
@@ -1943,8 +1943,8 @@
     </div>
   </div>
 
-  <script src="demo-data.js?v=7"></script>
-  <script src="demo-app.js?v=59"></script>
+  <script src="demo-data.js?v=14"></script>
+  <script src="demo-app.js?v=60"></script>
   <script>
     (function () {
       var modal = document.getElementById('reserve-options-modal');

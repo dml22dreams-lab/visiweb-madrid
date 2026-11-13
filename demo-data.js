@@ -144,7 +144,7 @@ window.VISIWEB_DEMO = (function () {
     areas: ['any', 'salon', 'terrace', 'bar']
   };
 
-  const FEATURED = ['costillas', 'solomillo', 'tosta-aguacate', 'cana-doble', 'rioja', 'ribera'];
+  const FEATURED = ['costillas', 'salmon', 'tosta-aguacate', 'cana-doble', 'rioja', 'ribera'];
 
   /* --- Horarios: FUENTE ÚNICA ----------------------------------------
      Clave = día de la semana JS (0 domingo … 6 sábado).
@@ -251,7 +251,7 @@ window.VISIWEB_DEMO = (function () {
   /* --- Carta ---------------------------------------------------------
      anchor: permite abrir una pestaña con la URL (#menu-del-dia).
      allergens: claves de ALLERGENS · tags: claves de DIET_TAGS.
-     image: null = marcador de posición neutro.
+     image: foto del plato en assets/demo/.
   ------------------------------------------------------------------- */
   const MENU = [
     {
@@ -277,17 +277,17 @@ window.VISIWEB_DEMO = (function () {
           image: photo('lomo.jpg')
         },
         {
-          id: 'solomillo',
-          name: { es: 'Solomillo con patatas', en: 'Sirloin with chips' },
+          id: 'salmon',
+          name: { es: 'Salmón con verduras', en: 'Salmon with vegetables' },
           desc: {
-            es: 'Solomillo a la plancha, patatas fritas y tomate.',
-            en: 'Griddled sirloin with chips and tomato.'
+            es: 'Salmón a la plancha, judías verdes, cuscús y tomate cherry.',
+            en: 'Griddled salmon with green beans, couscous and cherry tomatoes.'
           },
-          price: '16,50 €',
-          priceEn: '€16.50',
-          allergens: [],
+          price: '14,80 €',
+          priceEn: '€14.80',
+          allergens: ['pescado'],
           tags: ['recomendado'],
-          image: photo('solomillo.jpg')
+          image: photo('primeros.jpg')
         },
         {
           id: 'bravas',
@@ -302,7 +302,7 @@ window.VISIWEB_DEMO = (function () {
           tags: ['recomendado', 'picante', 'vegetariano'],
           isVegetarian: true,
           isVegan: false,
-          image: null
+          image: photo('bravas-real.jpg')
         },
         {
           id: 'croquetas',
@@ -315,7 +315,7 @@ window.VISIWEB_DEMO = (function () {
           priceEn: '€9.20',
           allergens: ['gluten', 'lacteos', 'huevos'],
           tags: [],
-          image: null
+          image: photo('croquetas-jamon.jpg')
         },
         {
           id: 'calamares',
@@ -328,7 +328,7 @@ window.VISIWEB_DEMO = (function () {
           priceEn: '€12.90',
           allergens: ['gluten', 'moluscos'],
           tags: [],
-          image: null
+          image: photo('calamares-real.jpg')
         },
         {
           id: 'huevos-rotos',
@@ -341,7 +341,7 @@ window.VISIWEB_DEMO = (function () {
           priceEn: '€13.80',
           allergens: ['huevos'],
           tags: [],
-          image: null
+          image: photo('huevos-rotos.jpg')
         }
       ]
     },
@@ -365,7 +365,7 @@ window.VISIWEB_DEMO = (function () {
           priceEn: '€7.60',
           allergens: ['gluten', 'pescado', 'soja'],
           tags: ['picante'],
-          image: null
+          image: photo('tosta-gulas.jpg')
         },
         {
           id: 'montado-lomo',
@@ -378,7 +378,7 @@ window.VISIWEB_DEMO = (function () {
           priceEn: '€6.40',
           allergens: ['gluten'],
           tags: [],
-          image: null
+          image: photo('montado-lomo.jpg')
         }
       ]
     },
@@ -402,7 +402,7 @@ window.VISIWEB_DEMO = (function () {
           priceEn: 'Included',
           allergens: ['gluten', 'huevos', 'apio', 'lacteos'],
           tags: [],
-          image: null
+          image: photo('menu-primeros.jpg')
         },
         {
           id: 'segundos',
@@ -415,7 +415,7 @@ window.VISIWEB_DEMO = (function () {
           priceEn: 'Included',
           allergens: ['pescado', 'huevos', 'gluten', 'apio'],
           tags: [],
-          image: null
+          image: photo('menu-segundos.jpg')
         },
         {
           id: 'postres',
@@ -430,7 +430,7 @@ window.VISIWEB_DEMO = (function () {
           tags: ['vegetariano'],
           isVegetarian: true,
           isVegan: false,
-          image: null
+          image: photo('menu-postres.jpg')
         },
         {
           id: 'menu-completo',
@@ -447,7 +447,7 @@ window.VISIWEB_DEMO = (function () {
             en: 'Depends on the dishes you choose'
           },
           tags: ['recomendado'],
-          image: null
+          image: photo('menu-completo.jpg')
         }
       ]
     },
@@ -518,7 +518,7 @@ window.VISIWEB_DEMO = (function () {
           tags: [],
           isVegetarian: true,
           isVegan: true,
-          image: null
+          image: photo('vermut-real.jpg')
         }
       ]
     },
@@ -545,7 +545,7 @@ window.VISIWEB_DEMO = (function () {
           dietType: 'vegano',
           isVegetarian: true,
           isVegan: true,
-          image: null
+          image: photo('bravas-veg.jpg')
         },
         {
           id: 'padron',
@@ -561,7 +561,7 @@ window.VISIWEB_DEMO = (function () {
           dietType: 'vegano',
           isVegetarian: true,
           isVegan: true,
-          image: null
+          image: photo('padron.jpg')
         },
         {
           id: 'parrillada',
@@ -577,7 +577,7 @@ window.VISIWEB_DEMO = (function () {
           dietType: 'vegano',
           isVegetarian: true,
           isVegan: true,
-          image: null
+          image: photo('parrillada.jpg')
         },
         {
           id: 'tosta-aguacate',
@@ -609,7 +609,7 @@ window.VISIWEB_DEMO = (function () {
           dietType: 'vegetariano',
           isVegetarian: true,
           isVegan: false,
-          image: null
+          image: photo('tortilla.jpg')
         }
       ]
     }
@@ -822,6 +822,7 @@ window.VISIWEB_DEMO = (function () {
       planBanner: 'Esta demo interactiva incluye las características del Plan Gastro Premium (390 € montaje. IVA no inc.).',
       planCta: 'Ver planes y contratar ↗',
       salesBar: 'Demo de VisiWeb Madrid',
+      salesBarShort: 'Demo VisiWeb',
       salesBarCta: 'Pide la tuya',
       salesWhatsappText: 'Hola, he visto la demo y quiero una así para mi local.',
       planHero: 'Demo Carta Digital · Nivel Gastro Premium',
@@ -1017,6 +1018,7 @@ window.VISIWEB_DEMO = (function () {
       planBanner: 'This interactive demo includes the features of the Gastro Premium Plan (€390 setup. VAT not included).',
       planCta: 'See plans and sign up ↗',
       salesBar: 'VisiWeb Madrid demo',
+      salesBarShort: 'VisiWeb demo',
       salesBarCta: 'Request yours',
       salesWhatsappText: 'Hello, I have seen the demo and I want one like this for my place.',
       planHero: 'Digital menu demo · Gastro Premium',
