@@ -666,7 +666,8 @@
     });
 
     photos.textContent = '';
-    D.local.rooms.forEach((room, index) => {
+    const previewRooms = D.local.rooms.filter((room) => !/barra\.webp$/.test(room.image || ''));
+    previewRooms.forEach((room, index) => {
       const frame = el('div', 'relative h-20 w-full overflow-hidden rounded-lg sm:h-24');
       const img = imageOrPlaceholder(room.image, L(room.title), null, 'h-full w-full object-cover');
       if (img.tagName === 'IMG') {
@@ -675,7 +676,7 @@
         img.height = 96;
       }
       frame.appendChild(img);
-      if (index === D.local.rooms.length - 1) {
+      if (index === previewRooms.length - 1) {
         const more = el('div', 'absolute inset-0 flex items-center justify-center bg-black/50 text-[11px] font-medium text-white sm:text-xs');
         more.textContent = t('gbpMorePhotos');
         frame.appendChild(more);
@@ -769,7 +770,7 @@
 
   /* --- Ficha de Google · panel "Fotos" ------------------------------------ */
   function gbpPhotoSet() {
-    const shots = D.local.rooms.map((room) => ({
+    const shots = D.local.rooms.filter((room) => !/barra\.webp$/.test(room.image || '')).map((room) => ({
       image: room.image,
       alt: L(room.title),
       group: room.id === 'terraza' ? 'terrace' : 'ambience'

@@ -29,7 +29,7 @@ window.VISIWEB_DEMO = (function () {
     phoneDisplay: '+34 600 00 00 00',
     whatsapp: '34600000000',
     address: {
-      street: { es: 'Calle de la Taberna, 12', en: '12 Calle de la Taberna' },
+      street: { es: 'C. del Marqués de la Valdavia', en: 'C. del Marqués de la Valdavia' },
       postalCode: '28100',
       city: 'Alcobendas',
       region: 'Madrid',
@@ -144,7 +144,7 @@ window.VISIWEB_DEMO = (function () {
     areas: ['any', 'salon', 'terrace', 'bar']
   };
 
-  const FEATURED = ['costillas', 'salmon', 'tosta-aguacate', 'cana-doble', 'rioja', 'ribera'];
+  const FEATURED = ['costillas', 'croquetas', 'bravas', 'cana-doble', 'rioja', 'ribera'];
 
   /* --- Horarios: FUENTE ÚNICA ----------------------------------------
      Clave = día de la semana JS (0 domingo … 6 sábado).
@@ -291,7 +291,7 @@ window.VISIWEB_DEMO = (function () {
         },
         {
           id: 'bravas',
-          name: { es: 'Patatas bravas', en: 'Patatas bravas' },
+          name: { es: 'Patatas bravas con alioli', en: 'Patatas bravas with aioli' },
           desc: {
             es: 'Patata frita en dos tiempos, salsa brava de la casa y alioli montado al mortero.',
             en: 'Double-fried potatoes, our house brava sauce and aioli pounded in a mortar.'
@@ -306,7 +306,7 @@ window.VISIWEB_DEMO = (function () {
         },
         {
           id: 'croquetas',
-          name: { es: 'Croquetas de jamón', en: 'Ham croquettes' },
+          name: { es: 'Croquetas caseras de jamón', en: 'Homemade ham croquettes' },
           desc: {
             es: 'Seis unidades de bechamel fundente con jamón picado a cuchillo y rebozado crujiente.',
             en: 'Six pieces of silky béchamel with hand-cut ham in a crisp coating.'
@@ -788,14 +788,14 @@ window.VISIWEB_DEMO = (function () {
       intolerance: 'Intolerancia',
       noAllergens: 'Sin alérgenos de declaración obligatoria',
       allergenKey: 'Leyenda de alérgenos',
-      allergenTableLink: 'Ver tabla completa de alérgenos',
+      allergenTableLink: 'Ver tabla completa',
       allergenTableTitle: 'Tabla de alérgenos por plato',
       allergenInfoHint: 'Toca una sigla (GLU, LAC...) para ver su nombre',
       allergenInfoClear: 'Quitar',
       allergenTableHint: 'Desplaza la tabla en horizontal para ver los catorce alérgenos.',
       close: 'Cerrar',
       dish: 'Plato',
-      staffNotice: 'Consulta a nuestro personal la información completa de los catorce alérgenos de declaración obligatoria.',
+      staffNotice: 'Consulta a nuestro personal la información completa.',
       vatNotice: 'Precios con IVA incluido. Pan y aceite: 1,20 € por persona (excepto en Menú del Día, donde está incluido).',
       reviewsTitle: 'Opiniones',
       reviewsDemo: 'Reseñas de demostración',
@@ -984,14 +984,14 @@ window.VISIWEB_DEMO = (function () {
       intolerance: 'Intolerance',
       noAllergens: 'No allergens that must be declared',
       allergenKey: 'Allergen key',
-      allergenTableLink: 'View the full allergen table',
+      allergenTableLink: 'View the full table',
       allergenTableTitle: 'Allergen table by dish',
       allergenInfoHint: 'Tap a code (GLU, LAC...) to see its name',
       allergenInfoClear: 'Clear',
       allergenTableHint: 'Scroll the table sideways to see all fourteen allergens.',
       close: 'Close',
       dish: 'Dish',
-      staffNotice: 'Ask our staff for the full information on the fourteen allergens that must be declared.',
+      staffNotice: 'Ask our staff for the full information.',
       vatNotice: 'Prices include VAT. Bread and olive oil: €1.20 per person (except on the set lunch, where it is included).',
       reviewsTitle: 'Reviews',
       reviewsDemo: 'Sample reviews',

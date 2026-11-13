@@ -1495,14 +1495,14 @@
         <p id="filter-empty" class="mt-10 hidden text-center text-sm text-slate-600 dark:text-slate-400" data-i18n="allergenFilterEmpty">Ningún plato coincide con el filtro.</p>
 
         <section class="mt-14 pt-8" aria-labelledby="allergen-key-title">
-          <h2 id="allergen-key-title" class="font-serif text-2xl font-semibold tracking-tight" data-i18n="allergenKey">Leyenda de alérgenos</h2>
+          <h2 id="allergen-key-title" class="border-b border-slate-200 pb-3 font-serif text-2xl font-semibold tracking-tight dark:border-slate-800" data-i18n="allergenKey">Leyenda de alérgenos</h2>
           <ul id="allergen-key" class="mt-5 grid grid-cols-2 gap-x-6 gap-y-3 sm:grid-cols-3"></ul>
 
           <div class="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">
-            <button type="button" id="open-allergen-table" class="btn-outline w-full sm:w-auto" data-i18n="allergenTableLink">Ver tabla completa de alérgenos</button>
+            <button type="button" id="open-allergen-table" class="btn-outline w-full sm:w-auto" data-i18n="allergenTableLink">Ver tabla completa</button>
           </div>
 
-          <p class="mt-6 text-sm leading-relaxed text-slate-600 dark:text-slate-400" data-i18n="staffNotice">Consulta a nuestro personal la información completa de los catorce alérgenos de declaración obligatoria.</p>
+          <p class="mt-6 text-sm leading-relaxed text-slate-600 dark:text-slate-400" data-i18n="staffNotice">Consulta a nuestro personal la información completa.</p>
           <p class="mt-2 text-xs leading-relaxed text-slate-600 dark:text-slate-400" data-i18n="vatNotice">Precios con IVA incluido. Pan y aceite: 1,20 € por persona (excepto en Menú del Día, donde está incluido).</p>
         </section>
 
@@ -1555,7 +1555,7 @@
             </div>
 
             <!-- PANEL: RESUMEN -->
-            <div id="gbp-panel-overview" data-gbp-panel="overview" role="tabpanel" aria-labelledby="gbp-tab-overview" class="block pb-28 md:pb-2">
+            <div id="gbp-panel-overview" data-gbp-panel="overview" role="tabpanel" aria-labelledby="gbp-tab-overview" class="block pb-2">
 
             <!-- 2. DATOS DEL RESTAURANTE -->
             <div class="mb-4 space-y-1">
@@ -1610,7 +1610,7 @@
             <div id="gbp-attrs" class="flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-stone-100 pb-3 pt-3 text-xs text-stone-600 dark:border-stone-800 dark:text-stone-300"></div>
 
             <!-- 5. FOTOS EQUILIBRADAS SIN HUECOS VACÍOS (GRID DE 4) -->
-            <div id="gbp-photos" class="grid grid-cols-4 gap-2 pt-1"></div>
+            <div id="gbp-photos" class="grid grid-cols-3 gap-2 pt-1"></div>
             </div>
 
             <!-- PANEL: CARTA -->
@@ -1895,7 +1895,7 @@
       </div>
     </div>
     <div class="shrink-0 border-t border-slate-200 px-5 py-4 dark:border-slate-800">
-      <p class="text-xs leading-relaxed text-slate-600 dark:text-slate-400" data-i18n="staffNotice">Consulta a nuestro personal la información completa de los catorce alérgenos de declaración obligatoria.</p>
+      <p class="text-xs leading-relaxed text-slate-600 dark:text-slate-400" data-i18n="staffNotice">Consulta a nuestro personal la información completa.</p>
     </div>
   </dialog>
 
@@ -1943,8 +1943,8 @@
     </div>
   </div>
 
-  <script src="demo-data.js?v=14"></script>
-  <script src="demo-app.js?v=60"></script>
+  <script src="demo-data.js?v=19"></script>
+  <script src="demo-app.js?v=61"></script>
   <script>
     (function () {
       var modal = document.getElementById('reserve-options-modal');
