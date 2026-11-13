@@ -283,9 +283,9 @@
       background-color: #fafaf9;
     }
     .dark .is-picked { background-color: #292524; }
-    @media (min-width: 768px) {
-      [data-extra]:hover {
-        transform: none;
+    @media (hover: hover) and (pointer: fine) {
+      #servicios-adicionales [data-extra]:hover {
+        transform: translateY(2px);
       }
     }
     @media (max-width: 767px) {
@@ -304,7 +304,7 @@
       #planes [data-select-web]:hover,
       #seccion-mantenimiento article:hover,
       #seccion-mantenimiento [data-select-maint]:hover,
-      [data-extra]:hover,
+      #servicios-adicionales [data-extra]:hover,
       #beneficios:hover .svc-izq,
       #beneficios:hover .svc-der {
         transform: none;
@@ -339,6 +339,10 @@
       cursor: default;
       pointer-events: none;
     }
+    #servicios-adicionales [data-extra] {
+      pointer-events: auto;
+      transition: transform .18s ease;
+    }
     #servicios-adicionales [data-extra="medida"],
     #servicios-adicionales [data-extra="medida"] * {
       pointer-events: auto;
@@ -352,12 +356,24 @@
       cursor: pointer;
       box-shadow: none;
       filter: none;
+      -webkit-tap-highlight-color: transparent;
+      transition: transform .15s ease, background-color .15s ease, box-shadow .15s ease;
     }
-    #servicios-adicionales [data-extra-info]:hover,
-    #servicios-adicionales [data-extra-info]:active {
-      transform: translateY(1.5px) scale(0.9);
-      background-color: #cbb49a;
-      box-shadow: inset 0 2px 3px rgb(28 25 23 / 0.38);
+    @media (hover: hover) and (pointer: fine) {
+      #servicios-adicionales [data-extra-info]:hover,
+      #servicios-adicionales [data-extra-info]:active {
+        transform: translateY(1.5px) scale(0.94);
+        background-color: #cbb49a;
+        box-shadow: inset 0 2px 3px rgb(28 25 23 / 0.38);
+      }
+    }
+    @media (hover: none), (pointer: coarse) {
+      #servicios-adicionales [data-extra-info]:hover,
+      #servicios-adicionales [data-extra-info]:active {
+        transform: none;
+        background-color: #E6D5C3;
+        box-shadow: none;
+      }
     }
     #servicios-adicionales [data-extra] [data-extra-panel] {
       display: none;
@@ -1943,6 +1959,8 @@
       }
 
       document.querySelectorAll('[data-extra-info]').forEach(function (info) {
+        info.addEventListener('pointerup', function () { info.blur(); });
+        info.addEventListener('pointercancel', function () { info.blur(); });
         info.addEventListener('click', function (event) {
           event.stopPropagation();
           var willOpen = !info.classList.contains('is-open');
