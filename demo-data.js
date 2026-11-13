@@ -48,41 +48,41 @@ window.VISIWEB_DEMO = (function () {
   const photo = (file) => 'assets/demo/' + file;
 
   const IMAGES = {
-    hero: photo('hero.jpg'),
+    hero: photo('hero.webp'),
     heroAlt: {
       es: 'Interior de la taberna con la barra de madera y las mesas preparadas',
       en: 'Inside the tavern, with the wooden bar and tables set for service'
     },
-    facade: photo('fachada.jpg'),
-    salon: photo('salon.jpg'),
-    salon2: photo('salon-2.jpg'),
-    terrace: photo('terraza.jpg'),
-    bar: photo('barra.jpg')
+    facade: photo('fachada.webp'),
+    salon: photo('salon.webp'),
+    salon2: photo('salon-2.webp'),
+    terrace: photo('terraza.webp'),
+    bar: photo('barra.webp')
   };
 
   const LOCAL = {
     rooms: [
       {
         id: 'fachada',
-        image: photo('fachada.jpg'),
+        image: photo('fachada.webp'),
         title: { es: 'Fachada', en: 'Façade' },
         desc: { es: 'En el corazón de Alcobendas, con la puerta abierta al barrio.', en: 'In the heart of Alcobendas, with the door open to the neighbourhood.' }
       },
       {
         id: 'salon',
-        image: photo('salon.jpg'),
+        image: photo('salon.webp'),
         title: { es: 'El salón', en: 'The dining room' },
         desc: { es: 'Madera, luz baja y mesas para quedarse. 42 cubiertos en sala.', en: 'Wood, low light and tables you want to linger at. 42 covers inside.' }
       },
       {
         id: 'barra',
-        image: photo('barra.jpg'),
+        image: photo('barra.webp'),
         title: { es: 'La barra', en: 'The bar' },
         desc: { es: 'Caña doble bien fría y el vermut de grifo. El sitio de siempre.', en: 'An ice-cold double draught and vermouth on tap. The usual spot.' }
       },
       {
         id: 'terraza',
-        image: photo('terraza.jpg'),
+        image: photo('terraza.webp'),
         title: { es: 'Terraza', en: 'Terrace' },
         desc: { es: '16 plazas al aire. Reservas de terraza, preferencia al mediodía.', en: '16 seats outdoors. Terrace bookings are easiest at lunchtime.' }
       }
@@ -274,7 +274,7 @@ window.VISIWEB_DEMO = (function () {
           priceEn: '€14.90',
           allergens: [],
           tags: ['recomendado'],
-          image: photo('lomo.jpg')
+          image: photo('lomo.webp')
         },
         {
           id: 'salmon',
@@ -287,7 +287,7 @@ window.VISIWEB_DEMO = (function () {
           priceEn: '€14.80',
           allergens: ['pescado'],
           tags: ['recomendado'],
-          image: photo('primeros.jpg')
+          image: photo('primeros.webp')
         },
         {
           id: 'bravas',
@@ -302,7 +302,7 @@ window.VISIWEB_DEMO = (function () {
           tags: ['recomendado', 'picante', 'vegetariano'],
           isVegetarian: true,
           isVegan: false,
-          image: photo('bravas-real.jpg')
+          image: photo('bravas-real.webp')
         },
         {
           id: 'croquetas',
@@ -315,7 +315,7 @@ window.VISIWEB_DEMO = (function () {
           priceEn: '€9.20',
           allergens: ['gluten', 'lacteos', 'huevos'],
           tags: [],
-          image: photo('croquetas-jamon.jpg')
+          image: photo('croquetas-jamon.webp')
         },
         {
           id: 'calamares',
@@ -328,7 +328,7 @@ window.VISIWEB_DEMO = (function () {
           priceEn: '€12.90',
           allergens: ['gluten', 'moluscos'],
           tags: [],
-          image: photo('calamares-real.jpg')
+          image: photo('calamares-real.webp')
         },
         {
           id: 'huevos-rotos',
@@ -341,7 +341,7 @@ window.VISIWEB_DEMO = (function () {
           priceEn: '€13.80',
           allergens: ['huevos'],
           tags: [],
-          image: photo('huevos-rotos.jpg')
+          image: photo('huevos-rotos.webp')
         }
       ]
     },
@@ -365,7 +365,7 @@ window.VISIWEB_DEMO = (function () {
           priceEn: '€7.60',
           allergens: ['gluten', 'pescado', 'soja'],
           tags: ['picante'],
-          image: photo('tosta-gulas.jpg')
+          image: photo('tosta-gulas.webp')
         },
         {
           id: 'montado-lomo',
@@ -378,7 +378,7 @@ window.VISIWEB_DEMO = (function () {
           priceEn: '€6.40',
           allergens: ['gluten'],
           tags: [],
-          image: photo('montado-lomo.jpg')
+          image: photo('montado-lomo.webp')
         }
       ]
     },
@@ -402,7 +402,7 @@ window.VISIWEB_DEMO = (function () {
           priceEn: 'Included',
           allergens: ['gluten', 'huevos', 'apio', 'lacteos'],
           tags: [],
-          image: photo('menu-primeros.jpg')
+          image: photo('menu-primeros.webp')
         },
         {
           id: 'segundos',
@@ -415,7 +415,7 @@ window.VISIWEB_DEMO = (function () {
           priceEn: 'Included',
           allergens: ['pescado', 'huevos', 'gluten', 'apio'],
           tags: [],
-          image: photo('menu-segundos.jpg')
+          image: photo('menu-segundos.webp')
         },
         {
           id: 'postres',
@@ -430,7 +430,7 @@ window.VISIWEB_DEMO = (function () {
           tags: ['vegetariano'],
           isVegetarian: true,
           isVegan: false,
-          image: photo('menu-postres.jpg')
+          image: photo('menu-postres.webp')
         },
         {
           id: 'menu-completo',
@@ -447,7 +447,7 @@ window.VISIWEB_DEMO = (function () {
             en: 'Depends on the dishes you choose'
           },
           tags: ['recomendado'],
-          image: photo('menu-completo.jpg')
+          image: photo('menu-completo.webp')
         }
       ]
     },
@@ -473,7 +473,7 @@ window.VISIWEB_DEMO = (function () {
           tags: ['recomendado'],
           isVegetarian: true,
           isVegan: true,
-          image: photo('cana.jpg')
+          image: photo('cana.webp')
         },
         {
           id: 'rioja',
@@ -488,7 +488,7 @@ window.VISIWEB_DEMO = (function () {
           tags: [],
           isVegetarian: true,
           isVegan: true,
-          image: photo('rioja.jpg')
+          image: photo('rioja.webp')
         },
         {
           id: 'ribera',
@@ -503,7 +503,7 @@ window.VISIWEB_DEMO = (function () {
           tags: ['recomendado'],
           isVegetarian: true,
           isVegan: true,
-          image: photo('ribera.jpg')
+          image: photo('ribera.webp')
         },
         {
           id: 'vermut',
@@ -518,7 +518,7 @@ window.VISIWEB_DEMO = (function () {
           tags: [],
           isVegetarian: true,
           isVegan: true,
-          image: photo('vermut-real.jpg')
+          image: photo('vermut-real.webp')
         }
       ]
     },
@@ -545,7 +545,7 @@ window.VISIWEB_DEMO = (function () {
           dietType: 'vegano',
           isVegetarian: true,
           isVegan: true,
-          image: photo('bravas-veg.jpg')
+          image: photo('bravas-veg.webp')
         },
         {
           id: 'padron',
@@ -561,7 +561,7 @@ window.VISIWEB_DEMO = (function () {
           dietType: 'vegano',
           isVegetarian: true,
           isVegan: true,
-          image: photo('padron.jpg')
+          image: photo('padron.webp')
         },
         {
           id: 'parrillada',
@@ -577,7 +577,7 @@ window.VISIWEB_DEMO = (function () {
           dietType: 'vegano',
           isVegetarian: true,
           isVegan: true,
-          image: photo('parrillada.jpg')
+          image: photo('parrillada.webp')
         },
         {
           id: 'tosta-aguacate',
@@ -593,7 +593,7 @@ window.VISIWEB_DEMO = (function () {
           dietType: 'vegetariano',
           isVegetarian: true,
           isVegan: false,
-          image: photo('huevos.jpg')
+          image: photo('huevos.webp')
         },
         {
           id: 'tortilla',
@@ -609,7 +609,7 @@ window.VISIWEB_DEMO = (function () {
           dietType: 'vegetariano',
           isVegetarian: true,
           isVegan: false,
-          image: photo('tortilla.jpg')
+          image: photo('tortilla.webp')
         }
       ]
     }
