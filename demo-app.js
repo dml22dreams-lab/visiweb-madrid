@@ -2128,6 +2128,9 @@
     document.querySelectorAll('[data-i18n]').forEach((node) => {
       node.textContent = t(node.dataset.i18n);
     });
+    document.querySelectorAll('a[data-i18n="mesaLink"], a[data-view="mesa"]').forEach((link) => {
+      link.setAttribute('href', lang === 'en' ? 'mesa/?lang=en' : 'mesa/');
+    });
     document.querySelectorAll('[data-i18n-placeholder]').forEach((node) => {
       node.setAttribute('placeholder', t(node.dataset.i18nPlaceholder));
     });

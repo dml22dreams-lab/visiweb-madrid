@@ -1227,6 +1227,37 @@
       overflow: visible;
       text-overflow: unset;
     }
+    .demo-view-switch {
+      display: inline-flex;
+      flex: none;
+      padding: 2px;
+      border: 1px solid #e7e5e4;
+      border-radius: 999px;
+      background: #fff;
+    }
+    .demo-view-switch a {
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 1.3;
+      color: #78716c;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .demo-view-switch a[aria-current="page"] {
+      background: #1c1917;
+      color: #fff;
+    }
+    .dark .demo-view-switch {
+      border-color: #44403c;
+      background: #1c1917;
+    }
+    .dark .demo-view-switch a { color: #a8a29e; }
+    .dark .demo-view-switch a[aria-current="page"] {
+      background: #fafaf9;
+      color: #1c1917;
+    }
     #demo-sales-banner.is-open { padding-bottom: 1.7rem; }
     @media (min-width: 768px) {
       #demo-sales-banner > div { gap: 1.5rem; }
@@ -1350,10 +1381,14 @@
   <div data-site-sticky class="bg-white dark:bg-stone-900">
   <div id="demo-sales-banner" class="w-full border-b border-stone-200 bg-stone-50 dark:border-stone-800 dark:bg-stone-900">
     <div class="mx-auto flex max-w-3xl items-center justify-between gap-2 px-3 py-2">
-      <p class="min-w-0 text-[11px] font-medium text-stone-600 dark:text-stone-300">
+      <p class="min-w-0 truncate text-[11px] font-medium text-stone-600 dark:text-stone-300">
         <span class="sm:hidden" data-i18n="salesBarShort">Demo VisiWeb</span>
         <span class="hidden sm:inline" data-i18n="salesBar">Demo de VisiWeb Madrid</span>
       </p>
+      <div class="demo-view-switch" role="group" data-i18n-aria-label="viewSwitch" aria-label="Vista de la demo">
+        <a href="#inicio" data-i18n="viewWeb" aria-current="page">Web</a>
+        <a href="mesa/" data-view="mesa" data-i18n="viewMesa">QR Mesa</a>
+      </div>
       <a id="plan-gastro-link" href="https://visiwebmadrid.com/#gastro-premium" class="hidden shrink-0 whitespace-nowrap rounded-full border border-stone-200 bg-white px-3 py-1 text-center text-xs font-bold uppercase tracking-wide text-stone-700 no-underline dark:border-stone-700 dark:bg-stone-800 dark:text-stone-300 sm:inline-flex" data-i18n="planBadge">Plan Gastro Premium</a>
       <a id="sales-whatsapp" href="https://wa.me/34608975906?text=Hola%2C%20he%20visto%20la%20demo%20y%20quiero%20una%20as%C3%AD%20para%20mi%20local." target="_blank" rel="noopener" class="inline-flex shrink-0 items-center justify-center whitespace-nowrap rounded-full bg-emerald-600 px-3 py-1 text-xs font-bold leading-none text-white no-underline hover:bg-emerald-500">
         <span data-i18n="salesBarCta">Pide la tuya</span>
@@ -1828,6 +1863,9 @@
         </nav>
 
         <p id="demo-notice" class="max-w-md text-[11px] leading-relaxed text-neutral-400 dark:text-stone-500" data-i18n="demoNotice">Maqueta de ejemplo de VisiWeb Madrid. El negocio, los precios, los horarios y las reseñas son ficticios.</p>
+        <p class="text-[11px] text-neutral-400 dark:text-stone-500">
+          <a href="mesa/" class="underline decoration-neutral-300 underline-offset-2 transition-colors hover:text-stone-600 dark:decoration-stone-700 dark:hover:text-stone-300" data-i18n="mesaLink">Modo QR en mesa</a>
+        </p>
 
         <p class="pt-2 text-[11px] text-neutral-400 dark:text-stone-500">
           <span data-i18n="demoCreditLead">Web demo desarrollada por</span>
