@@ -26,7 +26,7 @@
       add: 'Añadir a mi selección', variant: 'Variante', extras: 'Suplementos',
       rate: 'Valora tu experiencia', rateShort: 'Valora', mine: 'Mi selección',
       sub: 'Tu lista personal para enseñar al camarero. No se envía ningún pedido.',
-      total: 'Total', clear: 'Limpiar', close: 'Cerrar',
+      total: 'Total', clear: 'Limpiar', close: 'Cerrar', drag: 'Desliza hacia abajo para cerrar',
       sharing: 'Compartiendo públicamente en Google',
       comida: 'Comida', servicio: 'Servicio', ambiente: 'Ambiente',
       details: 'Comparte detalles de tu experiencia en este lugar',
@@ -50,7 +50,7 @@
       add: 'Add to my selection', variant: 'Option', extras: 'Extras',
       rate: 'Rate your experience', rateShort: 'Rate', mine: 'My selection',
       sub: 'Your personal list to show the waiter. No order is sent.',
-      total: 'Total', clear: 'Clear', close: 'Close',
+      total: 'Total', clear: 'Clear', close: 'Close', drag: 'Swipe down to close',
       sharing: 'Posting publicly on Google',
       comida: 'Food', servicio: 'Service', ambiente: 'Atmosphere',
       details: 'Share details of your experience at this place',
@@ -638,6 +638,11 @@
     setActive(current.dataset.mesaCat);
   }
 
+  function pinDemoBar() {
+    const bar = document.querySelector('.demo-bar');
+    if (bar) document.documentElement.style.setProperty('--demo-bar', bar.offsetHeight + 'px');
+  }
+
   function goTo(id) {
     const sec = $('cat-' + id);
     if (!sec || sec.classList.contains('is-hidden')) return;
@@ -822,6 +827,7 @@
         qtyControl(item, line.qty) + '</li>');
     });
     $('sel-root').querySelector('.sheet').innerHTML =
+      '<div class="handle" role="button" aria-label="' + esc(ui('drag')) + '"></div>' +
       '<header class="sheet-head"><h2 id="sel-title">' + esc(ui('mine')) + '</h2><p>' + esc(ui('sub')) + '</p></header>' +
       '<ul class="sel-list">' + rows.join('') + '</ul>' +
       '<div class="sel-total"><span>' + esc(ui('total')) + '</span><strong>' + esc(formatMoney(totalMoney())) + '</strong></div>' +
@@ -932,6 +938,58 @@
   $('open-info').addEventListener('click', () => { renderInfo(); show('info'); });
   $('dock-mine').addEventListener('click', () => { renderSelection(); show('sel'); });
 
+  (function bindSelDrag() {
+    const sheet = $('sel-root').querySelector('.sheet');
+    let startY = 0;
+    let dragging = false;
+
+    function resetSheet() {
+      sheet.style.transition = '';
+      sheet.style.transform = '';
+      sheet.style.animation = '';
+    }
+
+    function settle(close) {
+      sheet.style.transition = 'transform .22s ease';
+      sheet.style.transform = close ? 'translateY(110%)' : 'translateY(0)';
+      let done = false;
+      const finish = () => {
+        if (done) return;
+        done = true;
+        sheet.removeEventListener('transitionend', finish);
+        if (close) {
+          hide('sel');
+          requestAnimationFrame(resetSheet);
+        } else resetSheet();
+      };
+      sheet.addEventListener('transitionend', finish);
+      setTimeout(finish, 280);
+    }
+
+    sheet.addEventListener('pointerdown', (event) => {
+      if (!event.target.closest('.handle')) return;
+      if (event.pointerType === 'mouse' && event.button !== 0) return;
+      dragging = true;
+      startY = event.clientY;
+      sheet.style.animation = 'none';
+      sheet.style.transition = 'none';
+      sheet.setPointerCapture(event.pointerId);
+    });
+    sheet.addEventListener('pointermove', (event) => {
+      if (!dragging) return;
+      const dy = Math.max(0, event.clientY - startY);
+      sheet.style.transform = 'translateY(' + dy + 'px)';
+    });
+    function endDrag(event) {
+      if (!dragging) return;
+      dragging = false;
+      const dy = Math.max(0, event.clientY - startY);
+      settle(dy > 72);
+    }
+    sheet.addEventListener('pointerup', endDrag);
+    sheet.addEventListener('pointercancel', endDrag);
+  })();
+
   $('mesa-cats').addEventListener('click', (event) => {
     const pill = event.target.closest('[data-spy]');
     if (pill) goTo(pill.dataset.spy);
@@ -1021,6 +1079,7 @@
   });
 
   window.addEventListener('scroll', onSpy, { passive: true });
+  pinDemoBar();
   $('btn-search').innerHTML = searchSvg();
   paint();
   onSpy();

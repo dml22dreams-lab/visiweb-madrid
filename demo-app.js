@@ -2126,7 +2126,8 @@
     });
 
     document.querySelectorAll('[data-i18n]').forEach((node) => {
-      node.textContent = t(node.dataset.i18n);
+      const value = t(node.dataset.i18n);
+      if (value) node.textContent = value;
     });
     document.querySelectorAll('a[data-i18n="mesaLink"], a[data-view="mesa"]').forEach((link) => {
       link.setAttribute('href', lang === 'en' ? 'mesa/?lang=en' : 'mesa/');
