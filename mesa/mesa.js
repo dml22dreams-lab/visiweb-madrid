@@ -18,9 +18,9 @@
   const UI = {
     es: {
       excellent: 'Excelente', reviews: 'valoraciones', infoK: 'Info',
-      infoS: 'Teléfono, Dirección y Redes sociales',       search: 'Buscar platos',
+      infoS: 'Teléfono, Dirección y Redes sociales',       search: 'Buscar ...',
       searchLabel: 'Buscar platos', clearSearch: 'Cerrar búsqueda',
-      empty: 'Ningún plato coincide con la búsqueda.',
+      empty: 'No se han encontrado platos con ese nombre.',
       allergens: 'Alérgenos', contains: 'Contiene',
       none: 'Sin alérgenos de declaración obligatoria.',
       add: 'Añadir a mi selección', variant: 'Variante', extras: 'Suplementos',
@@ -42,9 +42,9 @@
     },
     en: {
       excellent: 'Excellent', reviews: 'reviews', infoK: 'Info',
-      infoS: 'Phone, address and social media',       search: 'Search dishes',
+      infoS: 'Phone, address and social media',       search: 'Search ...',
       searchLabel: 'Search dishes', clearSearch: 'Close search',
-      empty: 'No dishes match your search.',
+      empty: 'No dishes were found with that name.',
       allergens: 'Allergens', contains: 'Contains',
       none: 'No allergens that must be declared.',
       add: 'Add to my selection', variant: 'Option', extras: 'Extras',
@@ -497,9 +497,8 @@
     $('btn-lang').setAttribute('aria-label', ui('lang'));
     $('btn-lang').firstChild.textContent = (lang === 'en' ? 'EN' : 'ES') + ' ';
     $('btn-search').setAttribute('aria-label', ui('searchLabel'));
-    $('q-clear').setAttribute('aria-label', ui('clearSearch'));
+    $('search-back').setAttribute('aria-label', ui('back'));
     $('q').placeholder = ui('search');
-    $('empty').textContent = ui('empty');
     $('mesa-cats').setAttribute('aria-label', ui('cats'));
     $('hero').alt = L(D.images.heroAlt);
     document.title = ui('title');
@@ -542,29 +541,31 @@
       band.append(heading, lead);
       section.appendChild(band);
 
-      cat.items.forEach((item) => {
-        const row = document.createElement('article');
-        row.className = 'dish';
-        row.dataset.dish = item.id;
-        const hit = document.createElement('button');
-        hit.type = 'button';
-        hit.className = 'dish-hit';
-        hit.dataset.open = item.id;
-        const icons = item.allergens.map(allergenIcon).join('');
-        hit.innerHTML = '<h3 class="dish-name"><span>' + esc(L(item.name)) + '</span>' +
-          (icons ? '<span class="algs">' + icons + '</span>' : '') + '</h3>' +
-          '<p class="dish-desc">' + esc(L(item.desc)) + '</p>' +
-          '<p class="dish-price">' + esc(formatMoney(item.price)) + '</p>';
-        const slot = document.createElement('div');
-        slot.className = 'slot';
-        slot.dataset.slot = item.id;
-        slot.innerHTML = slotHtml(item);
-        row.append(hit, slot);
-        section.appendChild(row);
-      });
+      cat.items.forEach((item) => appendDish(section, item));
       menu.appendChild(section);
     });
     currentCat = '';
+  }
+
+  function appendDish(parent, item) {
+    const row = document.createElement('article');
+    row.className = 'dish';
+    row.dataset.dish = item.id;
+    const hit = document.createElement('button');
+    hit.type = 'button';
+    hit.className = 'dish-hit';
+    hit.dataset.open = item.id;
+    const icons = item.allergens.map(allergenIcon).join('');
+    hit.innerHTML = '<h3 class="dish-name"><span>' + esc(L(item.name)) + '</span>' +
+      (icons ? '<span class="algs">' + icons + '</span>' : '') + '</h3>' +
+      '<p class="dish-desc">' + esc(L(item.desc)) + '</p>' +
+      '<p class="dish-price">' + esc(formatMoney(item.price)) + '</p>';
+    const slot = document.createElement('div');
+    slot.className = 'slot';
+    slot.dataset.slot = item.id;
+    slot.innerHTML = slotHtml(item);
+    row.append(hit, slot);
+    parent.appendChild(row);
   }
 
   function patchSlots() {
@@ -659,77 +660,50 @@
     setTimeout(done, 900);
   }
 
-  const ALLERGEN_WORDS = {
-    gluten: 'gluten trigo harina',
-    crustaceos: 'crustaceos marisco gamba langostino',
-    huevos: 'huevo huevos',
-    pescado: 'pescado',
-    cacahuetes: 'cacahuete cacahuetes',
-    soja: 'soja',
-    lacteos: 'leche lactosa lacteos queso nata mantequilla',
-    frutos_cascara: 'frutos cascara nuez nueces almendra avellana',
-    apio: 'apio',
-    mostaza: 'mostaza',
-    sesamo: 'sesamo',
-    sulfitos: 'sulfito sulfitos',
-    altramuces: 'altramuz altramuces',
-    moluscos: 'moluscos marisco calamar chipiron'
-  };
-
   function both(value) {
     if (!value) return '';
     if (typeof value === 'string') return value;
     return (value.es || '') + ' ' + (value.en || '');
   }
 
-  function searchBlob(item) {
-    const bits = [both(item.name), both(item.desc), both(item.long)];
-    item.variants.forEach((variant) => bits.push(both(variant.name)));
-    item.extras.forEach((extra) => bits.push(both(extra.name)));
-    item.allergens.forEach((key) => {
-      bits.push(key.replace(/_/g, ' '));
-      bits.push(both(LEGAL[key]));
-      if (ALLERGEN_WORDS[key]) bits.push(ALLERGEN_WORDS[key]);
-    });
-    return norm(bits.join(' '))
-      .replace(/\bsin gluten\b/g, ' ')
-      .replace(/\bgluten free\b/g, ' ')
-      .replace(/\bgluten-free\b/g, ' ');
-  }
-
-  function applyFilter() {
+  function renderSearch() {
+    const box = $('search-results');
     const words = norm($('q').value.trim()).split(/\s+/).filter(Boolean);
-    let any = false;
-    document.querySelectorAll('[data-mesa-cat]').forEach((sec) => {
-      let vis = 0;
-      sec.querySelectorAll('[data-dish]').forEach((row) => {
-        const item = ITEMS.get(row.dataset.dish);
-        const hay = searchBlob(item);
-        const show = !words.length || words.every((word) => hay.indexOf(word) >= 0);
-        row.classList.toggle('is-hidden', !show);
-        if (show) vis += 1;
+    box.textContent = '';
+    if (!words.length) return;
+    const seen = new Set();
+    const hits = [];
+    CATS.forEach((cat) => {
+      cat.items.forEach((item) => {
+        if (seen.has(item.id)) return;
+        const hay = norm(both(item.name) + ' ' + both(item.desc));
+        if (!words.every((word) => hay.indexOf(word) >= 0)) return;
+        seen.add(item.id);
+        hits.push(item);
       });
-      sec.classList.toggle('is-hidden', vis === 0);
-      const pill = document.querySelector('[data-spy="' + sec.dataset.mesaCat + '"]');
-      if (pill) pill.classList.toggle('is-hidden', vis === 0);
-      if (vis) any = true;
     });
-    $('empty').hidden = any;
-    const active = $('cat-' + currentCat);
-    if (!active || active.classList.contains('is-hidden')) currentCat = '';
-    onSpy();
+    if (!hits.length) {
+      const empty = document.createElement('p');
+      empty.className = 'search-empty';
+      empty.textContent = ui('empty');
+      box.appendChild(empty);
+      return;
+    }
+    hits.forEach((item) => appendDish(box, item));
   }
 
   function toggleSearch(force) {
-    const form = $('search-form');
-    const open = typeof force === 'boolean' ? force : form.hidden;
-    form.hidden = !open;
+    const root = $('search-root');
+    const open = typeof force === 'boolean' ? force : root.hidden;
+    root.hidden = !open;
+    document.body.classList.toggle('is-searching', open);
     $('btn-search').setAttribute('aria-expanded', open ? 'true' : 'false');
-    $('btn-search').innerHTML = open ? '×' : searchSvg();
-    if (open) $('q').focus();
-    else {
+    if (open) {
+      renderSearch();
+      $('q').focus();
+    } else {
       $('q').value = '';
-      applyFilter();
+      $('search-results').textContent = '';
     }
   }
 
@@ -926,7 +900,6 @@
   function paint() {
     renderIntro();
     renderMenu();
-    applyFilter();
     updateDock();
     if (!$('dish-root').hidden && draft) renderDish();
     if (!$('sel-root').hidden) renderSelection();
@@ -939,25 +912,20 @@
     lang = next;
     writeLang(next);
     const q = $('q').value;
-    const searchOpen = !$('search-form').hidden;
+    const searchOpen = !$('search-root').hidden;
     paint();
+    if (!searchOpen) return;
+    $('search-root').hidden = false;
+    document.body.classList.add('is-searching');
+    $('btn-search').setAttribute('aria-expanded', 'true');
     $('q').value = q;
-    $('search-form').hidden = !searchOpen;
-    $('btn-search').innerHTML = searchOpen ? '×' : searchSvg();
-    applyFilter();
+    renderSearch();
   }
 
   $('btn-lang').addEventListener('click', () => setLang(lang === 'es' ? 'en' : 'es'));
   $('btn-search').addEventListener('click', () => toggleSearch());
-  $('q-clear').addEventListener('click', () => {
-    if ($('q').value) {
-      $('q').value = '';
-      applyFilter();
-      $('q').focus();
-    } else toggleSearch(false);
-  });
-  $('search-form').addEventListener('submit', (event) => event.preventDefault());
-  $('q').addEventListener('input', applyFilter);
+  $('search-back').addEventListener('click', () => toggleSearch(false));
+  $('q').addEventListener('input', renderSearch);
   $('open-reviews').addEventListener('click', openReview);
   $('dock-rate').addEventListener('click', openReview);
   $('dock-rate-mini').addEventListener('click', openReview);
@@ -969,14 +937,17 @@
     if (pill) goTo(pill.dataset.spy);
   });
 
-  $('menu').addEventListener('click', (event) => {
+  function onDishClick(event) {
     const add = event.target.closest('[data-add]');
     const dec = event.target.closest('[data-dec]');
     const open = event.target.closest('[data-open]');
     if (add) { changeQty(add.dataset.add, 1); return; }
     if (dec) { changeQty(dec.dataset.dec, -1); return; }
     if (open) openDish(open.dataset.open);
-  });
+  }
+
+  $('menu').addEventListener('click', onDishClick);
+  $('search-results').addEventListener('click', onDishClick);
 
   document.addEventListener('click', (event) => {
     const close = event.target.closest('[data-close]');
@@ -1046,7 +1017,7 @@
     if (event.key !== 'Escape') return;
     const open = ['review', 'dish', 'sel', 'info'].filter((name) => !rootOf(name).hidden)[0];
     if (open) hide(open);
-    else if (!$('search-form').hidden) toggleSearch(false);
+    else if (!$('search-root').hidden) toggleSearch(false);
   });
 
   window.addEventListener('scroll', onSpy, { passive: true });

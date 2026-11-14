@@ -7,7 +7,7 @@
   <title>Taberna El Norte · Carta en mesa</title>
   <meta name="theme-color" content="#ffffff">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%231c1917'/%3E%3Cpath d='M11 7h10c0 5-3 8-5 8s-5-3-5-8z' fill='%23f59e0b'/%3E%3Cpath d='M16 15v8m-4 0h8' stroke='%23f59e0b' stroke-width='2.5' stroke-linecap='round'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="mesa.css?v=26">
+  <link rel="stylesheet" href="mesa.css?v=27">
 </head>
 <body>
   <div class="col">
@@ -24,10 +24,6 @@
         <button type="button" id="btn-lang" class="tool lang" aria-label="Idioma">ES <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
         <button type="button" id="btn-search" class="tool search" aria-expanded="false" aria-label="Buscar platos"></button>
       </div>
-      <form id="search-form" class="search-float" hidden>
-        <input id="q" type="text" enterkeyhint="search" autocomplete="off" placeholder="Buscar platos">
-        <button type="button" id="q-clear" class="q-clear" aria-label="Cerrar búsqueda"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" d="M7 7l10 10M17 7 7 17"/></svg></button>
-      </form>
     </header>
 
     <section class="intro" aria-label="Taberna El Norte">
@@ -49,7 +45,14 @@
 
     <nav id="mesa-cats" class="sticky top-0 z-20 bg-white" aria-label="Categorías"></nav>
     <main id="menu"></main>
-    <p id="empty" class="empty" hidden></p>
+  </div>
+
+  <div id="search-root" class="search-screen" hidden>
+    <header class="search-bar">
+      <button type="button" id="search-back" class="search-back" aria-label="Volver">←</button>
+      <input id="q" type="text" enterkeyhint="search" autocomplete="off" placeholder="Buscar ..." autofocus>
+    </header>
+    <div id="search-results" class="search-results"></div>
   </div>
 
     <div id="dock" class="dock">
@@ -93,6 +96,6 @@
   </div>
 
   <script src="../demo-data.js"></script>
-  <script src="mesa.js?v=15"></script>
+  <script src="mesa.js?v=16"></script>
 </body>
 </html>
