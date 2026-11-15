@@ -36,7 +36,12 @@
       meals: ['Desayuno', 'Brunch', 'Comida', 'Cena', 'Otro'],
       publish: 'Publicar', thanksTitle: 'Gracias',
       thanks: 'Esta demo no envía la valoración a Google.',
-      back: 'Volver', phone: 'Teléfono', address: 'Dirección', instagram: 'Instagram',
+      back: 'Volver', phone: 'Teléfono', address: 'Dirección', socials: 'Redes sociales',
+      socialsHint: 'Instagram, Facebook, X y TikTok',
+      socialInstagram: 'En la web del local, esta flecha abre su Instagram: fotos, historias y novedades. Esta demo no abre la red ni envía datos.',
+      socialFacebook: 'En la web del local, esta flecha abre su página de Facebook: horarios, eventos y publicaciones. Esta demo no abre la red ni envía datos.',
+      socialX: 'En la web del local, esta flecha abre su perfil de X, para avisos cortos y novedades. Esta demo no abre la red ni envía datos.',
+      socialTiktok: 'En la web del local, esta flecha abre su TikTok, con vídeos del restaurante. Esta demo no abre la red ni envía datos.',
       spain: 'España', addOne: 'Añadir', remove: 'Quitar uno', see: 'Ver',
       lang: 'Idioma: español', cats: 'Categorías', close: 'Cerrar',
       demoBar: 'Demo VisiWeb', viewSwitch: 'Vista de la demo', viewWeb: 'Web', viewMesa: 'QR Mesa',
@@ -61,7 +66,12 @@
       meals: ['Breakfast', 'Brunch', 'Lunch', 'Dinner', 'Other'],
       publish: 'Post', thanksTitle: 'Thank you',
       thanks: 'This demo does not send the review to Google.',
-      back: 'Back', phone: 'Phone', address: 'Address', instagram: 'Instagram',
+      back: 'Back', phone: 'Phone', address: 'Address', socials: 'Social media',
+      socialsHint: 'Instagram, Facebook, X and TikTok',
+      socialInstagram: 'On the venue site, this arrow opens its Instagram: photos, stories and news. This demo does not open the network or send any data.',
+      socialFacebook: 'On the venue site, this arrow opens its Facebook page: hours, events and posts. This demo does not open the network or send any data.',
+      socialX: 'On the venue site, this arrow opens its X profile, for short updates and news. This demo does not open the network or send any data.',
+      socialTiktok: 'On the venue site, this arrow opens its TikTok, with videos of the restaurant. This demo does not open the network or send any data.',
       spain: 'Spain', addOne: 'Add', remove: 'Remove one', see: 'View',
       lang: 'Language: English', cats: 'Categories', close: 'Close',
       demoBar: 'VisiWeb demo', viewSwitch: 'Demo view', viewWeb: 'Web', viewMesa: 'QR Mesa',
@@ -764,7 +774,7 @@
   }
 
   function show(name) {
-    ['dish', 'sel', 'info', 'review'].forEach((other) => {
+    ['dish', 'sel', 'info', 'review', 'socials'].forEach((other) => {
       if (other !== name && !rootOf(other).hidden) hide(other, true);
     });
     const root = rootOf(name);
@@ -779,6 +789,7 @@
     const root = rootOf(name);
     if (root.hidden) return;
     root.hidden = true;
+    if (name === 'socials') $('social-note-root').hidden = true;
     if (!keepLock) {
       unlock();
       if (lastFocus && lastFocus.focus) lastFocus.focus();
@@ -878,6 +889,39 @@
     return L(addr.street) + ', ' + addr.postalCode + ' ' + addr.city + ', ' + ui('spain');
   }
 
+  let socialsFrom = null;
+
+  function renderSocials() {
+    const chev = '<span class="chev" aria-hidden="true">›</span>';
+    const row = (key, label) =>
+      '<button type="button" class="irow" data-social="' + key + '"><span><strong>' + esc(label) + '</strong></span>' + chev + '</button>';
+    $('socials-root').querySelector('.sheet-full').innerHTML =
+      '<div class="rev-bar"><h2 id="soc-title">' + esc(ui('socials')) + '</h2><button type="button" class="soc-x" data-socials-back aria-label="' + esc(ui('close')) + '">' + closeSvg() + '</button></div>' +
+      row('instagram', 'Instagram') + row('facebook', 'Facebook') + row('x', 'X') + row('tiktok', 'TikTok');
+  }
+
+  function placeMesaSocials() {
+    const hero = document.querySelector('.hero');
+    const top = hero ? Math.max(0, hero.getBoundingClientRect().bottom) : 0;
+    document.documentElement.style.setProperty('--socials-top', top + 'px');
+  }
+
+  function openSocials(from) {
+    socialsFrom = from || null;
+    renderSocials();
+    show('socials');
+    placeMesaSocials();
+  }
+
+  function openSocialNote(key) {
+    const names = { instagram: 'Instagram', facebook: 'Facebook', x: 'X', tiktok: 'TikTok' };
+    const copy = { instagram: 'socialInstagram', facebook: 'socialFacebook', x: 'socialX', tiktok: 'socialTiktok' };
+    $('social-note-title').textContent = names[key] || '';
+    $('social-note-text').textContent = ui(copy[key]);
+    $('social-note-close').textContent = ui('close');
+    $('social-note-root').hidden = false;
+  }
+
   function renderInfo() {
     $('info-root').querySelector('.sheet').innerHTML =
       '<div class="map-wrap"><img src="../assets/demo/alcobendas-mapa.webp" alt="' + esc(ui('mapAlt')) + '"><span class="pin" aria-hidden="true"></span>' +
@@ -886,8 +930,8 @@
       '<span><strong>' + esc(ui('phone')) + '</strong><small>' + esc(D.business.phoneDisplay) + '</small></span><span class="chev" aria-hidden="true">›</span></a>' +
       '<div class="irow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21s7-6.1 7-11a7 7 0 1 0-14 0c0 4.9 7 11 7 11z"/><circle cx="12" cy="10" r="2.15"/></svg>' +
       '<span><strong>' + esc(ui('address')) + '</strong><small>' + esc(addressLine()) + '</small></span></div>' +
-      '<a class="irow" href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="4"/><circle cx="12" cy="12" r="3.5"/><circle cx="17.2" cy="6.8" r=".7" fill="currentColor" stroke="none"/></svg>' +
-      '<span><strong>' + esc(ui('instagram')) + '</strong><small>@tabernaelnorte</small></span><span class="chev" aria-hidden="true">›</span></a>';
+      '<button type="button" class="irow" data-open-socials><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="6.5" cy="12" r="2.1"/><circle cx="17.5" cy="6.5" r="2.1"/><circle cx="17.5" cy="17.5" r="2.1"/><path stroke-linecap="round" d="M8.4 11.1 15.4 7.4M8.5 12.9l6.9 3.6"/></svg>' +
+      '<span><strong>' + esc(ui('socials')) + '</strong><small>' + esc(ui('socialsHint')) + '</small></span><span class="chev" aria-hidden="true">›</span></button>';
   }
 
   function starSvg() {
@@ -963,6 +1007,7 @@
     if (!$('dish-root').hidden && draft) renderDish();
     if (!$('sel-root').hidden) renderSelection();
     if (!$('info-root').hidden) renderInfo();
+    if (!$('socials-root').hidden) renderSocials();
     if (!$('review-root').hidden) {
       if (rateNote) renderRateNote();
       else renderReview();
@@ -1146,6 +1191,19 @@
   $('search-results').addEventListener('scroll', collapseQty, { passive: true });
 
   document.addEventListener('click', (event) => {
+    if (event.target.closest('[data-open-socials]')) openSocials('info');
+    const social = event.target.closest('#socials-root [data-social]');
+    if (social) openSocialNote(social.dataset.social);
+    if (event.target.closest('[data-socials-back]')) {
+      hide('socials');
+      if (socialsFrom === 'info') {
+        socialsFrom = null;
+        renderInfo();
+        show('info');
+      }
+    }
+    if (event.target.closest('[data-close-note], #social-note-close')) $('social-note-root').hidden = true;
+
     const close = event.target.closest('[data-close]');
     if (close && event.target.closest('.overlay')) hide(close.dataset.close);
 
@@ -1217,9 +1275,26 @@
 
   document.addEventListener('keydown', (event) => {
     if (event.key !== 'Escape') return;
+    if (!$('social-note-root').hidden) {
+      $('social-note-root').hidden = true;
+      return;
+    }
+    if (!$('socials-root').hidden) {
+      hide('socials');
+      if (socialsFrom === 'info') {
+        socialsFrom = null;
+        renderInfo();
+        show('info');
+      }
+      return;
+    }
     const open = ['review', 'dish', 'sel', 'info'].filter((name) => !rootOf(name).hidden)[0];
     if (open) hide(open);
     else if (!$('search-root').hidden) toggleSearch(false);
+  });
+
+  window.addEventListener('resize', () => {
+    if (!$('socials-root').hidden) placeMesaSocials();
   });
 
   window.addEventListener('scroll', onSpy, { passive: true });

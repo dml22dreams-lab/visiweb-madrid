@@ -897,20 +897,17 @@
       padding: 0;
     }
     #hero-facts > * { min-width: 0; }
-    #hero-facts > a + a,
-    #hero-facts > .hero-socials {
+    #hero-facts > * + * {
       margin-top: 0.925rem;
       border-top: 1px solid rgb(229 229 229 / 0.7);
       padding-top: 1.175rem;
     }
-    #hero-facts > a:last-child,
-    #hero-facts > .hero-socials:last-child {
+    #hero-facts > *:last-child {
       border-bottom: 1px solid rgb(229 229 229 / 0.7);
       padding-bottom: 1.175rem;
     }
     @media (min-width: 768px) {
-      #hero-facts > a:last-child,
-      #hero-facts > .hero-socials:last-child {
+      #hero-facts > *:last-child {
         border-bottom: 0;
         padding-bottom: 0.25rem;
       }
@@ -931,15 +928,22 @@
       outline-offset: 2px;
     }
     a.hero-fact,
+    button.hero-fact,
     .hero-fact {
       display: flex;
       align-items: center;
       gap: 0.875rem;
+      width: 100%;
+      margin: 0;
       border: 0;
       border-radius: 0;
       background: transparent;
       box-shadow: none;
       padding: 0.25rem 0;
+      color: inherit;
+      font: inherit;
+      text-align: left;
+      cursor: pointer;
     }
     .hero-fact-icon {
       display: grid;
@@ -992,17 +996,6 @@
       text-decoration: none;
     }
     a.hero-fact:nth-child(2):hover .hero-fact-link-short { color: #000; }
-    button.hero-fact {
-      width: 100%;
-      margin: 0;
-      border: 0;
-      background: transparent;
-      padding: 0.25rem 0;
-      color: inherit;
-      font: inherit;
-      text-align: left;
-      cursor: pointer;
-    }
     .hero-fact-chevron {
       display: grid;
       flex: none;
@@ -1017,33 +1010,93 @@
       width: 1rem;
       height: 1rem;
     }
-    .hero-socials-panel {
-      display: flex;
-      flex-direction: column;
-      margin-top: 0.85rem;
-    }
-    .hero-socials-panel[hidden] { display: none; }
-    .hero-socials-note {
-      margin: 0 0 0.35rem;
-      font-size: 0.75rem;
-      font-weight: 400;
-      line-height: 1.45;
-      color: #737373;
-    }
-    a.hero-social {
+    button.hero-social {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 0.75rem;
+      width: 100%;
+      margin: 0;
+      border: 0;
       border-top: 1px solid rgb(229 229 229 / 0.7);
-      padding: 0.8rem 0;
+      background: transparent;
+      padding: 0.95rem 0;
       color: #404040;
+      font: inherit;
       font-size: 0.875rem;
       line-height: 1.35;
-      text-decoration: none;
+      text-align: left;
+      cursor: pointer;
     }
-    a.hero-social:hover { color: #000; }
-    a.hero-social:focus-visible {
+    #socials-sheet {
+      position: fixed;
+      z-index: 60;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      top: var(--socials-top, 12rem);
+      overflow: hidden;
+      overscroll-behavior: none;
+      background: #fff;
+      color: #171717;
+    }
+    #socials-sheet[hidden] { display: none; }
+    html.socials-open,
+    html.socials-open body {
+      overflow: hidden;
+      overscroll-behavior: none;
+    }
+    html.socials-open #quick-bar { visibility: hidden; }
+    .socials-sheet-inner {
+      width: 100%;
+      max-width: 48rem;
+      margin: 0 auto;
+      padding: 1.35rem 1.5rem calc(1.75rem + env(safe-area-inset-bottom));
+    }
+    .socials-sheet-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.25rem;
+      min-height: 3.25rem;
+      padding-bottom: 0.85rem;
+    }
+    #socials-sheet button.hero-social {
+      padding: 1.45rem 0;
+      font-size: 1rem;
+    }
+    #socials-title {
+      margin: 0;
+      font-family: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+      font-size: 1.65rem;
+      font-weight: 600;
+      line-height: 1.1;
+    }
+    #socials-close {
+      display: grid;
+      flex: none;
+      place-items: center;
+      width: 2.25rem;
+      height: 2.25rem;
+      margin: 0;
+      border: 0;
+      border-radius: 999px;
+      background: transparent;
+      color: inherit;
+      cursor: pointer;
+    }
+    #socials-close svg { width: 1.15rem; height: 1.15rem; }
+    #social-note {
+      width: min(22rem, calc(100vw - 2rem));
+      border: 0;
+      border-radius: 1.25rem;
+      padding: 1.25rem 1.25rem 1rem;
+      background: #fff;
+      color: #171717;
+    }
+    #social-note::backdrop { background: rgb(12 10 9 / 0.55); }
+    button.hero-social:hover { color: #000; }
+    button.hero-social:focus-visible {
       outline: 2px solid #a8a29e;
       outline-offset: 2px;
     }
@@ -1066,13 +1119,12 @@
       #hero-facts,
       a.hero-fact,
       .hero-fact { background: transparent; }
-      #hero-facts > a + a,
-      #hero-facts > .hero-socials { border-top-color: rgb(255 255 255 / 0.14); }
-      #hero-facts > a:last-child,
-      #hero-facts > .hero-socials:last-child { border-bottom-color: rgb(255 255 255 / 0.14); }
-      .hero-socials-note { color: #a3a3a3; }
-      a.hero-social { border-top-color: rgb(255 255 255 / 0.14); color: #d4d4d4; }
-      a.hero-social:hover { color: #fafafa; }
+      #hero-facts > * + * { border-top-color: rgb(255 255 255 / 0.14); }
+      #hero-facts > *:last-child { border-bottom-color: rgb(255 255 255 / 0.14); }
+      #socials-sheet { background: #020617; color: #f8fafc; }
+      button.hero-social { border-top-color: rgb(255 255 255 / 0.14); color: #d4d4d4; }
+      button.hero-social:hover { color: #fafafa; }
+      #social-note { background: #0c0a09; color: #fafafa; }
       .hero-fact-chevron { color: #d4d4d4; }
       .hero-fact-compact,
       .hero-fact-value { color: #d4d4d4; }
@@ -1557,22 +1609,13 @@
             </div>
             <span id="info-menu-badge" class="hero-fact-badge">13,50 €</span>
           </a>
-          <div class="hero-socials">
-            <button type="button" id="hero-socials-toggle" class="hero-fact" aria-expanded="false" aria-controls="hero-socials-panel">
-              <span class="hero-fact-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="6.5" cy="12" r="2.1"/><circle cx="17.5" cy="6.5" r="2.1"/><circle cx="17.5" cy="17.5" r="2.1"/><path stroke-linecap="round" d="M8.4 11.1 15.4 7.4M8.5 12.9l6.9 3.6"/></svg></span>
-              <span class="hero-fact-body">
-                <span class="hero-fact-value" data-i18n="socialsLabel">Redes sociales</span>
-              </span>
-              <span class="hero-fact-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg></span>
-            </button>
-            <div id="hero-socials-panel" class="hero-socials-panel" hidden>
-              <p class="hero-socials-note" data-i18n="socialsNote">En esta demo los perfiles son de ejemplo. En la web del local, cada flecha abre su red.</p>
-              <a class="hero-social" href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer">Instagram<span class="hero-fact-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg></span></a>
-              <a class="hero-social" href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer">Facebook<span class="hero-fact-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg></span></a>
-              <a class="hero-social" href="https://x.com/" target="_blank" rel="noopener noreferrer">X<span class="hero-fact-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg></span></a>
-              <a class="hero-social" href="https://www.tiktok.com/" target="_blank" rel="noopener noreferrer">TikTok<span class="hero-fact-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg></span></a>
-            </div>
-          </div>
+          <button type="button" id="open-socials" class="hero-fact">
+            <span class="hero-fact-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="6.5" cy="12" r="2.1"/><circle cx="17.5" cy="6.5" r="2.1"/><circle cx="17.5" cy="17.5" r="2.1"/><path stroke-linecap="round" d="M8.4 11.1 15.4 7.4M8.5 12.9l6.9 3.6"/></svg></span>
+            <span class="hero-fact-body">
+              <span class="hero-fact-value" data-i18n="socialsLabel">Redes sociales</span>
+            </span>
+            <span class="hero-fact-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg></span>
+          </button>
         </div>
       </section>
 
@@ -1907,6 +1950,21 @@
 
   </main>
 
+  <div id="socials-sheet" hidden role="dialog" aria-modal="true" aria-labelledby="socials-title">
+    <div class="socials-sheet-inner">
+      <div class="socials-sheet-bar">
+        <h2 id="socials-title" data-i18n="socialsLabel">Redes sociales</h2>
+        <button type="button" id="socials-close" data-i18n-aria-label="close" aria-label="Cerrar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+        </button>
+      </div>
+      <button type="button" class="hero-social" data-social="instagram">Instagram<span class="hero-fact-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg></span></button>
+      <button type="button" class="hero-social" data-social="facebook">Facebook<span class="hero-fact-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg></span></button>
+      <button type="button" class="hero-social" data-social="x">X<span class="hero-fact-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg></span></button>
+      <button type="button" class="hero-social" data-social="tiktok">TikTok<span class="hero-fact-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg></span></button>
+    </div>
+  </div>
+
   <!-- ================================ PIE ================================ -->
   <footer class="site-split mt-20 bg-stone-50 pb-28 dark:bg-stone-950">
     <div class="mx-auto max-w-4xl px-6 pb-0 pt-16 sm:pt-20">
@@ -1999,6 +2057,12 @@
     </div>
   </div>
 
+  <dialog id="social-note" aria-labelledby="social-note-title">
+    <h2 id="social-note-title" class="font-serif text-2xl font-semibold tracking-tight"></h2>
+    <p id="social-note-text" class="mt-3 text-sm leading-relaxed text-stone-600 dark:text-stone-300"></p>
+    <button type="button" id="social-note-close" class="btn-primary mt-5 w-full" data-i18n="close">Cerrar</button>
+  </dialog>
+
   <dialog id="allergen-dialog" class="max-h-[90vh] w-[min(60rem,calc(100vw-1.5rem))] overflow-hidden rounded-xl bg-white p-0 text-slate-900 backdrop:bg-slate-900/60 open:flex open:flex-col dark:bg-slate-900 dark:text-slate-100">
     <div class="flex shrink-0 items-center justify-between gap-4 border-b border-slate-200 px-5 py-4 dark:border-slate-800">
       <div class="min-w-0">
@@ -2067,8 +2131,8 @@
     </div>
   </div>
 
-  <script src="demo-data.js?v=20"></script>
-  <script src="demo-app.js?v=63"></script>
+  <script src="demo-data.js?v=21"></script>
+  <script src="demo-app.js?v=67"></script>
   <script>
     (function () {
       var modal = document.getElementById('reserve-options-modal');

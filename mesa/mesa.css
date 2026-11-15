@@ -846,7 +846,40 @@ body.is-searching { overflow: hidden; }
 .irow span { display: flex; flex-direction: column; min-width: 0; }
 .irow strong { font-size: 15px; }
 .irow small { color: var(--muted); font-size: 13px; }
-.irow .chev { font-size: 22px; }
+.irow .chev { margin-left: auto; font-size: 22px; line-height: 1; }
+button.irow { font: inherit; cursor: pointer; }
+#socials-root {
+  z-index: 60;
+  top: var(--socials-top, 12rem);
+  align-items: stretch;
+  justify-content: center;
+  background: #fff;
+}
+#socials-root .rev-bar h2 { text-align: left; }
+.soc-x {
+  width: 40px;
+  height: 40px;
+  margin-left: auto;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+.soc-x svg { width: 18px; height: 18px; display: block; }
+#social-note-root { z-index: 70; align-items: center; justify-content: center; }
+.note-card {
+  position: relative;
+  z-index: 1;
+  width: min(22rem, calc(100% - 2rem));
+  border-radius: 1.25rem;
+  background: #fff;
+  padding: 1.25rem 1.15rem 1rem;
+}
+.note-card h2 { margin: 0; font-size: 1.35rem; }
+.note-card p { margin: 0.75rem 0 0; color: #444; font-size: 0.9rem; line-height: 1.45; }
+.note-card .btn-close { margin-top: 1rem; width: 100%; }
 
 #review-root { z-index: 60; align-items: stretch; }
 #review-root .backdrop { background: rgba(236, 234, 230, .2); }

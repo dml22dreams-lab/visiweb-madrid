@@ -442,8 +442,11 @@
   }
 
   let hashNavOpts = null;
+  let openSocialsSheet = function () {};
+  let closeSocialsSheet = function () {};
 
   function showPage(id, opts) {
+    if (id !== 'inicio') closeSocialsSheet({ keepHash: true });
     document.querySelectorAll('[data-page]').forEach((page) => {
       page.hidden = page.dataset.page !== id;
     });
@@ -469,8 +472,14 @@
     hashNavOpts = null;
     const quiet = !!(navOpts && navOpts.quiet);
     const hash = decodeURIComponent(window.location.hash.replace('#', ''));
+    if (hash !== 'redes') closeSocialsSheet({ keepHash: true });
     if (!hash || hash === 'inicio') {
       showPage('inicio', navOpts);
+      return;
+    }
+    if (hash === 'redes') {
+      showPage('inicio', navOpts);
+      openSocialsSheet();
       return;
     }
     if (PAGES.indexOf(hash) >= 0) {
@@ -2288,13 +2297,108 @@
   }
 
   function initSocials() {
-    const btn = document.getElementById('hero-socials-toggle');
-    const panel = document.getElementById('hero-socials-panel');
-    if (!btn || !panel) return;
-    btn.addEventListener('click', () => {
-      const open = btn.getAttribute('aria-expanded') !== 'true';
-      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
-      panel.hidden = !open;
+    const dialog = document.getElementById('social-note');
+    const title = document.getElementById('social-note-title');
+    const text = document.getElementById('social-note-text');
+    const close = document.getElementById('social-note-close');
+    const sheet = document.getElementById('socials-sheet');
+    const sheetClose = document.getElementById('socials-close');
+    const opener = document.getElementById('open-socials');
+    if (!dialog || !title || !text || !sheet) return;
+    const names = { instagram: 'Instagram', facebook: 'Facebook', x: 'X', tiktok: 'TikTok' };
+    let socialsScrollY = 0;
+
+    function placeSocialsSheet() {
+      const media = document.getElementById('hero-media');
+      const nav = document.querySelector('.site-nav');
+      const navBottom = nav ? nav.getBoundingClientRect().bottom : 0;
+      let top = media ? media.getBoundingClientRect().bottom : navBottom;
+      if (top < navBottom) top = navBottom;
+      document.documentElement.style.setProperty('--socials-top', top + 'px');
+    }
+
+    openSocialsSheet = function () {
+      const inicio = document.querySelector('[data-page="inicio"]');
+      if (inicio && inicio.hidden) showPage('inicio', { quiet: true });
+      const media = document.getElementById('hero-media');
+      const nav = document.querySelector('.site-nav');
+      const navBottom = nav ? nav.getBoundingClientRect().bottom : 0;
+      if (media) {
+        const rect = media.getBoundingClientRect();
+        const desiredTop = navBottom + 8;
+        if (rect.top < desiredTop - 4 || rect.bottom > window.innerHeight - 220) {
+          window.scrollTo(0, Math.max(0, window.scrollY + rect.top - desiredTop));
+        }
+      }
+      placeSocialsSheet();
+      sheet.hidden = false;
+      socialsScrollY = window.scrollY;
+      document.body.style.position = 'fixed';
+      document.body.style.top = '-' + socialsScrollY + 'px';
+      document.body.style.left = '0';
+      document.body.style.right = '0';
+      document.body.style.width = '100%';
+      document.documentElement.classList.add('socials-open');
+      placeSocialsSheet();
+      if (sheetClose) sheetClose.focus();
+    };
+
+    function releaseSocialsPage() {
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.left = '';
+      document.body.style.right = '';
+      document.body.style.width = '';
+      window.scrollTo(0, socialsScrollY);
+    }
+
+    closeSocialsSheet = function (opts) {
+      if (sheet.hidden) return;
+      sheet.hidden = true;
+      document.documentElement.classList.remove('socials-open');
+      releaseSocialsPage();
+      if (dialog.open) dialog.close();
+      if (!(opts && opts.keepHash) && decodeURIComponent(window.location.hash.replace('#', '')) === 'redes') {
+        history.replaceState(null, '', window.location.pathname + window.location.search + '#inicio');
+      }
+    };
+
+    if (opener) opener.addEventListener('click', openSocialsSheet);
+    if (sheetClose) sheetClose.addEventListener('click', () => closeSocialsSheet());
+    document.querySelectorAll('[data-nav]').forEach((link) => {
+      link.addEventListener('click', () => closeSocialsSheet({ keepHash: true }));
+    });
+    window.addEventListener('resize', () => {
+      if (!sheet.hidden) placeSocialsSheet();
+    });
+    window.addEventListener('pagehide', () => closeSocialsSheet({ keepHash: true }));
+    window.addEventListener('pageshow', (event) => {
+      if (event.persisted) closeSocialsSheet({ keepHash: true });
+    });
+    function stopPageScroll(event) {
+      if (sheet.hidden) return;
+      if (event.target.closest && event.target.closest('#social-note')) return;
+      event.preventDefault();
+    }
+    window.addEventListener('wheel', stopPageScroll, { passive: false });
+    window.addEventListener('touchmove', stopPageScroll, { passive: false });
+    document.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape' || sheet.hidden || dialog.open) return;
+      event.preventDefault();
+      closeSocialsSheet();
+    });
+
+    document.querySelectorAll('[data-social]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const key = btn.getAttribute('data-social');
+        title.textContent = names[key] || '';
+        text.textContent = t('social' + key.charAt(0).toUpperCase() + key.slice(1));
+        if (!dialog.open) dialog.showModal();
+      });
+    });
+    if (close) close.addEventListener('click', () => dialog.close());
+    dialog.addEventListener('click', (event) => {
+      if (event.target === dialog) dialog.close();
     });
   }
 
