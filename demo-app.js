@@ -2287,6 +2287,17 @@
     window.scrollTo(0, y);
   }
 
+  function initSocials() {
+    const btn = document.getElementById('hero-socials-toggle');
+    const panel = document.getElementById('hero-socials-panel');
+    if (!btn || !panel) return;
+    btn.addEventListener('click', () => {
+      const open = btn.getAttribute('aria-expanded') !== 'true';
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      panel.hidden = !open;
+    });
+  }
+
   function initSalesBar() {
     const copy = $('#sales-copy');
     const bar = document.getElementById('sales-bar');
@@ -2367,6 +2378,7 @@
   }
 
   /* --------------------------------- Arranque ------------------------------ */
+  initSocials();
   initSalesBar();
   bindDemoActions();
   syncStickyOffset();

@@ -897,17 +897,20 @@
       padding: 0;
     }
     #hero-facts > * { min-width: 0; }
-    #hero-facts > a + a {
+    #hero-facts > a + a,
+    #hero-facts > .hero-socials {
       margin-top: 0.925rem;
       border-top: 1px solid rgb(229 229 229 / 0.7);
       padding-top: 1.175rem;
     }
-    #hero-facts > a:last-child {
+    #hero-facts > a:last-child,
+    #hero-facts > .hero-socials:last-child {
       border-bottom: 1px solid rgb(229 229 229 / 0.7);
       padding-bottom: 1.175rem;
     }
     @media (min-width: 768px) {
-      #hero-facts > a:last-child {
+      #hero-facts > a:last-child,
+      #hero-facts > .hero-socials:last-child {
         border-bottom: 0;
         padding-bottom: 0.25rem;
       }
@@ -922,7 +925,8 @@
     a.hero-fact:hover .hero-fact-compact,
     a.hero-fact:hover .hero-fact-link-short,
     a.hero-fact:hover .hero-fact-badge { color: #000; }
-    a.hero-fact:focus-visible {
+    a.hero-fact:focus-visible,
+    button.hero-fact:focus-visible {
       outline: 2px solid #a8a29e;
       outline-offset: 2px;
     }
@@ -988,6 +992,61 @@
       text-decoration: none;
     }
     a.hero-fact:nth-child(2):hover .hero-fact-link-short { color: #000; }
+    button.hero-fact {
+      width: 100%;
+      margin: 0;
+      border: 0;
+      background: transparent;
+      padding: 0.25rem 0;
+      color: inherit;
+      font: inherit;
+      text-align: left;
+      cursor: pointer;
+    }
+    .hero-fact-chevron {
+      display: grid;
+      flex: none;
+      place-items: center;
+      width: 1rem;
+      height: 1rem;
+      margin-left: 0.75rem;
+      color: #171717;
+    }
+    .hero-fact-chevron svg {
+      display: block;
+      width: 1rem;
+      height: 1rem;
+    }
+    .hero-socials-panel {
+      display: flex;
+      flex-direction: column;
+      margin-top: 0.85rem;
+    }
+    .hero-socials-panel[hidden] { display: none; }
+    .hero-socials-note {
+      margin: 0 0 0.35rem;
+      font-size: 0.75rem;
+      font-weight: 400;
+      line-height: 1.45;
+      color: #737373;
+    }
+    a.hero-social {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      border-top: 1px solid rgb(229 229 229 / 0.7);
+      padding: 0.8rem 0;
+      color: #404040;
+      font-size: 0.875rem;
+      line-height: 1.35;
+      text-decoration: none;
+    }
+    a.hero-social:hover { color: #000; }
+    a.hero-social:focus-visible {
+      outline: 2px solid #a8a29e;
+      outline-offset: 2px;
+    }
     .hero-fact-badge {
       flex: none;
       align-self: center;
@@ -1007,8 +1066,14 @@
       #hero-facts,
       a.hero-fact,
       .hero-fact { background: transparent; }
-      #hero-facts > a + a { border-top-color: rgb(255 255 255 / 0.14); }
-      #hero-facts > a:last-child { border-bottom-color: rgb(255 255 255 / 0.14); }
+      #hero-facts > a + a,
+      #hero-facts > .hero-socials { border-top-color: rgb(255 255 255 / 0.14); }
+      #hero-facts > a:last-child,
+      #hero-facts > .hero-socials:last-child { border-bottom-color: rgb(255 255 255 / 0.14); }
+      .hero-socials-note { color: #a3a3a3; }
+      a.hero-social { border-top-color: rgb(255 255 255 / 0.14); color: #d4d4d4; }
+      a.hero-social:hover { color: #fafafa; }
+      .hero-fact-chevron { color: #d4d4d4; }
       .hero-fact-compact,
       .hero-fact-value { color: #d4d4d4; }
       .hero-fact-icon,
@@ -1492,6 +1557,22 @@
             </div>
             <span id="info-menu-badge" class="hero-fact-badge">13,50 €</span>
           </a>
+          <div class="hero-socials">
+            <button type="button" id="hero-socials-toggle" class="hero-fact" aria-expanded="false" aria-controls="hero-socials-panel">
+              <span class="hero-fact-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="6.5" cy="12" r="2.1"/><circle cx="17.5" cy="6.5" r="2.1"/><circle cx="17.5" cy="17.5" r="2.1"/><path stroke-linecap="round" d="M8.4 11.1 15.4 7.4M8.5 12.9l6.9 3.6"/></svg></span>
+              <span class="hero-fact-body">
+                <span class="hero-fact-value" data-i18n="socialsLabel">Redes sociales</span>
+              </span>
+              <span class="hero-fact-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg></span>
+            </button>
+            <div id="hero-socials-panel" class="hero-socials-panel" hidden>
+              <p class="hero-socials-note" data-i18n="socialsNote">En esta demo los perfiles son de ejemplo. En la web del local, cada flecha abre su red.</p>
+              <a class="hero-social" href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer">Instagram<span class="hero-fact-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg></span></a>
+              <a class="hero-social" href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer">Facebook<span class="hero-fact-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg></span></a>
+              <a class="hero-social" href="https://x.com/" target="_blank" rel="noopener noreferrer">X<span class="hero-fact-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg></span></a>
+              <a class="hero-social" href="https://www.tiktok.com/" target="_blank" rel="noopener noreferrer">TikTok<span class="hero-fact-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg></span></a>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -1986,8 +2067,8 @@
     </div>
   </div>
 
-  <script src="demo-data.js?v=19"></script>
-  <script src="demo-app.js?v=62"></script>
+  <script src="demo-data.js?v=20"></script>
+  <script src="demo-app.js?v=63"></script>
   <script>
     (function () {
       var modal = document.getElementById('reserve-options-modal');
