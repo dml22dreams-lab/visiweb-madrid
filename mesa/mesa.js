@@ -26,6 +26,7 @@
       none: 'Sin alérgenos de declaración obligatoria.',
       add: 'Añadir a mi selección', variant: 'Variante', extras: 'Suplementos',
       rate: 'Valora tu experiencia', rateShort: 'Valora', mine: 'Mi selección',
+      rateNote: 'Este botón llevaría a las reseñas del restaurante en Google para que el cliente deje la suya.',
       sub: 'Tu lista personal para enseñar al camarero. No se envía ningún pedido.',
       total: 'Total', clear: 'Limpiar', close: 'Cerrar', drag: 'Desliza hacia abajo para cerrar',
       sharing: 'Compartiendo públicamente en Google',
@@ -50,6 +51,7 @@
       none: 'No allergens that must be declared.',
       add: 'Add to my selection', variant: 'Option', extras: 'Extras',
       rate: 'Rate your experience', rateShort: 'Rate', mine: 'My selection',
+      rateNote: 'This button would open the restaurant’s Google reviews so the guest can leave one.',
       sub: 'Your personal list to show the waiter. No order is sent.',
       total: 'Total', clear: 'Clear', close: 'Close', drag: 'Swipe down to close',
       sharing: 'Posting publicly on Google',
@@ -930,7 +932,22 @@
     dialog.querySelectorAll('.mini-star').forEach((btn) => { btn.innerHTML = starSvg(); });
   }
 
+  let rateNote = false;
+
+  function renderRateNote() {
+    const dialog = $('review-root').querySelector('.sheet-full');
+    dialog.innerHTML = '<div class="thanks"><h2 id="rev-title">' + esc(ui('rate')) + '</h2><p>' + esc(ui('rateNote')) + '</p>' +
+      '<button type="button" class="btn-close" data-close="review">' + esc(ui('close')) + '</button></div>';
+  }
+
+  function openRateNote() {
+    rateNote = true;
+    renderRateNote();
+    show('review');
+  }
+
   function openReview() {
+    rateNote = false;
     review.photos.forEach((photo) => URL.revokeObjectURL(photo.url));
     const fresh = blankReview();
     Object.keys(fresh).forEach((key) => { review[key] = fresh[key]; });
@@ -946,7 +963,10 @@
     if (!$('dish-root').hidden && draft) renderDish();
     if (!$('sel-root').hidden) renderSelection();
     if (!$('info-root').hidden) renderInfo();
-    if (!$('review-root').hidden) renderReview();
+    if (!$('review-root').hidden) {
+      if (rateNote) renderRateNote();
+      else renderReview();
+    }
   }
 
   function setLang(next) {
@@ -1012,8 +1032,8 @@
   $('search-back').addEventListener('click', () => toggleSearch(false));
   $('q').addEventListener('input', renderSearch);
   $('open-reviews').addEventListener('click', openReview);
-  $('dock-rate').addEventListener('click', openReview);
-  $('dock-rate-mini').addEventListener('click', openReview);
+  $('dock-rate').addEventListener('click', openRateNote);
+  $('dock-rate-mini').addEventListener('click', openRateNote);
   $('open-info').addEventListener('click', () => { renderInfo(); show('info'); });
   $('dock-mine').addEventListener('click', () => { renderSelection(); show('sel'); });
 
