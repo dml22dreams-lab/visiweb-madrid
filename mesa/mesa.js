@@ -503,6 +503,7 @@
     $('btn-search').setAttribute('aria-label', ui('searchLabel'));
     $('search-back').setAttribute('aria-label', ui('back'));
     $('q').placeholder = ui('search');
+    $('mesa-name').textContent = D.business.name;
     $('mesa-cats').setAttribute('aria-label', ui('cats'));
     $('hero').alt = L(D.images.heroAlt);
     document.title = ui('title');
@@ -607,6 +608,24 @@
     );
   }
 
+  let catsHold = false;
+  let catsUser = false;
+  let catsDrifted = false;
+  let catsProg = false;
+  let catsX = 0;
+  let catsLeft = 0;
+
+  function centerPill(id, behavior) {
+    const pill = document.querySelector('[data-spy="' + id + '"]');
+    const scroller = $('mesa-cats');
+    if (!pill || pill.classList.contains('is-hidden')) return;
+    const left = Math.max(0, pill.offsetLeft - (scroller.clientWidth - pill.clientWidth) / 2);
+    if (Math.abs(scroller.scrollLeft - left) < 2) return;
+    catsProg = true;
+    scroller.scrollTo({ left: left, behavior: behavior || 'auto' });
+    setTimeout(() => { catsProg = false; }, behavior === 'smooth' ? 500 : 40);
+  }
+
   function setActive(id) {
     if (!id || currentCat === id) return;
     currentCat = id;
@@ -614,15 +633,18 @@
       if (pill.dataset.spy === id) pill.setAttribute('aria-current', 'true');
       else pill.removeAttribute('aria-current');
     });
-    const pill = document.querySelector('[data-spy="' + id + '"]');
-    const scroller = $('mesa-cats');
-    if (!pill || pill.classList.contains('is-hidden')) return;
-    const left = pill.offsetLeft - (scroller.clientWidth - pill.clientWidth) / 2;
-    scroller.scrollTo({ left: Math.max(0, left), behavior: 'auto' });
+    if (!catsHold && !catsDrifted) centerPill(id, 'auto');
+  }
+
+  function collapseQty() {
+    if (!openQty) return;
+    openQty = null;
+    patchSlots();
   }
 
   function onSpy() {
-    const bar = $('mesa-cats');
+    collapseQty();
+    const bar = $('mesa-bar');
     const sections = visibleSections();
     const first = sections[0];
     const show = !!first && first.getBoundingClientRect().top <= bar.offsetHeight;
@@ -641,7 +663,12 @@
       const nextTop = band.getBoundingClientRect().top;
       if (nameGone && nextTop <= edge + band.offsetHeight) current = next;
     }
-    setActive(current.dataset.mesaCat);
+    const id = current.dataset.mesaCat;
+    const drifted = catsDrifted && !catsHold;
+    if (drifted) catsDrifted = false;
+    const same = currentCat === id;
+    setActive(id);
+    if (drifted && same) centerPill(id, 'smooth');
   }
 
   function pinDemoBar() {
@@ -653,7 +680,7 @@
     const sec = $('cat-' + id);
     if (!sec || sec.classList.contains('is-hidden')) return;
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const top = sec.getBoundingClientRect().top + window.scrollY - $('mesa-cats').offsetHeight + 1;
+    const top = sec.getBoundingClientRect().top + window.scrollY - $('mesa-bar').offsetHeight + 1;
     spyLock = true;
     currentCat = '';
     setActive(id);
@@ -999,9 +1026,26 @@
     sheet.addEventListener('pointercancel', endDrag);
   })();
 
+  $('mesa-cats').addEventListener('pointerdown', (event) => {
+    catsHold = true;
+    catsUser = true;
+    catsX = event.clientX;
+    catsLeft = $('mesa-cats').scrollLeft;
+  });
+  $('mesa-cats').addEventListener('pointerup', () => { catsHold = false; });
+  $('mesa-cats').addEventListener('pointercancel', () => { catsHold = false; });
+  $('mesa-cats').addEventListener('scroll', () => {
+    if (catsProg) return;
+    if (catsUser) catsDrifted = true;
+  }, { passive: true });
   $('mesa-cats').addEventListener('click', (event) => {
     const pill = event.target.closest('[data-spy]');
-    if (pill) goTo(pill.dataset.spy);
+    if (!pill) return;
+    const moved = Math.abs(event.clientX - catsX) > 8 || Math.abs($('mesa-cats').scrollLeft - catsLeft) > 4;
+    if (moved) return;
+    catsUser = false;
+    catsDrifted = false;
+    goTo(pill.dataset.spy);
   });
 
   function onDishClick(event) {
@@ -1029,6 +1073,7 @@
 
   $('menu').addEventListener('click', onDishClick);
   $('search-results').addEventListener('click', onDishClick);
+  $('search-results').addEventListener('scroll', collapseQty, { passive: true });
 
   document.addEventListener('click', (event) => {
     const close = event.target.closest('[data-close]');

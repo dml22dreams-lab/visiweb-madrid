@@ -7,7 +7,7 @@
   <title>Taberna El Norte · Carta en mesa</title>
   <meta name="theme-color" content="#ffffff">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%231c1917'/%3E%3Cpath d='M11 7h10c0 5-3 8-5 8s-5-3-5-8z' fill='%23f59e0b'/%3E%3Cpath d='M16 15v8m-4 0h8' stroke='%23f59e0b' stroke-width='2.5' stroke-linecap='round'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="mesa.css?v=41">
+  <link rel="stylesheet" href="mesa.css?v=43">
 </head>
 <body>
   <div class="col">
@@ -43,7 +43,10 @@
       </button>
     </section>
 
-    <nav id="mesa-cats" class="sticky top-0 z-20 bg-white" aria-label="Categorías"></nav>
+    <div id="mesa-bar" class="mesa-bar">
+      <p id="mesa-name" class="mesa-name">Taberna El Norte</p>
+      <nav id="mesa-cats" aria-label="Categorías"></nav>
+    </div>
     <main id="menu"></main>
   </div>
 
@@ -96,6 +99,6 @@
   </div>
 
   <script src="../demo-data.js"></script>
-  <script src="mesa.js?v=26"></script>
+  <script src="mesa.js?v=29"></script>
 </body>
 </html>
