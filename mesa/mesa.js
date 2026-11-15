@@ -499,7 +499,7 @@
     $('info-s').textContent = ui('infoS');
     $('open-info').setAttribute('aria-label', ui('infoK') + ' · ' + ui('infoS'));
     $('btn-lang').setAttribute('aria-label', ui('lang'));
-    $('btn-lang').firstChild.textContent = (lang === 'en' ? 'EN' : 'ES') + ' ';
+    actualizarBotonIdioma();
     $('btn-search').setAttribute('aria-label', ui('searchLabel'));
     $('search-back').setAttribute('aria-label', ui('back'));
     $('q').placeholder = ui('search');
@@ -964,7 +964,50 @@
     renderSearch();
   }
 
-  $('btn-lang').addEventListener('click', () => setLang(lang === 'es' ? 'en' : 'es'));
+  let langAnimating = false;
+
+  function actualizarBotonIdioma() {
+    if (langAnimating) return;
+    const btnText = $('lang-text');
+    if (!btnText) return;
+    btnText.textContent = lang === 'en' ? 'EN' : 'ES';
+    btnText.classList.remove('slide-out-up', 'slide-in-bottom');
+  }
+
+  function toggleIdioma() {
+    if (langAnimating) return;
+    const textEl = $('lang-text');
+    const nextLang = lang === 'es' ? 'en' : 'es';
+    const nextCode = nextLang === 'en' ? 'EN' : 'ES';
+    const greeting = nextLang === 'en' ? 'Hello' : 'Hola';
+    if (!textEl) {
+      setLang(nextLang);
+      return;
+    }
+    langAnimating = true;
+    textEl.classList.add('slide-out-up');
+    setTimeout(() => {
+      textEl.textContent = greeting;
+      textEl.classList.remove('slide-out-up');
+      textEl.classList.add('slide-in-bottom');
+      void textEl.offsetWidth;
+      textEl.classList.remove('slide-in-bottom');
+      setLang(nextLang);
+      setTimeout(() => {
+        textEl.classList.add('slide-out-up');
+        setTimeout(() => {
+          textEl.textContent = nextCode;
+          textEl.classList.remove('slide-out-up');
+          textEl.classList.add('slide-in-bottom');
+          void textEl.offsetWidth;
+          textEl.classList.remove('slide-in-bottom');
+          langAnimating = false;
+        }, 200);
+      }, 700);
+    }, 200);
+  }
+
+  $('btn-lang').addEventListener('click', toggleIdioma);
   $('btn-search').addEventListener('click', () => toggleSearch());
   $('search-back').addEventListener('click', () => toggleSearch(false));
   $('q').addEventListener('input', renderSearch);
@@ -1046,6 +1089,13 @@
     catsUser = false;
     catsDrifted = false;
     goTo(pill.dataset.spy);
+  });
+  $('hero-kicker').addEventListener('click', () => {
+    const first = visibleSections()[0];
+    if (!first) return;
+    catsUser = false;
+    catsDrifted = false;
+    goTo(first.dataset.mesaCat);
   });
 
   function onDishClick(event) {

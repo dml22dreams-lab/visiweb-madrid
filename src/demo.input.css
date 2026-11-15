@@ -74,9 +74,18 @@
   }
 
   /* Foco visible y coherente en todos los elementos interactivos */
-  :focus-visible:not(.site-nav-link):not(.tab) {
+  :focus-visible:not(.site-nav-link):not(.tab):not(button) {
     outline: 2px solid theme('colors.slate.900');
     outline-offset: 2px;
+  }
+
+  button {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  button:focus,
+  button:focus-visible {
+    outline: none;
   }
 
   #booking-form input:focus,
