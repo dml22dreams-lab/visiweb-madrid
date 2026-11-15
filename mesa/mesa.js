@@ -7,6 +7,7 @@
 
   const STORE_LANG = 'visiweb-demo-lang';
   const cart = new Map();
+  let openQty = null;
   let lang = initialLang();
   let draft = null;
   let spyLock = false;
@@ -460,11 +461,14 @@
     return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" d="M6 12h12"/></svg>';
   }
 
-  function qtyControl(item, qty) {
+  function qtyControl(item, qty, expanded) {
     const id = esc(item.id);
     const name = L(item.name);
     if (!qty) {
       return '<button type="button" class="fab" data-add="' + id + '" aria-label="' + esc(ui('addOne') + ' ' + name) + '">' + plusSvg() + '</button>';
+    }
+    if (!expanded) {
+      return '<button type="button" class="qty-badge" data-qty-open="' + id + '" aria-label="' + esc(qty + ' ' + name) + '">' + qty + '</button>';
     }
     return '<div class="qty-pill">' +
       '<button type="button" class="qty-hit" data-dec="' + id + '" aria-label="' + esc(ui('remove') + ' ' + name) + '">' + (qty > 1 ? minusSvg() : trashSvg()) + '</button>' +
@@ -476,7 +480,7 @@
   function slotHtml(item) {
     const line = cart.get(item.id);
     const qty = line ? line.qty : 0;
-    const control = '<div class="slot-act' + (item.image ? '' : ' is-bare') + '">' + qtyControl(item, qty) + '</div>';
+    const control = '<div class="slot-act' + (item.image ? '' : ' is-bare') + '">' + qtyControl(item, qty, openQty === item.id) + '</div>';
     if (!item.image) return control;
     return '<button type="button" class="photo-hit" data-open="' + esc(item.id) + '" aria-label="' + esc(ui('see') + ' ' + L(item.name)) + '">' +
       '<img src="' + esc(item.image) + '" alt="">' +
@@ -588,8 +592,10 @@
     if (!item) return;
     const line = cart.get(id) || emptyLine(item);
     line.qty += delta;
-    if (line.qty <= 0) cart.delete(id);
-    else cart.set(id, line);
+    if (line.qty <= 0) {
+      cart.delete(id);
+      if (openQty === id) openQty = null;
+    } else cart.set(id, line);
     patchSlots();
     if (cart.size === 0 && !$('sel-root').hidden) hide('sel');
   }
@@ -791,9 +797,12 @@
         item.allergens.map((key) => '<li>' + allergenIcon(key) + '<span>' + esc(legalName(key)) + '</span></li>').join('') + '</ul>'
       : '<h3 class="block-title">' + esc(ui('allergens')) + '</h3><p class="sheet-copy">' + esc(ui('none')) + '</p>';
     const breakdown = item.extras.map((extra) => L(extra.name) + ': ' + formatMoney(extra.price)).join(' · ');
+    const photo = item.image
+      ? '<div class="sheet-photo" role="img" aria-label="' + esc(L(item.name)) + '" style="background-image:url(&quot;' + esc(item.image) + '&quot;)"></div>'
+      : '';
     $('dish-root').querySelector('.sheet').innerHTML =
       '<button type="button" class="sheet-x" data-close="dish" aria-label="' + esc(ui('close')) + '">' + closeSvg() + '</button>' +
-      '<img class="sheet-photo" src="' + esc(item.image) + '" alt="' + esc(L(item.name)) + '">' +
+      photo +
       '<div class="sheet-body">' +
         '<h2 id="dish-title">' + esc(L(item.name)) + '</h2>' +
         '<p class="sheet-price">' + esc(formatMoney(shown)) + (breakdown ? ' · ' + esc(breakdown) : '') + '</p>' +
@@ -824,7 +833,7 @@
       rows.push('<li><div class="sel-copy"><p class="sel-name">' + esc(L(item.name)) + '</p>' +
         (meta ? '<p class="sel-meta">' + esc(meta) + '</p>' : '') +
         '<p class="sel-price">' + esc(formatMoney(unitPrice(item, line) * line.qty)) + '</p></div>' +
-        qtyControl(item, line.qty) + '</li>');
+        qtyControl(item, line.qty, true) + '</li>');
     });
     $('sel-root').querySelector('.sheet').innerHTML =
       '<div class="handle" role="button" aria-label="' + esc(ui('drag')) + '"></div>' +
@@ -998,9 +1007,23 @@
   function onDishClick(event) {
     const add = event.target.closest('[data-add]');
     const dec = event.target.closest('[data-dec]');
+    const badge = event.target.closest('[data-qty-open]');
     const open = event.target.closest('[data-open]');
-    if (add) { changeQty(add.dataset.add, 1); return; }
-    if (dec) { changeQty(dec.dataset.dec, -1); return; }
+    if (add) {
+      openQty = add.dataset.add;
+      changeQty(add.dataset.add, 1);
+      return;
+    }
+    if (dec) {
+      openQty = dec.dataset.dec;
+      changeQty(dec.dataset.dec, -1);
+      return;
+    }
+    if (badge) {
+      openQty = badge.dataset.qtyOpen;
+      patchSlots();
+      return;
+    }
     if (open) openDish(open.dataset.open);
   }
 
@@ -1035,9 +1058,15 @@
       else if (dec) changeQty(dec.dataset.dec, -1);
       else if (event.target.closest('#sel-clear')) {
         cart.clear();
+        openQty = null;
         patchSlots();
         hide('sel');
       }
+    }
+
+    if (openQty && !event.target.closest('.slot-act')) {
+      openQty = null;
+      patchSlots();
     }
 
     const reviewRoot = $('review-root');
