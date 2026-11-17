@@ -479,11 +479,15 @@
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     .no-scrollbar::-webkit-scrollbar { display: none; }
 
+    [data-billing],
+    #maint-tabs [data-maint-tab] {
+      transition: none !important;
+    }
     @media (max-width: 767px) {
       .hero-demo-cards {
         width: 100% !important;
         max-width: 22.5rem !important;
-        height: 33rem !important;
+        height: 37.5rem !important;
         margin-inline: auto;
         padding-bottom: 0 !important;
       }
@@ -491,7 +495,7 @@
         position: absolute !important;
         top: 0 !important;
         left: 0 !important;
-        width: 14.25rem !important;
+        width: 13.5rem !important;
         max-width: none !important;
       }
       .hero-place-card {
@@ -885,14 +889,14 @@
       <h2 class="text-2xl font-bold text-stone-900 dark:text-stone-100 md:text-3xl">Mantenimiento</h2>
       <div class="mt-6 flex justify-center px-1">
         <div class="grid w-full max-w-2xl grid-cols-1 gap-1 rounded-2xl bg-stone-200/80 p-1 dark:bg-stone-800/80 sm:grid-cols-2 sm:rounded-full" role="tablist" aria-label="Modalidad de tarifa">
-          <button type="button" role="tab" data-billing="anual" aria-selected="true" class="no-underline rounded-xl bg-white px-3 py-2.5 text-center text-xs font-bold leading-snug text-stone-900 shadow-sm transition-colors dark:bg-stone-900 dark:text-stone-100 sm:rounded-full sm:px-4 sm:text-sm">Tarifa Anual (-44&nbsp;%)</button>
-          <button type="button" role="tab" data-billing="mensual" aria-selected="false" class="no-underline rounded-xl px-3 py-2.5 text-center text-xs font-medium leading-snug text-stone-600 transition-colors hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100 sm:rounded-full sm:px-4 sm:text-sm">Mes a mes</button>
+          <button type="button" role="tab" data-billing="anual" aria-selected="true" class="no-underline rounded-xl bg-white px-3 py-2.5 text-center text-xs font-bold leading-snug text-stone-900 shadow-sm dark:bg-stone-900 dark:text-stone-100 sm:rounded-full sm:px-4 sm:text-sm">Tarifa Anual (-44&nbsp;%)</button>
+          <button type="button" role="tab" data-billing="mensual" aria-selected="false" class="no-underline rounded-xl px-3 py-2.5 text-center text-xs font-medium leading-snug text-stone-600 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100 sm:rounded-full sm:px-4 sm:text-sm">Mes a mes</button>
         </div>
       </div>
       <div id="maint-tabs" class="mx-auto mb-6 mt-6 grid w-full max-w-3xl grid-cols-3 gap-1 rounded-2xl bg-stone-200/80 p-1 dark:bg-stone-800/80 md:hidden" role="tablist" aria-label="Mantenimiento">
-        <button type="button" role="tab" data-maint-tab="cero" aria-selected="true" class="rounded-xl border-2 border-[#E6D5C3] bg-white px-2 py-3 text-center text-xs font-bold leading-tight text-stone-900 shadow-sm transition-[background-color,border-color,color,box-shadow] duration-300 ease-out dark:bg-stone-900 dark:text-stone-100 sm:text-sm">Sin cuota</button>
-        <button type="button" role="tab" data-maint-tab="base" aria-selected="false" class="no-underline rounded-xl border-2 border-transparent px-2 py-3 text-center text-xs font-medium leading-tight text-stone-600 transition-[background-color,border-color,color,box-shadow] duration-300 ease-out hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100 sm:text-sm">Base (<span data-billing-tab="base" class="no-underline">25</span>&nbsp;€)</button>
-        <button type="button" role="tab" data-maint-tab="activa" aria-selected="false" class="no-underline rounded-xl border-2 border-transparent px-2 py-3 text-center text-xs font-medium leading-tight text-stone-600 transition-[background-color,border-color,color,box-shadow] duration-300 ease-out hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100 sm:text-sm">Activa (<span data-billing-tab="activa" class="no-underline">85</span>&nbsp;€)</button>
+        <button type="button" role="tab" data-maint-tab="cero" aria-selected="true" class="rounded-xl border-2 border-[#E6D5C3] bg-white px-2 py-3 text-center text-xs font-bold leading-tight text-stone-900 shadow-sm dark:bg-stone-900 dark:text-stone-100 sm:text-sm">Sin cuota</button>
+        <button type="button" role="tab" data-maint-tab="base" aria-selected="false" class="no-underline rounded-xl border-2 border-transparent px-2 py-3 text-center text-xs font-medium leading-tight text-stone-600 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100 sm:text-sm">Base (<span data-billing-tab="base" class="no-underline">25</span>&nbsp;€)</button>
+        <button type="button" role="tab" data-maint-tab="activa" aria-selected="false" class="no-underline rounded-xl border-2 border-transparent px-2 py-3 text-center text-xs font-medium leading-tight text-stone-600 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100 sm:text-sm">Activa (<span data-billing-tab="activa" class="no-underline">85</span>&nbsp;€)</button>
       </div>
       <div id="maint-planes" class="mx-auto grid max-w-6xl grid-cols-1 items-stretch gap-6 pt-4 text-left md:mt-8 md:grid-cols-3">
         <article data-maint-plan="cero" data-name="Sin cuota mensual" data-price="0" class="block h-full w-full flex-col rounded-2xl border border-stone-200 bg-white p-6 opacity-100 shadow-sm dark:border-stone-800 dark:bg-stone-900 md:flex">
@@ -1255,7 +1259,7 @@
       <p>Contacto y ejercicio de derechos: WhatsApp +34 608 97 59 06.</p>
       <p><strong class="font-semibold text-stone-800 dark:text-stone-100">Qué datos hay y para qué.</strong> El formulario de propuesta envía el nombre del local, la zona y el plan elegido. Ese envío se guarda en Supabase. El mantenimiento, la tarifa (compromiso de 12 meses o mes a mes), los extras, los idiomas y el texto de una funcionalidad a medida van en el mensaje de WhatsApp, no como ficha aparte. Las solicitudes de subida de plan, de cambio de tarifa o de baja del mantenimiento identifican el local y la opción pedida, y se tratan para ejecutar el contrato y facturar el periodo en curso. Con la tarifa de 12 meses, la modalidad que consta es la del periodo anual comprometido hasta su cierre. Con la tarifa mes a mes, la modalidad que consta es la del periodo mensual ya facturado hasta su cierre. Al abrir WhatsApp, Meta trata el teléfono, el nombre de perfil y el contenido del chat. Si hay encargo, también los datos de factura y los materiales que el cliente entregue: carta, fotos de platos y local, y accesos al dominio o a la ficha de Google. Esas fotos las envía el restaurante. Se usan solo para optimizarlas (encuadre, luz y formato web) y publicarlas en su web y, si el plan o el mantenimiento lo incluye, en su ficha de Google.</p>
       <p>La demo, el presupuesto y la auditoría se preparan porque el interesado lo pide (art. 6.1.b del RGPD). El servicio contratado y la factura se apoyan en el contrato y en la obligación legal de conservar la documentación. No hay decisiones automatizadas, no se venden datos y no se usan para publicidad de terceros. La web no está dirigida a menores.</p>
-      <p><strong class="font-semibold text-stone-800 dark:text-stone-100">Quién los trata.</strong> Supabase Inc., para guardar el lead del formulario. Meta Platforms Ireland Ltd., para WhatsApp. Cloudflare, para alojar y proteger este sitio. Google, para las fuentes de la página y, si el encargo lo incluye, para la ficha de Google o la configuración de anuncios en la cuenta del cliente. jsDelivr y el CDN de Tailwind, para cargar la librería y los estilos. Unsplash, para las fotos de muestra del inicio. Algunos de estos proveedores pueden tratar la dirección IP fuera del Espacio Económico Europeo con sus cláusulas contractuales tipo.</p>
+      <p><strong class="font-semibold text-stone-800 dark:text-stone-100">Quién los trata.</strong> Supabase Inc., para guardar el lead del formulario. Meta Platforms Ireland Ltd., para WhatsApp. Cloudflare, para alojar y proteger este sitio. Google, para las fuentes de la página y, si el encargo lo incluye, para la ficha de Google o la configuración de anuncios en la cuenta del cliente. jsDelivr y el CDN de Tailwind, para cargar la librería y los estilos. Las fotos de muestra del inicio se sirven desde este mismo sitio. Algunos de estos proveedores pueden tratar la dirección IP fuera del Espacio Económico Europeo con sus cláusulas contractuales tipo.</p>
       <p>En la web del bar, el responsable de los datos de sus comensales es el propio local. Los textos de privacidad que se entregan con el plan son plantillas para que ese local las complete. Si VisiWeb aloja o mantiene esa web, lo hace como encargado, solo para tenerla en línea, hacer copias y aplicar los cambios pedidos. La visualización de carta en mesa, solo del plan Digitalización Total, puede mostrar una pantalla para que el comensal valore. En la demo de esta web esa valoración no se envía ni se guarda. En la web de un local, el texto, la puntuación y las fotos de esa pantalla son datos del local.</p>
       <p>La página de redes solo va en Gastro Premium y en Digitalización Total. En esta demo, pulsar Instagram, Facebook, X o TikTok no sale del sitio ni envía datos a esas empresas: se abre una ventana que explica la función. En la web del local, esa flecha abre el perfil y la red trata la visita según su propia política. VisiWeb no recibe datos de ese clic.</p>
       <p><strong class="font-semibold text-stone-800 dark:text-stone-100">Cuánto tiempo.</strong> Una consulta sin contrato se conserva hasta 12 meses desde el último contacto. Los datos de un cliente y sus facturas, durante el servicio y los 6 años siguientes. La preferencia de tema claro u oscuro permanece en el propio navegador hasta que se borra.</p>
@@ -1272,8 +1276,8 @@
       <p>Última actualización: 17 de noviembre de 2026.</p>
       <p>Esta web no usa cookies de publicidad, analítica ni redes. No hay banner de consentimiento porque no se instala nada de seguimiento. La modalidad de mantenimiento (compromiso de 12 meses o mes a mes) y sus cambios o bajas no se guardan en cookies: se comunican por WhatsApp y, si hay encargo, constan en el expediente y en la factura. Los botones de redes de la demo no conectan con Instagram, Facebook, X ni TikTok, así que esas plataformas no instalan cookies desde esta página.</p>
       <p>El tema claro u oscuro, si lo cambias, se guarda en este navegador con la clave local <span class="font-medium text-stone-700 dark:text-stone-200">theme</span>. No sale del dispositivo. Cloudflare, el alojamiento y la seguridad del sitio, puede usar cookies técnicas propias para proteger la página. Esas cookies y el almacenamiento del tema están exentos de consentimiento.</p>
-      <p>Para mostrar la página, el navegador se conecta a Google Fonts, al CDN de Tailwind, a jsDelivr y, en las fotos de muestra del inicio, a Unsplash. Esas fotos de muestra no son de un cliente. Las fotos de platos y local de un encargo no se guardan en cookies: las envía el restaurante por WhatsApp y, si hay encargo, constan en el expediente. Esas conexiones pueden recibir la dirección IP. No se usan para elaborar un perfil publicitario. Supabase solo recibe datos si envías el formulario de propuesta. WhatsApp solo se abre si pulsas un enlace de contacto.</p>
-      <p>Puedes borrar la preferencia de tema y las cookies del sitio desde la configuración del navegador. En la demo de ejemplo de un local sí hay un aviso propio de cookies de terceros, porque esa muestra puede cargar un mapa; no forma parte de esta página.</p>
+      <p>Para mostrar la página, el navegador se conecta a Google Fonts, al CDN de Tailwind y a jsDelivr. Las fotos de muestra del inicio se sirven desde este mismo sitio y no son de un cliente. Las fotos de platos y local de un encargo no se guardan en cookies: las envía el restaurante por WhatsApp y, si hay encargo, constan en el expediente. Esas conexiones pueden recibir la dirección IP. No se usan para elaborar un perfil publicitario. Supabase solo recibe datos si envías el formulario de propuesta. WhatsApp solo se abre si pulsas un enlace de contacto.</p>
+      <p>Puedes borrar la preferencia de tema y las cookies del sitio desde la configuración del navegador. La demo de Taberna El Norte es otra página: guarda el idioma en este navegador con la clave local <span class="font-medium text-stone-700 dark:text-stone-200">visiweb-demo-lang</span>, el mapa es una imagen del propio sitio y no carga Google Maps ni instala cookies de terceros. El calendario de reservas de esa demo se pide a jsDelivr. No forma parte de esta página.</p>
     </div>
   </dialog>
 
@@ -1296,8 +1300,8 @@
       <p id="interest-plan" class="mb-3 hidden text-xs leading-snug text-stone-500 dark:text-stone-400"></p>
       <div id="interest-maint-wrap" data-wizard-step="1">
         <div class="mb-3 grid grid-cols-1 gap-1 rounded-2xl bg-stone-200/80 p-1 dark:bg-stone-800/80" role="tablist" aria-label="Modalidad de tarifa">
-          <button type="button" data-billing="anual" aria-selected="true" class="no-underline rounded-xl bg-white px-3 py-2 text-center text-[11px] font-bold leading-snug text-stone-900 shadow-sm transition-colors dark:bg-stone-900 dark:text-stone-100">Tarifa Anual (-44&nbsp;%)</button>
-          <button type="button" data-billing="mensual" aria-selected="false" class="no-underline rounded-xl px-3 py-2 text-center text-[11px] font-medium leading-snug text-stone-600 transition-colors hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100">Mes a mes</button>
+          <button type="button" data-billing="anual" aria-selected="true" class="no-underline rounded-xl bg-white px-3 py-2 text-center text-[11px] font-bold leading-snug text-stone-900 shadow-sm dark:bg-stone-900 dark:text-stone-100">Tarifa Anual (-44&nbsp;%)</button>
+          <button type="button" data-billing="mensual" aria-selected="false" class="no-underline rounded-xl px-3 py-2 text-center text-[11px] font-medium leading-snug text-stone-600 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100">Mes a mes</button>
         </div>
         <div class="grid gap-2" role="radiogroup" aria-label="Mantenimiento deseado">
           <label class="flex cursor-pointer flex-col rounded-xl border border-stone-200 bg-white px-3.5 py-3 transition-colors has-[:checked]:border-emerald-700 has-[:checked]:bg-emerald-50 dark:border-stone-700 dark:bg-stone-900 dark:has-[:checked]:border-emerald-400 dark:has-[:checked]:bg-emerald-950/40">
