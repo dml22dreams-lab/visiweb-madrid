@@ -868,10 +868,16 @@
     <section id="seccion-mantenimiento" class="reveal mt-8 scroll-mt-28 text-center" aria-label="Planes de mantenimiento">
       <p class="text-xs uppercase tracking-wider font-semibold text-stone-500">Servicio recurrente</p>
       <h2 class="mt-2 text-2xl font-bold text-stone-900 dark:text-stone-100 md:text-3xl">Mantenimiento y gestión continua</h2>
+      <div class="mt-6 flex justify-center px-1">
+        <div class="grid w-full max-w-2xl grid-cols-1 gap-1 rounded-2xl bg-stone-200/80 p-1 dark:bg-stone-800/80 sm:grid-cols-2 sm:rounded-full" role="tablist" aria-label="Modalidad de tarifa">
+          <button type="button" role="tab" data-billing="anual" aria-selected="true" class="rounded-xl bg-white px-3 py-2.5 text-center text-xs font-bold leading-snug text-stone-900 shadow-sm transition-colors dark:bg-stone-900 dark:text-stone-100 sm:rounded-full sm:px-4 sm:text-sm">Compromiso 12 meses (Ahorra hasta un 28&nbsp;%)</button>
+          <button type="button" role="tab" data-billing="mensual" aria-selected="false" class="rounded-xl px-3 py-2.5 text-center text-xs font-medium leading-snug text-stone-600 transition-colors hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100 sm:rounded-full sm:px-4 sm:text-sm">Mes a mes (Sin permanencia)</button>
+        </div>
+      </div>
       <div id="maint-tabs" class="mx-auto mb-6 mt-6 grid w-full max-w-3xl grid-cols-3 gap-1 rounded-2xl bg-stone-200/80 p-1 dark:bg-stone-800/80 md:hidden" role="tablist" aria-label="Mantenimiento">
         <button type="button" role="tab" data-maint-tab="cero" aria-selected="true" class="rounded-xl border-2 border-stone-900 bg-white px-2 py-3 text-center text-xs font-bold leading-tight text-stone-900 shadow-sm transition-[background-color,border-color,color,box-shadow] duration-300 ease-out dark:border-stone-100 dark:bg-stone-900 dark:text-stone-100 sm:text-sm">Sin cuota</button>
-        <button type="button" role="tab" data-maint-tab="base" aria-selected="false" class="rounded-xl border-2 border-transparent px-2 py-3 text-center text-xs font-medium leading-tight text-stone-600 transition-[background-color,border-color,color,box-shadow] duration-300 ease-out hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100 sm:text-sm">Base (25 €)</button>
-        <button type="button" role="tab" data-maint-tab="activa" aria-selected="false" class="rounded-xl border-2 border-transparent px-2 py-3 text-center text-xs font-medium leading-tight text-stone-600 transition-[background-color,border-color,color,box-shadow] duration-300 ease-out hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100 sm:text-sm">Activa (85 €)</button>
+        <button type="button" role="tab" data-maint-tab="base" aria-selected="false" class="rounded-xl border-2 border-transparent px-2 py-3 text-center text-xs font-medium leading-tight text-stone-600 transition-[background-color,border-color,color,box-shadow] duration-300 ease-out hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100 sm:text-sm">Base (<span data-billing-tab="base">25</span>&nbsp;€)</button>
+        <button type="button" role="tab" data-maint-tab="activa" aria-selected="false" class="rounded-xl border-2 border-transparent px-2 py-3 text-center text-xs font-medium leading-tight text-stone-600 transition-[background-color,border-color,color,box-shadow] duration-300 ease-out hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100 sm:text-sm">Activa (<span data-billing-tab="activa">85</span>&nbsp;€)</button>
       </div>
       <div id="maint-planes" class="mx-auto grid max-w-6xl grid-cols-1 items-stretch gap-6 pt-4 text-left md:mt-8 md:grid-cols-3">
         <article data-maint-plan="cero" data-name="Sin cuota mensual" data-price="0" class="block h-full w-full flex-col rounded-2xl border border-stone-200 bg-white p-6 opacity-100 shadow-sm dark:border-stone-800 dark:bg-stone-900 md:flex">
@@ -892,13 +898,13 @@
         <article data-maint-plan="base" data-name="Mantenimiento Base" data-price="25" class="hidden h-full w-full flex-col rounded-2xl border border-[#8B5E34] bg-white p-6 opacity-0 shadow-sm dark:border-[#C4A484] dark:bg-stone-900 md:flex">
           <div>
             <h3 class="flex min-h-[3.5rem] items-end text-lg font-extrabold tracking-tight text-stone-900 dark:text-stone-100">Mantenimiento Base</h3>
-            <p class="mt-1 min-h-[2.5rem] text-xs leading-snug text-[#8B5E34] dark:text-[#E6D5C3]">Tu web siempre abierta + dominio pagado</p>
+            <p data-billing-copy="base-tag" class="mt-1 min-h-[2.5rem] text-xs leading-snug text-[#8B5E34] dark:text-[#E6D5C3]">Tu web siempre abierta + dominio pagado</p>
             <div class="mt-5 border-b border-stone-200 pb-5 dark:border-stone-800">
-              <p class="text-3xl font-extrabold text-stone-900 dark:text-stone-100">25&nbsp;€<span class="text-base font-semibold text-stone-500 dark:text-stone-400"> / mes</span></p>
-              <p class="mt-1 text-[11px] font-medium text-stone-500 dark:text-stone-400">IVA no incluido</p>
+              <p class="text-3xl font-extrabold text-stone-900 dark:text-stone-100"><span data-billing-amount="base">25</span>&nbsp;€<span class="text-base font-semibold text-stone-500 dark:text-stone-400"> / mes</span></p>
+              <p data-billing-note="base" class="mt-1 text-[11px] font-medium text-stone-500 dark:text-stone-400">IVA no incluido · dominio incluido</p>
             </div>
             <ul class="mt-5 flex flex-col gap-3.5 justify-start text-left">
-              <li class="flex items-start text-xs leading-relaxed text-stone-700 dark:text-stone-300 sm:text-[13px]"><span class="mr-2.5 mt-1 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-stone-300 dark:bg-stone-600" aria-hidden="true"></span> Renovación y gestión técnica de tu dominio y web incluida</li>
+              <li class="flex items-start text-xs leading-relaxed text-stone-700 dark:text-stone-300 sm:text-[13px]"><span class="mr-2.5 mt-1 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-stone-300 dark:bg-stone-600" aria-hidden="true"></span> <span data-billing-copy="base-domain">Renovación y gestión técnica de tu dominio y web incluida</span></li>
               <li class="flex items-start text-xs leading-relaxed text-stone-700 dark:text-stone-300 sm:text-[13px]"><span class="mr-2.5 mt-1 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-stone-300 dark:bg-stone-600" aria-hidden="true"></span> Hasta 2 actualizaciones de carta o precios al mes</li>
               <li class="flex items-start text-xs leading-relaxed text-stone-700 dark:text-stone-300 sm:text-[13px]"><span class="mr-2.5 mt-1 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-stone-300 dark:bg-stone-600" aria-hidden="true"></span> Copias de seguridad continuas para que la web nunca falle</li>
               <li class="flex items-start text-xs leading-relaxed text-stone-700 dark:text-stone-300 sm:text-[13px]"><span class="mr-2.5 mt-1 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-stone-300 dark:bg-stone-600" aria-hidden="true"></span> Atención directa por WhatsApp para dudas o incidencias técnicas</li>
@@ -911,13 +917,13 @@
             <h3 class="flex min-h-[3.5rem] items-end text-lg font-extrabold tracking-tight text-stone-900 dark:text-stone-100">Gestión Activa + Maps</h3>
             <p class="mt-1 min-h-[2.5rem] text-xs leading-snug text-stone-500 dark:text-stone-400">Publicaciones en Google, actualización de material visual y hasta 6 cambios de carta al mes</p>
             <div class="mt-5 border-b border-stone-200 pb-5 dark:border-stone-800">
-              <p class="text-3xl font-extrabold text-stone-900 dark:text-stone-100">85&nbsp;€<span class="text-base font-semibold text-stone-500 dark:text-stone-400"> / mes</span></p>
-              <p class="mt-1 text-[11px] font-medium text-stone-500 dark:text-stone-400">IVA no incluido</p>
+              <p class="text-3xl font-extrabold text-stone-900 dark:text-stone-100"><span data-billing-amount="activa">85</span>&nbsp;€<span class="text-base font-semibold text-stone-500 dark:text-stone-400"> / mes</span></p>
+              <p data-billing-note="activa" class="mt-1 text-[11px] font-medium text-stone-500 dark:text-stone-400">IVA no incluido · dominio incluido</p>
             </div>
             <ul class="mt-5 flex flex-col gap-3.5 justify-start text-left">
               <li class="flex items-start gap-2.5 text-sm leading-relaxed text-stone-600 dark:text-stone-400">
                 <span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-stone-400 dark:bg-stone-500" aria-hidden="true"></span>
-                <span><strong class="font-semibold text-stone-900 underline decoration-stone-400 decoration-1 underline-offset-2 dark:text-stone-100">Incluye todo el Plan Base:</strong> dominio, web y copias de seguridad</span>
+                <span><strong class="font-semibold text-stone-900 underline decoration-stone-400 decoration-1 underline-offset-2 dark:text-stone-100">Incluye todo el Plan Base:</strong> <span data-billing-copy="activa-base">dominio, web y copias de seguridad</span></span>
               </li>
               <li class="flex items-start text-xs leading-relaxed text-stone-700 dark:text-stone-300 sm:text-[13px]"><span class="mr-2.5 mt-1 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-stone-300 dark:bg-stone-600" aria-hidden="true"></span> Gestión activa de Google Maps: subida de fotos enviadas por el local, novedades y horarios festivos</li>
               <li class="flex items-start text-xs leading-relaxed text-stone-700 dark:text-stone-300 sm:text-[13px]"><span class="mr-2.5 mt-1 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-stone-300 dark:bg-stone-600" aria-hidden="true"></span> Publicaciones en tu perfil de Google para destacar platos y menús</li>
@@ -932,7 +938,7 @@
         <button type="button" data-maint-dot="base" aria-label="Mantenimiento Base" class="h-2 w-2 rounded-full bg-stone-300 dark:bg-stone-600"></button>
         <button type="button" data-maint-dot="activa" aria-label="Gestión Activa + Maps" class="h-2 w-2 rounded-full bg-stone-300 dark:bg-stone-600"></button>
       </div>
-      <p class="text-xs text-stone-400 mt-6 block text-center">El mantenimiento es opcional y sin permanencia. Puedes cambiar de modalidad o darlo de baja antes de tu siguiente renovación mensual. La opción se elige en el <a href="#planes" class="font-semibold text-stone-700 underline decoration-stone-400 decoration-1 underline-offset-2 dark:text-stone-200">paso de contacto</a>.</p>
+      <p class="mx-auto mt-6 block max-w-3xl text-center text-xs leading-relaxed text-stone-400">Puedes subir de plan en cualquier momento. Con la tarifa reducida de 12 meses tienes el dominio incluido y el paso a 0&nbsp;€/mes se aplica al finalizar el periodo anual. La opción se elige en el <a href="#planes" class="font-semibold text-stone-700 underline decoration-stone-400 decoration-1 underline-offset-2 dark:text-stone-200">paso de contacto</a>.</p>
     </section>
 
     <aside id="servicios-adicionales" class="reveal mt-8 rounded-2xl border border-stone-200 bg-white px-5 py-5 dark:border-stone-800 dark:bg-stone-900" aria-label="Servicios adicionales">
@@ -1139,7 +1145,7 @@
       <button type="button" class="grid h-8 w-8 shrink-0 place-items-center text-stone-400 transition-colors hover:text-black dark:text-stone-500 dark:hover:text-white" data-close-legal aria-label="Cerrar"><svg viewBox="0 0 24 24" class="h-[18px] w-[18px]" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
     </div>
     <div class="max-h-[70vh] space-y-3 overflow-y-auto px-6 py-5 text-sm leading-relaxed text-stone-500 dark:text-stone-300">
-      <p>Última actualización: 16 de noviembre de 2026.</p>
+      <p>Última actualización: 17 de noviembre de 2026.</p>
       <p>VisiWeb Madrid informa en este sitio sobre diseño web, cartas digitales, códigos QR, optimización de las imágenes que facilite el restaurante, presencia en Google, redes sociales del local y mantenimiento para bares y restaurantes, con servicio en Alcobendas, San Sebastián de los Reyes y Madrid. La página de redes sociales forma parte de Gastro Premium y de Digitalización Total. El plan Básico no la incluye. Las imágenes de platos y local las envía el restaurante.</p>
       <p>Nombre comercial: VisiWeb Madrid.</p>
       <p>Titular:</p>
@@ -1147,7 +1153,7 @@
       <p>Domicilio fiscal:</p>
       <p>Contacto: WhatsApp +34 608 97 59 06. Este sitio no tiene pasarela de pago.</p>
       <p>Los textos, el diseño y la marca de este sitio son de VisiWeb Madrid. No pueden reutilizarse sin autorización. Las fotos de ejemplo y la demo de Taberna El Norte son material de muestra, no un local cliente.</p>
-      <p>Los precios vigentes son los publicados en esta página, en euros e IVA no incluido: Básico 120 €, Gastro Premium 390 € y Digitalización Total 790 €, pago único y web en propiedad, sin permanencia. El mantenimiento es opcional y sin permanencia: Sin cuota 0 €/mes, Base 25 €/mes o Gestión Activa + Maps 85 €/mes. Se puede cambiar de modalidad o darlo de baja antes de la siguiente renovación mensual; el cambio o la baja se hace efectivo al cierre del periodo mensual ya facturado. Tras pasar a 0 €/mes, las actualizaciones puntuales se tarifican de forma individual. Los servicios sueltos tienen el precio indicado en su ficha; «desde» o «a consultar» se cierran por escrito antes de empezar. El IVA se desglosa en la propuesta y en la factura antes de cobrar.</p>
+      <p>Los precios vigentes son los publicados en esta página, en euros e IVA no incluido: Básico 120 €, Gastro Premium 390 € y Digitalización Total 790 €, pago único y web en propiedad, sin permanencia. El mantenimiento es opcional. Sin cuota: 0 €/mes. Base: 25 €/mes con compromiso de 12 meses y dominio incluido, o 35 €/mes mes a mes y sin permanencia. Gestión Activa + Maps: 85 €/mes con compromiso de 12 meses y dominio incluido, o 99 €/mes mes a mes y sin permanencia. Se puede subir de plan en cualquier momento. Con la tarifa reducida de 12 meses, el paso a 0 €/mes se aplica al finalizar el periodo anual. Con la tarifa mes a mes, el cambio o la baja se comunica antes de la siguiente renovación mensual y se hace efectivo al cierre del periodo ya facturado. Tras pasar a 0 €/mes, las actualizaciones puntuales se tarifican de forma individual. Los servicios sueltos tienen el precio indicado en su ficha; «desde» o «a consultar» se cierran por escrito antes de empezar. El IVA se desglosa en la propuesta y en la factura antes de cobrar.</p>
       <p>La demo y la auditoría de ficha de Google son gratuitas y no obligan a contratar. El encargo nace solo cuando el cliente aprueba la demo y paga el primer 50 %. El otro 50 % se abona al publicar la web definitiva. Medios de pago: Bizum o transferencia. El detalle está en Condiciones del Servicio.</p>
       <p>Los enlaces a WhatsApp, Google, TheFork, CoverManager u otros terceros salen de este sitio. VisiWeb Madrid no controla su disponibilidad ni sus condiciones.</p>
     </div>
@@ -1159,7 +1165,7 @@
       <button type="button" class="grid h-8 w-8 shrink-0 place-items-center text-stone-400 transition-colors hover:text-black dark:text-stone-500 dark:hover:text-white" data-close-legal aria-label="Cerrar"><svg viewBox="0 0 24 24" class="h-[18px] w-[18px]" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
     </div>
     <div class="max-h-[70vh] space-y-4 overflow-y-auto px-6 py-5 text-sm leading-relaxed text-stone-500 dark:text-stone-300">
-      <p>Última actualización: 16 de noviembre de 2026. Estas condiciones recogen lo que esta web ofrece. El encargo concreto es el plan, el mantenimiento y los extras que el cliente acepta por WhatsApp antes de pagar.</p>
+      <p>Última actualización: 17 de noviembre de 2026. Estas condiciones recogen lo que esta web ofrece. El encargo concreto es el plan, la tarifa de mantenimiento (compromiso de 12 meses o mes a mes) y los extras que el cliente acepta por WhatsApp antes de pagar.</p>
       <section class="space-y-2">
         <h3 class="font-semibold text-stone-900 dark:text-stone-100">1. Demo, auditoría y pago</h3>
         <p>La demo funcional, adaptada con los datos que el cliente facilite, cuesta 0 €. Verla no obliga a contratar. Si no hay un visto bueno expreso, no se cobra nada.</p>
@@ -1185,19 +1191,22 @@
         <p>Lo que no funcione como se entregó se corrige sin coste. Con Sin cuota mensual esa corrección dura 30 días desde la publicación e incluye una ronda de ajustes de lo ya pactado, no secciones nuevas. Con Base o Gestión Activa, las incidencias de la web entregada se atienden mientras la cuota está al día; Gestión Activa tiene prioridad de respuesta. Pasados esos límites, un cambio nuevo se presupuesta o consume la bolsa del mes.</p>
       </section>
       <section class="space-y-2">
-        <h3 class="font-semibold text-stone-900 dark:text-stone-100">4. Mantenimiento, sin permanencia</h3>
-        <p>La cuota es mensual y voluntaria. No hay estancia mínima ni penalización por cambiar de modalidad o darla de baja. El cambio o la baja se comunica antes de la siguiente renovación mensual y se hace efectivo al cierre del periodo mensual ya facturado. Hasta ese cierre sigue la modalidad en curso y el mes empezado se liquida.</p>
+        <h3 class="font-semibold text-stone-900 dark:text-stone-100">4. Mantenimiento</h3>
+        <p>La cuota es voluntaria. Base y Gestión Activa + Maps tienen dos tarifas. La reducida exige un compromiso de 12 meses e incluye la renovación del dominio. La de mes a mes no tiene permanencia y el dominio lo renueva el cliente. Se puede subir de plan en cualquier momento. La opción se elige en el paso de contacto, antes de pagar.</p>
+        <p>Con la tarifa de 12 meses, el paso a 0 €/mes o a una cuota inferior se aplica al finalizar el periodo anual ya comprometido. Hasta ese cierre sigue la modalidad en curso. Con la tarifa mes a mes, el cambio o la baja se comunica antes de la siguiente renovación mensual y se hace efectivo al cierre del periodo mensual ya facturado. El mes empezado se liquida.</p>
         <p>Tras pasar a la modalidad de 0 €/mes, las actualizaciones puntuales de carta, precios o fotos se tarifican de forma individual y no se aplican hasta que se acepta el presupuesto.</p>
         <ul class="list-disc space-y-1 pl-5">
           <li>Sin cuota, 0 €/mes: cada cambio de carta o precios se presupuesta y no se hace hasta que se acepta. Dominio y alojamiento los renueva el cliente. La ficha queda como se configuró al inicio, sin gestión mensual.</li>
-          <li>Base, 25 €/mes: renovación y gestión técnica del dominio y de la web, hasta 2 actualizaciones de carta o precios al mes, copias de seguridad y WhatsApp para dudas o incidencias técnicas.</li>
-          <li>Gestión Activa + Maps, 85 €/mes: todo lo de Base, más gestión activa de Google Maps (subida de fotos enviadas por el local, novedades y horarios festivos), publicaciones en Google, actualización del material visual que envíe el local y hasta 6 cambios de carta al mes, y WhatsApp prioritario.</li>
+          <li>Base, 25 €/mes con compromiso de 12 meses: renovación y gestión técnica del dominio y de la web, hasta 2 actualizaciones de carta o precios al mes, copias de seguridad y WhatsApp para dudas o incidencias técnicas.</li>
+          <li>Base, 35 €/mes mes a mes y sin permanencia: gestión técnica de la web, hasta 2 actualizaciones de carta o precios al mes, copias de seguridad y WhatsApp para dudas o incidencias técnicas. El dominio y el alojamiento los renueva el cliente.</li>
+          <li>Gestión Activa + Maps, 85 €/mes con compromiso de 12 meses: todo lo de Base a 25 €/mes, más gestión activa de Google Maps (subida de fotos enviadas por el local, novedades y horarios festivos), publicaciones en Google, actualización del material visual que envíe el local y hasta 6 cambios de carta al mes, y WhatsApp prioritario.</li>
+          <li>Gestión Activa + Maps, 99 €/mes mes a mes y sin permanencia: todo lo de Base a 35 €/mes, más la misma gestión de Google Maps, publicaciones, material visual y hasta 6 cambios de carta al mes, y WhatsApp prioritario. El dominio lo renueva el cliente.</li>
         </ul>
-        <p>Un cambio es una petición enviada de una vez por WhatsApp, en texto o con una foto legible de la carta, y aplicada de una pasada. Lo no usado no se acumula al mes siguiente. Una reestructuración de la web, un rediseño o algo fuera de esa bolsa se presupuesta y no empieza sin un sí. El plazo de aplicación es de 3 días laborables. La baja, una vez cerrado el periodo facturado, deja de incluir copias, cambios incluidos y la renovación gestionada por VisiWeb.</p>
+        <p>Un cambio es una petición enviada de una vez por WhatsApp, en texto o con una foto legible de la carta, y aplicada de una pasada. Lo no usado no se acumula al mes siguiente. Una reestructuración de la web, un rediseño o algo fuera de esa bolsa se presupuesta y no empieza sin un sí. El plazo de aplicación es de 3 días laborables. La baja de la tarifa mes a mes, una vez cerrado el periodo mensual facturado, deja de incluir copias, cambios incluidos y la gestión técnica de VisiWeb. Con la tarifa de 12 meses, eso ocurre al cierre del periodo anual.</p>
       </section>
       <section class="space-y-2">
         <h3 class="font-semibold text-stone-900 dark:text-stone-100">5. Dominio</h3>
-        <p>El dominio es del cliente en todo momento. Conectar el que ya tenga y pasar el tráfico a la web nueva no tiene coste extra, siempre que el registrador o el proveedor anterior lo permitan. Con Base o Gestión Activa, la renovación y la gestión técnica van incluidas mientras la cuota sigue activa. Con Sin cuota, van a cargo del cliente.</p>
+        <p>El dominio es del cliente en todo momento. Conectar el que ya tenga y pasar el tráfico a la web nueva no tiene coste extra, siempre que el registrador o el proveedor anterior lo permitan. Con la tarifa reducida de 12 meses de Base o de Gestión Activa, la renovación y la gestión técnica van incluidas mientras esa cuota sigue activa. Con la tarifa mes a mes y con Sin cuota, la renovación del dominio va a cargo del cliente.</p>
       </section>
       <section class="space-y-2">
         <h3 class="font-semibold text-stone-900 dark:text-stone-100">6. Servicios adicionales</h3>
@@ -1225,7 +1234,7 @@
       <button type="button" class="grid h-8 w-8 shrink-0 place-items-center text-stone-400 transition-colors hover:text-black dark:text-stone-500 dark:hover:text-white" data-close-legal aria-label="Cerrar"><svg viewBox="0 0 24 24" class="h-[18px] w-[18px]" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
     </div>
     <div class="max-h-[70vh] space-y-3 overflow-y-auto px-6 py-5 text-sm leading-relaxed text-stone-500 dark:text-stone-300">
-      <p>Última actualización: 16 de noviembre de 2026.</p>
+      <p>Última actualización: 17 de noviembre de 2026.</p>
       <p><strong class="font-semibold text-stone-800 dark:text-stone-100">Responsable.</strong></p>
       <p>Nombre comercial: VisiWeb Madrid.</p>
       <p>Titular:</p>
@@ -1233,7 +1242,7 @@
       <p>Domicilio fiscal:</p>
       <p>Delegado de protección de datos:</p>
       <p>Contacto y ejercicio de derechos: WhatsApp +34 608 97 59 06.</p>
-      <p><strong class="font-semibold text-stone-800 dark:text-stone-100">Qué datos hay y para qué.</strong> El formulario de propuesta envía el nombre del local, la zona y el plan elegido. Ese envío se guarda en Supabase. El mantenimiento, los extras, los idiomas y el texto de una funcionalidad a medida van en el mensaje de WhatsApp, no como ficha aparte. Las solicitudes de cambio de modalidad o de baja del mantenimiento identifican el local y la opción pedida, y se tratan para ejecutar el contrato y facturar el periodo en curso. La modalidad que consta es la del periodo mensual ya facturado hasta su cierre. Al abrir WhatsApp, Meta trata el teléfono, el nombre de perfil y el contenido del chat. Si hay encargo, también los datos de factura y los materiales que el cliente entregue: carta, fotos de platos y local, y accesos al dominio o a la ficha de Google. Esas fotos las envía el restaurante. Se usan solo para optimizarlas (encuadre, luz y formato web) y publicarlas en su web y, si el plan o el mantenimiento lo incluye, en su ficha de Google.</p>
+      <p><strong class="font-semibold text-stone-800 dark:text-stone-100">Qué datos hay y para qué.</strong> El formulario de propuesta envía el nombre del local, la zona y el plan elegido. Ese envío se guarda en Supabase. El mantenimiento, la tarifa (compromiso de 12 meses o mes a mes), los extras, los idiomas y el texto de una funcionalidad a medida van en el mensaje de WhatsApp, no como ficha aparte. Las solicitudes de subida de plan, de cambio de tarifa o de baja del mantenimiento identifican el local y la opción pedida, y se tratan para ejecutar el contrato y facturar el periodo en curso. Con la tarifa de 12 meses, la modalidad que consta es la del periodo anual comprometido hasta su cierre. Con la tarifa mes a mes, la modalidad que consta es la del periodo mensual ya facturado hasta su cierre. Al abrir WhatsApp, Meta trata el teléfono, el nombre de perfil y el contenido del chat. Si hay encargo, también los datos de factura y los materiales que el cliente entregue: carta, fotos de platos y local, y accesos al dominio o a la ficha de Google. Esas fotos las envía el restaurante. Se usan solo para optimizarlas (encuadre, luz y formato web) y publicarlas en su web y, si el plan o el mantenimiento lo incluye, en su ficha de Google.</p>
       <p>La demo, el presupuesto y la auditoría se preparan porque el interesado lo pide (art. 6.1.b del RGPD). El servicio contratado y la factura se apoyan en el contrato y en la obligación legal de conservar la documentación. No hay decisiones automatizadas, no se venden datos y no se usan para publicidad de terceros. La web no está dirigida a menores.</p>
       <p><strong class="font-semibold text-stone-800 dark:text-stone-100">Quién los trata.</strong> Supabase Inc., para guardar el lead del formulario. Meta Platforms Ireland Ltd., para WhatsApp. Cloudflare, para alojar y proteger este sitio. Google, para las fuentes de la página y, si el encargo lo incluye, para la ficha de Google o la configuración de anuncios en la cuenta del cliente. jsDelivr y el CDN de Tailwind, para cargar la librería y los estilos. Unsplash, para las fotos de muestra del inicio. Algunos de estos proveedores pueden tratar la dirección IP fuera del Espacio Económico Europeo con sus cláusulas contractuales tipo.</p>
       <p>En la web del bar, el responsable de los datos de sus comensales es el propio local. Los textos de privacidad que se entregan con el plan son plantillas para que ese local las complete. Si VisiWeb aloja o mantiene esa web, lo hace como encargado, solo para tenerla en línea, hacer copias y aplicar los cambios pedidos. La visualización de carta en mesa, solo del plan Digitalización Total, puede mostrar una pantalla para que el comensal valore. En la demo de esta web esa valoración no se envía ni se guarda. En la web de un local, el texto, la puntuación y las fotos de esa pantalla son datos del local.</p>
@@ -1249,8 +1258,8 @@
       <button type="button" class="grid h-8 w-8 shrink-0 place-items-center text-stone-400 transition-colors hover:text-black dark:text-stone-500 dark:hover:text-white" data-close-legal aria-label="Cerrar"><svg viewBox="0 0 24 24" class="h-[18px] w-[18px]" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
     </div>
     <div class="max-h-[70vh] space-y-3 overflow-y-auto px-6 py-5 text-sm leading-relaxed text-stone-500 dark:text-stone-300">
-      <p>Última actualización: 16 de noviembre de 2026.</p>
-      <p>Esta web no usa cookies de publicidad, analítica ni redes. No hay banner de consentimiento porque no se instala nada de seguimiento. La modalidad de mantenimiento y sus cambios o bajas no se guardan en cookies: se comunican por WhatsApp y, si hay encargo, constan en el expediente y en la factura. Los botones de redes de la demo no conectan con Instagram, Facebook, X ni TikTok, así que esas plataformas no instalan cookies desde esta página.</p>
+      <p>Última actualización: 17 de noviembre de 2026.</p>
+      <p>Esta web no usa cookies de publicidad, analítica ni redes. No hay banner de consentimiento porque no se instala nada de seguimiento. La modalidad de mantenimiento (compromiso de 12 meses o mes a mes) y sus cambios o bajas no se guardan en cookies: se comunican por WhatsApp y, si hay encargo, constan en el expediente y en la factura. Los botones de redes de la demo no conectan con Instagram, Facebook, X ni TikTok, así que esas plataformas no instalan cookies desde esta página.</p>
       <p>El tema claro u oscuro, si lo cambias, se guarda en este navegador con la clave local <span class="font-medium text-stone-700 dark:text-stone-200">theme</span>. No sale del dispositivo. Cloudflare, el alojamiento y la seguridad del sitio, puede usar cookies técnicas propias para proteger la página. Esas cookies y el almacenamiento del tema están exentos de consentimiento.</p>
       <p>Para mostrar la página, el navegador se conecta a Google Fonts, al CDN de Tailwind, a jsDelivr y, en las fotos de muestra del inicio, a Unsplash. Esas fotos de muestra no son de un cliente. Las fotos de platos y local de un encargo no se guardan en cookies: las envía el restaurante por WhatsApp y, si hay encargo, constan en el expediente. Esas conexiones pueden recibir la dirección IP. No se usan para elaborar un perfil publicitario. Supabase solo recibe datos si envías el formulario de propuesta. WhatsApp solo se abre si pulsas un enlace de contacto.</p>
       <p>Puedes borrar la preferencia de tema y las cookies del sitio desde la configuración del navegador. En la demo de ejemplo de un local sí hay un aviso propio de cookies de terceros, porque esa muestra puede cargar un mapa; no forma parte de esta página.</p>
@@ -1275,21 +1284,25 @@
       </div>
       <p id="interest-plan" class="mb-3 hidden text-xs leading-snug text-stone-500 dark:text-stone-400"></p>
       <div id="interest-maint-wrap" data-wizard-step="1">
-        <div class="grid gap-2" role="radiogroup" aria-label="Mantenimiento mensual deseado">
+        <div class="mb-3 grid grid-cols-1 gap-1 rounded-2xl bg-stone-200/80 p-1 dark:bg-stone-800/80" role="tablist" aria-label="Modalidad de tarifa">
+          <button type="button" data-billing="anual" aria-selected="true" class="rounded-xl bg-white px-3 py-2 text-center text-[11px] font-bold leading-snug text-stone-900 shadow-sm transition-colors dark:bg-stone-900 dark:text-stone-100">Compromiso 12 meses (Ahorra hasta un 28&nbsp;%)</button>
+          <button type="button" data-billing="mensual" aria-selected="false" class="rounded-xl px-3 py-2 text-center text-[11px] font-medium leading-snug text-stone-600 transition-colors hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100">Mes a mes (Sin permanencia)</button>
+        </div>
+        <div class="grid gap-2" role="radiogroup" aria-label="Mantenimiento deseado">
           <label class="flex cursor-pointer flex-col rounded-xl border border-stone-200 bg-white px-3.5 py-3 transition-colors has-[:checked]:border-emerald-700 has-[:checked]:bg-emerald-50 dark:border-stone-700 dark:bg-stone-900 dark:has-[:checked]:border-emerald-400 dark:has-[:checked]:bg-emerald-950/40">
-            <input type="radio" name="mantenimiento" value="Sin cuota mensual (0 €/mes · cambios puntuales bajo presupuesto)" class="sr-only">
+            <input type="radio" name="mantenimiento" data-maint-tier="cero" value="Sin cuota mensual (0 €/mes · cambios puntuales bajo presupuesto)" class="sr-only">
             <span class="text-sm font-semibold text-stone-900 dark:text-stone-100">Sin cuota mensual</span>
             <span class="mt-0.5 text-xs leading-snug text-stone-500 dark:text-stone-400">0 €/mes · cambios puntuales bajo presupuesto</span>
           </label>
           <label class="flex cursor-pointer flex-col rounded-xl border border-stone-200 bg-white px-3.5 py-3 transition-colors has-[:checked]:border-emerald-700 has-[:checked]:bg-emerald-50 dark:border-stone-700 dark:bg-stone-900 dark:has-[:checked]:border-emerald-400 dark:has-[:checked]:bg-emerald-950/40">
-            <input type="radio" name="mantenimiento" value="Mantenimiento Técnico Base (25 €/mes, IVA no incluido · soporte continuo y carta al día)" class="sr-only">
-            <span class="text-sm font-semibold text-stone-900 dark:text-stone-100">Mantenimiento Técnico Base</span>
-            <span class="mt-0.5 text-xs leading-snug text-stone-500 dark:text-stone-400">25 €/mes, IVA no incluido · soporte continuo y carta al día</span>
+            <input type="radio" name="mantenimiento" data-maint-tier="base" value="Mantenimiento Base (25 €/mes, compromiso 12 meses, IVA no incluido · dominio incluido)" class="sr-only">
+            <span class="text-sm font-semibold text-stone-900 dark:text-stone-100">Mantenimiento Base</span>
+            <span data-maint-hint="base" class="mt-0.5 text-xs leading-snug text-stone-500 dark:text-stone-400">25 €/mes, IVA no incluido · dominio incluido · compromiso 12 meses</span>
           </label>
           <label class="flex cursor-pointer flex-col rounded-xl border border-stone-200 bg-white px-3.5 py-3 transition-colors has-[:checked]:border-emerald-700 has-[:checked]:bg-emerald-50 dark:border-stone-700 dark:bg-stone-900 dark:has-[:checked]:border-emerald-400 dark:has-[:checked]:bg-emerald-950/40">
-            <input type="radio" name="mantenimiento" value="Gestión Activa + Maps (85 €/mes, IVA no incluido · soporte prioritario y ficha de Google)" class="sr-only">
+            <input type="radio" name="mantenimiento" data-maint-tier="activa" value="Gestión Activa + Maps (85 €/mes, compromiso 12 meses, IVA no incluido · dominio incluido)" class="sr-only">
             <span class="text-sm font-semibold text-stone-900 dark:text-stone-100">Gestión Activa + Maps</span>
-            <span class="mt-0.5 text-xs leading-snug text-stone-500 dark:text-stone-400">85 €/mes, IVA no incluido · soporte prioritario y ficha de Google</span>
+            <span data-maint-hint="activa" class="mt-0.5 text-xs leading-snug text-stone-500 dark:text-stone-400">85 €/mes, IVA no incluido · dominio incluido · compromiso 12 meses</span>
           </label>
         </div>
         <button type="button" id="interest-next" class="mt-3 hidden w-full rounded-full bg-stone-900 px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-stone-800 dark:bg-stone-100 dark:text-stone-900 dark:hover:bg-white">Siguiente paso →</button>
@@ -2187,6 +2200,79 @@
           showMaintTab(dot.getAttribute('data-maint-dot'));
         });
       });
+
+      var billingOn = ['bg-white', 'dark:bg-stone-900', 'font-bold', 'text-stone-900', 'dark:text-stone-100', 'shadow-sm'];
+      var billingOff = ['font-medium', 'text-stone-600', 'dark:text-stone-400', 'hover:text-stone-900', 'dark:hover:text-stone-100'];
+      var billingModes = {
+        anual: {
+          basePrice: 25,
+          activaPrice: 85,
+          baseNote: 'IVA no incluido · dominio incluido',
+          activaNote: 'IVA no incluido · dominio incluido',
+          baseTag: 'Tu web siempre abierta + dominio pagado',
+          baseDomain: 'Renovación y gestión técnica de tu dominio y web incluida',
+          activaBase: 'dominio, web y copias de seguridad',
+          baseValue: 'Mantenimiento Base (25 €/mes, compromiso 12 meses, IVA no incluido · dominio incluido)',
+          activaValue: 'Gestión Activa + Maps (85 €/mes, compromiso 12 meses, IVA no incluido · dominio incluido)',
+          baseHint: '25 €/mes, IVA no incluido · dominio incluido · compromiso 12 meses',
+          activaHint: '85 €/mes, IVA no incluido · dominio incluido · compromiso 12 meses'
+        },
+        mensual: {
+          basePrice: 35,
+          activaPrice: 99,
+          baseNote: 'IVA no incluido',
+          activaNote: 'IVA no incluido',
+          baseTag: 'Tu web siempre abierta · sin permanencia',
+          baseDomain: 'Gestión técnica de la web incluida · dominio y alojamiento a tu cargo',
+          activaBase: 'web y copias de seguridad · dominio a tu cargo',
+          baseValue: 'Mantenimiento Base (35 €/mes, mes a mes, sin permanencia, IVA no incluido)',
+          activaValue: 'Gestión Activa + Maps (99 €/mes, mes a mes, sin permanencia, IVA no incluido)',
+          baseHint: '35 €/mes, IVA no incluido · mes a mes, sin permanencia',
+          activaHint: '99 €/mes, IVA no incluido · mes a mes, sin permanencia'
+        }
+      };
+
+      function setText(selector, text) {
+        document.querySelectorAll(selector).forEach(function (node) { node.textContent = text; });
+      }
+
+      function setBilling(mode) {
+        var copy = billingModes[mode];
+        if (!copy) return;
+        document.querySelectorAll('[data-billing]').forEach(function (btn) {
+          var on = btn.getAttribute('data-billing') === mode;
+          btn.setAttribute('aria-selected', on ? 'true' : 'false');
+          billingOn.forEach(function (cls) { btn.classList.toggle(cls, on); });
+          billingOff.forEach(function (cls) { btn.classList.toggle(cls, !on); });
+        });
+        setText('[data-billing-amount="base"]', String(copy.basePrice));
+        setText('[data-billing-amount="activa"]', String(copy.activaPrice));
+        setText('[data-billing-tab="base"]', String(copy.basePrice));
+        setText('[data-billing-tab="activa"]', String(copy.activaPrice));
+        setText('[data-billing-note="base"]', copy.baseNote);
+        setText('[data-billing-note="activa"]', copy.activaNote);
+        setText('[data-billing-copy="base-tag"]', copy.baseTag);
+        setText('[data-billing-copy="base-domain"]', copy.baseDomain);
+        setText('[data-billing-copy="activa-base"]', copy.activaBase);
+        setText('[data-maint-hint="base"]', copy.baseHint);
+        setText('[data-maint-hint="activa"]', copy.activaHint);
+        var baseCard = document.querySelector('[data-maint-plan="base"]');
+        var activaCard = document.querySelector('[data-maint-plan="activa"]');
+        if (baseCard) baseCard.setAttribute('data-price', String(copy.basePrice));
+        if (activaCard) activaCard.setAttribute('data-price', String(copy.activaPrice));
+        var baseInput = form.querySelector('[data-maint-tier="base"]');
+        var activaInput = form.querySelector('[data-maint-tier="activa"]');
+        if (baseInput) baseInput.value = copy.baseValue;
+        if (activaInput) activaInput.value = copy.activaValue;
+        renderPack();
+      }
+
+      document.querySelectorAll('[data-billing]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          setBilling(btn.getAttribute('data-billing'));
+        });
+      });
+      setBilling('anual');
 
       function bindHorizontalSwipe(el, onNext, onPrev) {
         if (!el) return;
