@@ -395,7 +395,7 @@ window.VISIWEB_DEMO = (function () {
           id: 'primeros',
           name: { es: 'Primeros a elegir', en: 'Starters (choose one)' },
           desc: {
-            es: 'Sopa castellana con huevo, lentejas estofadas, ensalada de la casa o macarrones boloñesa.',
+            es: 'Sopa castellana con huevo, lentejas estofadas, ensalada de la casa o macarrones a la boloñesa.',
             en: 'Castilian garlic soup with egg, stewed lentils, house salad or macaroni bolognese.'
           },
           price: 'Incluido',
@@ -646,7 +646,7 @@ window.VISIWEB_DEMO = (function () {
         when: { es: 'hace 3 meses', en: '3 months ago' },
         dish: { es: '🍳 Huevos rotos', en: '🍳 Huevos rotos', pill: 'border border-rose-200/60 bg-rose-50 text-rose-900' },
         text: {
-          es: 'Los huevos rotos, espectaculares. Los findes se llena, así que mejor reservar mesa con antelación.',
+          es: 'Los huevos rotos, espectaculares. El local se llena los fines de semana, así que mejor reservar mesa con antelación.',
           en: 'The huevos rotos are spectacular. It fills up at weekends, so it is better to book a table in advance.'
         }
       }

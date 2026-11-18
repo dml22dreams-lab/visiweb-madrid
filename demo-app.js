@@ -2500,6 +2500,16 @@
   const langToggle = document.getElementById('btn-lang-toggle');
   if (langToggle) langToggle.addEventListener('click', toggleIdioma);
 
+  const backHome = document.getElementById('back-home');
+  if (backHome) {
+    backHome.addEventListener('click', (event) => {
+      event.preventDefault();
+      hashNavOpts = { smooth: true };
+      if (decodeURIComponent(window.location.hash.replace('#', '')) === 'inicio') applyHash();
+      else window.location.hash = 'inicio';
+    });
+  }
+
   window.addEventListener('hashchange', () => applyHash());
   initPageSwipe();
   window.setInterval(() => {

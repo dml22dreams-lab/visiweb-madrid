@@ -18,7 +18,8 @@
 
   const UI = {
     es: {
-      excellent: 'Excelente', reviews: 'valoraciones', infoK: 'Info',
+      excellent: 'Excelente', reviews: 'valoraciones', reviewsTitle: 'Valoraciones',
+      reviewsSample: 'Reseñas de ejemplo', infoK: 'Info',
       infoS: 'Teléfono, Dirección y Redes sociales',       search: 'Buscar ...',
       searchLabel: 'Buscar platos', clearSearch: 'Cerrar búsqueda',
       empty: 'No se han encontrado platos con ese nombre.',
@@ -48,7 +49,8 @@
       mapAlt: 'Mapa de Alcobendas', title: 'Taberna El Norte · Carta en mesa'
     },
     en: {
-      excellent: 'Excellent', reviews: 'reviews', infoK: 'Info',
+      excellent: 'Excellent', reviews: 'reviews', reviewsTitle: 'Reviews',
+      reviewsSample: 'Sample reviews', infoK: 'Info',
       infoS: 'Phone, address and social media',       search: 'Search ...',
       searchLabel: 'Search dishes', clearSearch: 'Close search',
       empty: 'No dishes were found with that name.',
@@ -150,10 +152,6 @@
   function initialLang() {
     const fromUrl = new URLSearchParams(window.location.search).get('lang');
     if (fromUrl === 'en' || fromUrl === 'es') return fromUrl;
-    try {
-      const stored = window.localStorage.getItem(STORE_LANG);
-      if (stored === 'en' || stored === 'es') return stored;
-    } catch (e) { /* almacenamiento bloqueado */ }
     return 'es';
   }
 
@@ -264,7 +262,7 @@
         id: 'ensaladas',
         name: { es: 'Ensaladas', en: 'Salads' },
         lead: {
-          es: 'Aliñadas al momento, con el vinagre de módena de la casa.',
+          es: 'Aliñadas al momento, con el vinagre de Módena de la casa.',
           en: 'Dressed to order, with the house balsamic.'
         },
         items: [
@@ -272,11 +270,11 @@
             id: 'ensalada-atun',
             name: { es: 'Ensalada de atún', en: 'Tuna salad' },
             desc: {
-              es: 'Lechuga, tomate, maíz, cebolla, atún y vinagre de módena.',
+              es: 'Lechuga, tomate, maíz, cebolla, atún y vinagre de Módena.',
               en: 'Lettuce, tomato, sweetcorn, onion, tuna and balsamic vinegar.'
             },
             long: {
-              es: 'Lechuga, tomate, maíz, cebolla, atún en aceite y vinagre de módena en crema. Se aliña al servir.',
+              es: 'Lechuga, tomate, maíz, cebolla, atún en aceite y vinagre de Módena en crema. Se aliña al servir.',
               en: 'Lettuce, tomato, sweetcorn, onion, oil-packed tuna and a balsamic cream. Dressed as it leaves the pass.'
             },
             price: 12,
@@ -302,11 +300,11 @@
             id: 'ensalada-casa',
             name: { es: 'Ensalada de la casa', en: 'House salad' },
             desc: {
-              es: 'Hojas verdes, tomate, cebolla tierna y vinagreta de módena.',
+              es: 'Hojas verdes, tomate, cebolla tierna y vinagreta de Módena.',
               en: 'Leaves, tomato, spring onion and a balsamic dressing.'
             },
             long: {
-              es: 'Hojas verdes, tomate, cebolla tierna y vinagreta de módena. Sin más adorno.',
+              es: 'Hojas verdes, tomate, cebolla tierna y vinagreta de Módena. Sin más adorno.',
               en: 'Leaves, tomato, spring onion and a balsamic dressing. Nothing else on it.'
             },
             price: 8.5,
@@ -504,9 +502,11 @@
       minimumFractionDigits: 1,
       maximumFractionDigits: 1
     });
-    const rating = score + ' · ' + ui('excellent') + ' · ' + D.reviews.count + ' ' + ui('reviews');
-    $('reviews-line').textContent = rating;
-    $('open-reviews').setAttribute('aria-label', rating);
+    const scoreLine = score + ' · ' + ui('excellent');
+    const countLine = '(' + D.reviews.count + ' ' + ui('reviews') + ')';
+    $('reviews-score').textContent = scoreLine;
+    $('reviews-count').textContent = countLine;
+    $('open-reviews').setAttribute('aria-label', scoreLine + ' ' + countLine);
     $('info-k').textContent = ui('infoK');
     $('info-s').textContent = ui('infoS');
     $('open-info').setAttribute('aria-label', ui('infoK') + ' · ' + ui('infoS'));
@@ -934,6 +934,105 @@
       '<span><strong>' + esc(ui('socials')) + '</strong><small>' + esc(ui('socialsHint')) + '</small></span><span class="chev" aria-hidden="true">›</span></button>';
   }
 
+  const SAMPLE_REVIEWS = [
+    {
+      name: 'Laura Benítez', color: '#7c4a2d', rating: 5,
+      when: { es: 'hace 4 días', en: '4 days ago' },
+      text: {
+        es: 'He ido a comer con mi madre. Huevos rotos y media ración de croquetas, que al final nos hemos acabado entera. El huevo estaba líquido y el jamón no era la loncha gruesa de siempre. Con dos cañas nos hemos dejado 31 €. La cuenta nos la han traído cuando la hemos pedido, no a mitad del café.',
+        en: 'I went for lunch with my mother. Huevos rotos and half a portion of croquettes, which we finished. The yolk was still runny and the ham was cut thin, not the usual thick slab. Two beers and the bill was €31. They brought it when we asked, not halfway through the coffee.'
+      }
+    },
+    {
+      name: 'Miguel Ángel R.', color: '#3f3f46', rating: 4,
+      when: { es: 'hace 2 semanas', en: '2 weeks ago' },
+      text: {
+        es: 'La caña sale helada y eso en esta zona ya es mucho. El viernes a las dos había gente de pie en la barra y en la terraza tardaron un rato en tomarnos nota. Las bravas bien. El alioli, un poco fuerte para mi gusto. Entre semana se está más a gusto.',
+        en: 'The beer arrives properly cold, which around here is already something. On Friday at two there were people standing at the bar, and they took a while to get to us on the terrace. The bravas were good. The aioli was a bit much for me. Weekdays are more comfortable.'
+      }
+    },
+    {
+      name: 'Sofía Romero', color: '#9a3412', rating: 5,
+      when: { es: 'hace un mes', en: 'a month ago' },
+      text: {
+        es: 'Cumpleaños de mi suegro, siete. Pedí mesa en el salón de atrás y nos la respetaron. El pan lo iban reponiendo sin tener que avisar. Lo que más gustó fueron el lomo de orza y los pimientos de Padrón. El pan va a 1,20 por persona y viene puesto en la carta, así que no te enteras al pagar.',
+        en: 'My father-in-law’s birthday, seven of us. I asked for the back dining room and they kept the table. They refilled the bread without us having to wave. The confit pork and the Padrón peppers went first. Bread is €1.20 a head and it is on the menu, so it is not a surprise when you pay.'
+      }
+    },
+    {
+      name: 'Pedro L.', color: '#44403c', rating: 3,
+      when: { es: 'hace 2 meses', en: '2 months ago' },
+      text: {
+        es: 'La comida no está mal. Lo que me echó para atrás fue la mesa: sábado a las nueve y media, justo en la puerta, y cada vez que entraba alguien nos caía el aire. El salmón venía en su punto. Las verduras, sosas. Si reserváis, pedid dentro.',
+        en: 'The food is fine. What put me off was the table: Saturday at half past nine, right by the door, and every time someone came in we got a draught. The salmon was cooked properly. The vegetables needed salt. If you book, ask to sit inside.'
+      }
+    },
+    {
+      name: 'Ana Castillo', color: '#57534e', rating: 5,
+      when: { es: 'ayer', en: 'yesterday' },
+      text: {
+        es: 'Bajo casi todos los martes al menú porque trabajo aquí al lado, en Valdavia. Hoy lentejas y merluza, café incluido, 13,50. No es un sitio para impresionar a nadie. Es el sitio al que traes a alguien y comes bien sin mirar el móvil para ver la cuenta.',
+        en: 'I come most Tuesdays for the set menu because I work next door, in Valdavia. Today it was lentils and hake, coffee included, €13.50. This is not a place you take someone to impress them. It is the place you take someone when you want to eat well and not check the bill on your phone.'
+      }
+    },
+    {
+      name: 'Iker M.', color: '#1c1917', rating: 5,
+      when: { es: 'hace 6 días', en: '6 days ago' },
+      text: {
+        es: 'Vermut de grifo, naranja, aceituna y una tosta de gulas en la barra. Veinte minutos y nadie me ha dado conversación de más. El chico apunta en papel, que se agradece. Las gulas llevaban ajo de verdad, no de bote dulce.',
+        en: 'Vermouth on tap, orange, an olive, and garlic baby-eel toast at the bar. Twenty minutes and nobody tried to make conversation. The guy writes the order on paper, which I like. Real garlic, not the sweet jar kind.'
+      }
+    },
+    {
+      name: 'Beatriz N.', color: '#78716c', rating: 4,
+      when: { es: 'hace 3 semanas', en: '3 weeks ago' },
+      text: {
+        es: 'Fuimos con nuestra hija de ocho años. La tortilla se la pusieron sin cebolla y no pusieron mala cara. Las costillas bien, con el glaseado justo, no esa salsa que empacha. El baño de hombres pedía una limpieza. Lo demás, correcto.',
+        en: 'We went with our eight-year-old. They made the tortilla without onion and did not make a fuss. The ribs were good, glazed but not sticky. The men’s toilet needed a clean. Everything else was fine.'
+      }
+    },
+    {
+      name: 'Jorge Salas', color: '#92400e', rating: 5,
+      when: { es: 'hace 5 días', en: '5 days ago' },
+      text: {
+        es: 'Calamares nada más abrir, sobre las ocho menos veinte. El aceite no sabía a usado y el limón venía en un gajo aparte. Para lo que hay abierto en Alcobendas a esa hora, me quedo con este.',
+        en: 'Squid just after they opened, around twenty to eight. The oil did not taste used and the lemon came on the side. For what is open in Alcobendas at that hour, this is the one I come back to.'
+      }
+    },
+    {
+      name: 'Rosa D.', color: '#a16207', rating: 5,
+      when: { es: 'hace 3 días', en: '3 days ago' },
+      text: {
+        es: 'Caña doble y bravas. Igual que la última vez. Para mí con eso basta.',
+        en: 'A double beer and bravas. Same as last time. That is enough for me.'
+      }
+    }
+  ];
+
+  function starRow(n) {
+    let html = '<span class="rev-stars" aria-label="' + n + ' / 5">';
+    for (let i = 1; i <= 5; i += 1) {
+      html += '<svg class="' + (i <= n ? 'on' : '') + '" viewBox="0 0 24 24"><path fill="currentColor" d="M12 3.2 14.7 8.7l6 .9-4.4 4.2 1 6L12 17.8 6.7 20.8l1-6L3.3 9.6l6-.9L12 3.2z"/></svg>';
+    }
+    return html + '</span>';
+  }
+
+  function renderReviewsList() {
+    const dialog = $('review-root').querySelector('.sheet-full');
+    const score = D.reviews.score.toLocaleString(lang === 'en' ? 'en-GB' : 'es-ES', {
+      minimumFractionDigits: 1,
+      maximumFractionDigits: 1
+    });
+    dialog.innerHTML =
+      '<div class="rev-bar"><button type="button" class="back" data-close="review" aria-label="' + esc(ui('back')) + '">←</button><h2 id="rev-title">' + esc(ui('reviewsTitle')) + '</h2><span style="width:40px"></span></div>' +
+      '<div class="rev-sum"><strong>' + esc(score) + '</strong>' + starRow(5) +
+      '<p>' + esc(ui('excellent')) + ' · ' + D.reviews.count + ' ' + esc(ui('reviews')) + '</p>' +
+      '<small>' + esc(ui('reviewsSample')) + '</small></div>' +
+      '<div class="rev-feed">' + SAMPLE_REVIEWS.map((item) => (
+        '<article class="rev-item"><div class="rev-who"><span class="avatar" style="background:' + item.color + '">' + esc(item.name.trim().charAt(0)) + '</span><div><strong>' + esc(item.name) + '</strong><span class="rev-meta">' + starRow(item.rating) + '<time>' + esc(item.when[lang] || item.when.es) + '</time></span></div></div><p>' + esc(item.text[lang] || item.text.es) + '</p></article>'
+      )).join('') + '</div>';
+  }
+
   function starSvg() {
     return '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 3.2 14.7 8.7l6 .9-4.4 4.2 1 6L12 17.8 6.7 20.8l1-6L3.3 9.6l6-.9L12 3.2z"/></svg>';
   }
@@ -992,11 +1091,7 @@
 
   function openReview() {
     rateNote = false;
-    review.photos.forEach((photo) => URL.revokeObjectURL(photo.url));
-    const fresh = blankReview();
-    Object.keys(fresh).forEach((key) => { review[key] = fresh[key]; });
-    review.photos = [];
-    renderReview();
+    renderReviewsList();
     show('review');
   }
 
@@ -1010,7 +1105,7 @@
     if (!$('socials-root').hidden) renderSocials();
     if (!$('review-root').hidden) {
       if (rateNote) renderRateNote();
-      else renderReview();
+      else renderReviewsList();
     }
   }
 

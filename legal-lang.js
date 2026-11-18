@@ -1,8 +1,5 @@
 (function () {
   var lang = new URLSearchParams(window.location.search).get('lang');
-  if (lang !== 'en' && lang !== 'es') {
-    try { lang = window.localStorage.getItem('visiweb-demo-lang'); } catch (e) { lang = 'es'; }
-  }
   if (lang !== 'en') return;
   document.documentElement.lang = 'en';
   document.querySelectorAll('[data-en]').forEach(function (node) {
