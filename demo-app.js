@@ -454,7 +454,10 @@
       if (link.dataset.nav === id) link.setAttribute('aria-current', 'page');
       else link.removeAttribute('aria-current');
     });
-    if (id === 'carta') placeAllergenChip();
+    if (id === 'carta') {
+      placeAllergenChip();
+      requestAnimationFrame(() => requestAnimationFrame(placeAllergenChip));
+    }
     if (opts && opts.quiet) return;
     if (opts && opts.smooth) {
       if (window.scrollY > 0) window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1001,6 +1004,26 @@
     placeAllergenChip();
   }
 
+  function chipRowCuts(row) {
+    if (row.clientWidth < 1) return false;
+    const styles = getComputedStyle(row);
+    const gap = parseFloat(styles.columnGap) || parseFloat(styles.gap) || 0;
+    let width = 0;
+    const kids = row.children;
+    for (let i = 0; i < kids.length; i++) {
+      width += kids[i].offsetWidth;
+      if (i) width += gap;
+    }
+    const view = window.visualViewport ? window.visualViewport.width : window.innerWidth;
+    if (width > Math.min(row.clientWidth, view) + 1) return true;
+    const box = row.getBoundingClientRect();
+    for (let i = 0; i < kids.length; i++) {
+      const rect = kids[i].getBoundingClientRect();
+      if (rect.width > 0 && (rect.left < box.left - 1 || rect.right > box.right + 1)) return true;
+    }
+    return false;
+  }
+
   function placeAllergenChip() {
     const row = $('#menu-chip-row');
     const chip = $('#allergen-chip');
@@ -1009,7 +1032,7 @@
     if (!row || !chip || !slot || !page || page.hidden) return;
     if (chip.parentElement !== row) row.insertBefore(chip, row.firstChild);
     slot.hidden = true;
-    if (row.scrollWidth - row.clientWidth <= 1) return;
+    if (!chipRowCuts(row)) return;
     slot.hidden = false;
     slot.appendChild(chip);
   }
@@ -2505,6 +2528,8 @@
   syncStickyOffset();
   window.addEventListener('resize', syncStickyOffset);
   window.addEventListener('resize', placeAllergenChip);
+  window.addEventListener('orientationchange', placeAllergenChip);
+  if (window.visualViewport) window.visualViewport.addEventListener('resize', placeAllergenChip);
   if (document.fonts && document.fonts.ready) {
     document.fonts.ready.then(syncStickyOffset);
     document.fonts.ready.then(placeAllergenChip);

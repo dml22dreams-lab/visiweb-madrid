@@ -797,7 +797,11 @@
     }
     #allergen-filter-panel.is-open { grid-template-rows: 1fr; }
     #allergen-filter-panel > div { overflow: hidden; }
-    #menu-chip-row { justify-content: center; }
+    #menu-chip-row {
+      width: 100%;
+      min-width: 0;
+      justify-content: center;
+    }
     @supports (justify-content: safe center) {
       #menu-chip-row { justify-content: safe center; }
     }
