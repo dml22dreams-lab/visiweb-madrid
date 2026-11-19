@@ -462,6 +462,11 @@
   function initCategoryBarReveal() {
     const row = $('#menu-chip-row');
     if (!row) return;
+    let dragPointer = 0;
+    let dragStartX = 0;
+    let dragStartScroll = 0;
+    let dragMoved = false;
+
     function queueSnap() {
       chipSnapArmed = true;
       window.clearTimeout(chipSnapTimer);
@@ -473,21 +478,66 @@
       }, 140);
     }
 
+    function endMouseDrag() {
+      chipRowDrag = false;
+      dragPointer = 0;
+      row.classList.remove('is-dragging');
+    }
+
     row.addEventListener('pointerdown', (event) => {
-      if (event.pointerType === 'mouse') return;
+      if (event.pointerType === 'mouse' && event.button !== 0) return;
       chipRowDrag = true;
       chipSnapArmed = false;
       chipSlideToken += 1;
       window.clearTimeout(chipSnapTimer);
+      if (event.pointerType !== 'mouse') return;
+      dragPointer = event.pointerId;
+      dragStartX = event.clientX;
+      dragStartScroll = row.scrollLeft;
+      dragMoved = false;
+      row.classList.add('is-dragging');
+      try { row.setPointerCapture(event.pointerId); } catch (err) {}
     });
+    row.addEventListener('pointermove', (event) => {
+      if (event.pointerId !== dragPointer) return;
+      const dx = event.clientX - dragStartX;
+      if (Math.abs(dx) > 4) dragMoved = true;
+      row.scrollLeft = dragStartScroll - dx;
+    });
+    row.addEventListener('click', (event) => {
+      if (!dragMoved) return;
+      event.preventDefault();
+      event.stopPropagation();
+      dragMoved = false;
+    }, true);
+    row.addEventListener('wheel', (event) => {
+      if (row.scrollWidth - row.clientWidth <= 1) return;
+      const horizontal = Math.abs(event.deltaX) > Math.abs(event.deltaY) || event.shiftKey;
+      if (!horizontal) return;
+      const delta = event.shiftKey ? event.deltaY : event.deltaX;
+      if (!delta) return;
+      row.scrollLeft += delta;
+      chipSnapArmed = false;
+      chipSlideToken += 1;
+      event.preventDefault();
+    }, { passive: false });
     row.addEventListener('scroll', () => {
       if (!chipRowDrag && chipSnapArmed) queueSnap();
     }, { passive: true });
-    document.addEventListener('pointerup', () => {
+    document.addEventListener('pointerup', (event) => {
+      if (event.pointerId === dragPointer) {
+        const moved = dragMoved;
+        endMouseDrag();
+        if (moved) {
+          window.setTimeout(() => { dragMoved = false; }, 0);
+          return;
+        }
+      }
       chipRowDrag = false;
       queueSnap();
     });
-    document.addEventListener('pointercancel', () => {
+    document.addEventListener('pointercancel', (event) => {
+      if (event.pointerId === dragPointer) endMouseDrag();
       chipRowDrag = false;
     });
 

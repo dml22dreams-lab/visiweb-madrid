@@ -7,7 +7,7 @@
   <title>Taberna El Norte · Carta en mesa</title>
   <meta name="theme-color" content="#ffffff">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%231c1917'/%3E%3Cpath d='M11 7h10c0 5-3 8-5 8s-5-3-5-8z' fill='%23f59e0b'/%3E%3Cpath d='M16 15v8m-4 0h8' stroke='%23f59e0b' stroke-width='2.5' stroke-linecap='round'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="mesa.css?v=77">
+  <link rel="stylesheet" href="mesa.css?v=82">
 </head>
 <body>
   <div class="col">
@@ -58,14 +58,31 @@
     <div id="mesa-bar" class="mesa-bar">
       <p id="mesa-name" class="mesa-name">Taberna El Norte</p>
       <nav id="mesa-cats" aria-label="Categorías"></nav>
-      <div class="mesa-allergens-slot">
-        <button type="button" id="mesa-allergens" class="mesa-allergens" aria-expanded="false" aria-controls="mesa-filter">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4 5h16l-6.2 7.2V19l-3.6-1.8v-5L4 5z"/></svg>
-          <span id="mesa-allergens-label">Alérgenos</span>
-        </button>
-        <span id="mesa-filter-title" hidden>Filtro de alérgenos</span>
+      <div class="mesa-allergen-row">
+        <div class="mesa-allergens-slot">
+          <div class="mesa-allergens-bg" aria-hidden="true"></div>
+          <svg class="mesa-edge" aria-hidden="true"><line x1="0" y1="0.5" x2="100%" y2="0.5" stroke="#e5e7eb" stroke-width="1" /></svg>
+          <button type="button" id="mesa-allergens" class="mesa-allergens" aria-expanded="false" aria-controls="mesa-filter">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4 5h16l-6.2 7.2V19l-3.6-1.8v-5L4 5z"/></svg>
+            <span id="mesa-allergens-label">Alérgenos</span>
+          </button>
+        </div>
+        <div class="mesa-notch" aria-hidden="true">
+          <svg viewBox="0 0 34 48">
+            <path class="mesa-notch-fill" d="M 0 0 L 34 0 L 34 0.5 L 31.70 0.5 A 9.69 9.69 0 0 0 22.72 13.82 A 24.5 24.5 0 0 1 0 47.5 Z" fill="#ffffff" />
+            <path class="mesa-notch-line" d="M 0 47.5 A 24.5 24.5 0 0 0 22.72 13.82 A 9.69 9.69 0 0 1 31.70 0.5 L 34 0.5" fill="none" stroke="#e5e7eb" stroke-width="1" />
+          </svg>
+        </div>
+        <div class="mesa-allergen-rest" aria-hidden="true">
+          <svg><line x1="0" y1="0.5" x2="100%" y2="0.5" stroke="#e5e7eb" stroke-width="1" /></svg>
+        </div>
       </div>
-      <div id="mesa-filter" class="mesa-filter" hidden>
+    </div>
+    <div id="mesa-filter-root" class="mesa-filter-root" hidden>
+      <button type="button" id="mesa-filter-backdrop" class="mesa-filter-backdrop" aria-label="Cerrar"></button>
+      <div id="mesa-filter" class="mesa-filter" role="dialog" aria-modal="true" aria-labelledby="mesa-filter-title">
+        <button type="button" id="mesa-filter-close" class="mesa-filter-close" aria-label="Cerrar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+        <p id="mesa-filter-title" class="mesa-filter-title">Filtro de alérgenos</p>
         <div id="mesa-filter-list" class="mesa-filter-list"></div>
         <button type="button" id="mesa-filter-clear" class="mesa-filter-clear" hidden>Quitar filtros</button>
       </div>
@@ -135,6 +152,6 @@
   </div>
 
   <script src="../demo-data.js?v=23"></script>
-  <script src="mesa.js?v=45"></script>
+  <script src="mesa.js?v=49"></script>
 </body>
 </html>

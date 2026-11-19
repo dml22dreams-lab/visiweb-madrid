@@ -805,6 +805,11 @@
       width: 100%;
       min-width: 0;
       justify-content: flex-start;
+      cursor: grab;
+    }
+    #menu-chip-row.is-dragging {
+      cursor: grabbing;
+      user-select: none;
     }
     #allergen-below {
       display: flex;
@@ -813,19 +818,26 @@
       position: relative;
       box-sizing: border-box;
       height: 48px;
-      padding: 0 19px 0 1rem;
-      background-color: #fff;
+      padding: 4px 0 6px 1rem;
+      background-color: transparent;
     }
+    .allergen-below-bg {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 19px;
+      z-index: 0;
+      background-color: #fff;
+      pointer-events: none;
+    }
+    .menu-edge { z-index: 1; }
     .menu-notch-fill { fill: #ffffff; }
     .menu-notch-line { stroke: #e5e7eb; }
     .menu-rule { background-color: #e5e7eb; }
-    #allergen-below > .menu-rule {
-      right: 38px;
-      height: 1px;
-    }
     .menu-notch {
-      margin-left: -38px;
-      width: 32px;
+      margin-left: -19px;
+      width: 34px;
       height: 48px;
       flex: none;
     }
@@ -859,7 +871,7 @@
       .site-nav,
       #menu-tabs-bar::before,
       #menu-chip-band,
-      #allergen-below { background-color: #1c1917; }
+      .allergen-below-bg { background-color: #1c1917; }
       #menu-tabs-bar { background-color: transparent; }
       .menu-notch-fill { fill: #1c1917; }
       .menu-notch-line { stroke: #44403c; }
@@ -1700,21 +1712,22 @@
         </div>
         </div>
         <div class="relative mx-auto flex h-[48px] w-full max-w-3xl items-stretch">
-          <div id="allergen-below" class="relative flex flex-none items-center bg-white pl-4 pr-[19px] dark:bg-stone-900">
+          <div id="allergen-below" class="relative flex h-[48px] flex-none items-center pl-4 pr-0 pt-[4px] pb-[6px]">
+            <div class="allergen-below-bg pointer-events-none absolute inset-y-0 left-0 right-[19px] z-0 bg-white dark:bg-stone-900"></div>
+            <svg class="menu-edge pointer-events-none absolute bottom-0 left-0 block h-[1px]" style="width: calc(100% - 19px)" aria-hidden="true"><line class="menu-notch-line" x1="0" y1="0.5" x2="100%" y2="0.5" stroke="#e5e7eb" stroke-width="1" /></svg>
             <div id="allergen-chip" class="relative inline-flex shrink-0 items-center">
               <button type="button" id="open-filter-btn" class="relative z-10 inline-flex h-[38px] shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border border-stone-300 bg-stone-100 px-3 text-xs font-semibold text-stone-700 dark:border-stone-700 dark:bg-stone-800 dark:text-stone-300" aria-expanded="false" aria-controls="allergen-filter-panel"><svg class="h-3.5 w-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4 5h16l-6.2 7.2V19l-3.6-1.8v-5L4 5z"/></svg><span data-i18n="allergenChip">Alérgenos</span></button>
               <span id="allergen-filter-label" class="absolute left-full top-1/2 z-10 ml-12 -translate-y-1/2 whitespace-nowrap text-xs font-medium text-stone-500 dark:text-stone-400" hidden data-i18n="allergenFilterTitle">Filtro de alérgenos</span>
             </div>
-            <div class="menu-rule absolute bottom-0 left-0 right-[38px] h-[1px] bg-neutral-200"></div>
           </div>
-          <div class="menu-notch pointer-events-none relative z-0 -ml-[38px] h-[48px] w-[32px] flex-none" aria-hidden="true">
-            <svg viewBox="0 0 32 48" class="block h-[48px] w-[32px] overflow-visible">
-              <path class="menu-notch-fill" d="M 0 0 L 32 0 L 32 0.5 L 29.95 0.5 A 9.54 9.54 0 0 0 21.30 14.07 A 23.5 23.5 0 0 1 0 47.5 L 0 48 Z" fill="#ffffff" />
-              <path class="menu-notch-line" d="M 0 47.5 A 23.5 23.5 0 0 0 21.30 14.07 A 9.54 9.54 0 0 1 29.95 0.5 L 32 0.5" fill="none" stroke="#e5e7eb" stroke-width="1" />
+          <div class="menu-notch pointer-events-none relative z-0 -ml-[19px] h-[48px] w-[34px] flex-none" aria-hidden="true">
+            <svg viewBox="0 0 34 48" class="block h-[48px] w-[34px]">
+              <path class="menu-notch-fill" d="M 0 0 L 34 0 L 34 0.5 L 31.70 0.5 A 9.69 9.69 0 0 0 22.72 13.82 A 24.5 24.5 0 0 1 0 47.5 Z" fill="#ffffff" />
+              <path class="menu-notch-line" d="M 0 47.5 A 24.5 24.5 0 0 0 22.72 13.82 A 9.69 9.69 0 0 1 31.70 0.5 L 34 0.5" fill="none" stroke="#e5e7eb" stroke-width="1" />
             </svg>
           </div>
           <div class="relative h-[48px] flex-1 bg-transparent">
-            <div class="menu-rule absolute left-0 right-0 top-0 h-[1px] bg-neutral-200"></div>
+            <svg class="pointer-events-none block h-[48px] w-full" aria-hidden="true"><line class="menu-notch-line" x1="0" y1="0.5" x2="100%" y2="0.5" stroke="#e5e7eb" stroke-width="1" /></svg>
           </div>
         </div>
         <div id="allergen-filter-panel" class="mx-auto max-w-3xl px-5">
@@ -2211,7 +2224,7 @@
   </div>
 
   <script src="demo-data.js?v=23"></script>
-  <script src="demo-app.js?v=70"></script>
+  <script src="demo-app.js?v=71"></script>
   <script>
     (function () {
       var modal = document.getElementById('reserve-options-modal');

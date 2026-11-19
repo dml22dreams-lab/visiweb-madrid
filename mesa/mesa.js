@@ -1307,12 +1307,23 @@
     sheet.addEventListener('pointercancel', endDrag);
   })();
 
-  $('mesa-allergens').addEventListener('click', () => {
+  function setAllergenPanel(open) {
+    const root = $('mesa-filter-root');
     const panel = $('mesa-filter');
-    const open = panel.hidden;
-    panel.hidden = !open;
-    $('mesa-allergens').setAttribute('aria-expanded', open ? 'true' : 'false');
-    $('mesa-filter-title').hidden = !open;
+    const btn = $('mesa-allergens');
+    root.hidden = !open;
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    panel.style.top = '';
+    panel.style.left = '';
+  }
+
+  $('mesa-allergens').addEventListener('click', () => {
+    setAllergenPanel($('mesa-filter-root').hidden);
+  });
+  $('mesa-filter-backdrop').addEventListener('click', () => setAllergenPanel(false));
+  $('mesa-filter-close').addEventListener('click', () => setAllergenPanel(false));
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && !$('mesa-filter-root').hidden) setAllergenPanel(false);
   });
   $('mesa-filter-list').addEventListener('click', (event) => {
     const chip = event.target.closest('[data-filter]');
