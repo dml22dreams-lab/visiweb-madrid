@@ -32,7 +32,7 @@
 
   <link rel="preload" href="assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/cormorant-garamond-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="assets/demo.css?v=51">
+  <link rel="stylesheet" href="assets/demo.css?v=54">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
   <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
@@ -773,11 +773,15 @@
     #menu-tabs-bar {
       top: calc(var(--site-nav-h, 0px) - 2px);
       margin-top: 0;
-      padding-top: 0.75rem;
-      background-color: #fff;
+      padding-top: 0;
+      background-color: transparent;
       background-clip: border-box;
       -webkit-backdrop-filter: none;
       backdrop-filter: none;
+    }
+    #menu-chip-band {
+      background-color: #fff;
+      padding-top: 0.75rem;
     }
     #menu-tabs-bar::before {
       content: "";
@@ -800,15 +804,30 @@
     #menu-chip-row {
       width: 100%;
       min-width: 0;
-      justify-content: center;
-    }
-    @supports (justify-content: safe center) {
-      #menu-chip-row { justify-content: safe center; }
+      justify-content: flex-start;
     }
     #allergen-below {
       display: flex;
+      flex: none;
       align-items: center;
-      padding: 0.45rem 1rem 0.1rem;
+      position: relative;
+      box-sizing: border-box;
+      height: 48px;
+      padding: 0 19px 0 1rem;
+      background-color: #fff;
+    }
+    .menu-notch-fill { fill: #ffffff; }
+    .menu-notch-line { stroke: #e5e7eb; }
+    .menu-rule { background-color: #e5e7eb; }
+    #allergen-below > .menu-rule {
+      right: 38px;
+      height: 1px;
+    }
+    .menu-notch {
+      margin-left: -38px;
+      width: 32px;
+      height: 48px;
+      flex: none;
     }
     #allergen-below[hidden] { display: none !important; }
     @media (max-width: 767px) {
@@ -819,20 +838,32 @@
       background-color: #8a5a3c;
       color: #fffaf6;
     }
-    .tab,
-    #open-filter-btn {
+    .tab {
       padding-top: 0.55rem;
       padding-bottom: 0.55rem;
       padding-left: 1rem;
       padding-right: 1rem;
+    }
+    #open-filter-btn {
+      position: relative;
+      z-index: 10;
+      box-sizing: border-box;
+      height: 38px;
+      margin: 0;
+      padding: 0 0.75rem;
     }
     .tab { justify-content: center; text-align: center; }
     .site-nav-link { justify-content: center; text-align: center; }
     @media (prefers-color-scheme: dark) {
       #open-filter-btn:hover { color: #fff; }
       .site-nav,
-      #menu-tabs-bar,
-      #menu-tabs-bar::before { background-color: #1c1917; }
+      #menu-tabs-bar::before,
+      #menu-chip-band,
+      #allergen-below { background-color: #1c1917; }
+      #menu-tabs-bar { background-color: transparent; }
+      .menu-notch-fill { fill: #1c1917; }
+      .menu-notch-line { stroke: #44403c; }
+      .menu-rule { background-color: #44403c; }
     }
     @media (pointer: coarse), (hover: none) {
       #quick-bar a,
@@ -1660,14 +1691,30 @@
 
       </div>
 
-      <div id="menu-tabs-bar" class="sticky top-0 z-40 mb-3 border-b border-stone-200 bg-white py-1.5 shadow-sm dark:border-stone-800 dark:bg-stone-900">
-        <div id="menu-chip-row" class="no-scrollbar flex items-center gap-2 overflow-x-auto px-4">
+      <div id="menu-tabs-bar" class="sticky top-0 z-40 mb-3">
+        <div id="menu-chip-band">
+        <div class="mx-auto w-full max-w-3xl">
+        <div id="menu-chip-row" class="no-scrollbar flex items-center gap-2 overflow-x-auto px-4 pb-2.5">
           <div id="tabs" class="flex shrink-0 items-center gap-2" role="tablist" aria-label="Categorías de la carta" data-i18n-aria-label="menuTabsLabel"></div>
         </div>
-        <div id="allergen-below">
-          <div id="allergen-chip" class="inline-flex shrink-0 items-center gap-2.5">
-            <button type="button" id="open-filter-btn" class="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border border-stone-300 bg-stone-100 px-3 py-1.5 text-xs font-semibold text-stone-700 dark:border-stone-700 dark:bg-stone-800 dark:text-stone-300" aria-expanded="false" aria-controls="allergen-filter-panel"><svg class="h-3.5 w-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4 5h16l-6.2 7.2V19l-3.6-1.8v-5L4 5z"/></svg><span data-i18n="allergenChip">Alérgenos</span></button>
-            <span id="allergen-filter-label" class="whitespace-nowrap text-xs font-medium text-stone-500 dark:text-stone-400" hidden data-i18n="allergenFilterTitle">Filtro de alérgenos</span>
+        </div>
+        </div>
+        <div class="relative mx-auto flex h-[48px] w-full max-w-3xl items-stretch">
+          <div id="allergen-below" class="relative flex flex-none items-center bg-white pl-4 pr-[19px] dark:bg-stone-900">
+            <div id="allergen-chip" class="relative inline-flex shrink-0 items-center">
+              <button type="button" id="open-filter-btn" class="relative z-10 inline-flex h-[38px] shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border border-stone-300 bg-stone-100 px-3 text-xs font-semibold text-stone-700 dark:border-stone-700 dark:bg-stone-800 dark:text-stone-300" aria-expanded="false" aria-controls="allergen-filter-panel"><svg class="h-3.5 w-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4 5h16l-6.2 7.2V19l-3.6-1.8v-5L4 5z"/></svg><span data-i18n="allergenChip">Alérgenos</span></button>
+              <span id="allergen-filter-label" class="absolute left-full top-1/2 z-10 ml-12 -translate-y-1/2 whitespace-nowrap text-xs font-medium text-stone-500 dark:text-stone-400" hidden data-i18n="allergenFilterTitle">Filtro de alérgenos</span>
+            </div>
+            <div class="menu-rule absolute bottom-0 left-0 right-[38px] h-[1px] bg-neutral-200"></div>
+          </div>
+          <div class="menu-notch pointer-events-none relative z-0 -ml-[38px] h-[48px] w-[32px] flex-none" aria-hidden="true">
+            <svg viewBox="0 0 32 48" class="block h-[48px] w-[32px] overflow-visible">
+              <path class="menu-notch-fill" d="M 0 0 L 32 0 L 32 0.5 L 29.95 0.5 A 9.54 9.54 0 0 0 21.30 14.07 A 23.5 23.5 0 0 1 0 47.5 L 0 48 Z" fill="#ffffff" />
+              <path class="menu-notch-line" d="M 0 47.5 A 23.5 23.5 0 0 0 21.30 14.07 A 9.54 9.54 0 0 1 29.95 0.5 L 32 0.5" fill="none" stroke="#e5e7eb" stroke-width="1" />
+            </svg>
+          </div>
+          <div class="relative h-[48px] flex-1 bg-transparent">
+            <div class="menu-rule absolute left-0 right-0 top-0 h-[1px] bg-neutral-200"></div>
           </div>
         </div>
         <div id="allergen-filter-panel" class="mx-auto max-w-3xl px-5">
@@ -1680,7 +1727,7 @@
       </div>
 
       <div class="mx-auto max-w-3xl px-5">
-        <div id="panels" class="scroll-mt-14 pt-2 opacity-100 transition-opacity duration-100"></div>
+        <div id="panels" class="scroll-mt-14 opacity-100 transition-opacity duration-100"></div>
         <p id="filter-empty" class="mt-10 hidden text-center text-sm text-slate-600 dark:text-slate-400" data-i18n="allergenFilterEmpty">Ningún plato coincide con el filtro.</p>
 
         <section class="mt-14 pt-8" aria-labelledby="allergen-key-title">

@@ -383,7 +383,7 @@
       panel.tabIndex = 0;
       if (index !== 0) panel.hidden = true;
 
-      const desc = el('p', 'pt-4 pb-6 text-center text-sm italic text-stone-500 sm:pt-6 sm:pb-8');
+      const desc = el('p', 'mt-3 pb-6 text-center text-sm italic text-stone-500 sm:pb-8');
       desc.textContent = L(cat.desc);
       const list = el('ul');
       cat.items.forEach((item) => list.appendChild(dishNode(item)));
@@ -413,9 +413,90 @@
       });
     }
     if (focus) tab.focus();
+    revealActiveCategory(quiet ? 'auto' : 'smooth');
     if (quiet) return;
     scrollCategoryToStart();
     history.replaceState(null, '', '#' + tab.dataset.anchor);
+  }
+
+  let chipRowDrag = false;
+  let chipSnapTimer = 0;
+  let chipSnapArmed = false;
+  let chipSlideToken = 0;
+
+  function revealActiveCategory(behavior) {
+    const row = $('#menu-chip-row');
+    if (!row) return;
+    const tab = row.querySelector('[role="tab"][aria-selected="true"]');
+    if (!tab) return;
+    const max = row.scrollWidth - row.clientWidth;
+    if (max <= 1) return;
+    const pad = 16;
+    const rowRect = row.getBoundingClientRect();
+    const tabRect = tab.getBoundingClientRect();
+    let next = row.scrollLeft;
+    if (tabRect.left < rowRect.left + pad) next += tabRect.left - rowRect.left - pad;
+    else if (tabRect.right > rowRect.right - pad) next += tabRect.right - rowRect.right + pad;
+    next = Math.max(0, Math.min(max, next));
+    const start = row.scrollLeft;
+    if (Math.abs(next - start) < 1) return;
+    chipSnapArmed = false;
+    window.clearTimeout(chipSnapTimer);
+    chipSnapTimer = 0;
+    const token = ++chipSlideToken;
+    if (behavior === 'auto') {
+      row.scrollLeft = next;
+      return;
+    }
+    const t0 = performance.now();
+    const step = () => {
+      if (token !== chipSlideToken || chipRowDrag) return;
+      const p = Math.min(1, (performance.now() - t0) / 280);
+      const eased = 1 - Math.pow(1 - p, 3);
+      row.scrollLeft = start + (next - start) * eased;
+      if (p < 1) window.setTimeout(step, 16);
+    };
+    window.setTimeout(step, 16);
+  }
+
+  function initCategoryBarReveal() {
+    const row = $('#menu-chip-row');
+    if (!row) return;
+    function queueSnap() {
+      chipSnapArmed = true;
+      window.clearTimeout(chipSnapTimer);
+      chipSnapTimer = window.setTimeout(() => {
+        chipSnapArmed = false;
+        chipSnapTimer = 0;
+        if (chipRowDrag) return;
+        revealActiveCategory('smooth');
+      }, 140);
+    }
+
+    row.addEventListener('pointerdown', (event) => {
+      if (event.pointerType === 'mouse') return;
+      chipRowDrag = true;
+      chipSnapArmed = false;
+      chipSlideToken += 1;
+      window.clearTimeout(chipSnapTimer);
+    });
+    row.addEventListener('scroll', () => {
+      if (!chipRowDrag && chipSnapArmed) queueSnap();
+    }, { passive: true });
+    document.addEventListener('pointerup', () => {
+      chipRowDrag = false;
+      queueSnap();
+    });
+    document.addEventListener('pointercancel', () => {
+      chipRowDrag = false;
+    });
+
+    let pageLock = 0;
+    window.addEventListener('scroll', () => {
+      if (chipRowDrag || pageLock) return;
+      pageLock = window.setTimeout(() => { pageLock = 0; }, 320);
+      revealActiveCategory('smooth');
+    }, { passive: true });
   }
 
   function scrollCategoryToStart() {
@@ -1011,38 +1092,15 @@
     placeAllergenChip();
   }
 
-  function tabsRowWidth(tabs) {
-    const styles = getComputedStyle(tabs);
-    const gap = parseFloat(styles.columnGap) || parseFloat(styles.gap) || 0;
-    let width = 0;
-    const kids = tabs.children;
-    for (let i = 0; i < kids.length; i++) {
-      width += kids[i].offsetWidth;
-      if (i) width += gap;
-    }
-    return width;
-  }
-
   function placeAllergenChip() {
     const row = $('#menu-chip-row');
     const chip = $('#allergen-chip');
     const slot = $('#allergen-below');
-    const tabs = $('#tabs');
     const page = document.querySelector('[data-page="carta"]');
     if (!row || !chip || !slot || !page || page.hidden) return;
-    const narrow = window.matchMedia('(max-width: 767px)').matches;
-    const styles = getComputedStyle(row);
-    const gap = parseFloat(styles.columnGap) || parseFloat(styles.gap) || 0;
-    const pad = (parseFloat(styles.paddingLeft) || 0) + (parseFloat(styles.paddingRight) || 0);
-    const need = chip.offsetWidth + gap + (tabs ? tabsRowWidth(tabs) : 0);
-    const fits = !narrow && row.clientWidth > 0 && need <= row.clientWidth - pad + 1;
-    if (fits) {
-      if (chip.parentElement !== row) row.insertBefore(chip, row.firstChild);
-      slot.hidden = true;
-      return;
-    }
     slot.hidden = false;
     if (chip.parentElement !== slot) slot.appendChild(chip);
+    row.classList.toggle('is-overflowing', row.scrollWidth - row.clientWidth > 1);
   }
 
   function initAllergenFilters() {
@@ -2554,6 +2612,7 @@
   }
   renderAll();
   initTabs();
+  initCategoryBarReveal();
   initGbpTabs();
   window.cambiarPestanaGoogle = cambiarPestanaGoogle;
     initAllergenFilters();
