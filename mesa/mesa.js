@@ -29,7 +29,7 @@
       add: 'Añadir a mi selección', variant: 'Variante', extras: 'Suplementos',
       rate: 'Valora tu experiencia', rateShort: 'Valora', mine: 'Mi selección',
       rateNote: 'Este botón llevaría a las reseñas del restaurante en Google para que el cliente deje la suya.',
-      sub: 'Tu lista personal para enseñar al camarero. No se envía ningún pedido.',
+      sub: 'Es tu lista personal para enseñar al camarero. No se envía ningún pedido.',
       total: 'Total', clear: 'Limpiar', close: 'Cerrar', drag: 'Desliza hacia abajo para cerrar',
       sharing: 'Compartiendo públicamente en Google',
       comida: 'Comida', servicio: 'Servicio', ambiente: 'Ambiente',
@@ -427,7 +427,7 @@
   }
 
   function searchSvg() {
-    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="11" cy="11" r="6.25"/><path stroke-linecap="round" d="m16 16 4 4"/></svg>';
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="6.25"/><path stroke-linecap="round" d="m16.6 16.6 4.2 4.2"/></svg>';
   }
 
   function variantOf(item, id) {
