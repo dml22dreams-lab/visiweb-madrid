@@ -1129,17 +1129,24 @@
     if (clear) clear.hidden = allergenFilters.size === 0;
   }
 
-  function setAllergenPanel(open) {
+  function placeAllergenPanel() {
     const panel = $('#allergen-filter-panel');
+    const view = window.visualViewport;
+    const viewH = view ? view.height : window.innerHeight;
+    const viewTop = view ? view.offsetTop : 0;
+    panel.style.top = '0px';
+    const top = viewTop + Math.max(16, Math.round((viewH - panel.offsetHeight) / 2));
+    panel.style.top = top + 'px';
+  }
+
+  function setAllergenPanel(open) {
+    const root = $('#allergen-filter-root');
     const toggle = $('#open-filter-btn');
-    const icon = $('#allergen-filter-chevron');
-    if (!panel || !toggle) return;
-    panel.classList.toggle('is-open', open);
+    if (!root || !toggle) return;
+    if (open && root.parentElement !== document.body) document.body.appendChild(root);
+    root.hidden = !open;
     toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
-    if (icon) icon.classList.toggle('rotate-90', open);
-    const label = $('#allergen-filter-label');
-    if (label) label.hidden = !open;
-    placeAllergenChip();
+    if (open) placeAllergenPanel();
   }
 
   function placeAllergenChip() {
@@ -1159,6 +1166,12 @@
     on('#open-filter-btn', 'click', () => {
       const toggle = $('#open-filter-btn');
       setAllergenPanel(toggle.getAttribute('aria-expanded') !== 'true');
+    });
+    on('#allergen-filter-backdrop', 'click', () => setAllergenPanel(false));
+    on('#allergen-filter-close', 'click', () => setAllergenPanel(false));
+    document.addEventListener('keydown', (event) => {
+      const root = $('#allergen-filter-root');
+      if (event.key === 'Escape' && root && !root.hidden) setAllergenPanel(false);
     });
     wrap.addEventListener('click', (event) => {
       const btn = event.target.closest('[data-filter]');

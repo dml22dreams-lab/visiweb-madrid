@@ -1307,14 +1307,23 @@
     sheet.addEventListener('pointercancel', endDrag);
   })();
 
+  function placeAllergenPanel() {
+    const panel = $('mesa-filter');
+    const view = window.visualViewport;
+    const viewH = view ? view.height : window.innerHeight;
+    const viewTop = view ? view.offsetTop : 0;
+    panel.style.top = '0px';
+    const top = viewTop + Math.max(16, Math.round((viewH - panel.offsetHeight) / 2));
+    panel.style.top = top + 'px';
+  }
+
   function setAllergenPanel(open) {
     const root = $('mesa-filter-root');
-    const panel = $('mesa-filter');
     const btn = $('mesa-allergens');
+    if (open && root.parentElement !== document.body) document.body.appendChild(root);
     root.hidden = !open;
     btn.setAttribute('aria-expanded', open ? 'true' : 'false');
-    panel.style.top = '';
-    panel.style.left = '';
+    if (open) placeAllergenPanel();
   }
 
   $('mesa-allergens').addEventListener('click', () => {

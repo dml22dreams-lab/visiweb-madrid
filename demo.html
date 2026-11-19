@@ -794,13 +794,75 @@
       pointer-events: none;
     }
     #allergen-table thead th { top: var(--site-nav-h, 0px); }
-    #allergen-filter-panel {
-      display: grid;
-      grid-template-rows: 0fr;
-      transition: grid-template-rows .3s ease;
+    .allergen-filter-root {
+      position: fixed;
+      inset: 0;
+      z-index: 60;
     }
-    #allergen-filter-panel.is-open { grid-template-rows: 1fr; }
-    #allergen-filter-panel > div { overflow: hidden; }
+    .allergen-filter-backdrop {
+      position: absolute;
+      inset: 0;
+      border: 0;
+      background: rgba(23, 23, 23, .28);
+    }
+    .allergen-filter-panel {
+      position: absolute;
+      left: 50%;
+      display: flex;
+      flex-direction: column;
+      width: min(320px, calc(100vw - 32px));
+      max-height: min(70vh, 520px);
+      overflow: hidden;
+      padding: 16px;
+      border-radius: 22px;
+      background: #fff;
+      box-shadow: 0 18px 48px rgba(23, 23, 23, .2);
+      transform: translateX(-50%);
+    }
+    .allergen-filter-close {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      display: grid;
+      place-items: center;
+      width: 28px;
+      height: 28px;
+      margin: 0;
+      padding: 0;
+      border: 0;
+      border-radius: 999px;
+      background: transparent;
+      color: #44403c;
+    }
+    .allergen-filter-close svg { display: block; width: 16px; height: 16px; }
+    .allergen-filter-title {
+      margin: 0 28px 12px 0;
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 1.2;
+      color: #171717;
+    }
+    .allergen-filter-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      align-content: start;
+      min-height: 0;
+      overflow: auto;
+    }
+    .allergen-filter-list .filter-chip {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-sizing: border-box;
+      width: 100%;
+      min-height: 36px;
+      padding: 7px 10px;
+      line-height: 1.25;
+      text-align: center;
+      white-space: normal;
+    }
+    #clear-allergen-filters { margin-top: 18px; }
     #menu-chip-row {
       width: 100%;
       min-width: 0;
@@ -876,6 +938,9 @@
       .menu-notch-fill { fill: #1c1917; }
       .menu-notch-line { stroke: #44403c; }
       .menu-rule { background-color: #44403c; }
+      .allergen-filter-panel { background: #1c1917; }
+      .allergen-filter-title { color: #fafaf9; }
+      .allergen-filter-close { color: #e7e5e4; }
     }
     @media (pointer: coarse), (hover: none) {
       #quick-bar a,
@@ -1717,7 +1782,6 @@
             <svg class="menu-edge pointer-events-none absolute bottom-0 left-0 block h-[1px]" style="width: calc(100% - 19px)" aria-hidden="true"><line class="menu-notch-line" x1="0" y1="0.5" x2="100%" y2="0.5" stroke="#e5e7eb" stroke-width="1" /></svg>
             <div id="allergen-chip" class="relative inline-flex shrink-0 items-center">
               <button type="button" id="open-filter-btn" class="relative z-10 inline-flex h-[38px] shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border border-stone-300 bg-stone-100 px-3 text-xs font-semibold text-stone-700 dark:border-stone-700 dark:bg-stone-800 dark:text-stone-300" aria-expanded="false" aria-controls="allergen-filter-panel"><svg class="h-3.5 w-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4 5h16l-6.2 7.2V19l-3.6-1.8v-5L4 5z"/></svg><span data-i18n="allergenChip">Alérgenos</span></button>
-              <span id="allergen-filter-label" class="absolute left-full top-1/2 z-10 ml-12 -translate-y-1/2 whitespace-nowrap text-xs font-medium text-stone-500 dark:text-stone-400" hidden data-i18n="allergenFilterTitle">Filtro de alérgenos</span>
             </div>
           </div>
           <div class="menu-notch pointer-events-none relative z-0 -ml-[19px] h-[48px] w-[34px] flex-none" aria-hidden="true">
@@ -1730,12 +1794,14 @@
             <svg class="pointer-events-none block h-[48px] w-full" aria-hidden="true"><line class="menu-notch-line" x1="0" y1="0.5" x2="100%" y2="0.5" stroke="#e5e7eb" stroke-width="1" /></svg>
           </div>
         </div>
-        <div id="allergen-filter-panel" class="mx-auto max-w-3xl px-5">
-          <div class="overflow-hidden">
-            <p class="mb-2 mt-1 text-xs" aria-hidden="true">&nbsp;</p>
-            <div id="allergen-filters" class="mb-2 flex flex-wrap gap-1.5"></div>
-            <button type="button" id="clear-allergen-filters" class="mb-2 text-xs font-medium text-slate-600 underline underline-offset-4 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100" hidden data-i18n="allergenFilterClear">Quitar filtros</button>
-          </div>
+      </div>
+      <div id="allergen-filter-root" class="allergen-filter-root" hidden>
+        <button type="button" id="allergen-filter-backdrop" class="allergen-filter-backdrop" aria-label="Cerrar"></button>
+        <div id="allergen-filter-panel" class="allergen-filter-panel" role="dialog" aria-modal="true" aria-labelledby="allergen-filter-title">
+          <button type="button" id="allergen-filter-close" class="allergen-filter-close" aria-label="Cerrar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+          <p id="allergen-filter-title" class="allergen-filter-title" data-i18n="allergenFilterTitle">Filtro de alérgenos</p>
+          <div id="allergen-filters" class="allergen-filter-list"></div>
+          <button type="button" id="clear-allergen-filters" class="text-xs font-medium text-slate-600 underline underline-offset-4 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100" hidden data-i18n="allergenFilterClear">Quitar filtros</button>
         </div>
       </div>
 
@@ -2224,7 +2290,7 @@
   </div>
 
   <script src="demo-data.js?v=23"></script>
-  <script src="demo-app.js?v=71"></script>
+  <script src="demo-app.js?v=73"></script>
   <script>
     (function () {
       var modal = document.getElementById('reserve-options-modal');
