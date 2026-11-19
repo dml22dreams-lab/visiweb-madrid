@@ -23,7 +23,8 @@
       infoS: 'Teléfono, Dirección y Redes sociales',       search: 'Buscar ...',
       searchLabel: 'Buscar platos', clearSearch: 'Cerrar búsqueda',
       empty: 'No se han encontrado platos con ese nombre.',
-      allergens: 'Alérgenos', contains: 'Contiene',
+      allergens: 'Alérgenos', filterClear: 'Quitar filtros',
+      filterEmpty: 'Ningún plato coincide con el filtro.', contains: 'Contiene',
       none: 'Sin alérgenos de declaración obligatoria.',
       add: 'Añadir a mi selección', variant: 'Variante', extras: 'Suplementos',
       rate: 'Valora tu experiencia', rateShort: 'Valora', mine: 'Mi selección',
@@ -54,7 +55,8 @@
       infoS: 'Phone, address and social media',       search: 'Search ...',
       searchLabel: 'Search dishes', clearSearch: 'Close search',
       empty: 'No dishes were found with that name.',
-      allergens: 'Allergens', contains: 'Contains',
+      allergens: 'Allergens', filterClear: 'Clear filters',
+      filterEmpty: 'No dishes match the filter.', contains: 'Contains',
       none: 'No allergens that must be declared.',
       add: 'Add to my selection', variant: 'Option', extras: 'Extras',
       rate: 'Rate your experience', rateShort: 'Rate', mine: 'My selection',
@@ -516,6 +518,10 @@
     $('search-back').setAttribute('aria-label', ui('back'));
     $('q').placeholder = ui('search');
     $('mesa-name').textContent = D.business.name;
+    $('mesa-allergens-label').textContent = ui('allergens');
+    $('mesa-allergens').setAttribute('aria-label', ui('allergens'));
+    const clearFilters = $('mesa-filter-clear');
+    if (clearFilters) clearFilters.textContent = ui('filterClear');
     $('mesa-cats').setAttribute('aria-label', ui('cats'));
     $('hero').alt = L(D.images.heroAlt);
     document.title = ui('title');
@@ -561,7 +567,76 @@
       cat.items.forEach((item) => appendDish(section, item));
       menu.appendChild(section);
     });
+    const note = document.createElement('p');
+    note.id = 'mesa-filter-empty';
+    note.className = 'mesa-filter-empty';
+    note.hidden = true;
+    note.textContent = ui('filterEmpty');
+    menu.appendChild(note);
     currentCat = '';
+    renderAllergenFilters();
+    placeAllergen();
+    applyAllergenFilter();
+  }
+
+  function placeAllergen() {
+    const nav = $('mesa-cats');
+    if (!nav) return;
+    catsCover = 0;
+    nav.style.paddingLeft = '';
+  }
+
+  function renderAllergenFilters() {
+    const list = $('mesa-filter-list');
+    if (!list) return;
+    list.textContent = '';
+    Object.keys(D.allergens).forEach((key) => {
+      const spec = D.allergens[key];
+      const chip = document.createElement('button');
+      chip.type = 'button';
+      chip.className = 'mesa-filter-chip';
+      chip.dataset.filter = key;
+      chip.textContent = L(spec.name);
+      chip.setAttribute('aria-pressed', allergenFilters.has(key) ? 'true' : 'false');
+      list.appendChild(chip);
+    });
+    const clear = $('mesa-filter-clear');
+    if (clear) clear.hidden = allergenFilters.size === 0;
+    $('mesa-allergens').classList.toggle('is-on', allergenFilters.size > 0);
+  }
+
+  function applyAllergenFilter() {
+    let visibleCats = 0;
+    CATS.forEach((cat) => {
+      const sec = $('cat-' + cat.id);
+      const pill = document.querySelector('[data-spy="' + cat.id + '"]');
+      if (!sec) return;
+      let shown = 0;
+      sec.querySelectorAll('.dish').forEach((row) => {
+        const item = ITEMS.get(row.dataset.dish);
+        const keys = item && item.allergens ? item.allergens : [];
+        let hide = false;
+        allergenFilters.forEach((key) => {
+          if (keys.indexOf(key) >= 0) hide = true;
+        });
+        row.classList.toggle('is-hidden', hide);
+        if (!hide) shown += 1;
+      });
+      const empty = shown === 0;
+      sec.classList.toggle('is-hidden', empty);
+      if (pill) pill.classList.toggle('is-hidden', empty);
+      if (!empty) visibleCats += 1;
+    });
+    const note = $('mesa-filter-empty');
+    if (note) note.hidden = allergenFilters.size === 0 || visibleCats > 0;
+    const clear = $('mesa-filter-clear');
+    if (clear) clear.hidden = allergenFilters.size === 0;
+    $('mesa-allergens').classList.toggle('is-on', allergenFilters.size > 0);
+    const active = document.querySelector('[data-spy][aria-current="true"]');
+    if (!active || active.classList.contains('is-hidden')) {
+      const next = document.querySelector('[data-spy]:not(.is-hidden)');
+      if (next) setActive(next.dataset.spy);
+    }
   }
 
   function appendDish(parent, item) {
@@ -626,6 +701,8 @@
   let catsProg = false;
   let catsX = 0;
   let catsLeft = 0;
+  let catsCover = 0;
+  const allergenFilters = new Set();
 
   function centerPill(id, behavior) {
     const pill = document.querySelector('[data-spy="' + id + '"]');
@@ -1229,6 +1306,29 @@
     sheet.addEventListener('pointercancel', endDrag);
   })();
 
+  $('mesa-allergens').addEventListener('click', () => {
+    const panel = $('mesa-filter');
+    const open = panel.hidden;
+    panel.hidden = !open;
+    $('mesa-allergens').setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  $('mesa-filter-list').addEventListener('click', (event) => {
+    const chip = event.target.closest('[data-filter]');
+    if (!chip) return;
+    const key = chip.dataset.filter;
+    if (allergenFilters.has(key)) allergenFilters.delete(key);
+    else allergenFilters.add(key);
+    chip.setAttribute('aria-pressed', allergenFilters.has(key) ? 'true' : 'false');
+    applyAllergenFilter();
+  });
+  $('mesa-filter-clear').addEventListener('click', () => {
+    allergenFilters.clear();
+    $('mesa-filter-list').querySelectorAll('[data-filter]').forEach((chip) => {
+      chip.setAttribute('aria-pressed', 'false');
+    });
+    applyAllergenFilter();
+  });
+
   $('mesa-cats').addEventListener('pointerdown', (event) => {
     catsHold = true;
     catsUser = true;
@@ -1389,6 +1489,7 @@
   });
 
   window.addEventListener('resize', () => {
+    placeAllergen();
     if (!$('socials-root').hidden) placeMesaSocials();
   });
 
