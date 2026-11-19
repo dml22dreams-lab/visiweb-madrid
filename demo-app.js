@@ -1004,37 +1004,38 @@
     placeAllergenChip();
   }
 
-  function chipRowCuts(row) {
-    if (row.clientWidth < 1) return false;
-    const styles = getComputedStyle(row);
+  function tabsRowWidth(tabs) {
+    const styles = getComputedStyle(tabs);
     const gap = parseFloat(styles.columnGap) || parseFloat(styles.gap) || 0;
     let width = 0;
-    const kids = row.children;
+    const kids = tabs.children;
     for (let i = 0; i < kids.length; i++) {
       width += kids[i].offsetWidth;
       if (i) width += gap;
     }
-    const view = window.visualViewport ? window.visualViewport.width : window.innerWidth;
-    if (width > Math.min(row.clientWidth, view) + 1) return true;
-    const box = row.getBoundingClientRect();
-    for (let i = 0; i < kids.length; i++) {
-      const rect = kids[i].getBoundingClientRect();
-      if (rect.width > 0 && (rect.left < box.left - 1 || rect.right > box.right + 1)) return true;
-    }
-    return false;
+    return width;
   }
 
   function placeAllergenChip() {
     const row = $('#menu-chip-row');
     const chip = $('#allergen-chip');
     const slot = $('#allergen-below');
+    const tabs = $('#tabs');
     const page = document.querySelector('[data-page="carta"]');
     if (!row || !chip || !slot || !page || page.hidden) return;
-    if (chip.parentElement !== row) row.insertBefore(chip, row.firstChild);
-    slot.hidden = true;
-    if (!chipRowCuts(row)) return;
+    const narrow = window.matchMedia('(max-width: 767px)').matches;
+    const styles = getComputedStyle(row);
+    const gap = parseFloat(styles.columnGap) || parseFloat(styles.gap) || 0;
+    const pad = (parseFloat(styles.paddingLeft) || 0) + (parseFloat(styles.paddingRight) || 0);
+    const need = chip.offsetWidth + gap + (tabs ? tabsRowWidth(tabs) : 0);
+    const fits = !narrow && row.clientWidth > 0 && need <= row.clientWidth - pad + 1;
+    if (fits) {
+      if (chip.parentElement !== row) row.insertBefore(chip, row.firstChild);
+      slot.hidden = true;
+      return;
+    }
     slot.hidden = false;
-    slot.appendChild(chip);
+    if (chip.parentElement !== slot) slot.appendChild(chip);
   }
 
   function initAllergenFilters() {

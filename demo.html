@@ -811,6 +811,9 @@
       padding: 0.45rem 1rem 0.1rem;
     }
     #allergen-below[hidden] { display: none !important; }
+    @media (max-width: 767px) {
+      #allergen-below { display: flex !important; }
+    }
     .diet-vegetarian {
       border-color: #6b4630;
       background-color: #8a5a3c;
@@ -1652,13 +1655,14 @@
 
       <div id="menu-tabs-bar" class="sticky top-0 z-40 mb-3 border-b border-stone-200 bg-white py-1.5 shadow-sm dark:border-stone-800 dark:bg-stone-900">
         <div id="menu-chip-row" class="no-scrollbar flex items-center gap-2 overflow-x-auto px-4">
+          <div id="tabs" class="flex shrink-0 items-center gap-2" role="tablist" aria-label="Categorías de la carta" data-i18n-aria-label="menuTabsLabel"></div>
+        </div>
+        <div id="allergen-below">
           <div id="allergen-chip" class="inline-flex shrink-0 items-center gap-2.5">
             <button type="button" id="open-filter-btn" class="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border border-stone-300 bg-stone-100 px-3 py-1.5 text-xs font-semibold text-stone-700 dark:border-stone-700 dark:bg-stone-800 dark:text-stone-300" aria-expanded="false" aria-controls="allergen-filter-panel"><svg class="h-3.5 w-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4 5h16l-6.2 7.2V19l-3.6-1.8v-5L4 5z"/></svg><span data-i18n="allergenChip">Alérgenos</span></button>
             <span id="allergen-filter-label" class="whitespace-nowrap text-xs font-medium text-stone-500 dark:text-stone-400" hidden data-i18n="allergenFilterTitle">Filtro de alérgenos</span>
           </div>
-          <div id="tabs" class="flex shrink-0 items-center gap-2" role="tablist" aria-label="Categorías de la carta" data-i18n-aria-label="menuTabsLabel"></div>
         </div>
-        <div id="allergen-below" hidden></div>
         <div id="allergen-filter-panel" class="mx-auto max-w-3xl px-5">
           <div class="overflow-hidden">
             <p class="mb-2 mt-1 text-xs" aria-hidden="true">&nbsp;</p>
@@ -2152,8 +2156,8 @@
     </div>
   </div>
 
-  <script src="demo-data.js?v=22"></script>
-  <script src="demo-app.js?v=68"></script>
+  <script src="demo-data.js?v=23"></script>
+  <script src="demo-app.js?v=69"></script>
   <script>
     (function () {
       var modal = document.getElementById('reserve-options-modal');
