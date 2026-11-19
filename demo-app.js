@@ -454,6 +454,7 @@
       if (link.dataset.nav === id) link.setAttribute('aria-current', 'page');
       else link.removeAttribute('aria-current');
     });
+    if (id === 'carta') placeAllergenChip();
     if (opts && opts.quiet) return;
     if (opts && opts.smooth) {
       if (window.scrollY > 0) window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -995,6 +996,22 @@
     panel.classList.toggle('is-open', open);
     toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
     if (icon) icon.classList.toggle('rotate-90', open);
+    const label = $('#allergen-filter-label');
+    if (label) label.hidden = !open;
+    placeAllergenChip();
+  }
+
+  function placeAllergenChip() {
+    const row = $('#menu-chip-row');
+    const chip = $('#allergen-chip');
+    const slot = $('#allergen-below');
+    const page = document.querySelector('[data-page="carta"]');
+    if (!row || !chip || !slot || !page || page.hidden) return;
+    if (chip.parentElement !== row) row.insertBefore(chip, row.firstChild);
+    slot.hidden = true;
+    if (row.scrollWidth - row.clientWidth <= 1) return;
+    slot.hidden = false;
+    slot.appendChild(chip);
   }
 
   function initAllergenFilters() {
@@ -2487,7 +2504,21 @@
   bindDemoActions();
   syncStickyOffset();
   window.addEventListener('resize', syncStickyOffset);
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(syncStickyOffset);
+  window.addEventListener('resize', placeAllergenChip);
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(syncStickyOffset);
+    document.fonts.ready.then(placeAllergenChip);
+  }
+  if ('ResizeObserver' in window) {
+    const chipRow = $('#menu-chip-row');
+    if (chipRow) {
+      let chipFrame = 0;
+      new ResizeObserver(() => {
+        cancelAnimationFrame(chipFrame);
+        chipFrame = requestAnimationFrame(placeAllergenChip);
+      }).observe(chipRow);
+    }
+  }
   renderAll();
   initTabs();
   initGbpTabs();

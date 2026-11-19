@@ -392,8 +392,16 @@ body.is-searching { overflow: hidden; }
 .mesa-allergens-slot {
   display: flex;
   align-items: center;
+  gap: 10px;
   padding: 0 16px 14px;
   background: #fff;
+}
+#mesa-filter-title {
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.15;
+  color: #57534e;
 }
 .mesa-allergens {
   display: inline-flex;

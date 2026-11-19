@@ -23,7 +23,7 @@
       infoS: 'Teléfono, Dirección y Redes sociales',       search: 'Buscar ...',
       searchLabel: 'Buscar platos', clearSearch: 'Cerrar búsqueda',
       empty: 'No se han encontrado platos con ese nombre.',
-      allergens: 'Alérgenos', filterClear: 'Quitar filtros',
+      allergens: 'Alérgenos', filterTitle: 'Filtro de alérgenos', filterClear: 'Quitar filtros',
       filterEmpty: 'Ningún plato coincide con el filtro.', contains: 'Contiene',
       none: 'Sin alérgenos de declaración obligatoria.',
       add: 'Añadir a mi selección', variant: 'Variante', extras: 'Suplementos',
@@ -55,7 +55,7 @@
       infoS: 'Phone, address and social media',       search: 'Search ...',
       searchLabel: 'Search dishes', clearSearch: 'Close search',
       empty: 'No dishes were found with that name.',
-      allergens: 'Allergens', filterClear: 'Clear filters',
+      allergens: 'Allergens', filterTitle: 'Allergen filter', filterClear: 'Clear filters',
       filterEmpty: 'No dishes match the filter.', contains: 'Contains',
       none: 'No allergens that must be declared.',
       add: 'Add to my selection', variant: 'Option', extras: 'Extras',
@@ -519,6 +519,7 @@
     $('q').placeholder = ui('search');
     $('mesa-name').textContent = D.business.name;
     $('mesa-allergens-label').textContent = ui('allergens');
+    $('mesa-filter-title').textContent = ui('filterTitle');
     $('mesa-allergens').setAttribute('aria-label', ui('allergens'));
     const clearFilters = $('mesa-filter-clear');
     if (clearFilters) clearFilters.textContent = ui('filterClear');
@@ -1311,6 +1312,7 @@
     const open = panel.hidden;
     panel.hidden = !open;
     $('mesa-allergens').setAttribute('aria-expanded', open ? 'true' : 'false');
+    $('mesa-filter-title').hidden = !open;
   });
   $('mesa-filter-list').addEventListener('click', (event) => {
     const chip = event.target.closest('[data-filter]');
