@@ -414,8 +414,18 @@
     }
     if (focus) tab.focus();
     if (quiet) return;
-    if (focus) tab.scrollIntoView({ block: 'nearest', inline: 'center' });
+    scrollCategoryToStart();
     history.replaceState(null, '', '#' + tab.dataset.anchor);
+  }
+
+  function scrollCategoryToStart() {
+    const bar = $('#menu-tabs-bar');
+    const panels = $('#panels');
+    if (!bar || !panels) return;
+    const nav = document.querySelector('[data-site-sticky]');
+    const navH = nav ? nav.offsetHeight : 0;
+    const y = panels.getBoundingClientRect().top + window.scrollY - navH - bar.offsetHeight;
+    window.scrollTo(0, Math.max(0, y));
   }
 
   function initTabs() {
@@ -507,10 +517,7 @@
     if (tab) {
       showPage('carta', { quiet: true });
       selectTab(tab, false, true);
-      if (!quiet) {
-        const panel = document.getElementById(tab.getAttribute('aria-controls'));
-        (panel || tab).scrollIntoView({ block: 'start' });
-      }
+      if (!quiet) scrollCategoryToStart();
     }
   }
 
