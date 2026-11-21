@@ -243,10 +243,10 @@
         '<form id="login-form" class="mt-8 space-y-4">' +
           banner() +
           '<label class="block text-sm font-semibold">Correo' +
-            '<input id="login-email" name="email" type="email" autocomplete="username" required class="mt-1 w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-base outline-none ring-stone-900 focus:ring-2">' +
+            '<input id="login-email" name="email" type="email" autocomplete="username" required class="mt-1 w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-base outline-none focus:border-stone-300">' +
           '</label>' +
           '<label class="block text-sm font-semibold">Contraseña' +
-            '<input id="login-password" name="password" type="password" autocomplete="current-password" required class="mt-1 w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-base outline-none ring-stone-900 focus:ring-2">' +
+            '<input id="login-password" name="password" type="password" autocomplete="current-password" required class="mt-1 w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-base outline-none focus:border-stone-300">' +
           '</label>' +
           '<button type="submit" class="w-full rounded-full bg-stone-900 px-4 py-3 text-sm font-semibold text-white"' + (state.busy ? ' disabled' : '') + '>' + (state.busy ? 'Entrando…' : 'Entrar') + '</button>' +
         '</form>' +
@@ -267,6 +267,23 @@
           '<p class="text-xs font-semibold uppercase tracking-[0.14em] text-stone-300">Comisión estimada 25 %</p>' +
           '<p class="mt-2 font-serif text-4xl">' + esc(euros(sales * 0.25)) + '</p>' +
           '<p class="mt-1 text-sm text-stone-300">Sobre los planes de los locales activos</p>' +
+        '</article>' +
+      '</section>'
+    );
+  }
+
+  function agencySummary() {
+    var active = state.restaurants.filter(function (restaurant) { return restaurant.status === 'activo'; });
+    var revenue = active.reduce(function (sum, restaurant) { return sum + (Number(restaurant.plan_tier) || 0); }, 0);
+    return (
+      '<section class="grid gap-3 sm:grid-cols-2">' +
+        '<article class="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-stone-200">' +
+          '<p class="text-xs font-semibold uppercase tracking-[0.14em] text-stone-500">Total de restaurantes activos</p>' +
+          '<p class="mt-2 font-serif text-4xl">' + active.length + '</p>' +
+        '</article>' +
+        '<article class="rounded-3xl bg-stone-900 p-5 text-white shadow-sm">' +
+          '<p class="text-xs font-semibold uppercase tracking-[0.14em] text-stone-300">Ingresos totales cerrados</p>' +
+          '<p class="mt-2 font-serif text-4xl">' + esc(euros(revenue)) + '</p>' +
         '</article>' +
       '</section>'
     );
@@ -314,10 +331,10 @@
           '<button type="button" id="sign-out" class="rounded-full px-3 py-2 text-sm font-semibold text-stone-500">Salir</button>' +
         '</header>' +
         '<div class="mt-6 space-y-4">' + banner() + '</div>' +
-        (admin ? '' : '<div class="mt-6">' + summary() + '</div>') +
+        '<div class="mt-6">' + (admin ? agencySummary() : summary()) + '</div>' +
         '<div class="mt-8 flex items-center justify-between gap-3">' +
           '<h1 class="font-serif text-2xl">' + (admin ? 'Todos los restaurantes' : 'Tus restaurantes') + '</h1>' +
-          (admin ? '' : '<button type="button" id="new-restaurant" class="rounded-full bg-amber-500 px-4 py-2 text-sm font-semibold text-black">+ Nuevo Restaurante</button>') +
+          '<button type="button" id="new-restaurant" class="rounded-full bg-amber-500 px-4 py-2 text-sm font-semibold text-black">+ Nuevo Restaurante</button>' +
         '</div>' +
         '<div class="mt-4 grid gap-3">' +
           (state.restaurants.length
@@ -332,7 +349,7 @@
   }
 
   function input(fieldName, value, extra) {
-    return '<input data-field="' + fieldName + '" value="' + esc(value) + '" ' + extra + ' class="mt-1 w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-base outline-none ring-stone-900 focus:ring-2">';
+    return '<input data-field="' + fieldName + '" value="' + esc(value) + '" ' + extra + ' class="mt-1 w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-base outline-none focus:border-stone-300">';
   }
 
   function allergenButtons(item, catIndex, itemIndex) {
@@ -354,9 +371,9 @@
             '<button type="button" data-remove-item="' + itemIndex + '" data-cat="' + catIndex + '" class="rounded-full px-2 py-1 text-xs font-semibold text-red-700">Quitar</button>' +
           '</span>' +
         '</div>' +
-        field('Nombre', '<input data-field="item-name" data-cat="' + catIndex + '" data-item="' + itemIndex + '" value="' + esc(item.name) + '" class="mt-1 w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-base outline-none ring-stone-900 focus:ring-2">') +
-        '<label class="mt-3 block text-sm font-semibold">Descripción<textarea data-field="item-description" data-cat="' + catIndex + '" data-item="' + itemIndex + '" rows="2" class="mt-1 w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-base outline-none ring-stone-900 focus:ring-2">' + esc(item.description) + '</textarea></label>' +
-        '<label class="mt-3 block text-sm font-semibold">Precio (€)<input data-field="item-price" data-cat="' + catIndex + '" data-item="' + itemIndex + '" type="number" min="0" step="0.01" inputmode="decimal" value="' + esc(item.price) + '" class="mt-1 w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-base outline-none ring-stone-900 focus:ring-2"></label>' +
+        field('Nombre', '<input data-field="item-name" data-cat="' + catIndex + '" data-item="' + itemIndex + '" value="' + esc(item.name) + '" class="mt-1 w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-base outline-none focus:border-stone-300">') +
+        '<label class="mt-3 block text-sm font-semibold">Descripción<textarea data-field="item-description" data-cat="' + catIndex + '" data-item="' + itemIndex + '" rows="2" class="mt-1 w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-base outline-none focus:border-stone-300">' + esc(item.description) + '</textarea></label>' +
+        '<label class="mt-3 block text-sm font-semibold">Precio (€)<input data-field="item-price" data-cat="' + catIndex + '" data-item="' + itemIndex + '" type="number" min="0" step="0.01" inputmode="decimal" value="' + esc(item.price) + '" class="mt-1 w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-base outline-none focus:border-stone-300"></label>' +
         '<div class="mt-3">' +
           '<p class="text-sm font-semibold">Foto del plato</p>' +
           (preview ? '<img src="' + esc(preview) + '" alt="" class="mt-2 h-24 w-24 rounded-2xl object-cover">' : '') +
@@ -389,14 +406,14 @@
     return (
       '<form id="step-a" class="mt-6 space-y-4">' +
         field('Nombre', input('name', editor.name, 'required autocomplete="organization"')) +
-        field('Enlace', '<span class="mt-1 flex overflow-hidden rounded-2xl border border-stone-200 bg-white focus-within:ring-2 focus-within:ring-stone-900"><span class="px-3 py-3 text-sm text-stone-400">/r/</span><input data-field="slug" value="' + esc(editor.slug) + '" required class="w-full bg-transparent py-3 pr-4 text-base outline-none"></span>') +
+        field('Enlace', '<span class="mt-1 flex overflow-hidden rounded-2xl border border-stone-200 bg-white focus-within:border-stone-300"><span class="px-3 py-3 text-sm text-stone-400">/r/</span><input data-field="slug" value="' + esc(editor.slug) + '" required class="w-full bg-transparent py-3 pr-4 text-base outline-none"></span>') +
         field('Frase corta', input('tagline', editor.tagline, 'maxlength="140"')) +
         '<div class="grid gap-4 sm:grid-cols-2">' +
           field('Teléfono', input('phone', editor.phone, 'type="tel" autocomplete="tel"')) +
           field('WhatsApp', input('whatsapp', editor.whatsapp, 'inputmode="tel" placeholder="34600000000"')) +
         '</div>' +
         field('Dirección', input('address', editor.address, 'autocomplete="street-address"')) +
-        field('Horario', '<textarea data-field="schedule" rows="2" class="mt-1 w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-base outline-none ring-stone-900 focus:ring-2">' + esc(editor.schedule) + '</textarea>') +
+        field('Horario', '<textarea data-field="schedule" rows="2" class="mt-1 w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-base outline-none focus:border-stone-300">' + esc(editor.schedule) + '</textarea>') +
         field('Instagram', input('instagram', editor.instagram, 'placeholder="https://instagram.com/..."')) +
         '<fieldset><legend class="text-sm font-semibold">Plan contratado</legend><div class="mt-2 grid grid-cols-3 gap-2">' +
           PLANS.map(function (plan) {
@@ -436,6 +453,26 @@
     return '<button type="button" data-design="' + group + '" data-value="' + id + '"' + (extra || '') + ' aria-pressed="' + (on ? 'true' : 'false') + '" class="flex min-h-[96px] flex-col items-start justify-between rounded-3xl p-3 text-left text-sm font-semibold ring-1 ' + (on ? 'bg-stone-900 text-white ring-stone-900' : 'bg-white text-stone-800 ring-stone-200') + '">' + inner + '</button>';
   }
 
+  function styleCard(group, id, on, preview, label) {
+    var check = on
+      ? '<span class="absolute right-2.5 top-2.5 flex h-5 w-5 items-center justify-center rounded-full text-white" style="background:#18181B" aria-hidden="true"><svg viewBox="0 0 16 16" class="h-3 w-3" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.3 6.4 11.1 12.5 4.8"/></svg></span>'
+      : '';
+    var frame = on
+      ? 'background:#FAF9F6;border:2px solid #18181B'
+      : 'background:#fff;border:1px solid #e7e5e4';
+    return '<button type="button" data-design="' + group + '" data-value="' + id + '" aria-pressed="' + (on ? 'true' : 'false') + '" class="relative flex min-h-[112px] flex-col items-start justify-between gap-3 rounded-3xl p-3 pr-9 text-left text-sm font-semibold text-stone-900" style="' + frame + '">' + check + preview + '<span>' + label + '</span></button>';
+  }
+
+  function themeSwatches(colors) {
+    return '<span class="flex items-center">' + colors.map(function (color, index) {
+      return '<span class="h-8 w-8 shrink-0 rounded-full" style="background:' + color + ';border:1px solid rgba(0,0,0,0.1);margin-left:' + (index ? '-12px' : '0') + '"></span>';
+    }).join('') + '</span>';
+  }
+
+  function sampleWell(inner) {
+    return '<span class="flex h-12 w-full items-center justify-center rounded-2xl px-3" style="background:#F4F4F5;border:1px solid rgba(0,0,0,0.1)">' + inner + '</span>';
+  }
+
   function toggleButton(path, label, on) {
     return '<button type="button" data-toggle="' + path + '" aria-pressed="' + (on ? 'true' : 'false') + '" class="flex min-h-[68px] w-full items-center justify-between gap-3 rounded-3xl bg-white px-4 py-3 text-left text-base font-semibold ring-1 ring-stone-200"><span>' + label + '</span><span class="relative h-8 w-14 shrink-0 rounded-full ' + (on ? 'bg-emerald-500' : 'bg-stone-300') + '"><span class="absolute top-1 h-6 w-6 rounded-full bg-white shadow ' + (on ? 'left-7' : 'left-1') + '"></span></span></button>';
   }
@@ -443,15 +480,15 @@
   function renderStepC(editor) {
     var design = editor.design;
     var themes = [
-      ['clasico', 'Clásico', '#FAF9F6', '#FFFdf8'],
-      ['blanco', 'Blanco', '#FFFFFF', '#F5F4F0'],
-      ['oscuro', 'Oscuro', '#0F0F10', '#1A1A1D'],
-      ['mediterraneo', 'Mediterráneo', '#F6EFE4', '#FFFBF5']
+      ['clasico', 'Clásico', ['#FAF9F6', '#EFE6D6', '#1C1917']],
+      ['blanco', 'Blanco', ['#FFFFFF', '#F5F4F0', '#171717']],
+      ['oscuro', 'Oscuro', ['#0F0F10', '#2A2A2E', '#F5F5F4']],
+      ['mediterraneo', 'Mediterráneo', ['#F6EFE4', '#FFFBF5', '#C2613A']]
     ];
     var fonts = [
-      ['serif_clasica', 'Serif clásica', 'Aa'],
-      ['moderna_sans', 'Moderna sans', 'Ag'],
-      ['artesanal', 'Artesanal', 'Aa']
+      ['serif_clasica', 'Serif clásica', 'Aa', 'font-serif'],
+      ['moderna_sans', 'Moderna sans', 'Ag', 'font-sans'],
+      ['artesanal', 'Artesanal', 'Aa', 'font-serif italic']
     ];
     var shapes = [
       ['redondeado', 'Redondeado', '999px'],
@@ -479,17 +516,17 @@
         '<button type="button" id="live-preview" class="w-full rounded-full bg-stone-900 px-4 py-4 text-base font-semibold text-white"' + (state.busy || !editor.slug ? ' disabled' : '') + '>Vista previa en vivo</button>' +
         '<section class="space-y-3"><h2 class="text-lg font-semibold">Tema de color</h2><div class="grid grid-cols-2 gap-2">' +
           themes.map(function (item) {
-            return pickButton('theme', item[0], design.theme === item[0], '<span class="flex h-10 w-full overflow-hidden rounded-2xl ring-1 ring-black/10"><span class="w-1/2" style="background:' + item[2] + '"></span><span class="w-1/2" style="background:' + item[3] + '"></span></span><span>' + item[1] + '</span>');
+            return styleCard('theme', item[0], design.theme === item[0], themeSwatches(item[2]), item[1]);
           }).join('') +
         '</div></section>' +
         '<section class="space-y-3"><h2 class="text-lg font-semibold">Tipografía</h2><div class="grid grid-cols-3 gap-2">' +
           fonts.map(function (item) {
-            return pickButton('fonts', item[0], design.fonts === item[0], '<span class="text-3xl leading-none">' + item[2] + '</span><span>' + item[1] + '</span>');
+            return styleCard('fonts', item[0], design.fonts === item[0], sampleWell('<span class="' + item[3] + ' text-3xl leading-none text-stone-900">' + item[2] + '</span>'), item[1]);
           }).join('') +
         '</div></section>' +
         '<section class="space-y-3"><h2 class="text-lg font-semibold">Bordes y formas</h2><div class="grid grid-cols-3 gap-2">' +
           shapes.map(function (item) {
-            return pickButton('shapes', item[0], design.shapes === item[0], '<span class="h-8 w-full bg-stone-200" style="border-radius:' + item[2] + '"></span><span>' + item[1] + '</span>');
+            return styleCard('shapes', item[0], design.shapes === item[0], sampleWell('<span class="h-3 w-full bg-stone-300" style="border-radius:' + item[2] + '"></span>'), item[1]);
           }).join('') +
         '</div></section>' +
         '<section class="space-y-3"><h2 class="text-lg font-semibold">Color de botones</h2><div class="grid grid-cols-2 gap-2 sm:grid-cols-3">' +
@@ -519,10 +556,10 @@
         '<section class="space-y-3"><h2 class="text-lg font-semibold">Menú del día</h2>' +
           toggleButton('daily_menu_enabled', 'Activar Menú del Día', design.daily_menu_enabled) +
           (design.daily_menu_enabled ?
-            '<label class="block text-sm font-semibold">Precio<input data-daily="price" value="' + esc(editor.daily_menu.price) + '" class="mt-1 w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-base outline-none ring-stone-900 focus:ring-2" placeholder="14,50 €"></label>' +
-            '<label class="block text-sm font-semibold">Primeros<textarea data-daily="primeros" rows="3" class="mt-1 w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-base outline-none ring-stone-900 focus:ring-2" placeholder="Un plato por línea">' + esc(editor.daily_menu.primeros) + '</textarea></label>' +
-            '<label class="block text-sm font-semibold">Segundos<textarea data-daily="segundos" rows="3" class="mt-1 w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-base outline-none ring-stone-900 focus:ring-2">' + esc(editor.daily_menu.segundos) + '</textarea></label>' +
-            '<label class="block text-sm font-semibold">Postre o bebida incluidos<input data-daily="incluido" value="' + esc(editor.daily_menu.incluido) + '" class="mt-1 w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-base outline-none ring-stone-900 focus:ring-2"></label>' +
+            '<label class="block text-sm font-semibold">Precio<input data-daily="price" value="' + esc(editor.daily_menu.price) + '" class="mt-1 w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-base outline-none focus:border-stone-300" placeholder="14,50 €"></label>' +
+            '<label class="block text-sm font-semibold">Primeros<textarea data-daily="primeros" rows="3" class="mt-1 w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-base outline-none focus:border-stone-300" placeholder="Un plato por línea">' + esc(editor.daily_menu.primeros) + '</textarea></label>' +
+            '<label class="block text-sm font-semibold">Segundos<textarea data-daily="segundos" rows="3" class="mt-1 w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-base outline-none focus:border-stone-300">' + esc(editor.daily_menu.segundos) + '</textarea></label>' +
+            '<label class="block text-sm font-semibold">Postre o bebida incluidos<input data-daily="incluido" value="' + esc(editor.daily_menu.incluido) + '" class="mt-1 w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-base outline-none focus:border-stone-300"></label>' +
             '<div class="grid grid-cols-4 gap-2 sm:grid-cols-7">' + window.VisiwebDesign.days.map(function (day) {
               var on = editor.daily_menu.days.indexOf(day) >= 0;
               return '<button type="button" data-day="' + day + '" aria-pressed="' + (on ? 'true' : 'false') + '" class="rounded-2xl px-2 py-3 text-sm font-semibold ring-1 ' + (on ? 'bg-stone-900 text-white ring-stone-900' : 'bg-white text-stone-600 ring-stone-200') + '">' + DAY_LABELS[day] + '</button>';
@@ -566,7 +603,7 @@
                   '<button type="button" data-remove-cat="' + catIndex + '" class="rounded-full px-2 py-1 text-xs font-semibold text-red-700">Quitar</button>' +
                 '</span>' +
               '</div>' +
-              '<label class="mt-3 block text-sm font-semibold">Nombre<input data-field="cat-name" data-cat="' + catIndex + '" value="' + esc(category.name) + '" class="mt-1 w-full rounded-2xl border border-stone-200 bg-stone-50 px-4 py-3 text-base outline-none ring-stone-900 focus:ring-2"></label>' +
+              '<label class="mt-3 block text-sm font-semibold">Nombre<input data-field="cat-name" data-cat="' + catIndex + '" value="' + esc(category.name) + '" class="mt-1 w-full rounded-2xl border border-stone-200 bg-stone-50 px-4 py-3 text-base outline-none focus:border-stone-300"></label>' +
               '<div class="mt-3 space-y-3">' + category.items.map(function (item, itemIndex) {
                 return itemEditor(item, catIndex, itemIndex, category.items.length);
               }).join('') + '</div>' +
