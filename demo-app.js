@@ -152,8 +152,13 @@
     : t('closed'));
 
   /* --------------------------- Enlaces de contacto -------------------------- */
-  const addressText = () => L(D.business.address.street) + ', ' + D.business.address.postalCode + ' ' +
-    D.business.address.city + ' (' + D.business.address.region + ')';
+  const addressText = () => D.business.addressLine || (
+    L(D.business.address.street) + ', ' + D.business.address.postalCode + ' ' +
+    D.business.address.city + ' (' + D.business.address.region + ')'
+  );
+  const shortAddress = () => D.business.addressLine || (
+    L(D.business.address.street) + (D.business.address.city ? ', ' + D.business.address.city : '')
+  );
 
   function showDemoNote(key) {
     const note = $('#demo-action-note');
@@ -238,9 +243,9 @@
   }
 
   function renderBusinessInfo() {
-    $('#info-address').textContent = L(D.business.address.street) + ', ' + D.business.address.city;
+    $('#info-address').textContent = shortAddress();
     $('#map-address').textContent = addressText();
-    $('#footer-address').textContent = L(D.business.address.street) + ', ' + D.business.address.city;
+    $('#footer-address').textContent = shortAddress();
 
     const menuDay = (D.menu.find((c) => c.id === 'menu-del-dia') || { items: [] })
       .items.filter((i) => i.id === 'menu-completo')[0];
@@ -268,11 +273,15 @@
 
   function renderStatus() {
     const text = $('#status-text');
-    if (text) text.textContent = t('statusOpen');
+    if (text) text.textContent = D.scheduleText || t('statusOpen');
   }
 
   function renderToday() {
     const node = $('#info-today');
+    if (D.scheduleText) {
+      node.textContent = D.scheduleText;
+      return;
+    }
     const today = dayRanges(nowInMadrid().day);
     node.textContent = today.length ? rangesText(today, ' · ') : t('closedToday');
   }
@@ -280,6 +289,16 @@
   function renderHoursList() {
     const list = $('#hours-list');
     list.textContent = '';
+    if (D.scheduleText) {
+      const row = el('div', 'hours-row');
+      const dt = el('dt', 'hours-day');
+      dt.textContent = t('hoursShort');
+      const dd = el('dd', 'hours-time');
+      dd.textContent = D.scheduleText;
+      row.append(dt, dd);
+      list.appendChild(row);
+      return;
+    }
     groupedHours().forEach((group) => {
       const row = el('div', 'hours-row');
       const dt = el('dt', 'hours-day');
@@ -776,8 +795,7 @@
     if (!cat || !score || !attrs || !photos) return;
 
     if (name) name.textContent = D.business.name;
-    cat.textContent = L(D.gbp.category) + ' · ' + D.business.priceRange + ' · ' +
-      L(D.business.address.street) + ', ' + D.business.address.city;
+    cat.textContent = L(D.gbp.category) + ' · ' + D.business.priceRange + ' · ' + shortAddress();
 
     const value = D.reviews.score.toLocaleString(D.i18n[lang].locale, { minimumFractionDigits: 1 });
     score.innerHTML = '<span class="font-medium text-stone-900 dark:text-stone-100">' + value + '</span>' +
@@ -786,6 +804,9 @@
 
     if (hours) {
       hours.textContent = '';
+      if (D.scheduleText) {
+        hours.textContent = D.scheduleText;
+      } else {
       const state = openState();
       const status = el('span', state.open ? 'font-medium text-[#137333] dark:text-[#81c995]' : 'font-medium text-[#d93025] dark:text-[#f28b82]');
       status.textContent = state.open ? t('gbpOpen') : t('gbpClosed');
@@ -797,6 +818,7 @@
       } else if (!state.open && state.at && state.day === undefined) {
         detail.textContent = ' ' + t('gbpOpens', { time: state.at });
         hours.appendChild(detail);
+      }
       }
     }
 
@@ -1006,7 +1028,9 @@
     row(ICONS.pin, t('gbpInfoAddress'), address);
 
     const hours = el('div', 'mt-1 text-stone-700 dark:text-stone-300');
-    groupedHours().forEach((group) => {
+    if (D.scheduleText) {
+      hours.textContent = D.scheduleText;
+    } else groupedHours().forEach((group) => {
       const closed = !group.ranges.length;
       const line = el('div', 'flex items-baseline justify-between gap-2 border-b border-stone-100 py-1.5 last:border-b-0 dark:border-stone-800');
       const day = el('span', 'shrink-0');
@@ -1030,7 +1054,9 @@
 
     const web = el('a', 'mt-0.5 block break-all text-[#1a73e8] no-underline dark:text-[#8ab4f8]');
     web.href = '#inicio';
-    web.textContent = 'tabernaelnorte.visiwebmadrid.com';
+    web.textContent = window.VISIWEB_RESTAURANT_SLUG
+      ? window.location.host + '/r/' + window.VISIWEB_RESTAURANT_SLUG
+      : 'tabernaelnorte.visiwebmadrid.com';
     row(ICONS.web, t('gbpInfoWebsite'), web);
   }
 
@@ -2289,6 +2315,8 @@
     const strings = D.i18n[lang];
     document.documentElement.lang = strings.htmlLang;
     document.title = strings.metaTitle;
+    const siteName = $('#site-name');
+    if (siteName) siteName.textContent = D.business.name;
 
     const metas = [
       ['meta[name="description"]', 'content', strings.metaDescription],
@@ -2308,7 +2336,11 @@
       if (value) node.textContent = value;
     });
     document.querySelectorAll('a[data-i18n="mesaLink"], a[data-view="mesa"]').forEach((link) => {
-      link.setAttribute('href', lang === 'en' ? 'mesa/?lang=en' : 'mesa/');
+      if (window.VISIWEB_RESTAURANT_SLUG) {
+        link.setAttribute('href', '/r/' + window.VISIWEB_RESTAURANT_SLUG + '/mesa' + (lang === 'en' ? '?lang=en' : ''));
+      } else {
+        link.setAttribute('href', lang === 'en' ? '/mesa/?lang=en' : '/mesa/');
+      }
     });
     document.querySelectorAll('[data-i18n-placeholder]').forEach((node) => {
       node.setAttribute('placeholder', t(node.dataset.i18nPlaceholder));
@@ -2317,8 +2349,8 @@
       node.setAttribute('aria-label', t(node.dataset.i18nAriaLabel));
     });
     ['aviso-legal.html', 'politica-privacidad.html', 'politica-cookies.html'].forEach((file) => {
-      document.querySelectorAll('a[href="' + file + '"], a[href^="' + file + '?"]').forEach((link) => {
-        link.setAttribute('href', lang === 'en' ? file + '?lang=en' : file);
+      document.querySelectorAll('a[href="' + file + '"], a[href="/' + file + '"], a[href^="' + file + '?"], a[href^="/' + file + '?"]').forEach((link) => {
+        link.setAttribute('href', '/' + file + (lang === 'en' ? '?lang=en' : ''));
       });
     });
     pinChromeLabels();

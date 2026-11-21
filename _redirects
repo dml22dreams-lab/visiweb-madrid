@@ -1,0 +1,4 @@
+/r/:slug/mesa   /mesa/index.html   200
+/r/:slug/mesa/  /mesa/index.html   200
+/r/:slug        /demo.html         200
+/r/:slug/       /demo.html         200

@@ -3,6 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <script>
+    (function () {
+      var path = location.pathname.replace(/\/+$/, '') || '/';
+      if (/^\/r\/[^/]+$/.test(path)) {
+        document.documentElement.classList.add('vw-pending');
+        var meta = document.createElement('meta');
+        meta.name = 'robots';
+        meta.content = 'noindex';
+        document.head.appendChild(meta);
+      }
+    })();
+  </script>
+  <style>html.vw-pending body { visibility: hidden; }</style>
   <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
   <title>Taberna El Norte · Cervecería y raciones en Alcobendas</title>
   <meta name="description" content="Taberna El Norte, cervecería y raciones en Alcobendas. Carta bilingüe con alérgenos, salón y terraza, historia del local y reservas online.">
@@ -10,7 +23,7 @@
   <meta name="theme-color" content="#020617" media="(prefers-color-scheme: dark)">
 
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%231c1917'/%3E%3Cpath d='M11 7h10c0 5-3 8-5 8s-5-3-5-8z' fill='%23f59e0b'/%3E%3Cpath d='M16 15v8m-4 0h8' stroke='%23f59e0b' stroke-width='2.5' stroke-linecap='round'/%3E%3C/svg%3E">
-  <link rel="apple-touch-icon" href="assets/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/favicon.svg">
 
   <!-- demo-app.js convierte estos href en URLs absolutas del dominio real -->
   <link id="alt-es" rel="alternate" hreflang="es" href="demo.html">
@@ -30,9 +43,9 @@
   <meta name="twitter:title" content="Taberna El Norte · Cervecería y raciones en Alcobendas">
   <meta name="twitter:description" content="Carta bilingüe con alérgenos, salón y terraza, historia del local y reservas online.">
 
-  <link rel="preload" href="assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="assets/fonts/cormorant-garamond-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="assets/demo.css?v=54">
+  <link rel="preload" href="/assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/assets/fonts/cormorant-garamond-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/assets/demo.css?v=54">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
   <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
@@ -1656,7 +1669,7 @@
             </svg>
           </div>
           <span class="min-w-0">
-          <p class="font-serif text-lg font-semibold leading-tight tracking-tight text-slate-900 dark:text-slate-100 sm:text-xl">Taberna El Norte</p>
+          <p id="site-name" class="font-serif text-lg font-semibold leading-tight tracking-tight text-slate-900 dark:text-slate-100 sm:text-xl">Taberna El Norte</p>
           <p id="status" class="mt-0.5 flex items-center">
             <span class="mr-1 text-[10px] text-[#137333]">●</span>
             <span id="status-text" class="text-xs font-medium text-stone-600">Abierto ahora</span>
@@ -1971,7 +1984,7 @@
           <div class="relative mt-6 block w-full">
             <span class="mb-2 block text-right text-xs font-medium text-stone-600 dark:text-stone-300 sm:absolute sm:right-4 sm:top-4 sm:z-10 sm:mb-0 sm:rounded-full sm:border sm:border-stone-200 sm:bg-white/95 sm:px-3 sm:py-1.5 sm:text-stone-700 sm:shadow-sm sm:backdrop-blur-sm sm:dark:border-stone-700 sm:dark:bg-stone-900/95 sm:dark:text-stone-200" data-i18n="mapSearchHint">En la web del local, este mapa abre la ruta.</span>
             <div class="relative aspect-[16/9] overflow-hidden rounded-2xl border border-stone-200 dark:border-stone-800 sm:aspect-[21/9]">
-              <img src="assets/demo/alcobendas-mapa.webp" alt="" class="h-full w-full object-cover brightness-95 dark:brightness-75" width="1400" height="788" loading="lazy" decoding="async">
+              <img src="/assets/demo/alcobendas-mapa.webp" alt="" class="h-full w-full object-cover brightness-95 dark:brightness-75" width="1400" height="788" loading="lazy" decoding="async">
             </div>
           </div>
 
@@ -2159,9 +2172,9 @@
 
       <div class="mt-10 flex flex-col items-center space-y-4 border-t border-neutral-200/80 pt-8 text-center dark:border-stone-800">
         <nav class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-neutral-500 dark:text-stone-400" aria-label="Información legal" data-i18n-aria-label="legalTitle">
-          <a href="aviso-legal.html" class="transition-colors hover:text-stone-700 dark:hover:text-stone-200" data-i18n="legalNotice">Aviso legal</a>
-          <a href="politica-privacidad.html" class="transition-colors hover:text-stone-700 dark:hover:text-stone-200" data-i18n="privacy">Política de privacidad</a>
-          <a href="politica-cookies.html" class="transition-colors hover:text-stone-700 dark:hover:text-stone-200" data-i18n="cookies">Política de cookies</a>
+          <a href="/aviso-legal.html" class="transition-colors hover:text-stone-700 dark:hover:text-stone-200" data-i18n="legalNotice">Aviso legal</a>
+          <a href="/politica-privacidad.html" class="transition-colors hover:text-stone-700 dark:hover:text-stone-200" data-i18n="privacy">Política de privacidad</a>
+          <a href="/politica-cookies.html" class="transition-colors hover:text-stone-700 dark:hover:text-stone-200" data-i18n="cookies">Política de cookies</a>
         </nav>
 
         <p id="demo-notice" class="max-w-md text-[11px] leading-relaxed text-neutral-400 dark:text-stone-500" data-i18n="demoNotice">Maqueta de ejemplo de VisiWeb Madrid. El negocio, los precios, los horarios y las reseñas son ficticios.</p>
@@ -2289,8 +2302,15 @@
     </div>
   </div>
 
-  <script src="demo-data.js?v=23"></script>
-  <script src="demo-app.js?v=73"></script>
+  <script src="/restaurant-loader.js?v=2"></script>
+  <script src="/demo-data.js?v=23"></script>
+  <script>
+    if (window.VisiwebRestaurant && window.VisiwebRestaurant.dynamic === 'web') {
+      window.VisiwebRestaurant.start('web');
+    } else {
+      document.write('<script src="/demo-app.js?v=75"><\/script>');
+    }
+  </script>
   <script>
     (function () {
       var modal = document.getElementById('reserve-options-modal');

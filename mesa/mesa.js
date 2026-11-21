@@ -186,7 +186,10 @@
 
   function img(path) {
     if (!path) return '';
-    return '../' + String(path).replace(/^\//, '');
+    const value = String(path);
+    if (/^(https?:|data:)/.test(value)) return value;
+    if (value.charAt(0) === '/') return value;
+    return '/' + value.replace(/^\.\//, '');
   }
 
   function blankReview() {
@@ -219,6 +222,22 @@
   }
 
   function buildMenu() {
+    if (window.VISIWEB_RESTAURANT_SLUG) {
+      return (D.menu || []).map((cat) => ({
+        id: cat.id,
+        name: cat.name,
+        lead: cat.desc || { es: '', en: '' },
+        items: (cat.items || []).map((item) => dish({
+          id: item.id,
+          name: item.name,
+          desc: item.desc,
+          long: item.desc,
+          price: item.priceValue != null ? item.priceValue : euroFrom(item.price),
+          allergens: item.allergens || [],
+          image: item.image
+        }))
+      }));
+    }
     const glutenFree = {
       id: 'sin-gluten',
       name: { es: 'Extra pan sin gluten', en: 'Extra gluten-free bread' },
@@ -518,6 +537,9 @@
     $('search-back').setAttribute('aria-label', ui('back'));
     $('q').placeholder = ui('search');
     $('mesa-name').textContent = D.business.name;
+    const heading = document.querySelector('.intro h1');
+    if (heading) heading.textContent = D.business.name;
+    if ($('hero') && D.images.hero) $('hero').src = img(D.images.hero);
     $('mesa-allergens-label').textContent = ui('allergens');
     $('mesa-filter-title').textContent = ui('filterTitle');
     $('mesa-allergens').setAttribute('aria-label', ui('allergens'));
@@ -525,7 +547,9 @@
     if (clearFilters) clearFilters.textContent = ui('filterClear');
     $('mesa-cats').setAttribute('aria-label', ui('cats'));
     $('hero').alt = L(D.images.heroAlt);
-    document.title = ui('title');
+    document.title = window.VISIWEB_RESTAURANT_SLUG
+      ? D.business.name + (lang === 'en' ? ' · Table menu' : ' · Carta en mesa')
+      : ui('title');
     document.documentElement.lang = lang === 'en' ? 'en' : 'es';
     $('dock-rate-label').textContent = ui('rate');
     $('dock-rate-mini-label').textContent = ui('rateShort');
@@ -533,7 +557,9 @@
     $('demo-bar-label').textContent = ui('demoBar');
     $('view-switch').setAttribute('aria-label', ui('viewSwitch'));
     $('view-web').textContent = ui('viewWeb');
-    $('view-web').setAttribute('href', lang === 'en' ? '../demo.html?lang=en' : '../demo.html');
+    $('view-web').setAttribute('href', window.VISIWEB_RESTAURANT_SLUG
+      ? '/r/' + window.VISIWEB_RESTAURANT_SLUG + (lang === 'en' ? '?lang=en' : '')
+      : (lang === 'en' ? '/demo.html?lang=en' : '/demo.html'));
     $('view-mesa').textContent = ui('viewMesa');
   }
 
@@ -963,6 +989,7 @@
   }
 
   function addressLine() {
+    if (D.business.addressLine) return D.business.addressLine;
     const addr = D.business.address;
     return L(addr.street) + ', ' + addr.postalCode + ' ' + addr.city + ', ' + ui('spain');
   }
@@ -1002,7 +1029,7 @@
 
   function renderInfo() {
     $('info-root').querySelector('.sheet').innerHTML =
-      '<div class="map-wrap"><img src="../assets/demo/alcobendas-mapa.webp" alt="' + esc(ui('mapAlt')) + '"><span class="pin" aria-hidden="true"></span>' +
+      '<div class="map-wrap"><img src="' + esc(window.VISIWEB_RESTAURANT_SLUG ? (D.images.hero || '') : '/assets/demo/alcobendas-mapa.webp') + '" alt="' + esc(ui('mapAlt')) + '"><span class="pin" aria-hidden="true"></span>' +
       '<button type="button" class="sheet-x" data-close="info" aria-label="' + esc(ui('close')) + '">' + closeSvg() + '</button></div>' +
       '<a class="irow" href="tel:' + esc(D.business.phone) + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6.6 10.8a12.8 12.8 0 0 0 5.6 5.6l2-2a1 1 0 0 1 1-.2 9.6 9.6 0 0 0 3.5.6 1 1 0 0 1 1 1V19a1 1 0 0 1-1 1A17 17 0 0 1 4 6a1 1 0 0 1 1-1h3.2a1 1 0 0 1 1 1 9.6 9.6 0 0 0 .6 3.5 1 1 0 0 1-.2 1l-2 2z"/></svg>' +
       '<span><strong>' + esc(ui('phone')) + '</strong><small>' + esc(D.business.phoneDisplay) + '</small></span><span class="chev" aria-hidden="true">›</span></a>' +
@@ -1106,7 +1133,7 @@
       '<div class="rev-sum"><strong>' + esc(score) + '</strong>' + starRow(5) +
       '<p>' + esc(ui('excellent')) + ' · ' + D.reviews.count + ' ' + esc(ui('reviews')) + '</p>' +
       '<small>' + esc(ui('reviewsSample')) + '</small></div>' +
-      '<div class="rev-feed">' + SAMPLE_REVIEWS.map((item) => (
+      '<div class="rev-feed">' + (window.VISIWEB_RESTAURANT_SLUG ? [] : SAMPLE_REVIEWS).map((item) => (
         '<article class="rev-item"><div class="rev-who"><span class="avatar" style="background:' + item.color + '">' + esc(item.name.trim().charAt(0)) + '</span><div><strong>' + esc(item.name) + '</strong><span class="rev-meta">' + starRow(item.rating) + '<time>' + esc(item.when[lang] || item.when.es) + '</time></span></div></div><p>' + esc(item.text[lang] || item.text.es) + '</p></article>'
       )).join('') + '</div>';
   }
@@ -1133,7 +1160,7 @@
     }
     const groups = ['comida', 'servicio', 'ambiente'];
     dialog.innerHTML =
-      '<div class="rev-bar"><button type="button" class="back" data-close="review" aria-label="' + esc(ui('back')) + '">←</button><h2 id="rev-title">Taberna El Norte</h2><span style="width:40px"></span></div>' +
+      '<div class="rev-bar"><button type="button" class="back" data-close="review" aria-label="' + esc(ui('back')) + '">←</button><h2 id="rev-title">' + esc(D.business.name) + '</h2><span style="width:40px"></span></div>' +
       '<div class="who"><span class="avatar" aria-hidden="true">D</span><span><strong>Diego</strong><small>' + esc(ui('sharing')) + '</small></span></div>' +
       '<div class="stars">' + starsHtml('overall', review.overall, false).replace('<div role="radiogroup" aria-label="' + esc(ui('rate')) + '">', '').replace('</div>', '') + '</div>' +
       groups.map((group) => '<div class="subrate"><span>' + esc(ui(group)) + '</span>' + starsHtml(group, review[group], true) + '</div>').join('') +

@@ -4,22 +4,29 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="robots" content="noindex">
+  <script>
+    (function () {
+      var path = location.pathname.replace(/\/+$/, '') || '/';
+      if (/^\/r\/[^/]+\/mesa$/.test(path)) document.documentElement.classList.add('vw-pending');
+    })();
+  </script>
+  <style>html.vw-pending body { visibility: hidden; }</style>
   <title>Taberna El Norte · Carta en mesa</title>
   <meta name="theme-color" content="#ffffff">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%231c1917'/%3E%3Cpath d='M11 7h10c0 5-3 8-5 8s-5-3-5-8z' fill='%23f59e0b'/%3E%3Cpath d='M16 15v8m-4 0h8' stroke='%23f59e0b' stroke-width='2.5' stroke-linecap='round'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="mesa.css?v=84">
+  <link rel="stylesheet" href="/mesa/mesa.css?v=84">
 </head>
 <body>
   <div class="col">
     <div class="demo-bar">
       <span class="demo-bar-label" id="demo-bar-label">Demo VisiWeb</span>
       <div class="demo-view-switch" id="view-switch" role="group" aria-label="Vista de la demo">
-        <a id="view-web" href="../demo.html">Web</a>
+        <a id="view-web" href="/demo.html">Web</a>
         <a id="view-mesa" href="./" aria-current="page">QR Mesa</a>
       </div>
     </div>
     <header class="hero">
-      <img id="hero" class="h-48 object-cover" src="../assets/demo/hero.webp" alt="">
+      <img id="hero" class="h-48 object-cover" src="/assets/demo/hero.webp" alt="">
       <button type="button" id="hero-kicker" class="hero-kicker">LA CARTA</button>
       <div class="hero-tools">
         <button type="button" id="btn-lang" class="tool lang" aria-label="Idioma">
@@ -151,7 +158,14 @@
     <div class="sheet-full" role="dialog" aria-modal="true" aria-labelledby="rev-title" tabindex="-1"></div>
   </div>
 
-  <script src="../demo-data.js?v=23"></script>
-  <script src="mesa.js?v=50"></script>
+  <script src="/restaurant-loader.js?v=2"></script>
+  <script src="/demo-data.js?v=23"></script>
+  <script>
+    if (window.VisiwebRestaurant && window.VisiwebRestaurant.dynamic === 'mesa') {
+      window.VisiwebRestaurant.start('mesa');
+    } else {
+      document.write('<script src="/mesa/mesa.js?v=51"><\/script>');
+    }
+  </script>
 </body>
 </html>

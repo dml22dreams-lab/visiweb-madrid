@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    { "source": "/r/:slug/mesa", "destination": "/mesa/index.html" },
+    { "source": "/r/:slug/mesa/", "destination": "/mesa/index.html" },
+    { "source": "/r/:slug", "destination": "/demo.html" },
+    { "source": "/r/:slug/", "destination": "/demo.html" }
+  ]
+}
