@@ -5,10 +5,12 @@
   var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF0Y2dyZGZ6eWJvcXZkdnRmeW16Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE5OTc1NTksImV4cCI6MjEwNzU3MzU1OX0.LKMVrtcqd_suMUeyWeedPs5yuzTYLVbz7Lel9A0iKY8';
 
   var PLANS = [
-    { id: '120', label: '120 €' },
-    { id: '390', label: '390 €' },
-    { id: '790', label: '790 €' }
+    { id: '120', name: 'Plan Básico', price: 120, summary: 'Web One-Page con carta categorizada y precios, botón de WhatsApp y QR básico.' },
+    { id: '390', name: 'Plan Gastro Premium', price: 390, summary: 'Web multipágina (Carta, El Local, Reservas), carta bilingüe ES/EN, filtro de alérgenos y página de redes.' },
+    { id: '790', name: 'Plan Digitalización Total', price: 790, summary: 'Todo lo anterior, más diseño a medida, carta multilingüe (hasta 3 idiomas), módulo de grupos/eventos y Modo QR en Mesa.' }
   ];
+  var LOCK_GASTRO = 'Exclusivo desde el Plan Gastro Premium · 390 €';
+  var LOCK_TOTAL = 'Exclusivo del Plan Digitalización Total · 790 €';
   var STATUSES = [
     { id: 'borrador', label: 'Borrador' },
     { id: 'pendiente_pago', label: 'Pendiente de pago' },
@@ -76,9 +78,74 @@
     });
   }
 
+  function planById(id) {
+    return PLANS.filter(function (plan) { return plan.id === id; })[0] || null;
+  }
+
   function planLabel(id) {
-    var found = PLANS.filter(function (plan) { return plan.id === id; })[0];
-    return found ? found.label : 'Sin plan';
+    var found = planById(id);
+    return found ? found.name + ' · ' + found.price + ' €' : 'Sin plan';
+  }
+
+  function planRank(id) {
+    if (id === '790') return 3;
+    if (id === '390') return 2;
+    if (id === '120') return 1;
+    return 0;
+  }
+
+  function lockIcon() {
+    return '<svg class="mt-0.5 h-4 w-4 shrink-0" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="7" width="10" height="7" rx="1.5"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2"/></svg>';
+  }
+
+  function lockedRow(title, note) {
+    return '<div class="flex items-start gap-3 rounded-3xl bg-stone-50 px-4 py-3 text-stone-400 ring-1 ring-stone-200">' + lockIcon() + '<span><span class="block text-sm font-semibold text-stone-700">' + title + '</span><span class="mt-0.5 block text-xs">' + note + '</span></span></div>';
+  }
+
+  function planPicker(editor) {
+    return '<fieldset class="mt-6"><legend class="text-sm font-semibold">Plan contratado</legend><div class="mt-2 grid gap-2">' +
+      PLANS.map(function (plan) {
+        var on = editor.plan_tier === plan.id;
+        return '<label class="block cursor-pointer rounded-3xl px-4 py-3 text-left ring-1 ' + (on ? 'bg-[#FAF9F6] ring-2 ring-[#18181B]' : 'bg-white ring-stone-200') + '">' +
+          '<input class="sr-only" type="radio" name="plan-tier" data-plan="' + plan.id + '" value="' + plan.id + '"' + (on ? ' checked' : '') + '>' +
+          '<span class="flex items-baseline justify-between gap-3"><span class="font-semibold text-stone-900">' + plan.name + '</span><span class="font-serif text-lg text-stone-900">' + plan.price + ' €</span></span>' +
+          '<span class="mt-1 block text-sm font-normal leading-snug text-stone-600">' + plan.summary + '</span></label>';
+      }).join('') +
+    '</div></fieldset>';
+  }
+
+  function ensureLabels(design) {
+    if (!design.labels || typeof design.labels !== 'object') design.labels = {};
+  }
+
+  function applyPlanLimits(editor) {
+    var rank = planRank(editor.plan_tier);
+    var design = editor.design;
+    var plan = planById(editor.plan_tier);
+    ensureLabels(design);
+    if (plan) design.labels.vw_plan = plan.name;
+    if (rank < 2) {
+      design.blocks.forEach(function (block) {
+        if (block.id === 'local' || block.id === 'reserva') block.visible = false;
+      });
+      if (design.hero_actions) design.hero_actions.book = false;
+      editor.instagram = '';
+      design.labels.vw_lang = 'es';
+      design.labels.vw_allergens = '0';
+      design.labels.vw_social = '0';
+      (editor.categories || []).forEach(function (category) {
+        (category.items || []).forEach(function (item) { item.allergens = []; });
+      });
+    } else if (design.labels.vw_lang !== 'es' && design.labels.vw_lang !== 'esen' && design.labels.vw_lang !== 'multi') {
+      design.labels.vw_lang = 'esen';
+    }
+    if (rank < 3) {
+      Object.keys(design.mesa || {}).forEach(function (key) { design.mesa[key] = false; });
+      design.labels.vw_events = '0';
+      if (design.labels.vw_lang === 'multi') design.labels.vw_lang = 'esen';
+    }
+    if (rank >= 2 && design.labels.vw_allergens !== '0' && design.labels.vw_allergens !== '1') design.labels.vw_allergens = '1';
+    if (rank >= 2 && design.labels.vw_social !== '0' && design.labels.vw_social !== '1') design.labels.vw_social = '1';
   }
 
   function statusLabel(id) {
@@ -157,7 +224,7 @@
       address: 'C. del Marqués de la Valdavia, 28100 Alcobendas (Madrid)',
       schedule: 'Mar - Jue 12:00–16:00 · 19:30–23:30 · Vie - Sáb 12:00–00:00 · Domingo 12:00–17:00 · Lunes cerrado',
       instagram: '',
-      plan_tier: '390',
+      plan_tier: '',
       status: 'borrador',
       cover_image_url: '',
       coverFile: null,
@@ -379,7 +446,9 @@
           (preview ? '<img src="' + esc(preview) + '" alt="" class="mt-2 h-24 w-24 rounded-2xl object-cover">' : '') +
           '<input data-file="item" data-cat="' + catIndex + '" data-item="' + itemIndex + '" type="file" accept="image/jpeg,image/png,image/webp,image/avif,image/gif" class="mt-2 block w-full text-sm">' +
         '</div>' +
-        '<div class="mt-3"><p class="text-sm font-semibold">Alérgenos</p>' + allergenButtons(item, catIndex, itemIndex) + '</div>' +
+        (planRank(state.editor && state.editor.plan_tier) < 2
+          ? '<div class="mt-3">' + lockedRow('Filtro de alérgenos', LOCK_GASTRO) + '</div>'
+          : '<div class="mt-3"><p class="text-sm font-semibold">Alérgenos</p>' + allergenButtons(item, catIndex, itemIndex) + '</div>') +
       '</div>'
     );
   }
@@ -391,6 +460,7 @@
       '<div class="mx-auto w-full max-w-3xl px-4 py-6 sm:px-6 sm:py-10">' +
         '<button type="button" id="close-editor" class="text-sm font-semibold text-stone-500">← Volver al panel</button>' +
         '<h1 class="mt-4 font-serif text-3xl">' + (editor.id ? 'Editar restaurante' : 'Nuevo restaurante') + '</h1>' +
+        planPicker(editor) +
         '<div class="mt-4 grid grid-cols-3 gap-2 text-sm font-semibold">' +
           '<button type="button" data-step="a" class="rounded-full px-3 py-2 text-center ' + (editor.step === 'a' ? 'bg-stone-900 text-white' : 'bg-white text-stone-500 ring-1 ring-stone-200') + '">1 · Datos</button>' +
           '<button type="button" data-step="b" class="rounded-full px-3 py-2 text-center ' + (editor.step === 'b' ? 'bg-stone-900 text-white' : 'bg-white text-stone-500 ring-1 ring-stone-200') + '">2 · Carta</button>' +
@@ -414,13 +484,9 @@
         '</div>' +
         field('Dirección', input('address', editor.address, 'autocomplete="street-address"')) +
         field('Horario', '<textarea data-field="schedule" rows="2" class="mt-1 w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-base outline-none focus:border-stone-300">' + esc(editor.schedule) + '</textarea>') +
-        field('Instagram', input('instagram', editor.instagram, 'placeholder="https://instagram.com/..."')) +
-        '<fieldset><legend class="text-sm font-semibold">Plan contratado</legend><div class="mt-2 grid grid-cols-3 gap-2">' +
-          PLANS.map(function (plan) {
-            var on = editor.plan_tier === plan.id;
-            return '<label class="cursor-pointer rounded-2xl px-3 py-3 text-center text-sm font-semibold ring-1 ' + (on ? 'bg-stone-900 text-white ring-stone-900' : 'bg-white text-stone-700 ring-stone-200') + '"><input class="sr-only" type="radio" name="plan" data-field="plan" value="' + plan.id + '"' + (on ? ' checked' : '') + '>' + plan.label + '</label>';
-          }).join('') +
-        '</div></fieldset>' +
+        (planRank(editor.plan_tier) < 2
+          ? lockedRow('Página de redes', LOCK_GASTRO)
+          : field('Instagram', input('instagram', editor.instagram, 'placeholder="https://instagram.com/..."'))) +
         '<div><p class="text-sm font-semibold">Foto de portada</p>' +
           (cover ? '<img src="' + esc(cover) + '" alt="" class="mt-2 aspect-[16/9] w-full rounded-3xl object-cover">' : '') +
           '<input data-file="cover" type="file" accept="image/jpeg,image/png,image/webp,image/avif,image/gif" class="mt-2 block w-full text-sm">' +
@@ -477,8 +543,22 @@
     return '<button type="button" data-toggle="' + path + '" aria-pressed="' + (on ? 'true' : 'false') + '" class="flex min-h-[68px] w-full items-center justify-between gap-3 rounded-3xl bg-white px-4 py-3 text-left text-base font-semibold ring-1 ring-stone-200"><span>' + label + '</span><span class="relative h-8 w-14 shrink-0 rounded-full ' + (on ? 'bg-emerald-500' : 'bg-stone-300') + '"><span class="absolute top-1 h-6 w-6 rounded-full bg-white shadow ' + (on ? 'left-7' : 'left-1') + '"></span></span></button>';
   }
 
+  function flagButton(key, label, on) {
+    return '<button type="button" data-flag="' + key + '" aria-pressed="' + (on ? 'true' : 'false') + '" class="flex min-h-[68px] w-full items-center justify-between gap-3 rounded-3xl bg-white px-4 py-3 text-left text-base font-semibold ring-1 ring-stone-200"><span>' + label + '</span><span class="relative h-8 w-14 shrink-0 rounded-full ' + (on ? 'bg-emerald-500' : 'bg-stone-300') + '"><span class="absolute top-1 h-6 w-6 rounded-full bg-white shadow ' + (on ? 'left-7' : 'left-1') + '"></span></span></button>';
+  }
+
+  function langOptions(rank, current) {
+    var options = [['es', 'Solo español'], ['esen', 'Bilingüe ES/EN']];
+    if (rank >= 3) options.push(['multi', 'Hasta 3 idiomas']);
+    return '<div class="grid gap-2 sm:grid-cols-3">' + options.map(function (item) {
+      var on = current === item[0];
+      return '<button type="button" data-lang="' + item[0] + '" aria-pressed="' + (on ? 'true' : 'false') + '" class="rounded-2xl px-3 py-3 text-sm font-semibold ring-1 ' + (on ? 'bg-[#FAF9F6] text-stone-900 ring-2 ring-[#18181B]' : 'bg-white text-stone-700 ring-stone-200') + '">' + item[1] + '</button>';
+    }).join('') + '</div>';
+  }
+
   function renderStepC(editor) {
     var design = editor.design;
+    ensureLabels(design);
     var themes = [
       ['clasico', 'Clásico', ['#FAF9F6', '#EFE6D6', '#1C1917']],
       ['blanco', 'Blanco', ['#FFFFFF', '#F5F4F0', '#171717']],
@@ -543,13 +623,14 @@
           toggleButton('hero_actions.call', 'Llamar', design.hero_actions.call) +
           toggleButton('hero_actions.whatsapp', 'WhatsApp directo', design.hero_actions.whatsapp) +
           toggleButton('hero_actions.maps', 'Cómo llegar (Maps)', design.hero_actions.maps) +
-          toggleButton('hero_actions.book', 'Reservar mesa', design.hero_actions.book) +
+          (planRank(editor.plan_tier) < 2 ? lockedRow('Reservar mesa', LOCK_GASTRO) : toggleButton('hero_actions.book', 'Reservar mesa', design.hero_actions.book)) +
           toggleButton('hero_actions.menu', 'Ver Carta QR', design.hero_actions.menu) +
           toggleButton('hero_actions.open_badge', 'Abierto / Cerrado', design.hero_actions.open_badge) +
           toggleButton('hero_actions.google_rating', 'Valoración Google', design.hero_actions.google_rating) +
         '</section>' +
         '<section class="space-y-2"><h2 class="text-lg font-semibold">Bloques de la web</h2>' +
           design.blocks.map(function (block, index) {
+            if (planRank(editor.plan_tier) < 2 && (block.id === 'local' || block.id === 'reserva')) return lockedRow(BLOCK_LABELS[block.id], LOCK_GASTRO);
             return '<div class="flex items-center gap-2 rounded-3xl bg-white p-2 ring-1 ring-stone-200"><span class="flex flex-col gap-1"><button type="button" data-move-block="' + index + '" data-dir="-1" class="h-11 w-11 rounded-2xl bg-stone-100 text-lg font-bold"' + (index === 0 ? ' disabled' : '') + '>↑</button><button type="button" data-move-block="' + index + '" data-dir="1" class="h-11 w-11 rounded-2xl bg-stone-100 text-lg font-bold"' + (index === design.blocks.length - 1 ? ' disabled' : '') + '>↓</button></span><span class="min-w-0 flex-1 px-1 text-base font-semibold">' + BLOCK_LABELS[block.id] + '</span><button type="button" data-block-toggle="' + block.id + '" aria-pressed="' + (block.visible ? 'true' : 'false') + '" class="relative h-8 w-14 shrink-0 rounded-full ' + (block.visible ? 'bg-emerald-500' : 'bg-stone-300') + '"><span class="absolute top-1 h-6 w-6 rounded-full bg-white shadow ' + (block.visible ? 'left-7' : 'left-1') + '"></span></button></div>';
           }).join('') +
         '</section>' +
@@ -576,13 +657,23 @@
             return pickButton('tabs', item[0], design.tabs === item[0], '<span class="text-xs uppercase tracking-wide opacity-70">Tabs</span><span>' + item[1] + '</span>');
           }).join('') +
         '</div></section>' +
+        '<section class="space-y-2"><h2 class="text-lg font-semibold">Funciones del plan</h2>' +
+          (planRank(editor.plan_tier) < 2 ? lockedRow('Filtro de alérgenos', LOCK_GASTRO) : flagButton('vw_allergens', 'Filtro de alérgenos', design.labels.vw_allergens === '1')) +
+          (planRank(editor.plan_tier) < 2 ? lockedRow('Selector de idiomas', LOCK_GASTRO) : langOptions(planRank(editor.plan_tier), design.labels.vw_lang || 'esen')) +
+          (planRank(editor.plan_tier) === 2 ? lockedRow('Carta multilingüe (hasta 3 idiomas)', LOCK_TOTAL) : '') +
+          (planRank(editor.plan_tier) < 2 ? lockedRow('Página de redes', LOCK_GASTRO) : flagButton('vw_social', 'Página de redes', design.labels.vw_social === '1')) +
+          (planRank(editor.plan_tier) < 3 ? lockedRow('Diseño a medida', LOCK_TOTAL) : '<p class="rounded-3xl bg-white px-4 py-3 text-sm text-stone-600 ring-1 ring-stone-200">Diseño a medida incluido en este plan.</p>') +
+          (planRank(editor.plan_tier) < 3 ? lockedRow('Módulo de grupos/eventos', LOCK_TOTAL) : flagButton('vw_events', 'Módulo de grupos/eventos', design.labels.vw_events === '1')) +
+        '</section>' +
         '<section class="space-y-2"><h2 class="text-lg font-semibold">Modo QR /mesa</h2>' +
-          toggleButton('mesa.search', 'Buscador de platos', design.mesa.search) +
-          toggleButton('mesa.allergens', 'Filtro de alérgenos', design.mesa.allergens) +
-          toggleButton('mesa.selection', 'Lista «Mi selección»', design.mesa.selection) +
-          toggleButton('mesa.language', 'Selector de idioma ES/EN', design.mesa.language) +
-          toggleButton('mesa.prices', 'Mostrar precios', design.mesa.prices) +
-          toggleButton('mesa.tags', 'Iconos de etiquetas', design.mesa.tags) +
+          (planRank(editor.plan_tier) < 3
+            ? lockedRow('Modo QR /mesa', LOCK_TOTAL)
+            : toggleButton('mesa.search', 'Buscador de platos', design.mesa.search) +
+              toggleButton('mesa.allergens', 'Filtro de alérgenos', design.mesa.allergens) +
+              toggleButton('mesa.selection', 'Lista «Mi selección»', design.mesa.selection) +
+              toggleButton('mesa.language', 'Selector de idioma ES/EN', design.mesa.language) +
+              toggleButton('mesa.prices', 'Mostrar precios', design.mesa.prices) +
+              toggleButton('mesa.tags', 'Iconos de etiquetas', design.mesa.tags)) +
         '</section>' +
         '<button type="button" id="save-design" class="w-full rounded-full bg-stone-900 px-4 py-4 text-base font-semibold text-white"' + (state.busy ? ' disabled' : '') + '>' + (state.busy ? 'Guardando…' : 'Guardar diseño') + '</button>' +
       '</div>'
@@ -690,6 +781,7 @@
       schedule: editor.schedule.trim() || null,
       instagram: editor.instagram.trim() || null,
       plan_tier: editor.plan_tier,
+      design_config: editor.design,
       cover_image_url: editor.cover_image_url || null
     };
   }
@@ -779,12 +871,15 @@
   async function saveDesign() {
     readDailyDom();
     var editor = state.editor;
+    if (!planById(editor.plan_tier)) throw new Error('Elige un plan.');
+    applyPlanLimits(editor);
     if (!editor.id) await saveRestaurant();
     if (!/^#[0-9a-fA-F]{6}$/.test(editor.design.accent)) throw new Error('El color tiene que ser un código hexadecimal.');
     var updated = await supabase.from('restaurants').update({
       design_config: editor.design,
       daily_menu: editor.daily_menu,
-      primary_color: editor.design.accent
+      primary_color: editor.design.accent,
+      plan_tier: editor.plan_tier
     }).eq('id', editor.id);
     if (updated.error) throw updated.error;
     var row = state.restaurants.filter(function (item) { return item.id === editor.id; })[0];
@@ -792,6 +887,7 @@
       row.design_config = editor.design;
       row.daily_menu = editor.daily_menu;
       row.primary_color = editor.design.accent;
+      row.plan_tier = editor.plan_tier;
     }
   }
 
@@ -800,6 +896,7 @@
     var editor = state.editor;
     var message = validateLocal(editor);
     if (message) throw new Error(message);
+    applyPlanLimits(editor);
     var payload = restaurantPayload(editor);
     if (!editor.id) {
       payload.collaborator_id = state.session.user.id;
@@ -825,6 +922,7 @@
     var editor = state.editor;
     var message = validateMenu(editor);
     if (message) throw new Error(message);
+    applyPlanLimits(editor);
     var existing = await supabase.from('menu_categories').select('id').eq('restaurant_id', editor.id);
     if (existing.error) throw existing.error;
     var keep = editor.categories.map(function (category) { return category.id; }).filter(Boolean);
@@ -910,7 +1008,7 @@
         editor.address = restaurant.address || '';
         editor.schedule = restaurant.schedule || '';
         editor.instagram = restaurant.instagram || '';
-        editor.plan_tier = restaurant.plan_tier || '390';
+        editor.plan_tier = restaurant.plan_tier || '';
         editor.status = restaurant.status || 'borrador';
         editor.cover_image_url = restaurant.cover_image_url || '';
         editor.design = window.VisiwebDesign.merge(restaurant.design_config);
@@ -938,6 +1036,7 @@
           };
         });
         if (!editor.categories.length) editor.categories = sampleMenu();
+        if (planById(editor.plan_tier)) applyPlanLimits(editor);
       }
       state.editor = editor;
       state.notice = '';
@@ -1056,11 +1155,6 @@
       editor.slug = target.value;
       return;
     }
-    if (fieldName === 'plan') {
-      editor.plan_tier = target.value;
-      render();
-      return;
-    }
     if (['tagline', 'phone', 'whatsapp', 'address', 'schedule', 'instagram'].indexOf(fieldName) >= 0) {
       editor[fieldName] = target.value;
       return;
@@ -1093,6 +1187,13 @@
         }
         render();
       });
+      return;
+    }
+    if (target.dataset.plan && state.editor) {
+      state.editor.plan_tier = target.dataset.plan;
+      applyPlanLimits(state.editor);
+      state.error = '';
+      render();
       return;
     }
     if (!state.editor || target.type !== 'file' || target.dataset.canva === 'image-file') return;
@@ -1200,6 +1301,11 @@
       return;
     }
     if (button.dataset.step && state.editor) {
+      if (!planById(state.editor.plan_tier)) {
+        setError('Elige un plan.');
+        render();
+        return;
+      }
       syncEditorDom();
       readDailyDom();
       state.editor.step = button.dataset.step;
@@ -1234,7 +1340,27 @@
       render();
       return;
     }
+    if (button.dataset.lang && state.editor) {
+      var langRank = planRank(state.editor.plan_tier);
+      if (langRank < 2 || (button.dataset.lang === 'multi' && langRank < 3)) return;
+      ensureLabels(state.editor.design);
+      state.editor.design.labels.vw_lang = button.dataset.lang;
+      render();
+      return;
+    }
+    if (button.dataset.flag && state.editor) {
+      var flagRank = planRank(state.editor.plan_tier);
+      var flag = button.dataset.flag;
+      if (flag === 'vw_events' && flagRank < 3) return;
+      if ((flag === 'vw_allergens' || flag === 'vw_social') && flagRank < 2) return;
+      ensureLabels(state.editor.design);
+      state.editor.design.labels[flag] = state.editor.design.labels[flag] === '1' ? '0' : '1';
+      render();
+      return;
+    }
     if (button.dataset.toggle && state.editor) {
+      if (planRank(state.editor.plan_tier) < 3 && button.dataset.toggle.indexOf('mesa.') === 0) return;
+      if (planRank(state.editor.plan_tier) < 2 && button.dataset.toggle === 'hero_actions.book') return;
       var parts = button.dataset.toggle.split('.');
       var target = state.editor.design;
       if (parts.length === 2) target = target[parts[0]];
@@ -1249,6 +1375,7 @@
       return;
     }
     if (button.dataset.blockToggle && state.editor) {
+      if (planRank(state.editor.plan_tier) < 2 && (button.dataset.blockToggle === 'local' || button.dataset.blockToggle === 'reserva')) return;
       state.editor.design.blocks.forEach(function (block) {
         if (block.id === button.dataset.blockToggle) block.visible = !block.visible;
       });
