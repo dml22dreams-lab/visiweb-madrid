@@ -1,0 +1,38 @@
+---
+description: Bloqueo si no se indica la carpeta y confirmación con "1" antes de editar cualquier archivo.
+alwaysApply: true
+---
+
+# Seguridad VisiWeb Madrid
+
+Norma estricta antes de tocar cualquier archivo del proyecto.
+
+## 1. Bloqueo por carpeta no especificada
+
+Si el usuario pide cambios o mejoras sin indicar explícitamente en qué carpeta o sección actuar (por ejemplo, si no dice claramente si es la web principal, `panel/` o la demo), está prohibido editar ningún archivo.
+
+Detente y pregunta exactamente:
+
+«¿Qué carpeta o sección de VisiWeb Madrid quieres modificar?»
+
+Enumera las carpetas principales disponibles:
+
+- Raíz (web principal): `index.html`, `design.css`, `design.js`, páginas legales
+- `panel/`
+- `mesa/` y `demo.html` (demo comercial)
+- `assets/`
+- `src/`
+- `_plantilla-base/`
+- `clientes/` (si existe)
+
+## 2. Confirmación con «1» antes de editar
+
+Aunque el usuario indique la carpeta, antes de modificar el código muestra primero:
+
+```
+- Carpeta que se va a editar: `[ruta-de-la-carpeta]`
+- Archivos que se van a modificar: [lista exacta de archivos]
+Pulsa 1 si quieres continuar y aplicar los cambios.
+```
+
+Espera a que el siguiente mensaje del usuario sea exactamente `1` antes de editar nada. Si escribe cualquier otra cosa, cancela la modificación.
