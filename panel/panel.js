@@ -93,7 +93,51 @@
   }
 
   function blankItem() {
-    return { id: null, name: '', description: '', price: '', image_url: '', imageFile: null, preview: '', allergens: [] };
+    return { id: null, name: '', description: '', price: '', image_url: '', imageFile: null, preview: '', allergens: [], featured: false };
+  }
+
+  function sampleItem(name, description, price, image, allergens, featured) {
+    var item = blankItem();
+    item.name = name;
+    item.description = description;
+    item.price = String(price);
+    item.image_url = '/assets/demo/' + image;
+    item.allergens = allergens || [];
+    item.featured = !!featured;
+    return item;
+  }
+
+  function sampleMenu() {
+    return [
+      { id: null, name: 'Raciones clásicas', items: [
+        sampleItem('Costillas a la brasa', 'Costillar glaseado, patatas fritas, tomate y encurtidos.', 14.9, 'lomo.webp', [], true),
+        sampleItem('Croquetas caseras de jamón', 'Seis unidades de bechamel fundente con jamón picado a cuchillo.', 9.2, 'croquetas-jamon.webp', ['gluten', 'lacteos', 'huevos'], true),
+        sampleItem('Patatas bravas con alioli', 'Patata frita en dos tiempos, salsa brava y alioli.', 7.5, 'bravas-real.webp', ['huevos'], true),
+        sampleItem('Calamares a la andaluza', 'Anillas de calamar fritas al momento, con limón.', 12.9, 'calamares-andaluza.webp', ['gluten', 'moluscos']),
+        sampleItem('Huevos rotos con jamón', 'Patatas, huevos camperos y virutas de jamón.', 13.8, 'huevos-rotos.webp', ['huevos'])
+      ] },
+      { id: null, name: 'Tostas y montados', items: [
+        sampleItem('Tosta de gulas al ajillo', 'Gulas salteadas con ajo y guindilla.', 7.6, 'tosta-gulas.webp', ['pescado']),
+        sampleItem('Montado de lomo de orza', 'Lomo confitado y pimiento verde asado.', 6.4, 'montado-lomo.webp', [])
+      ] },
+      { id: null, name: 'Menú del día', items: [
+        sampleItem('Primeros a elegir', 'Sopa castellana, lentejas, ensalada o macarrones.', 0, 'menu-primeros.webp', []),
+        sampleItem('Segundos a elegir', 'Merluza, pollo asado, estofado o tortilla.', 0, 'menu-segundos.webp', []),
+        sampleItem('Menú completo', 'Primero, segundo, postre o café, pan y bebida.', 13.5, 'menu-completo.webp', [], true)
+      ] },
+      { id: null, name: 'Vinos y cervezas', items: [
+        sampleItem('Caña doble bien fría', 'Tirada en copa helada.', 2.8, 'cana.webp', ['gluten'], true),
+        sampleItem('Rioja crianza', 'Tempranillo con catorce meses en barrica.', 3.2, 'rioja.webp', ['sulfitos'], true),
+        sampleItem('Ribera del Duero', 'Tinto potente, para los huevos rotos.', 3.6, 'ribera.webp', ['sulfitos']),
+        sampleItem('Vermut rojo de grifo', 'Con hielo, naranja y aceituna.', 2.9, 'vermut-real.webp', ['sulfitos'])
+      ] },
+      { id: null, name: 'Vegano / Vegetariano', items: [
+        sampleItem('Bravas vegetales', 'Patata y salsa brava, sin huevo ni lácteos.', 7.2, 'bravas-veg.webp', []),
+        sampleItem('Pimientos de Padrón', 'Fritos en aceite de oliva y sal en escamas.', 6.5, 'pimientos-padron.webp', []),
+        sampleItem('Parrillada de verduras', 'Calabacín, berenjena, pimiento y cebolla a la brasa.', 9.8, 'parrillada-verduras.webp', []),
+        sampleItem('Tortilla de patata', 'Cuña de tortilla jugosa de patata y cebolla.', 6.8, 'tortilla-patata.webp', ['huevos'])
+      ] }
+    ];
   }
 
   function blankCategory() {
@@ -107,18 +151,20 @@
       name: '',
       slug: '',
       autoSlug: true,
-      tagline: '',
-      phone: '',
-      whatsapp: '',
-      address: '',
-      schedule: '',
+      tagline: 'Cervecería y raciones',
+      phone: '+34 600 00 00 00',
+      whatsapp: '34600000000',
+      address: 'C. del Marqués de la Valdavia, 28100 Alcobendas (Madrid)',
+      schedule: 'Mar - Jue 12:00–16:00 · 19:30–23:30 · Vie - Sáb 12:00–00:00 · Domingo 12:00–17:00 · Lunes cerrado',
       instagram: '',
       plan_tier: '390',
       status: 'borrador',
       cover_image_url: '',
       coverFile: null,
       coverPreview: '',
-      categories: [blankCategory()]
+      categories: sampleMenu(),
+      design: window.VisiwebDesign.blank(),
+      daily_menu: window.VisiwebDesign.blankDaily()
     };
   }
 
@@ -163,6 +209,20 @@
       return;
     }
     if (state.editor) {
+      if (state.editor.id && window.VisiwebCanva) {
+        window.VisiwebCanva.sync(state, {
+          esc: esc,
+          banner: banner,
+          menuHtml: function () { return renderStepB(state.editor); },
+          uploadImage: function (file) { return uploadAsset(state.editor.id, file, 'pieza'); },
+          close: function () {
+            state.editor = null;
+            refresh();
+          },
+          saveAll: saveAll
+        });
+        return;
+      }
       renderEditor();
       return;
     }
@@ -314,12 +374,13 @@
       '<div class="mx-auto w-full max-w-3xl px-4 py-6 sm:px-6 sm:py-10">' +
         '<button type="button" id="close-editor" class="text-sm font-semibold text-stone-500">← Volver al panel</button>' +
         '<h1 class="mt-4 font-serif text-3xl">' + (editor.id ? 'Editar restaurante' : 'Nuevo restaurante') + '</h1>' +
-        '<div class="mt-4 grid grid-cols-2 gap-2 text-sm font-semibold">' +
-          '<p class="rounded-full px-3 py-2 text-center ' + (stepA ? 'bg-stone-900 text-white' : 'bg-white text-stone-500 ring-1 ring-stone-200') + '">1 · Datos del local</p>' +
-          '<p class="rounded-full px-3 py-2 text-center ' + (!stepA ? 'bg-stone-900 text-white' : 'bg-white text-stone-500 ring-1 ring-stone-200') + '">2 · Carta</p>' +
+        '<div class="mt-4 grid grid-cols-3 gap-2 text-sm font-semibold">' +
+          '<button type="button" data-step="a" class="rounded-full px-3 py-2 text-center ' + (editor.step === 'a' ? 'bg-stone-900 text-white' : 'bg-white text-stone-500 ring-1 ring-stone-200') + '">1 · Datos</button>' +
+          '<button type="button" data-step="b" class="rounded-full px-3 py-2 text-center ' + (editor.step === 'b' ? 'bg-stone-900 text-white' : 'bg-white text-stone-500 ring-1 ring-stone-200') + '">2 · Carta</button>' +
+          '<button type="button" data-step="c" class="rounded-full px-3 py-2 text-center ' + (editor.step === 'c' ? 'bg-stone-900 text-white' : 'bg-white text-stone-500 ring-1 ring-stone-200') + '">3 · Diseño</button>' +
         '</div>' +
         '<div class="mt-4">' + banner() + '</div>' +
-        (stepA ? renderStepA(editor) : renderStepB(editor)) +
+        (editor.step === 'b' ? renderStepB(editor) : editor.step === 'c' ? renderStepC(editor) : renderStepA(editor)) +
       '</div>';
   }
 
@@ -349,6 +410,145 @@
         '</div>' +
         '<button type="submit" class="w-full rounded-full bg-stone-900 px-4 py-3 text-sm font-semibold text-white"' + (state.busy ? ' disabled' : '') + '>' + (state.busy ? 'Guardando…' : 'Continuar a la carta') + '</button>' +
       '</form>'
+    );
+  }
+
+  var PALETTES = [
+    ['carbon', 'Carbón Elegante', '#1c1917'],
+    ['taberna', 'Rojo Taberna', '#9f1239'],
+    ['oliva', 'Verde Oliva', '#3f6212'],
+    ['dorado', 'Dorado & Negro', '#b45309'],
+    ['marino', 'Azul Marino', '#1e3a5f'],
+    ['terracota', 'Terracota', '#c2410c']
+  ];
+  var BLOCK_LABELS = {
+    carta: 'La Carta',
+    menu_dia: 'Menú del Día',
+    sugerencias: 'Sugerencias del Chef',
+    local: 'El Local y Galería',
+    resenas: 'Reseñas',
+    horarios: 'Horarios y Ubicación',
+    reserva: 'Formulario de Reserva'
+  };
+  var DAY_LABELS = { lun: 'Lun', mar: 'Mar', mie: 'Mié', jue: 'Jue', vie: 'Vie', sab: 'Sáb', dom: 'Dom' };
+
+  function pickButton(group, id, on, inner, extra) {
+    return '<button type="button" data-design="' + group + '" data-value="' + id + '"' + (extra || '') + ' aria-pressed="' + (on ? 'true' : 'false') + '" class="flex min-h-[96px] flex-col items-start justify-between rounded-3xl p-3 text-left text-sm font-semibold ring-1 ' + (on ? 'bg-stone-900 text-white ring-stone-900' : 'bg-white text-stone-800 ring-stone-200') + '">' + inner + '</button>';
+  }
+
+  function toggleButton(path, label, on) {
+    return '<button type="button" data-toggle="' + path + '" aria-pressed="' + (on ? 'true' : 'false') + '" class="flex min-h-[68px] w-full items-center justify-between gap-3 rounded-3xl bg-white px-4 py-3 text-left text-base font-semibold ring-1 ring-stone-200"><span>' + label + '</span><span class="relative h-8 w-14 shrink-0 rounded-full ' + (on ? 'bg-emerald-500' : 'bg-stone-300') + '"><span class="absolute top-1 h-6 w-6 rounded-full bg-white shadow ' + (on ? 'left-7' : 'left-1') + '"></span></span></button>';
+  }
+
+  function renderStepC(editor) {
+    var design = editor.design;
+    var themes = [
+      ['clasico', 'Clásico', '#FAF9F6', '#FFFdf8'],
+      ['blanco', 'Blanco', '#FFFFFF', '#F5F4F0'],
+      ['oscuro', 'Oscuro', '#0F0F10', '#1A1A1D'],
+      ['mediterraneo', 'Mediterráneo', '#F6EFE4', '#FFFBF5']
+    ];
+    var fonts = [
+      ['serif_clasica', 'Serif clásica', 'Aa'],
+      ['moderna_sans', 'Moderna sans', 'Ag'],
+      ['artesanal', 'Artesanal', 'Aa']
+    ];
+    var shapes = [
+      ['redondeado', 'Redondeado', '999px'],
+      ['equilibrado', 'Equilibrado', '12px'],
+      ['recto', 'Recto', '2px']
+    ];
+    var heroes = [
+      ['panoramica', 'Panorámica'],
+      ['dividida', 'Dividida'],
+      ['logo_centrado', 'Logo centrado'],
+      ['pantalla_completa', 'Pantalla completa']
+    ];
+    var dishes = [
+      ['lista_foto', 'Lista con foto'],
+      ['tarjetas_grandes', 'Tarjetas grandes'],
+      ['solo_texto', 'Solo texto']
+    ];
+    var tabs = [
+      ['pildoras', 'Píldoras'],
+      ['subrayado', 'Subrayado'],
+      ['bloques', 'Bloques']
+    ];
+    return (
+      '<div id="step-c" class="mt-6 space-y-8">' +
+        '<button type="button" id="live-preview" class="w-full rounded-full bg-stone-900 px-4 py-4 text-base font-semibold text-white"' + (state.busy || !editor.slug ? ' disabled' : '') + '>Vista previa en vivo</button>' +
+        '<section class="space-y-3"><h2 class="text-lg font-semibold">Tema de color</h2><div class="grid grid-cols-2 gap-2">' +
+          themes.map(function (item) {
+            return pickButton('theme', item[0], design.theme === item[0], '<span class="flex h-10 w-full overflow-hidden rounded-2xl ring-1 ring-black/10"><span class="w-1/2" style="background:' + item[2] + '"></span><span class="w-1/2" style="background:' + item[3] + '"></span></span><span>' + item[1] + '</span>');
+          }).join('') +
+        '</div></section>' +
+        '<section class="space-y-3"><h2 class="text-lg font-semibold">Tipografía</h2><div class="grid grid-cols-3 gap-2">' +
+          fonts.map(function (item) {
+            return pickButton('fonts', item[0], design.fonts === item[0], '<span class="text-3xl leading-none">' + item[2] + '</span><span>' + item[1] + '</span>');
+          }).join('') +
+        '</div></section>' +
+        '<section class="space-y-3"><h2 class="text-lg font-semibold">Bordes y formas</h2><div class="grid grid-cols-3 gap-2">' +
+          shapes.map(function (item) {
+            return pickButton('shapes', item[0], design.shapes === item[0], '<span class="h-8 w-full bg-stone-200" style="border-radius:' + item[2] + '"></span><span>' + item[1] + '</span>');
+          }).join('') +
+        '</div></section>' +
+        '<section class="space-y-3"><h2 class="text-lg font-semibold">Color de botones</h2><div class="grid grid-cols-2 gap-2 sm:grid-cols-3">' +
+          PALETTES.map(function (item) {
+            return pickButton('palette', item[0], design.palette === item[0] && design.accent.toLowerCase() === item[2], '<span class="h-10 w-full rounded-2xl" style="background:' + item[2] + '"></span><span>' + item[1] + '</span>', ' data-accent="' + item[2] + '"');
+          }).join('') +
+        '</div><label class="flex items-center justify-between gap-3 rounded-3xl bg-white px-4 py-3 text-base font-semibold ring-1 ring-stone-200">Color del logo<span class="flex items-center gap-3"><span id="accent-chip" class="h-10 w-10 rounded-full ring-1 ring-stone-200" style="background:' + esc(design.accent) + '"></span><input data-field="accent" type="color" value="' + esc(design.accent) + '" class="h-12 w-16 cursor-pointer border-0 bg-transparent"></span></label></section>' +
+        '<section class="space-y-3"><h2 class="text-lg font-semibold">Cabecera</h2><div class="grid grid-cols-2 gap-2">' +
+          heroes.map(function (item) {
+            return pickButton('hero', item[0], design.hero === item[0], '<span class="text-xs uppercase tracking-wide opacity-70">Hero</span><span>' + item[1] + '</span>');
+          }).join('') +
+        '</div></section>' +
+        '<section class="space-y-2"><h2 class="text-lg font-semibold">Botones de portada</h2>' +
+          toggleButton('hero_actions.call', 'Llamar', design.hero_actions.call) +
+          toggleButton('hero_actions.whatsapp', 'WhatsApp directo', design.hero_actions.whatsapp) +
+          toggleButton('hero_actions.maps', 'Cómo llegar (Maps)', design.hero_actions.maps) +
+          toggleButton('hero_actions.book', 'Reservar mesa', design.hero_actions.book) +
+          toggleButton('hero_actions.menu', 'Ver Carta QR', design.hero_actions.menu) +
+          toggleButton('hero_actions.open_badge', 'Abierto / Cerrado', design.hero_actions.open_badge) +
+          toggleButton('hero_actions.google_rating', 'Valoración Google', design.hero_actions.google_rating) +
+        '</section>' +
+        '<section class="space-y-2"><h2 class="text-lg font-semibold">Bloques de la web</h2>' +
+          design.blocks.map(function (block, index) {
+            return '<div class="flex items-center gap-2 rounded-3xl bg-white p-2 ring-1 ring-stone-200"><span class="flex flex-col gap-1"><button type="button" data-move-block="' + index + '" data-dir="-1" class="h-11 w-11 rounded-2xl bg-stone-100 text-lg font-bold"' + (index === 0 ? ' disabled' : '') + '>↑</button><button type="button" data-move-block="' + index + '" data-dir="1" class="h-11 w-11 rounded-2xl bg-stone-100 text-lg font-bold"' + (index === design.blocks.length - 1 ? ' disabled' : '') + '>↓</button></span><span class="min-w-0 flex-1 px-1 text-base font-semibold">' + BLOCK_LABELS[block.id] + '</span><button type="button" data-block-toggle="' + block.id + '" aria-pressed="' + (block.visible ? 'true' : 'false') + '" class="relative h-8 w-14 shrink-0 rounded-full ' + (block.visible ? 'bg-emerald-500' : 'bg-stone-300') + '"><span class="absolute top-1 h-6 w-6 rounded-full bg-white shadow ' + (block.visible ? 'left-7' : 'left-1') + '"></span></button></div>';
+          }).join('') +
+        '</section>' +
+        '<section class="space-y-3"><h2 class="text-lg font-semibold">Menú del día</h2>' +
+          toggleButton('daily_menu_enabled', 'Activar Menú del Día', design.daily_menu_enabled) +
+          (design.daily_menu_enabled ?
+            '<label class="block text-sm font-semibold">Precio<input data-daily="price" value="' + esc(editor.daily_menu.price) + '" class="mt-1 w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-base outline-none ring-stone-900 focus:ring-2" placeholder="14,50 €"></label>' +
+            '<label class="block text-sm font-semibold">Primeros<textarea data-daily="primeros" rows="3" class="mt-1 w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-base outline-none ring-stone-900 focus:ring-2" placeholder="Un plato por línea">' + esc(editor.daily_menu.primeros) + '</textarea></label>' +
+            '<label class="block text-sm font-semibold">Segundos<textarea data-daily="segundos" rows="3" class="mt-1 w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-base outline-none ring-stone-900 focus:ring-2">' + esc(editor.daily_menu.segundos) + '</textarea></label>' +
+            '<label class="block text-sm font-semibold">Postre o bebida incluidos<input data-daily="incluido" value="' + esc(editor.daily_menu.incluido) + '" class="mt-1 w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-base outline-none ring-stone-900 focus:ring-2"></label>' +
+            '<div class="grid grid-cols-4 gap-2 sm:grid-cols-7">' + window.VisiwebDesign.days.map(function (day) {
+              var on = editor.daily_menu.days.indexOf(day) >= 0;
+              return '<button type="button" data-day="' + day + '" aria-pressed="' + (on ? 'true' : 'false') + '" class="rounded-2xl px-2 py-3 text-sm font-semibold ring-1 ' + (on ? 'bg-stone-900 text-white ring-stone-900' : 'bg-white text-stone-600 ring-stone-200') + '">' + DAY_LABELS[day] + '</button>';
+            }).join('') + '</div>'
+          : '') +
+        '</section>' +
+        '<section class="space-y-3"><h2 class="text-lg font-semibold">Diseño de los platos</h2><div class="grid grid-cols-3 gap-2">' +
+          dishes.map(function (item) {
+            return pickButton('dishes', item[0], design.dishes === item[0], '<span class="text-xs uppercase tracking-wide opacity-70">Carta</span><span>' + item[1] + '</span>');
+          }).join('') +
+        '</div></section>' +
+        '<section class="space-y-3"><h2 class="text-lg font-semibold">Pestañas de categorías</h2><div class="grid grid-cols-3 gap-2">' +
+          tabs.map(function (item) {
+            return pickButton('tabs', item[0], design.tabs === item[0], '<span class="text-xs uppercase tracking-wide opacity-70">Tabs</span><span>' + item[1] + '</span>');
+          }).join('') +
+        '</div></section>' +
+        '<section class="space-y-2"><h2 class="text-lg font-semibold">Modo QR /mesa</h2>' +
+          toggleButton('mesa.search', 'Buscador de platos', design.mesa.search) +
+          toggleButton('mesa.allergens', 'Filtro de alérgenos', design.mesa.allergens) +
+          toggleButton('mesa.selection', 'Lista «Mi selección»', design.mesa.selection) +
+          toggleButton('mesa.language', 'Selector de idioma ES/EN', design.mesa.language) +
+          toggleButton('mesa.prices', 'Mostrar precios', design.mesa.prices) +
+          toggleButton('mesa.tags', 'Iconos de etiquetas', design.mesa.tags) +
+        '</section>' +
+        '<button type="button" id="save-design" class="w-full rounded-full bg-stone-900 px-4 py-4 text-base font-semibold text-white"' + (state.busy ? ' disabled' : '') + '>' + (state.busy ? 'Guardando…' : 'Guardar diseño') + '</button>' +
+      '</div>'
     );
   }
 
@@ -511,6 +711,53 @@
     });
   }
 
+  function readDailyDom() {
+    var editor = state.editor;
+    if (!editor) return;
+    app.querySelectorAll('[data-daily]').forEach(function (node) {
+      editor.daily_menu[node.dataset.daily] = node.value;
+    });
+  }
+
+  async function saveAll() {
+    syncEditorDom();
+    readDailyDom();
+    state.busy = true;
+    state.error = '';
+    render();
+    try {
+      await saveRestaurant();
+      var named = state.editor.categories.some(function (category) { return category.name.trim(); });
+      if (named) await saveMenu();
+      await saveDesign();
+      state.busy = false;
+      setNotice('Cambios guardados.');
+    } catch (error) {
+      state.busy = false;
+      setError(dbMessage(error));
+    }
+    render();
+  }
+
+  async function saveDesign() {
+    readDailyDom();
+    var editor = state.editor;
+    if (!editor.id) await saveRestaurant();
+    if (!/^#[0-9a-fA-F]{6}$/.test(editor.design.accent)) throw new Error('El color tiene que ser un código hexadecimal.');
+    var updated = await supabase.from('restaurants').update({
+      design_config: editor.design,
+      daily_menu: editor.daily_menu,
+      primary_color: editor.design.accent
+    }).eq('id', editor.id);
+    if (updated.error) throw updated.error;
+    var row = state.restaurants.filter(function (item) { return item.id === editor.id; })[0];
+    if (row) {
+      row.design_config = editor.design;
+      row.daily_menu = editor.daily_menu;
+      row.primary_color = editor.design.accent;
+    }
+  }
+
   async function saveRestaurant() {
     syncEditorDom();
     var editor = state.editor;
@@ -582,7 +829,7 @@
           price: Number(item.price),
           image_url: item.image_url || null,
           allergens: item.allergens,
-          is_featured: false,
+          is_featured: !!item.featured,
           sort_order: j
         };
         if (item.id) {
@@ -603,7 +850,7 @@
     if (/only admin can set status/i.test(message)) return 'Solo el administrador puede activar un restaurante.';
     if (message === 'type') return 'La foto tiene que ser JPG, PNG, WEBP, AVIF o GIF.';
     if (message === 'size') return 'La foto no puede pasar de 10 MB.';
-    if (message && message.indexOf('Escribe') === 0 || message.indexOf('El enlace') === 0 || message.indexOf('Elige') === 0 || message.indexOf('Cada') === 0 || message.indexOf('Revisa') === 0) return message;
+    if (message && message.indexOf('Escribe') === 0 || message.indexOf('El enlace') === 0 || message.indexOf('Elige') === 0 || message.indexOf('Cada') === 0 || message.indexOf('Revisa') === 0 || message.indexOf('El color') === 0) return message;
     return 'No se ha podido guardar. Revisa los datos e inténtalo otra vez.';
   }
 
@@ -629,6 +876,8 @@
         editor.plan_tier = restaurant.plan_tier || '390';
         editor.status = restaurant.status || 'borrador';
         editor.cover_image_url = restaurant.cover_image_url || '';
+        editor.design = window.VisiwebDesign.merge(restaurant.design_config);
+        editor.daily_menu = window.VisiwebDesign.mergeDaily(restaurant.daily_menu);
         var categories = await supabase.from('menu_categories').select('*').eq('restaurant_id', id).order('sort_order');
         var items = await supabase.from('menu_items').select('*').eq('restaurant_id', id).order('sort_order');
         if (categories.error || items.error) throw categories.error || items.error;
@@ -645,12 +894,13 @@
                 image_url: item.image_url || '',
                 imageFile: null,
                 preview: '',
-                allergens: item.allergens || []
+                allergens: item.allergens || [],
+                featured: !!item.is_featured
               };
             })
           };
         });
-        if (!editor.categories.length) editor.categories = [blankCategory()];
+        if (!editor.categories.length) editor.categories = sampleMenu();
       }
       state.editor = editor;
       state.notice = '';
@@ -721,8 +971,14 @@
       state.error = '';
       render();
       saveMenu().then(function () {
-        state.editor = null;
         state.busy = false;
+        if (document.getElementById('vw-canvas')) {
+          state.editor.overlay = '';
+          setNotice('Carta guardada.');
+          render();
+          return;
+        }
+        state.editor = null;
         setNotice('Restaurante guardado.');
         return refresh();
       }).catch(function (error) {
@@ -736,7 +992,18 @@
   app.addEventListener('input', function (event) {
     var editor = state.editor;
     var target = event.target;
-    if (!editor || !target.dataset) return;
+    if (!editor || !target.dataset || target.dataset.canvaInput) return;
+    if (target.dataset.field === 'accent') {
+      editor.design.accent = target.value;
+      editor.design.palette = '';
+      var chip = document.getElementById('accent-chip');
+      if (chip) chip.style.background = target.value;
+      return;
+    }
+    if (target.dataset.daily) {
+      editor.daily_menu[target.dataset.daily] = target.value;
+      return;
+    }
     var fieldName = target.dataset.field;
     if (fieldName === 'name') {
       editor.name = target.value;
@@ -791,7 +1058,7 @@
       });
       return;
     }
-    if (!state.editor || target.type !== 'file') return;
+    if (!state.editor || target.type !== 'file' || target.dataset.canva === 'image-file') return;
     var file = target.files && target.files[0];
     if (!file) return;
     readImage(file).then(function (preview) {
@@ -825,7 +1092,7 @@
       });
       return;
     }
-    if (!button) return;
+    if (!button || button.dataset.canva) return;
     if (button.id === 'new-restaurant') {
       state.editor = blankEditor();
       state.notice = '';
@@ -892,6 +1159,76 @@
     if (button.id === 'back-step' && state.editor) {
       state.editor.step = 'a';
       state.error = '';
+      render();
+      return;
+    }
+    if (button.dataset.step && state.editor) {
+      syncEditorDom();
+      readDailyDom();
+      state.editor.step = button.dataset.step;
+      state.error = '';
+      render();
+      return;
+    }
+    if ((button.id === 'save-design' || button.id === 'live-preview') && state.editor) {
+      var openPreview = button.id === 'live-preview';
+      state.busy = true;
+      state.error = '';
+      render();
+      saveDesign().then(function () {
+        state.busy = false;
+        setNotice('Diseño guardado.');
+        render();
+        if (openPreview) window.open(demoUrl(state.editor.slug), '_blank', 'noopener');
+      }).catch(function (error) {
+        state.busy = false;
+        setError(dbMessage(error));
+        render();
+      });
+      return;
+    }
+    if (button.dataset.design && state.editor) {
+      if (button.dataset.design === 'palette') {
+        state.editor.design.palette = button.dataset.value;
+        state.editor.design.accent = button.dataset.accent;
+      } else {
+        state.editor.design[button.dataset.design] = button.dataset.value;
+      }
+      render();
+      return;
+    }
+    if (button.dataset.toggle && state.editor) {
+      var parts = button.dataset.toggle.split('.');
+      var target = state.editor.design;
+      if (parts.length === 2) target = target[parts[0]];
+      var key = parts[parts.length - 1];
+      target[key] = !target[key];
+      if (key === 'daily_menu_enabled' && target[key]) {
+        state.editor.design.blocks.forEach(function (block) {
+          if (block.id === 'menu_dia') block.visible = true;
+        });
+      }
+      render();
+      return;
+    }
+    if (button.dataset.blockToggle && state.editor) {
+      state.editor.design.blocks.forEach(function (block) {
+        if (block.id === button.dataset.blockToggle) block.visible = !block.visible;
+      });
+      render();
+      return;
+    }
+    if (button.dataset.moveBlock != null && state.editor) {
+      move(state.editor.design.blocks, Number(button.dataset.moveBlock), Number(button.dataset.dir));
+      render();
+      return;
+    }
+    if (button.dataset.day && state.editor) {
+      var days = state.editor.daily_menu.days;
+      var day = button.dataset.day;
+      var at = days.indexOf(day);
+      if (at >= 0) days.splice(at, 1);
+      else days.push(day);
       render();
       return;
     }

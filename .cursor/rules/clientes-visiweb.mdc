@@ -1,0 +1,21 @@
+---
+description: Flujo obligatorio para webs de clientes. La plantilla base y la demo comercial no se tocan.
+alwaysApply: true
+---
+
+# Clientes VisiWeb
+
+`_plantilla-base/` es el molde maestro. No edites ni sobrescribas ningún archivo de esa carpeta salvo que el usuario diga literalmente «actualiza la plantilla base».
+
+La demo comercial tampoco se toca: `demo.html` y `mesa/` de la raíz.
+
+## Web o demo nueva
+
+Si pide crear la web o la demo de un restaurante (por ejemplo, «haz la web de Bar Pepe»):
+
+1. Duplica todo `_plantilla-base/` en `clientes/<slug>/` (`clientes/bar-pepe/`).
+2. Cambia textos, platos, colores, fotos y estructura solo dentro de `clientes/<slug>/`.
+
+## Restaurante ya creado
+
+Si pide modificar un restaurante existente, trabaja solo en su carpeta de `clientes/`.

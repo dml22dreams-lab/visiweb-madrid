@@ -89,7 +89,47 @@
     });
   }
 
+  var DISH_PHOTOS = {
+    'costillas a la brasa': 'lomo.webp',
+    'salmon con verduras': 'primeros.webp',
+    'patatas bravas con alioli': 'bravas-real.webp',
+    'croquetas caseras de jamon': 'croquetas-jamon.webp',
+    'calamares a la andaluza': 'calamares-andaluza.webp',
+    'huevos rotos con jamon': 'huevos-rotos.webp',
+    'tosta de gulas al ajillo': 'tosta-gulas.webp',
+    'montado de lomo de orza': 'montado-lomo.webp',
+    'primeros a elegir': 'menu-primeros.webp',
+    'segundos a elegir': 'menu-segundos.webp',
+    'postre o cafe': 'menu-postres.webp',
+    'menu completo': 'menu-completo.webp',
+    'cana doble bien fria': 'cana.webp',
+    'rioja crianza': 'rioja.webp',
+    'ribera del duero': 'ribera.webp',
+    'vermut rojo de grifo': 'vermut-real.webp',
+    'bravas vegetales': 'bravas-veg.webp',
+    'pimientos de padron': 'pimientos-padron.webp',
+    'parrillada de verduras': 'parrillada-verduras.webp',
+    'tortilla de patata': 'tortilla-patata.webp'
+  };
+
+  function dishKey(name) {
+    return String(name || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, ' ').trim();
+  }
+
+  function dishPhoto(name) {
+    var file = DISH_PHOTOS[dishKey(name)];
+    if (!file) {
+      var pool = ['bravas-real.webp', 'croquetas-jamon.webp', 'lomo.webp', 'primeros.webp', 'cana.webp'];
+      var hash = 0;
+      var key = dishKey(name) || 'plato';
+      for (var i = 0; i < key.length; i++) hash += key.charCodeAt(i);
+      file = pool[hash % pool.length];
+    }
+    return '/assets/demo/' + file;
+  }
+
   function applyRestaurant(row) {
+    document.documentElement.classList.add('vw-restaurant');
     var D = window.VISIWEB_DEMO;
     var categories = (row.menu_categories || []).slice().sort(byOrder);
     var usedAnchors = {};
@@ -110,8 +150,9 @@
           priceEn: price.en,
           priceValue: price.n,
           allergens: Array.isArray(item.allergens) ? item.allergens : [],
-          tags: [],
-          image: item.image_url || null
+          tags: Array.isArray(item.tags) ? item.tags : [],
+          featured: !!item.is_featured,
+          image: item.image_url || dishPhoto(item.name)
         };
       });
       return {
@@ -146,28 +187,41 @@
       geo: null,
       mapQuery: ''
     };
+    var demoPhoto = '/assets/demo/';
     D.images = {
-      hero: row.cover_image_url || null,
+      hero: row.cover_image_url || demoPhoto + 'hero.webp',
       heroAlt: both(row.name || ''),
-      facade: row.cover_image_url || null,
-      salon: null,
-      salon2: null,
-      terrace: null,
-      bar: null
+      facade: row.cover_image_url || demoPhoto + 'fachada.webp',
+      salon: demoPhoto + 'salon.webp',
+      salon2: demoPhoto + 'salon-2.webp',
+      terrace: demoPhoto + 'terraza.webp',
+      bar: demoPhoto + 'barra.webp'
     };
-    D.hours = { 0: [], 1: [], 2: [], 3: [], 4: [], 5: [], 6: [] };
+    D.hours = row.schedule ? { 0: [], 1: [], 2: [], 3: [], 4: [], 5: [], 6: [] } : {
+      0: [['12:00', '17:00']],
+      1: [],
+      2: [['12:00', '16:00'], ['19:30', '23:30']],
+      3: [['12:00', '16:00'], ['19:30', '23:30']],
+      4: [['12:00', '16:00'], ['19:30', '23:30']],
+      5: [['12:00', '24:00']],
+      6: [['12:00', '24:00']]
+    };
     D.scheduleText = row.schedule || '';
     D.menu = menu;
     D.featured = featured;
     D.reviews = { score: 0, count: 0, items: [] };
     D.local = {
-      stats: [],
-      rooms: row.cover_image_url ? [{
-        id: 'portada',
-        image: row.cover_image_url,
-        title: both(row.name || ''),
-        desc: both(row.tagline || row.description || '')
-      }] : []
+      stats: [
+        { label: both('Sala'), value: '42' },
+        { label: both('Terraza'), value: '16' },
+        { label: both('Desde'), value: '1998' }
+      ],
+      rooms: [
+        { id: 'fachada', image: D.images.facade, title: both('Fachada'), desc: both(row.address || 'En el corazón del barrio.') },
+        { id: 'salon', image: D.images.salon, title: both('El salón'), desc: both('Madera, luz baja y mesas para quedarse.') },
+        { id: 'barra', image: D.images.bar, title: both('La barra'), desc: both('El sitio de siempre.') },
+        { id: 'terraza', image: D.images.terrace, title: both('Terraza'), desc: both('Mesas al aire.') }
+      ]
     };
     D.history = {
       title: both(row.name || ''),
@@ -204,6 +258,9 @@
     });
     var site = document.querySelector('meta[property="og:site_name"]');
     if (site) site.setAttribute('content', row.name || '');
+    D.design = window.VisiwebDesign ? window.VisiwebDesign.merge(row.design_config) : (row.design_config || null);
+    D.dailyMenu = window.VisiwebDesign ? window.VisiwebDesign.mergeDaily(row.daily_menu) : (row.daily_menu || null);
+    if (window.VisiwebDesign) window.VisiwebDesign.paint(D.design);
     window.VISIWEB_RESTAURANT_SLUG = row.slug;
     window.VISIWEB_RESTAURANT_STATUS = row.status;
   }
@@ -238,7 +295,7 @@
       return ensureClient().then(function (client) {
         return client
           .from('restaurants')
-          .select('id, slug, name, tagline, description, phone, whatsapp, address, schedule, instagram, cover_image_url, primary_color, plan_tier, status, menu_categories(id, name, subtitle, sort_order, menu_items(id, name, description, price, image_url, allergens, is_featured, sort_order))')
+          .select('id, slug, name, tagline, description, phone, whatsapp, address, schedule, instagram, cover_image_url, primary_color, plan_tier, status, design_config, daily_menu, menu_categories(id, name, subtitle, sort_order, menu_items(id, name, description, price, image_url, allergens, is_featured, sort_order))')
           .eq('slug', current.slug)
           .maybeSingle();
       }).then(function (result) {
@@ -248,7 +305,7 @@
         }
         applyRestaurant(result.data);
         applyPublication(result.data.status);
-        var src = page === 'mesa' ? '/mesa/mesa.js?v=51' : '/demo-app.js?v=75';
+        var src = page === 'mesa' ? '/mesa/mesa.js?v=55' : '/demo-app.js?v=79';
         return loadScript(src).then(function () {
           document.documentElement.classList.remove('vw-pending');
           return true;

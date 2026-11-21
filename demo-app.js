@@ -334,8 +334,13 @@
     return wrap;
   }
 
+  function designOf() {
+    return window.VISIWEB_DESIGN || { dishes: 'lista_foto', tabs: 'pildoras' };
+  }
+
   function dishNode(item) {
-    const li = el('li', 'border-b border-stone-300 py-2 dark:border-stone-600');
+    const dishes = designOf().dishes;
+    const li = el('li', dishes === 'tarjetas_grandes' ? 'vw-card-dish' : 'border-b border-stone-300 py-2 dark:border-stone-600');
     li.dataset.allergens = item.allergens.join(',');
     const vegan = !!(item.isVegan || item.tags.indexOf('vegano') >= 0);
     const vegetarian = vegan || !!(item.isVegetarian || item.tags.indexOf('vegetariano') >= 0);
@@ -359,8 +364,14 @@
       diet.textContent = L(D.dietTags[item.dietType].name);
       text.appendChild(diet);
     }
-    const image = imageOrPlaceholder(item.image, L(item.name), 72, 'h-[72px] w-[72px] shrink-0 rounded-2xl object-cover sm:h-20 sm:w-20');
-    row.append(text, image);
+    const image = dishes === 'solo_texto'
+      ? null
+      : imageOrPlaceholder(item.image, L(item.name), 72, dishes === 'tarjetas_grandes'
+        ? 'vw-photo h-36 w-full rounded-2xl object-cover'
+        : 'vw-photo h-[72px] w-[72px] shrink-0 rounded-2xl object-cover sm:h-20 sm:w-20');
+    if (dishes === 'tarjetas_grandes' && image) row.append(image, text);
+    else if (image) row.append(text, image);
+    else row.append(text);
     li.appendChild(row);
     return li;
   }
@@ -372,8 +383,16 @@
   function paintCategoryTab(node, selected) {
     node.setAttribute('aria-selected', String(selected));
     node.tabIndex = selected ? 0 : -1;
-    TAB_ON.forEach((cls) => node.classList.toggle(cls, selected));
-    TAB_OFF.forEach((cls) => node.classList.toggle(cls, !selected));
+    const mode = designOf().tabs;
+    if (mode === 'subrayado') {
+      node.className = 'tab ' + TAB_CHROME + (selected ? ' border-b-2 border-current bg-transparent text-stone-900' : ' border-b-2 border-transparent bg-transparent text-stone-500');
+      return;
+    }
+    if (mode === 'bloques') {
+      node.className = 'tab ' + TAB_CHROME + (selected ? ' rounded-sm bg-stone-900 px-3 py-2 text-white' : ' rounded-sm bg-stone-200 px-3 py-2 text-stone-700');
+      return;
+    }
+    node.className = 'tab ' + TAB_CHROME + ' ' + (selected ? TAB_ON : TAB_OFF).join(' ');
   }
 
   function renderMenu() {
@@ -2338,8 +2357,11 @@
     document.querySelectorAll('a[data-i18n="mesaLink"], a[data-view="mesa"]').forEach((link) => {
       if (window.VISIWEB_RESTAURANT_SLUG) {
         link.setAttribute('href', '/r/' + window.VISIWEB_RESTAURANT_SLUG + '/mesa' + (lang === 'en' ? '?lang=en' : ''));
-      } else {
-        link.setAttribute('href', lang === 'en' ? '/mesa/?lang=en' : '/mesa/');
+        return;
+      }
+      if (lang === 'en') {
+        var href = (link.getAttribute('href') || 'mesa/').split('?')[0];
+        link.setAttribute('href', href + '?lang=en');
       }
     });
     document.querySelectorAll('[data-i18n-placeholder]').forEach((node) => {
@@ -2485,6 +2507,7 @@
     renderJsonLd();
     applyAllergenFilter();
     syncStickyOffset();
+    if (window.VisiwebDesign && window.VISIWEB_DESIGN) window.VisiwebDesign.mountWeb(D, lang);
   }
 
   function setLang(next) {
@@ -2735,4 +2758,8 @@
     renderToday();
     refreshBookingSlots();
   }, 60000);
+  window.visiwebRepaint = renderAll;
+  if (document.documentElement.classList.contains('vw-editor') && window.parent !== window) {
+    window.parent.postMessage({ type: 'visiweb-ready', page: 'web' }, location.origin);
+  }
 })();

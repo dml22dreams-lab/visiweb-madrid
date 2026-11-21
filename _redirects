@@ -1,3 +1,4 @@
+# /_plantilla-base/* y /clientes/* son estáticas y no se reescriben.
 /r/:slug/mesa   /mesa/index.html   200
 /r/:slug/mesa/  /mesa/index.html   200
 /r/:slug        /demo.html         200

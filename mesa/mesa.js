@@ -234,6 +234,8 @@
           long: item.desc,
           price: item.priceValue != null ? item.priceValue : euroFrom(item.price),
           allergens: item.allergens || [],
+          tags: item.tags || [],
+          featured: !!item.featured,
           image: item.image
         }))
       }));
@@ -508,14 +510,46 @@
       '</div>';
   }
 
+  function mesaOn(key) {
+    const mesa = window.VISIWEB_DESIGN && window.VISIWEB_DESIGN.mesa;
+    if (!mesa || typeof mesa[key] !== 'boolean') return true;
+    return mesa[key];
+  }
+
+  function applyMesaFeatures() {
+    const root = document.documentElement;
+    root.dataset.vwPrices = mesaOn('prices') ? '1' : '0';
+    root.dataset.vwTags = mesaOn('tags') ? '1' : '0';
+    if (mesaOn('selection')) delete root.dataset.vwNoCart;
+    else root.dataset.vwNoCart = '1';
+    const search = $('btn-search');
+    if (search) search.hidden = !mesaOn('search');
+    const langBtn = $('btn-lang');
+    if (langBtn) langBtn.hidden = !mesaOn('language');
+    const allergenRow = document.querySelector('.mesa-allergen-row');
+    if (allergenRow) allergenRow.hidden = !mesaOn('allergens');
+  }
+
+  function tagHtml(item) {
+    if (!mesaOn('tags')) return '';
+    const tags = item.tags || [];
+    const bits = [];
+    if (item.featured) bits.push('<span class="vw-tag">★</span>');
+    if (tags.indexOf('sin_gluten') >= 0) bits.push('<span class="vw-tag">SG</span>');
+    if (tags.indexOf('vegetariano') >= 0 || tags.indexOf('vegano') >= 0) bits.push('<span class="vw-tag">V</span>');
+    if (tags.indexOf('picante') >= 0) bits.push('<span class="vw-tag">🌶</span>');
+    return bits.length ? '<span class="vw-tags">' + bits.join('') + '</span>' : '';
+  }
+
   function slotHtml(item) {
     const line = cart.get(item.id);
     const qty = line ? line.qty : 0;
+    const photo = item.image
+      ? '<button type="button" class="photo-hit" data-open="' + esc(item.id) + '" aria-label="' + esc(ui('see') + ' ' + L(item.name)) + '"><img src="' + esc(item.image) + '" alt=""></button>'
+      : '';
+    if (!mesaOn('selection')) return photo;
     const control = '<div class="slot-act' + (item.image ? '' : ' is-bare') + '">' + qtyControl(item, qty, openQty === item.id) + '</div>';
-    if (!item.image) return control;
-    return '<button type="button" class="photo-hit" data-open="' + esc(item.id) + '" aria-label="' + esc(ui('see') + ' ' + L(item.name)) + '">' +
-      '<img src="' + esc(item.image) + '" alt="">' +
-      '</button>' + control;
+    return photo + control;
   }
 
   function renderIntro() {
@@ -557,9 +591,13 @@
     $('demo-bar-label').textContent = ui('demoBar');
     $('view-switch').setAttribute('aria-label', ui('viewSwitch'));
     $('view-web').textContent = ui('viewWeb');
-    $('view-web').setAttribute('href', window.VISIWEB_RESTAURANT_SLUG
-      ? '/r/' + window.VISIWEB_RESTAURANT_SLUG + (lang === 'en' ? '?lang=en' : '')
-      : (lang === 'en' ? '/demo.html?lang=en' : '/demo.html'));
+    if (window.VISIWEB_RESTAURANT_SLUG) {
+      $('view-web').setAttribute('href', '/r/' + window.VISIWEB_RESTAURANT_SLUG + (lang === 'en' ? '?lang=en' : ''));
+    } else {
+      var webHref = $('view-web').getAttribute('href') || '/demo.html';
+      if (webHref.indexOf('/demo.html') === 0) webHref = '/demo.html';
+      $('view-web').setAttribute('href', lang === 'en' ? webHref.split('?')[0] + '?lang=en' : webHref.split('?')[0]);
+    }
     $('view-mesa').textContent = ui('viewMesa');
   }
 
@@ -676,7 +714,7 @@
     hit.dataset.open = item.id;
     const icons = item.allergens.map(allergenIcon).join('');
     hit.innerHTML = '<h3 class="dish-name"><span>' + esc(L(item.name)) + '</span>' +
-      (icons ? '<span class="algs">' + icons + '</span>' : '') + '</h3>' +
+      (icons ? '<span class="algs">' + icons + '</span>' : '') + tagHtml(item) + '</h3>' +
       '<p class="dish-desc">' + esc(L(item.desc)) + '</p>' +
       '<p class="dish-price">' + esc(formatMoney(item.price)) + '</p>';
     const slot = document.createElement('div');
@@ -696,6 +734,11 @@
   }
 
   function updateDock() {
+    if (!mesaOn('selection')) {
+      $('dock-rate').hidden = false;
+      $('dock-split').hidden = true;
+      return;
+    }
     const n = totalQty();
     $('dock-rate').hidden = n > 0;
     $('dock-split').hidden = n === 0;
@@ -703,6 +746,7 @@
   }
 
   function changeQty(id, delta) {
+    if (!mesaOn('selection')) return;
     const item = ITEMS.get(id);
     if (!item) return;
     const line = cart.get(id) || emptyLine(item);
@@ -1201,6 +1245,7 @@
   }
 
   function paint() {
+    applyMesaFeatures();
     renderIntro();
     renderMenu();
     updateDock();
@@ -1212,6 +1257,7 @@
       if (rateNote) renderRateNote();
       else renderReviewsList();
     }
+    if (window.VisiwebDesign && window.VisiwebDesign.markElements) window.VisiwebDesign.markElements();
   }
 
   function setLang(next) {
@@ -1547,4 +1593,9 @@
   $('btn-search').innerHTML = searchSvg();
   paint();
   onSpy();
+  window.visiwebRepaintMesa = paint;
+  if (document.documentElement.classList.contains('vw-editor') && window.parent !== window) {
+    if (window.VisiwebDesign) window.VisiwebDesign.markTargets();
+    window.parent.postMessage({ type: 'visiweb-ready', page: 'mesa' }, location.origin);
+  }
 })();
