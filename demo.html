@@ -1394,6 +1394,7 @@
     }
     .site-nav-links {
       display: flex;
+      width: 100%;
       justify-content: flex-start;
       align-items: center;
       gap: clamp(16px, 3vw, 36px);
@@ -1413,15 +1414,40 @@
       white-space: nowrap;
       padding: 8px 4px;
     }
-    .site-nav-links .site-nav-link:first-child {
-      padding-left: 1.5rem;
+    @media (max-width: 767px) {
+      .site-nav-links {
+        justify-content: flex-start;
+        overflow-x: auto;
+        gap: 1.75rem;
+        padding-left: 1.25rem;
+        padding-right: 1.25rem;
+      }
+      .site-nav-links .site-nav-link {
+        font-size: 0.75rem;
+        padding: 6px 2px;
+      }
+      .site-nav-links .site-nav-link:first-child {
+        padding-left: 4px;
+      }
+      .site-nav-links .site-nav-link:last-child {
+        padding-right: 4px;
+      }
     }
-    .site-nav-links .site-nav-link:last-child {
-      padding-right: 1.25rem;
-    }
-    @media (max-width: 639px) {
-      .site-nav-links { gap: 14px; }
-      .site-nav-links .site-nav-link { font-size: 0.9rem; }
+    @media (min-width: 768px) {
+      .site-nav-links {
+        width: 100%;
+        justify-content: space-between;
+        gap: 0;
+        overflow-x: visible;
+        padding-left: 2.75rem;
+        padding-right: 2.75rem;
+      }
+      .site-nav-links .site-nav-link:first-child {
+        padding-left: 4px;
+      }
+      .site-nav-links .site-nav-link:last-child {
+        padding-right: 4px;
+      }
     }
     #nav-eventos[hidden],
     [data-page="eventos"][hidden] { display: none !important; }
@@ -1821,23 +1847,26 @@
     .reservas-switch {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 0.25rem;
-      max-width: 26rem;
-      margin: 0 auto 1.75rem;
-      padding: 0.28rem;
+      gap: 0.125rem;
+      width: 100%;
+      max-width: none;
+      margin: 0 0 1.75rem;
+      padding: 0.125rem;
       border: 1px solid #e7e5e4;
       border-radius: 999px;
       background: #f5f5f4;
     }
     .reservas-switch button {
-      min-height: 2.55rem;
+      min-height: 2rem;
+      padding: 0 0.5rem;
       border: 0;
       border-radius: 999px;
       background: transparent;
       color: #57534e;
       font: inherit;
-      font-size: 0.9rem;
+      font-size: 0.75rem;
       font-weight: 600;
+      line-height: 1.15;
       cursor: pointer;
     }
     .reservas-switch button.is-active {
@@ -2291,7 +2320,7 @@
   </div>
 
   <nav class="site-nav sticky top-0 z-50 border-b border-stone-200 bg-white shadow-sm dark:border-stone-800 dark:bg-stone-900" aria-label="Secciones" data-i18n-aria-label="navLabel">
-    <div class="site-nav-links mx-auto flex w-full max-w-3xl items-center justify-start text-center">
+    <div class="site-nav-links mx-auto flex w-full max-w-3xl items-center text-center">
       <a href="#inicio" data-nav="inicio" class="site-nav-link rounded-lg text-xs font-medium outline-none focus:outline-none focus-visible:ring-2 focus-visible:ring-stone-400/50 focus-visible:ring-offset-2 sm:text-sm" aria-current="page" data-i18n="navHome">Inicio</a>
       <a href="#carta" data-nav="carta" class="site-nav-link rounded-lg text-xs font-medium outline-none focus:outline-none focus-visible:ring-2 focus-visible:ring-stone-400/50 focus-visible:ring-offset-2 sm:text-sm" data-i18n="navMenu">Carta</a>
       <a href="#local" data-nav="local" class="site-nav-link rounded-lg text-xs font-medium outline-none focus:outline-none focus-visible:ring-2 focus-visible:ring-stone-400/50 focus-visible:ring-offset-2 sm:text-sm" data-i18n="navLocal">El local</a>
