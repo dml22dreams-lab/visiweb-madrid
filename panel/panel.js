@@ -423,6 +423,48 @@
     if (!editor.viewport) editor.viewport = 'mobile';
   }
 
+  function applyRestaurantUpdate(data) {
+    var editor = state.editor;
+    if (!editor || !data || typeof data !== 'object') return false;
+    ['name', 'tagline', 'description', 'phone', 'whatsapp', 'address', 'schedule', 'instagram', 'plan_tier'].forEach(function (key) {
+      if (typeof data[key] === 'string') editor[key] = data[key];
+    });
+    if (typeof data.name === 'string' && editor.autoSlug) editor.slug = slugify(editor.name);
+    if (data.design_config) editor.design = window.VisiwebDesign.merge(data.design_config);
+    if (data.design) editor.design = window.VisiwebDesign.merge(data.design);
+    if (data.daily_menu) editor.daily_menu = window.VisiwebDesign.mergeDaily(data.daily_menu);
+    if (data.accent || data.primary_color) {
+      editor.design.accent = data.accent || data.primary_color;
+      editor.design.palette = '';
+    }
+    if (Array.isArray(data.categories)) {
+      editor.categories = data.categories.map(function (category) {
+        return {
+          id: category.id || null,
+          name: category.name || '',
+          items: (category.items || []).map(function (item) {
+            return {
+              id: item.id || null,
+              name: item.name || '',
+              description: item.description || '',
+              price: item.price == null ? '' : String(item.price),
+              image_url: item.image_url || '',
+              imageFile: null,
+              preview: item.preview || '',
+              allergens: item.allergens || [],
+              featured: !!item.featured
+            };
+          })
+        };
+      });
+    }
+    if (typeof data.eventos_activo === 'boolean') {
+      ensureLabels(editor.design);
+      editor.design.labels.vw_events = data.eventos_activo ? '1' : '0';
+    }
+    return true;
+  }
+
   function applyChatCommand(raw) {
     var editor = state.editor;
     var text = String(raw || '').trim();
@@ -430,41 +472,7 @@
     if (text.charAt(0) === '{') {
       try {
         var data = JSON.parse(text);
-        ['name', 'tagline', 'description', 'phone', 'whatsapp', 'address', 'schedule', 'instagram', 'plan_tier'].forEach(function (key) {
-          if (typeof data[key] === 'string') editor[key] = data[key];
-        });
-        if (data.design_config) editor.design = window.VisiwebDesign.merge(data.design_config);
-        if (data.design) editor.design = window.VisiwebDesign.merge(data.design);
-        if (data.daily_menu) editor.daily_menu = window.VisiwebDesign.mergeDaily(data.daily_menu);
-        if (data.accent || data.primary_color) {
-          editor.design.accent = data.accent || data.primary_color;
-          editor.design.palette = '';
-        }
-        if (Array.isArray(data.categories)) {
-          editor.categories = data.categories.map(function (category) {
-            return {
-              id: category.id || null,
-              name: category.name || '',
-              items: (category.items || []).map(function (item) {
-                return {
-                  id: item.id || null,
-                  name: item.name || '',
-                  description: item.description || '',
-                  price: item.price == null ? '' : String(item.price),
-                  image_url: item.image_url || '',
-                  imageFile: null,
-                  preview: item.preview || '',
-                  allergens: item.allergens || [],
-                  featured: !!item.featured
-                };
-              })
-            };
-          });
-        }
-        if (typeof data.eventos_activo === 'boolean') {
-          ensureLabels(editor.design);
-          editor.design.labels.vw_events = data.eventos_activo ? '1' : '0';
-        }
+        if (!applyRestaurantUpdate(data)) return 'JSON inválido.';
         return 'JSON aplicado a la vista previa.';
       } catch (error) {
         return 'JSON inválido.';
@@ -1896,15 +1904,37 @@
       if (!state.editor) return;
       ensureCollabChat(state.editor);
       if (!String(value || '').trim()) return;
-      state.editor.chat.push({ role: 'user', text: value.trim() });
-      var reply = applyChatCommand(value);
-      state.editor.chat.push({ role: 'system', text: reply });
+      var mensaje = value.trim();
+      state.editor.chat.push({ role: 'user', text: mensaje });
       if (input) input.value = '';
       state.editor.previewDirty = true;
       state.notice = '';
       state.error = '';
       updateCollabChrome();
-      pushCollabPreview(true);
+
+      var jsonActual = restaurantPayloadFromEditor(state.editor);
+      fetch('/api/editar-web', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mensaje: mensaje, jsonActual: jsonActual })
+      }).then(function (res) {
+        if (!res.ok) throw new Error('api');
+        return res.json();
+      }).then(function (data) {
+        if (!data || !data.jsonActualizado) throw new Error('api');
+        applyRestaurantUpdate(data.jsonActualizado);
+        state.editor.chat.push({
+          role: 'system',
+          text: data.respuestaBreve || 'Cambios aplicados en la vista previa.'
+        });
+        updateCollabChrome();
+        pushCollabPreview(true);
+      }).catch(function () {
+        var reply = applyChatCommand(mensaje);
+        state.editor.chat.push({ role: 'system', text: reply });
+        updateCollabChrome();
+        pushCollabPreview(true);
+      });
     }
   });
 
