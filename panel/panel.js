@@ -48,7 +48,11 @@
     notice: '',
     error: '',
     busy: false,
-    copied: ''
+    copied: '',
+    adminTab: 'restaurants',
+    proposals: [],
+    selectedProposalId: null,
+    proposalViewport: 'mobile'
   };
 
   var app = document.getElementById('app');
@@ -218,63 +222,109 @@
   }
 
   function sampleMenu() {
-    return [
-      { id: null, name: 'Raciones clásicas', items: [
-        sampleItem('Costillas a la brasa', 'Costillar glaseado, patatas fritas, tomate y encurtidos.', 14.9, 'lomo.webp', [], true),
-        sampleItem('Croquetas caseras de jamón', 'Seis unidades de bechamel fundente con jamón picado a cuchillo.', 9.2, 'croquetas-jamon.webp', ['gluten', 'lacteos', 'huevos'], true),
-        sampleItem('Patatas bravas con alioli', 'Patata frita en dos tiempos, salsa brava y alioli.', 7.5, 'bravas-real.webp', ['huevos'], true),
-        sampleItem('Calamares a la andaluza', 'Anillas de calamar fritas al momento, con limón.', 12.9, 'calamares-andaluza.webp', ['gluten', 'moluscos']),
-        sampleItem('Huevos rotos con jamón', 'Patatas, huevos camperos y virutas de jamón.', 13.8, 'huevos-rotos.webp', ['huevos'])
-      ] },
-      { id: null, name: 'Tostas y montados', items: [
-        sampleItem('Tosta de gulas al ajillo', 'Gulas salteadas con ajo y guindilla.', 7.6, 'tosta-gulas.webp', ['pescado']),
-        sampleItem('Montado de lomo de orza', 'Lomo confitado y pimiento verde asado.', 6.4, 'montado-lomo.webp', [])
-      ] },
-      { id: null, name: 'Menú del día', items: [
-        sampleItem('Primeros a elegir', 'Sopa castellana, lentejas, ensalada o macarrones.', 0, 'menu-primeros.webp', []),
-        sampleItem('Segundos a elegir', 'Merluza, pollo asado, estofado o tortilla.', 0, 'menu-segundos.webp', []),
-        sampleItem('Menú completo', 'Primero, segundo, postre o café, pan y bebida.', 13.5, 'menu-completo.webp', [], true)
-      ] },
-      { id: null, name: 'Vinos y cervezas', items: [
-        sampleItem('Caña doble bien fría', 'Tirada en copa helada.', 2.8, 'cana.webp', ['gluten'], true),
-        sampleItem('Rioja crianza', 'Tempranillo con catorce meses en barrica.', 3.2, 'rioja.webp', ['sulfitos'], true),
-        sampleItem('Ribera del Duero', 'Tinto potente, para los huevos rotos.', 3.6, 'ribera.webp', ['sulfitos']),
-        sampleItem('Vermut rojo de grifo', 'Con hielo, naranja y aceituna.', 2.9, 'vermut-real.webp', ['sulfitos'])
-      ] },
-      { id: null, name: 'Vegano / Vegetariano', items: [
-        sampleItem('Bravas vegetales', 'Patata y salsa brava, sin huevo ni lácteos.', 7.2, 'bravas-veg.webp', []),
-        sampleItem('Pimientos de Padrón', 'Fritos en aceite de oliva y sal en escamas.', 6.5, 'pimientos-padron.webp', []),
-        sampleItem('Parrillada de verduras', 'Calabacín, berenjena, pimiento y cebolla a la brasa.', 9.8, 'parrillada-verduras.webp', []),
-        sampleItem('Tortilla de patata', 'Cuña de tortilla jugosa de patata y cebolla.', 6.8, 'tortilla-patata.webp', ['huevos'])
-      ] }
-    ];
+    return [blankCategory()];
   }
 
   function blankCategory() {
     return { id: null, name: '', items: [blankItem()] };
   }
 
+  function langText(value) {
+    if (value == null) return '';
+    if (typeof value === 'string') return value;
+    return value.es || value.en || '';
+  }
+
+  function priceFromDemo(item) {
+    if (item && item.priceValue != null && item.priceValue !== '') return String(item.priceValue);
+    if (item && item.price != null && item.price !== '') {
+      var raw = String(item.price).replace(',', '.').replace(/[^\d.]/g, '');
+      return raw || '';
+    }
+    return '';
+  }
+
+  function categoriesFromPreview(demo) {
+    var menu = demo && Array.isArray(demo.menu) ? demo.menu : [];
+    if (!menu.length) return sampleMenu();
+    return menu.map(function (category) {
+      var items = Array.isArray(category.items) ? category.items : [];
+      return {
+        id: null,
+        name: langText(category.name),
+        items: items.length
+          ? items.map(function (item) {
+              return {
+                id: null,
+                name: langText(item.name),
+                description: langText(item.desc || item.description),
+                price: priceFromDemo(item),
+                image_url: item.image || '',
+                imageFile: null,
+                preview: '',
+                allergens: Array.isArray(item.allergens) ? item.allergens.slice() : [],
+                featured: !!(item.featured || (demo.featured && demo.featured.indexOf(item.id) >= 0))
+              };
+            })
+          : [blankItem()]
+      };
+    });
+  }
+
+  function addressFromPreview(demo) {
+    var business = (demo && demo.business) || {};
+    if (business.addressLine) return business.addressLine;
+    var address = business.address || {};
+    var street = langText(address.street);
+    var parts = [street, address.postalCode, address.city, address.region].filter(Boolean);
+    return parts.join(', ');
+  }
+
   function blankEditor() {
+    var demo = window.VISIWEB_DEMO || null;
+    var business = (demo && demo.business) || {};
+    var design = window.VisiwebDesign.blank();
+    if (demo && demo.design) design = window.VisiwebDesign.merge(demo.design);
+    ensureLabels(design);
+    ensureEventos(design);
+    if (demo && demo.eventos && typeof demo.eventos.activo === 'boolean') {
+      design.labels.vw_events = demo.eventos.activo ? '1' : '0';
+    } else {
+      design.labels.vw_events = '0';
+    }
+    if (demo && demo.eventos) {
+      ['eyebrow', 'title', 'subtitle', 'lead', 'cta', 'readyTitle', 'readyCta'].forEach(function (key) {
+        var text = langText(demo.eventos[key]);
+        if (text) design.eventos[key] = text;
+      });
+      if (demo.eventos.tipoVideo) design.eventos.tipoVideo = demo.eventos.tipoVideo;
+    }
+    var tagline = langText(business.type);
+    var name = business.name || '';
     return {
       step: 'a',
       id: null,
-      name: '',
-      slug: '',
+      name: name,
+      slug: slugify(name),
       autoSlug: true,
-      tagline: 'Cervecería y raciones',
-      phone: '+34 600 00 00 00',
-      whatsapp: '34600000000',
-      address: 'C. del Marqués de la Valdavia, 28100 Alcobendas (Madrid)',
-      schedule: 'Mar - Jue 12:00–16:00 · 19:30–23:30 · Vie - Sáb 12:00–00:00 · Domingo 12:00–17:00 · Lunes cerrado',
-      instagram: '',
+      tagline: tagline,
+      description: langText(demo && demo.history && demo.history.lead) || '',
+      phone: business.phoneDisplay || business.phone || '',
+      whatsapp: business.whatsapp || '',
+      address: addressFromPreview(demo),
+      schedule: (demo && demo.scheduleText) || '',
+      instagram: business.instagram || '',
       plan_tier: '',
       status: 'borrador',
-      cover_image_url: '',
+      cover_image_url: (demo && demo.images && demo.images.hero) || '',
       coverFile: null,
       coverPreview: '',
-      categories: sampleMenu(),
-      design: window.VisiwebDesign.blank(),
-      daily_menu: window.VisiwebDesign.blankDaily()
+      categories: categoriesFromPreview(demo),
+      design: design,
+      daily_menu: window.VisiwebDesign.mergeDaily(demo && demo.dailyMenu),
+      viewport: 'mobile',
+      chat: null,
+      fromPreview: true
     };
   }
 
@@ -309,6 +359,642 @@
     return 'No se ha podido entrar. Revisa el correo y la contraseña.';
   }
 
+  function restaurantPayloadFromEditor(editor) {
+    ensureLabels(editor.design);
+    ensureEventos(editor.design);
+    return {
+      name: editor.name || '',
+      tagline: editor.tagline || '',
+      description: editor.description || '',
+      phone: editor.phone || '',
+      whatsapp: editor.whatsapp || '',
+      address: editor.address || '',
+      schedule: editor.schedule || '',
+      instagram: editor.instagram || '',
+      cover_image_url: editor.coverPreview || editor.cover_image_url || '',
+      plan_tier: editor.plan_tier || '',
+      design_config: editor.design,
+      design: editor.design,
+      daily_menu: editor.daily_menu,
+      accent: editor.design.accent,
+      primary_color: editor.design.accent,
+      eventos_activo: editor.design.labels.vw_events === '1',
+      categories: (editor.categories || []).map(function (category) {
+        return {
+          id: category.id,
+          name: category.name || '',
+          items: (category.items || []).map(function (item) {
+            return {
+              id: item.id,
+              name: item.name || '',
+              description: item.description || '',
+              price: item.price,
+              image_url: item.preview || item.image_url || '',
+              allergens: item.allergens || [],
+              featured: !!item.featured
+            };
+          })
+        };
+      })
+    };
+  }
+
+  function pushCollabPreview(force) {
+    var frame = document.getElementById('collab-preview');
+    var editor = state.editor;
+    if (!frame || !frame.contentWindow || !editor) return;
+    // Primer pintado: la iframe ya carga ./preview/data.js; no la pisamos hasta el primer cambio del chat.
+    if (!force && editor.fromPreview && !editor.previewDirty) return;
+    var payload = restaurantPayloadFromEditor(editor);
+    frame.contentWindow.postMessage({
+      type: 'RESTAURANT_DATA',
+      payload: payload,
+      RESTAURANT_DATA: payload
+    }, location.origin);
+  }
+
+  function ensureCollabChat(editor) {
+    if (!editor.chat) {
+      editor.chat = [{
+        role: 'system',
+        text: 'Entorno cerrado. Escribe cambios del bar (nombre, color, teléfono, horario, carta, eventos). La vista previa se actualiza al instante. No se descarga código: solo puedes enviar la propuesta al administrador.'
+      }];
+    }
+    if (!editor.viewport) editor.viewport = 'mobile';
+  }
+
+  function applyChatCommand(raw) {
+    var editor = state.editor;
+    var text = String(raw || '').trim();
+    if (!text) return 'Escribe un cambio.';
+    if (text.charAt(0) === '{') {
+      try {
+        var data = JSON.parse(text);
+        ['name', 'tagline', 'description', 'phone', 'whatsapp', 'address', 'schedule', 'instagram', 'plan_tier'].forEach(function (key) {
+          if (typeof data[key] === 'string') editor[key] = data[key];
+        });
+        if (data.design_config) editor.design = window.VisiwebDesign.merge(data.design_config);
+        if (data.design) editor.design = window.VisiwebDesign.merge(data.design);
+        if (data.daily_menu) editor.daily_menu = window.VisiwebDesign.mergeDaily(data.daily_menu);
+        if (data.accent || data.primary_color) {
+          editor.design.accent = data.accent || data.primary_color;
+          editor.design.palette = '';
+        }
+        if (Array.isArray(data.categories)) {
+          editor.categories = data.categories.map(function (category) {
+            return {
+              id: category.id || null,
+              name: category.name || '',
+              items: (category.items || []).map(function (item) {
+                return {
+                  id: item.id || null,
+                  name: item.name || '',
+                  description: item.description || '',
+                  price: item.price == null ? '' : String(item.price),
+                  image_url: item.image_url || '',
+                  imageFile: null,
+                  preview: item.preview || '',
+                  allergens: item.allergens || [],
+                  featured: !!item.featured
+                };
+              })
+            };
+          });
+        }
+        if (typeof data.eventos_activo === 'boolean') {
+          ensureLabels(editor.design);
+          editor.design.labels.vw_events = data.eventos_activo ? '1' : '0';
+        }
+        return 'JSON aplicado a la vista previa.';
+      } catch (error) {
+        return 'JSON inválido.';
+      }
+    }
+    var match;
+    match = text.match(/^(?:nombre|cambia(?:r)?\s+el\s+nombre(?:\s+a)?)\s*[:\-]?\s*(.+)$/i);
+    if (match) { editor.name = match[1].trim(); if (editor.autoSlug) editor.slug = slugify(editor.name); return 'Nombre actualizado: ' + editor.name; }
+    match = text.match(/^(?:frase|tagline|lema|subt[ií]tulo)\s*[:\-]?\s*(.+)$/i);
+    if (match) { editor.tagline = match[1].trim(); return 'Frase corta actualizada.'; }
+    match = text.match(/^(?:descripci[oó]n)\s*[:\-]?\s*(.+)$/i);
+    if (match) { editor.description = match[1].trim(); return 'Descripción actualizada.'; }
+    match = text.match(/^(?:tel[eé]fono|phone)\s*[:\-]?\s*(.+)$/i);
+    if (match) { editor.phone = match[1].trim(); return 'Teléfono actualizado.'; }
+    match = text.match(/^(?:whatsapp|wa)\s*[:\-]?\s*(.+)$/i);
+    if (match) { editor.whatsapp = match[1].replace(/\D/g, ''); return 'WhatsApp actualizado.'; }
+    match = text.match(/^(?:direcci[oó]n|address)\s*[:\-]?\s*(.+)$/i);
+    if (match) { editor.address = match[1].trim(); return 'Dirección actualizada.'; }
+    match = text.match(/^(?:horario|horarios|schedule)\s*[:\-]?\s*(.+)$/i);
+    if (match) { editor.schedule = match[1].trim(); return 'Horario actualizado.'; }
+    match = text.match(/^(?:instagram|ig)\s*[:\-]?\s*(.+)$/i);
+    if (match) { editor.instagram = match[1].trim(); return 'Instagram actualizado.'; }
+    match = text.match(/^(?:color|acento|accent)\s*[:\-]?\s*(#[0-9a-fA-F]{3,8}|[a-z]+)$/i);
+    if (match) {
+      var colorMap = { negro: '#1c1917', carbon: '#1c1917', rojo: '#9f1239', taberna: '#9f1239', oliva: '#3f6212', verde: '#3f6212', dorado: '#b45309', marino: '#1e3a5f', azul: '#1e3a5f', terracota: '#c2410c' };
+      var color = match[1].toLowerCase();
+      editor.design.accent = color.charAt(0) === '#' ? color : (colorMap[color] || editor.design.accent);
+      editor.design.palette = '';
+      return 'Color actualizado: ' + editor.design.accent;
+    }
+    if (/^(activa|activar|mostrar)\s+eventos/i.test(text)) {
+      ensureLabels(editor.design);
+      ensureEventos(editor.design);
+      editor.design.labels.vw_events = '1';
+      if (!editor.plan_tier || planRank(editor.plan_tier) < 3) editor.plan_tier = '790';
+      return 'Sección Eventos activada.';
+    }
+    if (/^(desactiva|desactivar|ocultar)\s+eventos/i.test(text)) {
+      ensureLabels(editor.design);
+      editor.design.labels.vw_events = '0';
+      return 'Sección Eventos desactivada.';
+    }
+    match = text.match(/^eventos?\s+(eyebrow|t[ií]tulo|title|subt[ií]tulo|subtitle|lead|cta)\s*[:\-]?\s*(.+)$/i);
+    if (match) {
+      ensureEventos(editor.design);
+      var key = match[1].toLowerCase();
+      if (key.indexOf('tít') === 0 || key === 'title') key = 'title';
+      else if (key.indexOf('subt') === 0 || key === 'subtitle') key = 'subtitle';
+      editor.design.eventos[key] = match[2].trim();
+      ensureLabels(editor.design);
+      editor.design.labels.vw_events = '1';
+      return 'Texto de Eventos actualizado (' + key + ').';
+    }
+    match = text.match(/^categor[ií]a\s*[:\-]?\s*(.+)$/i);
+    if (match) {
+      editor.categories.push({ id: null, name: match[1].trim(), items: [blankItem()] });
+      return 'Categoría añadida: ' + match[1].trim();
+    }
+    match = text.match(/^plato\s*[:\-]?\s*([^|]+)\|([^|]*)\|?\s*([^|]*)\|?\s*(.*)$/i);
+    if (match) {
+      var catName = match[1].trim();
+      var dishName = (match[2] || '').trim();
+      var price = (match[3] || '').trim();
+      var desc = (match[4] || '').trim();
+      var cat = editor.categories.filter(function (row) { return row.name.toLowerCase() === catName.toLowerCase(); })[0];
+      if (!cat) {
+        cat = { id: null, name: catName, items: [] };
+        editor.categories.push(cat);
+      }
+      cat.items.push({
+        id: null,
+        name: dishName || 'Plato',
+        description: desc,
+        price: price,
+        image_url: '',
+        imageFile: null,
+        preview: '',
+        allergens: [],
+        featured: false
+      });
+      return 'Plato añadido en «' + catName + '»: ' + (dishName || 'Plato');
+    }
+    match = text.match(/^plan\s*[:\-]?\s*(120|390|790)$/i);
+    if (match) { editor.plan_tier = match[1]; applyPlanLimits(editor); return 'Plan ' + match[1] + ' € aplicado.'; }
+    return 'No he entendido el cambio. Prueba: «nombre: …», «color: #1c1917», «horario: …», «activa eventos», «plato: Entrantes|Croquetas|8.5|Caseras» o pega un JSON.';
+  }
+
+  function chatBubble(message) {
+    var mine = message.role === 'user';
+    var tone = message.role === 'system'
+      ? 'bg-stone-100 text-stone-600'
+      : (mine ? 'bg-stone-900 text-white ml-8' : 'bg-white text-stone-800 ring-1 ring-stone-200 mr-8');
+    return '<div class="rounded-2xl px-3 py-2 text-sm leading-snug ' + tone + '">' + esc(message.text) + '</div>';
+  }
+
+  function updateCollabChrome() {
+    var editor = state.editor;
+    if (!editor) return;
+    ensureCollabChat(editor);
+    var list = document.getElementById('collab-chat-list');
+    if (list) {
+      list.innerHTML = editor.chat.map(chatBubble).join('');
+      list.scrollTop = list.scrollHeight;
+    }
+    var frame = document.getElementById('collab-preview');
+    if (frame) {
+      frame.style.width = editor.viewport === 'desktop' ? '100%' : '390px';
+      frame.style.maxWidth = editor.viewport === 'desktop' ? '100%' : '390px';
+    }
+    document.querySelectorAll('[data-collab-viewport]').forEach(function (node) {
+      node.className = 'h-7 rounded px-2 text-xs font-medium ' + (node.dataset.collabViewport === editor.viewport ? 'bg-white text-stone-900 shadow-sm' : 'text-stone-500');
+    });
+    var send = document.getElementById('send-proposal');
+    if (send) {
+      send.disabled = !!state.busy;
+      send.textContent = state.busy ? 'Enviando…' : 'Enviar propuesta al administrador';
+    }
+    var notice = document.getElementById('collab-banner');
+    if (notice) notice.innerHTML = banner();
+    var title = document.getElementById('collab-title');
+    if (title) title.textContent = editor.name || 'Nuevo restaurante';
+  }
+
+  function renderCollabStudio() {
+    var editor = state.editor;
+    ensureCollabChat(editor);
+    if (document.getElementById('collab-studio')) {
+      updateCollabChrome();
+      pushCollabPreview();
+      return;
+    }
+    app.innerHTML =
+      '<div id="collab-studio" class="fixed inset-0 z-50 flex flex-col bg-stone-100">' +
+        '<header class="flex h-12 shrink-0 items-center gap-2 border-b border-stone-200 bg-white px-3">' +
+          '<button type="button" id="close-editor" class="h-8 rounded-md px-2 text-xs font-medium text-stone-500">← Panel</button>' +
+          '<p id="collab-title" class="truncate text-sm font-semibold text-stone-900">' + esc(editor.name || 'Nuevo restaurante') + '</p>' +
+          '<span class="rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-semibold text-amber-900">Colaborador · sin descarga</span>' +
+        '</header>' +
+        '<div id="collab-banner" class="shrink-0 px-3 pt-2">' + banner() + '</div>' +
+        '<div class="flex min-h-0 flex-1">' +
+          '<section class="flex min-w-0 flex-1 flex-col">' +
+            '<div class="flex shrink-0 items-center justify-center gap-2 border-b border-stone-200 bg-white px-3 py-2">' +
+              '<span class="text-xs font-medium text-stone-500">Vista</span>' +
+              '<div class="flex h-8 items-center rounded-md bg-stone-100 p-0.5">' +
+                '<button type="button" data-collab-viewport="mobile" class="h-7 rounded px-2 text-xs font-medium">Móvil · 390px</button>' +
+                '<button type="button" data-collab-viewport="desktop" class="h-7 rounded px-2 text-xs font-medium">Escritorio · 100%</button>' +
+              '</div>' +
+            '</div>' +
+            '<div class="flex min-h-0 flex-1 justify-center overflow-auto bg-stone-100 p-4">' +
+              '<iframe id="collab-preview" title="Vista previa" src="./preview/index.html#inicio" class="h-full border border-stone-200 bg-white shadow-sm" style="width:' + (editor.viewport === 'desktop' ? '100%' : '390px') + ';max-width:' + (editor.viewport === 'desktop' ? '100%' : '390px') + '"></iframe>' +
+            '</div>' +
+          '</section>' +
+          '<section class="flex w-full max-w-md shrink-0 flex-col border-l border-stone-200 bg-white">' +
+            '<div id="collab-chat-list" class="min-h-0 flex-1 space-y-2 overflow-auto p-3">' + editor.chat.map(chatBubble).join('') + '</div>' +
+            '<form id="collab-chat-form" class="shrink-0 border-t border-stone-200 p-3">' +
+              '<label class="sr-only" for="collab-chat-input">Mensaje</label>' +
+              '<textarea id="collab-chat-input" rows="3" class="w-full resize-none rounded-2xl border border-stone-200 px-3 py-2 text-sm outline-none focus:border-stone-400" placeholder="Ej. nombre: Bar Pepe · color: #9f1239 · activa eventos"></textarea>' +
+              '<div class="mt-2 flex gap-2">' +
+                '<button type="submit" class="flex-1 rounded-full bg-stone-900 px-4 py-2.5 text-sm font-semibold text-white">Aplicar cambio</button>' +
+              '</div>' +
+              '<button type="button" id="send-proposal" class="mt-2 w-full rounded-full bg-amber-500 px-4 py-3 text-sm font-semibold text-black"' + (state.busy ? ' disabled' : '') + '>' + (state.busy ? 'Enviando…' : 'Enviar propuesta al administrador') + '</button>' +
+            '</form>' +
+          '</section>' +
+        '</div>' +
+      '</div>';
+    updateCollabChrome();
+    var frame = document.getElementById('collab-preview');
+    if (frame) frame.addEventListener('load', function () { pushCollabPreview(); });
+  }
+
+  async function sendProposal() {
+    if (!state.editor || state.busy) return;
+    state.busy = true;
+    state.error = '';
+    state.notice = '';
+    updateCollabChrome();
+    try {
+      var payload = restaurantPayloadFromEditor(state.editor);
+      var email = (state.profile && state.profile.email) || (state.session.user && state.session.user.email) || '';
+      var result = await supabase.from('propuestas_webs').insert({
+        nombre_local: state.editor.name || '',
+        correo_colaborador: email,
+        collaborator_id: state.session.user.id,
+        restaurant_data: payload,
+        estado: 'pendiente'
+      }).select('id').single();
+      if (result.error) throw result.error;
+      state.busy = false;
+      ensureCollabChat(state.editor);
+      state.editor.chat.push({ role: 'system', text: 'Propuesta enviada al administrador. Queda pendiente de revisión.' });
+      setNotice('Propuesta enviada al administrador.');
+      updateCollabChrome();
+    } catch (error) {
+      state.busy = false;
+      setError(dbMessage(error) || 'No se ha podido enviar la propuesta.');
+      updateCollabChrome();
+    }
+  }
+
+  function selectedProposal() {
+    return state.proposals.filter(function (row) { return row.id === state.selectedProposalId; })[0] || null;
+  }
+
+  function pushProposalPreview() {
+    var frame = document.getElementById('proposal-preview');
+    var row = selectedProposal();
+    if (!frame || !frame.contentWindow || !row) return;
+    var payload = row.restaurant_data || {};
+    frame.contentWindow.postMessage({
+      type: 'RESTAURANT_DATA',
+      payload: payload,
+      RESTAURANT_DATA: payload
+    }, location.origin);
+  }
+
+  function bothLang(text) {
+    var value = text || '';
+    return { es: value, en: value };
+  }
+
+  function moneyPair(value) {
+    var n = Number(value);
+    if (!isFinite(n)) {
+      var raw = String(value == null ? '' : value).replace(',', '.').replace(/[^\d.]/g, '');
+      n = Number(raw);
+    }
+    if (!isFinite(n)) n = 0;
+    return {
+      n: n,
+      es: n.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €',
+      en: '€' + n.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+    };
+  }
+
+  function demoShapeFromPayload(payload) {
+    var data = payload || {};
+    var name = data.name || 'Restaurante';
+    var tagline = data.tagline || '';
+    var phone = data.phone || '';
+    var address = data.address || '';
+    var categories = Array.isArray(data.categories) ? data.categories : [];
+    var featured = [];
+    var menu = categories.map(function (category, index) {
+      var catName = category.name || 'Carta';
+      var items = (category.items || []).map(function (item, itemIndex) {
+        var price = moneyPair(item.price);
+        var id = String(item.id || ('item-' + index + '-' + itemIndex));
+        if (item.featured) featured.push(id);
+        return {
+          id: id,
+          name: bothLang(item.name || 'Plato'),
+          desc: bothLang(item.description || ''),
+          price: price.es,
+          priceEn: price.en,
+          priceValue: price.n,
+          allergens: Array.isArray(item.allergens) ? item.allergens : [],
+          tags: item.featured ? ['recomendado'] : [],
+          featured: !!item.featured,
+          image: item.image_url || null
+        };
+      });
+      return {
+        id: String(category.id || ('cat-' + index)),
+        anchor: slugify(catName) || ('cat-' + index),
+        name: bothLang(catName),
+        desc: bothLang(''),
+        items: items
+      };
+    });
+    var design = data.design_config || data.design || {};
+    var eventosActivo = data.eventos_activo === true || (design.labels && design.labels.vw_events === '1');
+    var ev = (design && design.eventos) || {};
+    return {
+      developer: {
+        name: 'VisiWeb Madrid',
+        plansUrl: 'https://visiwebmadrid.com/#planes',
+        whatsapp: '34608975906'
+      },
+      business: {
+        name: name,
+        type: bothLang(tagline),
+        since: 2026,
+        timezone: 'Europe/Madrid',
+        priceRange: '€€',
+        cuisine: ['Spanish'],
+        phone: phone,
+        phoneDisplay: phone,
+        whatsapp: String(data.whatsapp || '').replace(/\D/g, ''),
+        instagram: data.instagram || '',
+        addressLine: address,
+        address: {
+          street: bothLang(address),
+          postalCode: '',
+          city: '',
+          region: 'Madrid',
+          country: 'ES'
+        },
+        geo: null,
+        mapQuery: ''
+      },
+      images: {
+        hero: data.cover_image_url || null,
+        heroAlt: bothLang(name),
+        facade: data.cover_image_url || null,
+        salon: null,
+        salon2: null,
+        terrace: null,
+        bar: null
+      },
+      hours: { 0: [], 1: [], 2: [], 3: [], 4: [], 5: [], 6: [] },
+      scheduleText: data.schedule || '',
+      allergens: {},
+      dietTags: {},
+      menu: menu,
+      reviews: { score: 0, count: 0, items: [] },
+      local: {
+        stats: [],
+        rooms: []
+      },
+      history: {
+        title: bothLang(name),
+        lead: bothLang(data.description || tagline || ''),
+        chapters: []
+      },
+      eventos: {
+        activo: !!eventosActivo,
+        tipoVideo: ev.tipoVideo || 'salon',
+        eyebrow: bothLang(ev.eyebrow || ''),
+        title: bothLang(ev.title || 'Eventos'),
+        subtitle: bothLang(ev.subtitle || ''),
+        lead: bothLang(ev.lead || ''),
+        cta: bothLang(ev.cta || ''),
+        readyTitle: bothLang(ev.readyTitle || ''),
+        readyCta: bothLang(ev.readyCta || ''),
+        phone: phone,
+        phoneDisplay: phone,
+        whatsapp: String(data.whatsapp || '').replace(/\D/g, '')
+      },
+      gbp: { category: bothLang(tagline || 'Restaurante'), attributes: [] },
+      booking: { maxGuests: 20, slotMinutes: 30, lastSeatingBeforeClose: 30, areas: ['any', 'salon', 'terrace', 'bar'] },
+      featured: featured,
+      design: design,
+      dailyMenu: data.daily_menu || null,
+      i18n: {
+        es: {
+          metaTitle: name + (tagline ? ' · ' + tagline : ''),
+          metaDescription: data.description || tagline || name,
+          heroTitle: tagline || name,
+          heroSubtitle: data.description || tagline || '',
+          heroEyebrow: address,
+          heroKicker: tagline || name
+        },
+        en: {
+          metaTitle: name + (tagline ? ' · ' + tagline : ''),
+          metaDescription: data.description || tagline || name,
+          heroTitle: tagline || name,
+          heroSubtitle: data.description || tagline || '',
+          heroEyebrow: address,
+          heroKicker: tagline || name
+        }
+      },
+      whatsappText: {
+        es: 'Hola, me gustaría reservar mesa en ' + name + '.',
+        en: 'Hello, I would like to book a table at ' + name + '.'
+      },
+      legalPages: {
+        notice: 'aviso-legal.html',
+        privacy: 'politica-privacidad.html',
+        cookies: 'politica-cookies.html'
+      },
+      RESTAURANT_DATA: data
+    };
+  }
+
+  function buildDataJsFile(payload) {
+    var shape = demoShapeFromPayload(payload);
+    return (
+      '/* =====================================================================\n' +
+      '   VisiWeb Madrid · data.js generado desde propuesta\n' +
+      '   Pegar en visiweb-clientes/<slug>/data.js\n' +
+      '   ===================================================================== */\n' +
+      'window.VISIWEB_DEMO = (function () {\n' +
+      "  'use strict';\n" +
+      '  return ' + JSON.stringify(shape, null, 2).replace(/\n/g, '\n  ') + ';\n' +
+      '})();\n'
+    );
+  }
+
+  function downloadDataJs() {
+    var row = selectedProposal();
+    if (!row) return;
+    var blob = new Blob([buildDataJsFile(row.restaurant_data || {})], { type: 'application/javascript;charset=utf-8' });
+    var url = URL.createObjectURL(blob);
+    var link = document.createElement('a');
+    var slug = slugify(row.nombre_local || 'restaurante') || 'restaurante';
+    link.href = url;
+    link.download = 'data.js';
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+    setNotice('data.js descargado (' + slug + ').');
+    updateProposalsChrome();
+  }
+
+  async function approveProposal() {
+    var row = selectedProposal();
+    if (!row || state.busy) return;
+    state.busy = true;
+    updateProposalsChrome();
+    try {
+      var result = await supabase.from('propuestas_webs').update({
+        estado: 'publicada',
+        reviewed_at: new Date().toISOString(),
+        reviewed_by: state.session.user.id
+      }).eq('id', row.id).select('*').single();
+      if (result.error) throw result.error;
+      state.proposals = state.proposals.map(function (item) {
+        return item.id === row.id ? result.data : item;
+      });
+      setNotice('Propuesta marcada como Aprobada / Publicada.');
+    } catch (error) {
+      setError('No se ha podido actualizar la propuesta.');
+    }
+    state.busy = false;
+    updateProposalsChrome();
+  }
+
+  function proposalStatusClass(estado) {
+    if (estado === 'publicada' || estado === 'aprobada') return 'bg-emerald-50 text-emerald-800 ring-emerald-200';
+    if (estado === 'rechazada') return 'bg-red-50 text-red-800 ring-red-200';
+    return 'bg-amber-50 text-amber-900 ring-amber-200';
+  }
+
+  function formatProposalDate(value) {
+    try {
+      return new Date(value).toLocaleString('es-ES', { dateStyle: 'short', timeStyle: 'short' });
+    } catch (error) {
+      return value || '';
+    }
+  }
+
+  function updateProposalsChrome() {
+    var list = document.getElementById('proposals-list');
+    if (list) {
+      list.innerHTML = state.proposals.length
+        ? state.proposals.map(function (row) {
+            var on = row.id === state.selectedProposalId;
+            return (
+              '<button type="button" data-proposal="' + esc(row.id) + '" class="w-full rounded-2xl px-3 py-3 text-left ring-1 ' +
+                (on ? 'bg-stone-900 text-white ring-stone-900' : 'bg-white text-stone-800 ring-stone-200') + '">' +
+                '<span class="block truncate text-sm font-semibold">' + esc(row.nombre_local || 'Sin nombre') + '</span>' +
+                '<span class="mt-1 block truncate text-xs ' + (on ? 'text-stone-300' : 'text-stone-500') + '">' + esc(row.correo_colaborador || '') + '</span>' +
+                '<span class="mt-2 flex items-center justify-between gap-2">' +
+                  '<span class="text-[11px] ' + (on ? 'text-stone-400' : 'text-stone-400') + '">' + esc(formatProposalDate(row.created_at)) + '</span>' +
+                  '<span class="inline-flex rounded-full px-2 py-0.5 text-[10px] font-semibold ring-1 ' + proposalStatusClass(row.estado) + '">' + esc(row.estado || 'pendiente') + '</span>' +
+                '</span>' +
+              '</button>'
+            );
+          }).join('')
+        : '<p class="rounded-2xl border border-dashed border-stone-300 px-4 py-8 text-center text-sm text-stone-500">No hay propuestas todavía.</p>';
+    }
+    var frame = document.getElementById('proposal-preview');
+    if (frame) {
+      frame.style.width = state.proposalViewport === 'desktop' ? '100%' : '390px';
+      frame.style.maxWidth = state.proposalViewport === 'desktop' ? '100%' : '390px';
+    }
+    document.querySelectorAll('[data-proposal-viewport]').forEach(function (node) {
+      node.className = 'h-7 rounded px-2 text-xs font-medium ' + (node.dataset.proposalViewport === state.proposalViewport ? 'bg-white text-stone-900 shadow-sm' : 'text-stone-500');
+    });
+    var download = document.getElementById('download-data-js');
+    var approve = document.getElementById('approve-proposal');
+    var has = !!selectedProposal();
+    if (download) download.disabled = !has || state.busy;
+    if (approve) {
+      approve.disabled = !has || state.busy;
+      var current = selectedProposal();
+      approve.textContent = current && (current.estado === 'publicada' || current.estado === 'aprobada')
+        ? 'Ya publicada'
+        : (state.busy ? 'Guardando…' : 'Aprobada / Publicada');
+    }
+    var notice = document.getElementById('proposals-banner');
+    if (notice) notice.innerHTML = banner();
+    var empty = document.getElementById('proposal-empty');
+    if (empty) empty.hidden = has;
+  }
+
+  function renderAdminProposals() {
+    if (document.getElementById('admin-proposals')) {
+      updateProposalsChrome();
+      pushProposalPreview();
+      return;
+    }
+    app.innerHTML =
+      '<div id="admin-proposals" class="fixed inset-0 z-50 flex flex-col bg-stone-100">' +
+        '<header class="flex h-12 shrink-0 items-center gap-2 border-b border-stone-200 bg-white px-3">' +
+          '<button type="button" id="close-proposals" class="h-8 rounded-md px-2 text-xs font-medium text-stone-500">← Panel</button>' +
+          '<p class="text-sm font-semibold text-stone-900">Propuestas recibidas</p>' +
+          '<span class="rounded-full bg-stone-100 px-2 py-0.5 text-[11px] font-semibold text-stone-600">' + esc(state.profile.email || '') + '</span>' +
+        '</header>' +
+        '<div id="proposals-banner" class="shrink-0 px-3 pt-2">' + banner() + '</div>' +
+        '<div class="flex min-h-0 flex-1">' +
+          '<aside class="flex w-full max-w-sm shrink-0 flex-col border-r border-stone-200 bg-white">' +
+            '<div class="border-b border-stone-200 px-3 py-3">' +
+              '<p class="text-xs font-semibold uppercase tracking-[0.12em] text-stone-500">Cola de revisión</p>' +
+            '</div>' +
+            '<div id="proposals-list" class="min-h-0 flex-1 space-y-2 overflow-auto p-3"></div>' +
+          '</aside>' +
+          '<section class="flex min-w-0 flex-1 flex-col">' +
+            '<div class="flex shrink-0 flex-wrap items-center justify-center gap-2 border-b border-stone-200 bg-white px-3 py-2">' +
+              '<span class="text-xs font-medium text-stone-500">Vista</span>' +
+              '<div class="flex h-8 items-center rounded-md bg-stone-100 p-0.5">' +
+                '<button type="button" data-proposal-viewport="mobile" class="h-7 rounded px-2 text-xs font-medium">Móvil · 390px</button>' +
+                '<button type="button" data-proposal-viewport="desktop" class="h-7 rounded px-2 text-xs font-medium">Escritorio · 100%</button>' +
+              '</div>' +
+              '<button type="button" id="download-data-js" class="ml-auto rounded-full bg-stone-900 px-4 py-2 text-xs font-semibold text-white">Descargar data.js</button>' +
+              '<button type="button" id="approve-proposal" class="rounded-full bg-amber-500 px-4 py-2 text-xs font-semibold text-black">Aprobada / Publicada</button>' +
+            '</div>' +
+            '<div class="relative flex min-h-0 flex-1 justify-center overflow-auto bg-stone-100 p-4">' +
+              '<p id="proposal-empty" class="absolute inset-0 grid place-items-center text-sm text-stone-500">Selecciona una propuesta para revisarla.</p>' +
+              '<iframe id="proposal-preview" title="Vista previa propuesta" src="./preview/index.html#inicio" class="h-full border border-stone-200 bg-white shadow-sm" style="width:390px;max-width:390px"></iframe>' +
+            '</div>' +
+          '</section>' +
+        '</div>' +
+      '</div>';
+    updateProposalsChrome();
+    var frame = document.getElementById('proposal-preview');
+    if (frame) frame.addEventListener('load', function () { pushProposalPreview(); });
+  }
+
   function render() {
     if (!state.ready) {
       app.innerHTML = '<p class="px-6 py-16 text-center text-sm text-stone-500">Cargando…</p>';
@@ -318,7 +1004,15 @@
       renderLogin();
       return;
     }
+    if (isAdmin() && state.adminTab === 'proposals') {
+      renderAdminProposals();
+      return;
+    }
     if (state.editor) {
+      if (!isAdmin()) {
+        renderCollabStudio();
+        return;
+      }
       if (state.editor.id && window.VisiwebCanva) {
         window.VisiwebCanva.sync(state, {
           esc: esc,
@@ -431,6 +1125,7 @@
 
   function renderHome() {
     var admin = isAdmin();
+    var pending = state.proposals.filter(function (row) { return row.estado === 'pendiente'; }).length;
     app.innerHTML =
       '<div class="mx-auto w-full max-w-3xl px-4 py-6 sm:px-6 sm:py-10">' +
         '<header class="flex items-start justify-between gap-4">' +
@@ -440,6 +1135,12 @@
           '</div>' +
           '<button type="button" id="sign-out" class="rounded-full px-3 py-2 text-sm font-semibold text-stone-500">Salir</button>' +
         '</header>' +
+        (admin
+          ? '<div class="mt-6 flex gap-2 rounded-full bg-stone-100 p-1 text-sm font-semibold">' +
+              '<button type="button" data-admin-tab="restaurants" class="flex-1 rounded-full px-3 py-2 ' + (state.adminTab === 'restaurants' ? 'bg-white text-stone-900 shadow-sm' : 'text-stone-500') + '">Restaurantes</button>' +
+              '<button type="button" data-admin-tab="proposals" class="flex-1 rounded-full px-3 py-2 ' + (state.adminTab === 'proposals' ? 'bg-white text-stone-900 shadow-sm' : 'text-stone-500') + '">Propuestas recibidas' + (pending ? ' · ' + pending : '') + '</button>' +
+            '</div>'
+          : '') +
         '<div class="mt-6 space-y-4">' + banner() + '</div>' +
         '<div class="mt-6">' + (admin ? agencySummary() : summary()) + '</div>' +
         '<div class="mt-8 flex items-center justify-between gap-3">' +
@@ -779,14 +1480,29 @@
     (people.data || []).forEach(function (person) { state.owners[person.id] = person; });
   }
 
+  async function loadProposals() {
+    if (!isAdmin()) {
+      state.proposals = [];
+      return;
+    }
+    var result = await supabase
+      .from('propuestas_webs')
+      .select('*')
+      .order('created_at', { ascending: false });
+    if (result.error) throw result.error;
+    state.proposals = result.data || [];
+    if (state.selectedProposalId && !selectedProposal()) state.selectedProposalId = null;
+  }
+
   async function refresh() {
     state.busy = true;
     render();
     try {
       await loadRestaurants();
+      await loadProposals();
       state.error = '';
     } catch (error) {
-      setError('No se han podido cargar los restaurantes.');
+      setError('No se han podido cargar los datos del panel.');
     }
     state.busy = false;
     render();
@@ -1048,6 +1764,7 @@
         editor.name = restaurant.name || '';
         editor.slug = restaurant.slug || '';
         editor.tagline = restaurant.tagline || '';
+        editor.description = restaurant.description || '';
         editor.phone = restaurant.phone || '';
         editor.whatsapp = restaurant.whatsapp || '';
         editor.address = restaurant.address || '';
@@ -1058,6 +1775,10 @@
         editor.cover_image_url = restaurant.cover_image_url || '';
         editor.design = window.VisiwebDesign.merge(restaurant.design_config);
         editor.daily_menu = window.VisiwebDesign.mergeDaily(restaurant.daily_menu);
+        editor.viewport = 'mobile';
+        editor.chat = null;
+        editor.fromPreview = false;
+        editor.previewDirty = true;
         var categories = await supabase.from('menu_categories').select('*').eq('restaurant_id', id).order('sort_order');
         var items = await supabase.from('menu_items').select('*').eq('restaurant_id', id).order('sort_order');
         if (categories.error || items.error) throw categories.error || items.error;
@@ -1167,6 +1888,23 @@
         setError(dbMessage(error));
         render();
       });
+      return;
+    }
+    if (event.target.id === 'collab-chat-form') {
+      var input = document.getElementById('collab-chat-input');
+      var value = input ? input.value : '';
+      if (!state.editor) return;
+      ensureCollabChat(state.editor);
+      if (!String(value || '').trim()) return;
+      state.editor.chat.push({ role: 'user', text: value.trim() });
+      var reply = applyChatCommand(value);
+      state.editor.chat.push({ role: 'system', text: reply });
+      if (input) input.value = '';
+      state.editor.previewDirty = true;
+      state.notice = '';
+      state.error = '';
+      updateCollabChrome();
+      pushCollabPreview(true);
     }
   });
 
@@ -1287,6 +2025,41 @@
       return;
     }
     if (!button || button.dataset.canva) return;
+    if (button.dataset.adminTab && isAdmin()) {
+      state.adminTab = button.dataset.adminTab;
+      state.notice = '';
+      state.error = '';
+      render();
+      return;
+    }
+    if (button.id === 'close-proposals') {
+      state.adminTab = 'restaurants';
+      state.notice = '';
+      state.error = '';
+      render();
+      return;
+    }
+    if (button.dataset.proposal && isAdmin()) {
+      state.selectedProposalId = button.dataset.proposal;
+      state.notice = '';
+      state.error = '';
+      updateProposalsChrome();
+      pushProposalPreview();
+      return;
+    }
+    if (button.dataset.proposalViewport && isAdmin()) {
+      state.proposalViewport = button.dataset.proposalViewport;
+      updateProposalsChrome();
+      return;
+    }
+    if (button.id === 'download-data-js') {
+      downloadDataJs();
+      return;
+    }
+    if (button.id === 'approve-proposal') {
+      approveProposal();
+      return;
+    }
     if (button.id === 'new-restaurant') {
       state.editor = blankEditor();
       state.notice = '';
@@ -1348,6 +2121,15 @@
     if (button.id === 'close-editor') {
       state.editor = null;
       refresh();
+      return;
+    }
+    if (button.dataset.collabViewport && state.editor) {
+      state.editor.viewport = button.dataset.collabViewport;
+      updateCollabChrome();
+      return;
+    }
+    if (button.id === 'send-proposal') {
+      sendProposal();
       return;
     }
     if (button.id === 'back-step' && state.editor) {
@@ -1500,6 +2282,13 @@
       else dish.allergens.push(key);
       render();
     }
+  });
+
+  window.addEventListener('message', function (event) {
+    if (event.origin !== location.origin || !event.data) return;
+    if (event.data.type !== 'visiweb-ready') return;
+    if (state.editor && !isAdmin()) pushCollabPreview();
+    if (isAdmin() && state.adminTab === 'proposals') pushProposalPreview();
   });
 
   supabase.auth.getSession().then(function (result) {

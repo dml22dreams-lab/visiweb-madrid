@@ -1,0 +1,2876 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="robots" content="noindex">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  <title>Tu restaurante</title>
+  <meta name="description" content="Plantilla base limpia para tu restaurante.">
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#020617" media="(prefers-color-scheme: dark)">
+
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%231c1917'/%3E%3Cpath d='M11 7h10c0 5-3 8-5 8s-5-3-5-8z' fill='%23f59e0b'/%3E%3Cpath d='M16 15v8m-4 0h8' stroke='%23f59e0b' stroke-width='2.5' stroke-linecap='round'/%3E%3C/svg%3E">
+  <link rel="apple-touch-icon" href="./assets/favicon.svg">
+
+  <!-- demo-app.js convierte estos href en URLs absolutas del dominio real -->
+  <link id="alt-es" rel="alternate" hreflang="es" href="./">
+  <link id="alt-en" rel="alternate" hreflang="en" href="./?lang=en">
+  <link id="alt-default" rel="alternate" hreflang="x-default" href="./">
+
+  <!-- Open Graph / Twitter -->
+  <meta property="og:type" content="restaurant.restaurant">
+  <meta property="og:locale" content="es_ES">
+  <meta property="og:locale:alternate" content="en_GB">
+  <meta property="og:site_name" content="Tu restaurante">
+  <meta property="og:title" content="Tu restaurante">
+  <meta property="og:description" content="Plantilla base limpia para tu restaurante.">
+  <meta property="og:image" content="">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="">
+  <meta name="twitter:title" content="Tu restaurante">
+  <meta name="twitter:description" content="Plantilla base limpia para tu restaurante.">
+
+  <link rel="preload" href="./assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="./assets/fonts/cormorant-garamond-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
+  <style>
+    .flatpickr-calendar {
+      z-index: 80;
+      width: min(308px, calc(100vw - 1.5rem));
+      max-width: calc(100vw - 1.5rem);
+      padding: 1.05rem 0.85rem 0.7rem;
+      overflow: hidden;
+      border: 1px solid #eceae6;
+      border-radius: 1.25rem;
+      background: #fff;
+      box-shadow: 0 16px 40px -28px rgb(28 25 23 / 0.45);
+      font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+    }
+    .flatpickr-calendar.arrowTop:before,
+    .flatpickr-calendar.arrowTop:after,
+    .flatpickr-calendar.arrowBottom:before,
+    .flatpickr-calendar.arrowBottom:after {
+      display: none;
+    }
+    .flatpickr-months {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      height: 40px;
+      padding: 0 2.25rem;
+      margin-bottom: 0.35rem;
+      border-bottom: 1px solid #f4f2ef;
+    }
+    .flatpickr-months .flatpickr-month {
+      flex: 1 1 auto;
+      width: auto;
+      height: 40px;
+      overflow: visible;
+      color: #1c1917;
+    }
+    .flatpickr-current-month {
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      gap: 0.35rem;
+      position: static;
+      left: auto;
+      width: auto;
+      height: 40px;
+      padding: 0;
+      font-family: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+      font-size: 1.45rem;
+      font-weight: 500;
+      line-height: 40px;
+      letter-spacing: -0.02em;
+    }
+    .flatpickr-current-month span.cur-month,
+    .flatpickr-current-month .flatpickr-monthDropdown-months,
+    .flatpickr-current-month input.cur-year {
+      font-family: inherit;
+      font-size: inherit;
+      font-weight: 500;
+      line-height: inherit;
+      color: #1c1917;
+    }
+    .flatpickr-current-month .numInputWrapper {
+      width: 2.6em;
+    }
+    .flatpickr-current-month .numInputWrapper:hover {
+      background: transparent;
+    }
+    .flatpickr-current-month .numInputWrapper span.arrowUp,
+    .flatpickr-current-month .numInputWrapper span.arrowDown {
+      display: none;
+    }
+    .flatpickr-current-month input.cur-year {
+      background: transparent;
+      padding: 0;
+    }
+    .flatpickr-current-month span.cur-month:hover {
+      background: transparent;
+    }
+    .flatpickr-months .flatpickr-prev-month,
+    .flatpickr-months .flatpickr-next-month {
+      position: absolute;
+      top: 2px;
+      height: 36px;
+      width: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      color: #57534e;
+      fill: #57534e;
+      background: transparent;
+      border-radius: 999px;
+    }
+    .flatpickr-months .flatpickr-prev-month { left: 0; }
+    .flatpickr-months .flatpickr-next-month { right: 0; }
+    .flatpickr-months .flatpickr-prev-month.flatpickr-disabled,
+    .flatpickr-months .flatpickr-next-month.flatpickr-disabled {
+      display: none;
+    }
+    .flatpickr-months .flatpickr-prev-month svg,
+    .flatpickr-months .flatpickr-next-month svg {
+      width: 12px;
+      height: 12px;
+      fill: currentColor;
+    }
+    .flatpickr-months .flatpickr-prev-month:hover,
+    .flatpickr-months .flatpickr-next-month:hover {
+      background: transparent;
+      color: #000;
+    }
+    .flatpickr-months .flatpickr-prev-month:hover svg,
+    .flatpickr-months .flatpickr-next-month:hover svg {
+      fill: #000;
+    }
+    .flatpickr-weekdays {
+      height: 32px;
+      margin-top: 0.35rem;
+    }
+    .flatpickr-weekdays,
+    .flatpickr-weekdaycontainer {
+      width: 100%;
+    }
+    span.flatpickr-weekday {
+      color: #a8a29e;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+    .flatpickr-innerContainer,
+    .flatpickr-rContainer,
+    .flatpickr-days,
+    .dayContainer {
+      width: 100%;
+      min-width: 100%;
+      max-width: 100%;
+    }
+    .flatpickr-day {
+      height: 40px;
+      max-width: 40px;
+      line-height: 38px;
+      margin: 1px 0;
+      border: 1px solid transparent;
+      border-radius: 999px;
+      color: #292524;
+      font-size: 13px;
+      font-weight: 400;
+      transition: background-color 0.15s ease, color 0.15s ease;
+    }
+    .flatpickr-day:hover,
+    .flatpickr-day:focus {
+      background: #f6f4f1;
+      border-color: transparent;
+      color: #1c1917;
+    }
+    .flatpickr-day.today {
+      border-color: #e7e5e4;
+      background: transparent;
+      font-weight: 500;
+    }
+    .flatpickr-day.today:hover,
+    .flatpickr-day.today:focus {
+      background: #f6f4f1;
+      border-color: #e7e5e4;
+      color: #1c1917;
+    }
+    .flatpickr-day.selected,
+    .flatpickr-day.selected:hover,
+    .flatpickr-day.selected:focus,
+    .flatpickr-day.selected.today {
+      background: #1c1917;
+      border-color: #1c1917;
+      color: #fff;
+      font-weight: 500;
+    }
+    .flatpickr-day.flatpickr-disabled,
+    .flatpickr-day.flatpickr-disabled:hover,
+    .flatpickr-day.prevMonthDay,
+    .flatpickr-day.nextMonthDay {
+      color: #d6d3d1;
+      background: transparent;
+      border-color: transparent;
+    }
+    .flatpickr-day.flatpickr-disabled,
+    .flatpickr-day.flatpickr-disabled:hover {
+      cursor: not-allowed;
+    }
+    @media (prefers-color-scheme: dark) {
+      .flatpickr-calendar {
+        border-color: #292524;
+        background: #1c1917;
+        box-shadow: 0 18px 40px -28px rgb(0 0 0 / 0.7);
+      }
+      .flatpickr-months {
+        border-bottom-color: #292524;
+      }
+      .flatpickr-months .flatpickr-month,
+      .flatpickr-current-month span.cur-month,
+      .flatpickr-current-month .flatpickr-monthDropdown-months,
+      .flatpickr-current-month input.cur-year,
+      .flatpickr-day {
+        color: #fafaf9;
+      }
+      span.flatpickr-weekday {
+        color: #78716c;
+      }
+      .flatpickr-months .flatpickr-prev-month,
+      .flatpickr-months .flatpickr-next-month {
+        color: #d6d3d1;
+        background: transparent;
+      }
+      .flatpickr-months .flatpickr-prev-month:hover,
+      .flatpickr-months .flatpickr-next-month:hover {
+        background: transparent;
+        color: #fff;
+      }
+      .flatpickr-months .flatpickr-prev-month:hover svg,
+      .flatpickr-months .flatpickr-next-month:hover svg {
+        fill: #fff;
+      }
+      .flatpickr-day:hover,
+      .flatpickr-day:focus {
+        background: #292524;
+        color: #fafaf9;
+      }
+      .flatpickr-day.today {
+        border-color: #44403c;
+      }
+      .flatpickr-day.selected,
+      .flatpickr-day.selected:hover,
+      .flatpickr-day.selected:focus,
+      .flatpickr-day.selected.today {
+        background: #fafaf9;
+        border-color: #fafaf9;
+        color: #1c1917;
+      }
+      .flatpickr-day.flatpickr-disabled,
+      .flatpickr-day.flatpickr-disabled:hover,
+      .flatpickr-day.prevMonthDay,
+      .flatpickr-day.nextMonthDay {
+        color: #44403c;
+        background: transparent;
+        border-color: transparent;
+      }
+    }
+
+    #btn-lang-toggle.lang-btn {
+      position: relative;
+      height: 30px;
+      width: max-content;
+      padding: 0 8px;
+      box-sizing: border-box;
+      border-radius: 9999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 12px;
+      letter-spacing: 0.4px;
+      background: rgba(250, 250, 249, 0.4);
+      background-image: none;
+      -webkit-backdrop-filter: blur(16px) saturate(180%);
+      backdrop-filter: blur(16px) saturate(180%);
+      border: 1px solid rgba(231, 229, 228, 0.9);
+      box-shadow: 0 1px 2px rgba(28, 25, 23, 0.06);
+    }
+    #btn-lang-toggle .lang-text-wrapper {
+      position: relative;
+      display: grid;
+      place-items: center;
+      height: 100%;
+      overflow: hidden;
+    }
+    #btn-lang-toggle .lang-text-sizer {
+      grid-area: 1 / 1;
+      visibility: hidden;
+      pointer-events: none;
+      white-space: nowrap;
+      line-height: 1;
+      user-select: none;
+    }
+    #btn-lang-toggle .lang-text {
+      grid-area: 1 / 1;
+      display: inline-block;
+      white-space: nowrap;
+      line-height: 1;
+      color: #4b5563;
+      transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    #btn-lang-toggle .lang-text.slide-out-up {
+      transform: translateY(-100%);
+      opacity: 0;
+    }
+    #btn-lang-toggle .lang-text.slide-in-bottom {
+      transform: translateY(100%);
+      opacity: 0;
+    }
+    #btn-lang-toggle:hover .lang-text:not(.slide-out-up):not(.slide-in-bottom) {
+      transform: translateY(-3px);
+    }
+    .header-call {
+      display: inline-flex;
+      height: 36px;
+      width: 36px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 9999px;
+      color: #4b5563;
+      text-decoration: none;
+      background: rgba(250, 250, 249, 0.4);
+      -webkit-backdrop-filter: blur(16px) saturate(180%);
+      backdrop-filter: blur(16px) saturate(180%);
+      border: 1px solid rgba(231, 229, 228, 0.9);
+      box-shadow: 0 1px 2px rgba(28, 25, 23, 0.06);
+    }
+    .header-call .call-phone {
+      transform-box: fill-box;
+      transform-origin: center center;
+    }
+    .header-call:hover .call-phone {
+      animation: phone-shake .22s ease-in-out infinite;
+    }
+    .header-call:hover .call-waves span {
+      animation: wave-out .7s ease-out infinite;
+    }
+    .header-call:hover .call-waves span:nth-child(2) { animation-delay: .12s; }
+    .header-call:hover .call-waves span:nth-child(3) { animation-delay: .24s; }
+    @keyframes phone-shake {
+      0%, 100% { transform: rotate(0deg); }
+      25% { transform: rotate(-14deg); }
+      75% { transform: rotate(14deg); }
+    }
+    .call-icon {
+      position: relative;
+      display: inline-flex;
+      width: 1rem;
+      height: 1rem;
+    }
+    .call-phone {
+      transform-origin: center;
+    }
+    .call-waves {
+      position: absolute;
+      left: 62%;
+      top: -3px;
+      width: 12px;
+      height: 12px;
+      pointer-events: none;
+    }
+    .call-waves span {
+      position: absolute;
+      left: 0;
+      bottom: 2px;
+      border-top: 1.5px solid currentColor;
+      border-right: 1.5px solid currentColor;
+      border-radius: 0 8px 0 0;
+      opacity: 0;
+      transform: scale(.3);
+      transform-origin: left bottom;
+    }
+    .call-waves span:nth-child(1) { width: 4px; height: 4px; }
+    .call-waves span:nth-child(2) { width: 7px; height: 7px; }
+    .call-waves span:nth-child(3) { width: 10px; height: 10px; }
+    #bar-call:hover .call-phone {
+      animation: phone-ring .5s ease-in-out infinite;
+    }
+    #bar-call:hover .call-waves span {
+      animation: wave-out .7s ease-out infinite;
+    }
+    #bar-call:hover .call-waves span:nth-child(2) { animation-delay: .12s; }
+    #bar-call:hover .call-waves span:nth-child(3) { animation-delay: .24s; }
+    @keyframes phone-ring {
+      0%, 100% { transform: rotate(0deg); }
+      20% { transform: rotate(-14deg); }
+      40% { transform: rotate(12deg); }
+      60% { transform: rotate(-8deg); }
+      80% { transform: rotate(6deg); }
+    }
+    @keyframes wave-out {
+      0% { opacity: 0; transform: scale(.3); }
+      40% { opacity: 1; }
+      100% { opacity: 0; transform: scale(1); }
+    }
+    html {
+      scrollbar-gutter: stable;
+    }
+    .plan-pin {
+      transition: transform .55s cubic-bezier(.22, 1, .36, 1), box-shadow .55s cubic-bezier(.22, 1, .36, 1);
+    }
+    .plan-pin:hover,
+    .plan-pin:active {
+      transform: translateY(2px) scale(.985);
+      box-shadow: inset 0 3px 6px rgba(12, 10, 9, .35);
+    }
+    .btn-primary {
+      transition: transform .55s cubic-bezier(.22, 1, .36, 1), box-shadow .55s cubic-bezier(.22, 1, .36, 1), background-color .55s cubic-bezier(.22, 1, .36, 1);
+    }
+    .btn-primary:hover:not(:disabled) {
+      transform: translateY(2px) scale(.985);
+      box-shadow: inset 0 3px 6px rgba(12, 10, 9, .45);
+      background-color: #0f172a;
+    }
+    @media (prefers-color-scheme: dark) {
+      .btn-primary:hover:not(:disabled) {
+        background-color: #f1f5f9;
+      }
+    }
+    .btn-whatsapp {
+      transition: transform .22s ease, box-shadow .22s ease, background-color .22s ease;
+    }
+    .btn-whatsapp:hover {
+      transform: translateY(2px) scale(.985);
+      box-shadow: inset 0 3px 6px rgba(6, 78, 59, .45);
+    }
+    .btn-call {
+      transition: transform .55s cubic-bezier(.22, 1, .36, 1), box-shadow .55s cubic-bezier(.22, 1, .36, 1), border-color .55s cubic-bezier(.22, 1, .36, 1);
+    }
+    .btn-call:hover {
+      transform: translateY(2px) scale(.985);
+      box-shadow: inset 0 3px 6px rgba(12, 10, 9, .18);
+    }
+    @media (prefers-color-scheme: dark) {
+      #btn-lang-toggle.lang-btn {
+        background: rgba(41, 37, 36, 0.45);
+        border-color: rgba(87, 83, 78, 0.8);
+      }
+      #btn-lang-toggle .lang-text {
+        color: #ffffff;
+      }
+      .header-call {
+        background: rgba(41, 37, 36, 0.45);
+        border-color: rgba(87, 83, 78, 0.8);
+        color: #ffffff;
+      }
+    }
+    #allergen-table .is-allergen-col { background-color: #ecfdf5; }
+    @media (prefers-color-scheme: dark) {
+      #allergen-table .is-allergen-col { background-color: rgba(6, 78, 59, 0.45); }
+    }
+    #open-filter-btn:hover { color: #000; }
+    .site-split { border-top: 1px solid #e7e5e4; }
+    footer .btn-call {
+      background: transparent;
+      box-shadow: none;
+    }
+    #booking-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 90;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    #booking-modal[hidden] { display: none !important; }
+    #reserve-options-modal[hidden] { display: none !important; }
+    body.reserve-options-open { overflow: hidden; }
+    .booking-modal-backdrop {
+      position: absolute;
+      inset: 0;
+      border: 0;
+      background: rgba(28, 25, 23, 0.35);
+      -webkit-backdrop-filter: blur(6px);
+      backdrop-filter: blur(6px);
+      cursor: pointer;
+    }
+    body.booking-modal-open { overflow: hidden; }
+    .booking-wa-mark {
+      display: grid;
+      width: 3rem;
+      height: 3rem;
+      margin-inline: auto;
+      place-items: center;
+      border-radius: 9999px;
+      background: #25D366;
+      color: #fff;
+    }
+    .booking-wa-thread {
+      border: 1px solid #e7e5e4;
+      background: #f6f3ee;
+      border-radius: 1.25rem;
+      padding: 0.85rem;
+      text-align: left;
+    }
+    .booking-wa-bubble {
+      border-radius: 1rem 1rem 0.3rem 1rem;
+      background: #d9fdd3;
+      padding: 0.75rem 0.85rem 0.4rem;
+      box-shadow: 0 1px 1px rgba(28, 25, 23, 0.06);
+    }
+    .booking-wa-bubble p { margin: 0; }
+    #booking-wa-message > p:first-child { margin-bottom: 0.7rem; }
+    #booking-wa-message > p + p { margin-top: 0.15rem; }
+    @media (prefers-color-scheme: dark) {
+      .booking-modal-backdrop { background: rgba(0, 0, 0, 0.55); }
+      .booking-wa-thread { background: #1c1917; border-color: #44403c; }
+      .booking-wa-bubble { background: #123524; color: #ecfdf5; }
+    }
+    #reviews-list > li {
+      cursor: pointer;
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+    #reviews-list > li:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 24px -16px rgb(28 25 23 / 0.35);
+    }
+    #booking-form .book-field { align-self: start; min-width: 0; }
+    #booking-form .grid,
+    #booking-form input,
+    #booking-form textarea,
+    #booking-form .book-select,
+    #booking-form .book-select-trigger,
+    #booking-form .book-phone { min-width: 0; max-width: 100%; }
+    #comensales-reserva,
+    #hora-reserva { cursor: pointer; padding-right: 3.5rem; }
+    #booking-form .book-field > input,
+    #booking-form .book-date-wrap > input,
+    #booking-form .book-select > input,
+    #booking-form textarea,
+    #booking-form .book-select-trigger,
+    #booking-form .book-phone,
+    #booking-form .book-field > input:focus,
+    #booking-form .book-field > input:focus-visible,
+    #booking-form .book-date-wrap > input:focus,
+    #booking-form .book-date-wrap > input:focus-visible,
+    #booking-form .book-select > input:focus,
+    #booking-form .book-select > input:focus-visible,
+    #booking-form textarea:focus,
+    #booking-form textarea:focus-visible,
+    #booking-form .book-select-trigger:focus,
+    #booking-form .book-select-trigger:focus-visible,
+    #booking-form .book-select-trigger[aria-expanded='true'],
+    #booking-form .book-phone:focus-within {
+      border-radius: 0.75rem;
+    }
+    #booking-form .book-phone input,
+    #booking-form .book-phone input:focus,
+    #booking-form .book-phone input:focus-visible {
+      border-radius: 0;
+    }
+    #booking-form input:-webkit-autofill,
+    #booking-form input:-webkit-autofill:hover,
+    #booking-form input:-webkit-autofill:focus,
+    #booking-form textarea:-webkit-autofill,
+    #booking-form textarea:-webkit-autofill:hover,
+    #booking-form textarea:-webkit-autofill:focus {
+      -webkit-text-fill-color: #0f172a;
+      caret-color: #0f172a;
+      box-shadow: 0 0 0 1000px #fff inset !important;
+      transition: background-color 9999s ease-out;
+    }
+    #booking-form input:focus,
+    #booking-form input:focus-visible,
+    #booking-form textarea:focus,
+    #booking-form textarea:focus-visible,
+    #booking-form .book-select-trigger:focus,
+    #booking-form .book-select-trigger:focus-visible,
+    #booking-form .book-phone:focus,
+    #booking-form .book-phone:focus-visible,
+    #booking-form .book-phone:focus-within {
+      outline: 0 none transparent;
+      outline-width: 0;
+      outline-offset: 0;
+      box-shadow: none;
+    }
+    #booking-form .book-select-menu { display: flex; flex-direction: column; gap: 0.375rem; }
+    #booking-form .book-select-option { border: 1px solid transparent; background: transparent; }
+    #booking-form .book-select-option[aria-selected='true'],
+    #booking-form .book-select-option[aria-selected='true']:hover { border-color: transparent; background: #f1f5f9; }
+    #booking-form .book-select-option:hover { border-color: #0f172a; background: #ffffff; }
+    @media (prefers-color-scheme: dark) {
+      #booking-form .book-select-option[aria-selected='true'],
+      #booking-form .book-select-option[aria-selected='true']:hover { border-color: transparent; background: #1e293b; }
+      #booking-form .book-select-option:hover { border-color: #f8fafc; background: transparent; }
+      #booking-form input:-webkit-autofill,
+      #booking-form input:-webkit-autofill:hover,
+      #booking-form input:-webkit-autofill:focus,
+      #booking-form textarea:-webkit-autofill,
+      #booking-form textarea:-webkit-autofill:hover,
+      #booking-form textarea:-webkit-autofill:focus {
+        -webkit-text-fill-color: #f8fafc;
+        caret-color: #f8fafc;
+        box-shadow: 0 0 0 1000px #020617 inset !important;
+      }
+    }
+    .book-wheel {
+      position: relative;
+      display: flex;
+      height: 9.75rem;
+      margin-top: 0.75rem;
+      overflow: hidden;
+      border-radius: 1.35rem;
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.95), 0 16px 36px -24px rgba(15, 23, 42, 0.45);
+      user-select: none;
+    }
+    .book-wheel::before,
+    .book-wheel::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 2.65rem;
+      z-index: 20;
+      pointer-events: none;
+    }
+    .book-wheel::before {
+      top: 0;
+      background: linear-gradient(to bottom, #ffffff 15%, rgba(255, 255, 255, 0));
+    }
+    .book-wheel::after {
+      bottom: 0;
+      background: linear-gradient(to top, #f8fafc 15%, rgba(248, 250, 252, 0));
+    }
+    .book-wheel-lens {
+      position: absolute;
+      top: 50%;
+      left: 0.7rem;
+      right: 0.7rem;
+      height: 2.55rem;
+      transform: translateY(-50%);
+      border-radius: 999px;
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .book-wheel-colon {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      z-index: 12;
+      transform: translate(-50%, -54%);
+      font-size: 0.95rem;
+      font-weight: 500;
+      line-height: 1;
+      letter-spacing: 0;
+      color: #94a3b8;
+      pointer-events: none;
+    }
+    .book-wheel-col {
+      position: relative;
+      z-index: 10;
+      width: 50%;
+      height: 100%;
+      min-height: 0;
+      overflow-y: auto;
+      overscroll-behavior-y: contain;
+      touch-action: pan-y;
+      text-align: center;
+      scroll-snap-type: y mandatory;
+    }
+    .book-wheel-single .book-wheel-col { width: 100%; }
+    .time-hour-item,
+    .time-minute-item,
+    .time-guest-item {
+      display: flex;
+      height: 2.5rem;
+      align-items: center;
+      justify-content: center;
+      scroll-snap-align: center;
+      font-variant-numeric: tabular-nums;
+      font-size: 0.95rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      color: #cbd5e1;
+      cursor: pointer;
+      transition: color .2s ease, font-size .2s ease, letter-spacing .2s ease;
+    }
+    .time-guest-item { letter-spacing: 0.04em; }
+    .time-hour-item[aria-selected="true"],
+    .time-minute-item[aria-selected="true"],
+    .time-guest-item[aria-selected="true"] {
+      font-size: 1.2rem;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      color: #0f172a;
+    }
+    .time-guest-item[aria-selected="true"] {
+      font-size: 1.02rem;
+      letter-spacing: 0.06em;
+    }
+    #book-time-pick,
+    #book-guests-pick {
+      min-height: 2.55rem;
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
+      color: #0f172a;
+      box-shadow: none;
+    }
+    #book-time-pick:hover:not(:disabled),
+    #book-guests-pick:hover:not(:disabled) {
+      transform: none;
+      border-color: #94a3b8;
+      background: #ffffff;
+      color: #0f172a;
+      box-shadow: none;
+    }
+    @media (prefers-color-scheme: dark) {
+      .book-wheel {
+        border-color: rgba(255, 255, 255, 0.08);
+        background: linear-gradient(180deg, #0f172a 0%, #020617 100%);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 16px 36px -24px rgba(0, 0, 0, 0.7);
+      }
+      .book-wheel::before { background: linear-gradient(to bottom, #0f172a 15%, rgba(15, 23, 42, 0)); }
+      .book-wheel::after { background: linear-gradient(to top, #020617 15%, rgba(2, 6, 23, 0)); }
+      .book-wheel-lens {
+        border-color: #64748b;
+        background: #ffffff;
+      }
+      .book-wheel-colon { color: #94a3b8; }
+      .time-hour-item,
+      .time-minute-item,
+      .time-guest-item { color: #475569; }
+      .time-hour-item[aria-selected="true"],
+      .time-minute-item[aria-selected="true"],
+      .time-guest-item[aria-selected="true"] { color: #020617; }
+      #book-time-pick,
+      #book-guests-pick,
+      #book-time-pick:hover:not(:disabled),
+      #book-guests-pick:hover:not(:disabled) {
+        border-color: #64748b;
+        background: #ffffff;
+        color: #020617;
+        box-shadow: none;
+      }
+    }
+    @media (prefers-color-scheme: dark) {
+      .site-split { border-top-color: #e7e5e4; }
+    }
+    .site-nav { z-index: 50; background-color: #fff; }
+    #menu-tabs-bar {
+      top: calc(var(--site-nav-h, 0px) - 2px);
+      margin-top: 0;
+      padding-top: 0;
+      background-color: transparent;
+      background-clip: border-box;
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+    }
+    #menu-chip-band {
+      background-color: #fff;
+      padding-top: 0.75rem;
+    }
+    #menu-tabs-bar::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: -6px;
+      height: 8px;
+      background-color: #fff;
+      pointer-events: none;
+    }
+    #allergen-table thead th { top: var(--site-nav-h, 0px); }
+    .allergen-filter-root {
+      position: fixed;
+      inset: 0;
+      z-index: 60;
+    }
+    .allergen-filter-backdrop {
+      position: absolute;
+      inset: 0;
+      border: 0;
+      background: rgba(23, 23, 23, .28);
+    }
+    .allergen-filter-panel {
+      position: absolute;
+      left: 50%;
+      display: flex;
+      flex-direction: column;
+      width: min(320px, calc(100vw - 32px));
+      max-height: min(70vh, 520px);
+      overflow: hidden;
+      padding: 16px;
+      border-radius: 22px;
+      background: #fff;
+      box-shadow: 0 18px 48px rgba(23, 23, 23, .2);
+      transform: translateX(-50%);
+    }
+    .allergen-filter-close {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      display: grid;
+      place-items: center;
+      width: 28px;
+      height: 28px;
+      margin: 0;
+      padding: 0;
+      border: 0;
+      border-radius: 999px;
+      background: transparent;
+      color: #44403c;
+    }
+    .allergen-filter-close svg { display: block; width: 16px; height: 16px; }
+    .allergen-filter-title {
+      margin: 0 28px 12px 0;
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 1.2;
+      color: #171717;
+    }
+    .allergen-filter-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      align-content: start;
+      min-height: 0;
+      overflow: auto;
+    }
+    .allergen-filter-list .filter-chip {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-sizing: border-box;
+      width: 100%;
+      min-height: 36px;
+      padding: 7px 10px;
+      line-height: 1.25;
+      text-align: center;
+      white-space: normal;
+    }
+    .allergen-filter-list .filter-chip.filter-chip-on,
+    .allergen-filter-list .filter-chip[aria-pressed="true"] {
+      background: #15803D;
+      border-color: #15803D;
+      color: #fff;
+    }
+    #open-filter-btn.is-on {
+      border-color: #15803D;
+      background: #15803D;
+      color: #fff;
+    }
+    #clear-allergen-filters { margin-top: 18px; }
+    #menu-chip-row {
+      width: 100%;
+      min-width: 0;
+      justify-content: flex-start;
+      cursor: grab;
+    }
+    #menu-chip-row.is-dragging {
+      cursor: grabbing;
+      user-select: none;
+    }
+    #allergen-below {
+      display: flex;
+      flex: none;
+      align-items: center;
+      position: relative;
+      box-sizing: border-box;
+      height: 48px;
+      padding: 4px 0 6px 1rem;
+      background-color: transparent;
+    }
+    .allergen-below-bg {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 19px;
+      z-index: 0;
+      background-color: #fff;
+      pointer-events: none;
+    }
+    .menu-edge { z-index: 1; }
+    .menu-notch-fill { fill: #ffffff; }
+    .menu-notch-line { stroke: #e5e7eb; }
+    .menu-rule { background-color: #e5e7eb; }
+    .menu-notch {
+      margin-left: -19px;
+      width: 34px;
+      height: 48px;
+      flex: none;
+    }
+    #allergen-below[hidden] { display: none !important; }
+    @media (max-width: 767px) {
+      #allergen-below { display: flex !important; }
+    }
+    .diet-vegetarian {
+      border-color: #6b4630;
+      background-color: #8a5a3c;
+      color: #fffaf6;
+    }
+    .tab {
+      padding-top: 0.55rem;
+      padding-bottom: 0.55rem;
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
+    #open-filter-btn {
+      position: relative;
+      z-index: 10;
+      box-sizing: border-box;
+      height: 38px;
+      margin: 0;
+      padding: 0 0.75rem;
+    }
+    #open-filter-btn.is-on:hover { color: #fff; }
+    .tab { justify-content: center; text-align: center; }
+    .site-nav-link { justify-content: center; text-align: center; }
+    @media (prefers-color-scheme: dark) {
+      #open-filter-btn:hover { color: #fff; }
+      .site-nav,
+      #menu-tabs-bar::before,
+      #menu-chip-band,
+      .allergen-below-bg { background-color: #1c1917; }
+      #menu-tabs-bar { background-color: transparent; }
+      .menu-notch-fill { fill: #1c1917; }
+      .menu-notch-line { stroke: #44403c; }
+      .menu-rule { background-color: #44403c; }
+      .allergen-filter-panel { background: #1c1917; }
+      .allergen-filter-title { color: #fafaf9; }
+      .allergen-filter-close { color: #e7e5e4; }
+    }
+    @media (pointer: coarse), (hover: none) {
+      #quick-bar a,
+      .header-call {
+        min-height: 44px;
+      }
+      #btn-lang-toggle.lang-btn {
+        height: 30px;
+        min-height: 30px;
+      }
+      #btn-lang-toggle:hover .lang-text,
+      #bar-call:hover .call-phone,
+      #bar-call:hover .call-waves span,
+      .header-call:hover .call-phone,
+      .header-call:hover .call-waves span {
+        animation: none;
+        transform: none;
+      }
+      #quick-bar { display: grid; }
+    }
+    @media (max-width: 767px) {
+      .header-call { display: none; }
+    }
+    footer { padding-bottom: calc(7rem + env(safe-area-inset-bottom)); }
+    @media (pointer: fine) and (hover: hover) {
+      #quick-bar { display: none; }
+    }
+    @media (min-width: 768px) {
+      footer { padding-bottom: 7rem; }
+    }
+    #quick-bar {
+      width: 100%;
+      max-width: 100%;
+    }
+    #quick-bar {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+    #quick-bar > a {
+      width: 100%;
+      min-width: 0;
+      padding-left: 0.75rem;
+      padding-right: 0.75rem;
+      text-align: center;
+    }
+    #hero-facts {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin-top: 1.75rem;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+      padding: 0;
+    }
+    #hero-facts > * { min-width: 0; }
+    #hero-facts > * + * {
+      margin-top: 0.925rem;
+      border-top: 1px solid rgb(229 229 229 / 0.7);
+      padding-top: 1.175rem;
+    }
+    #hero-facts > *:last-child {
+      border-bottom: 1px solid rgb(229 229 229 / 0.7);
+      padding-bottom: 1.175rem;
+    }
+    @media (min-width: 768px) {
+      #hero-facts > *:last-child {
+        border-bottom: 0;
+        padding-bottom: 0.25rem;
+      }
+    }
+    a.hero-fact {
+      color: inherit;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    a.hero-fact:hover { background: transparent; }
+    a.hero-fact:hover .hero-fact-value,
+    a.hero-fact:hover .hero-fact-compact,
+    a.hero-fact:hover .hero-fact-link-short,
+    a.hero-fact:hover .hero-fact-badge { color: #000; }
+    a.hero-fact:focus-visible,
+    button.hero-fact:focus-visible {
+      outline: 2px solid #a8a29e;
+      outline-offset: 2px;
+    }
+    a.hero-fact,
+    button.hero-fact,
+    .hero-fact {
+      display: flex;
+      align-items: center;
+      gap: 0.875rem;
+      width: 100%;
+      margin: 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+      padding: 0.25rem 0;
+      color: inherit;
+      font: inherit;
+      text-align: left;
+      cursor: pointer;
+    }
+    .hero-fact-icon {
+      display: grid;
+      flex: none;
+      place-items: center;
+      align-self: center;
+      width: 1.125rem;
+      height: 1.125rem;
+      color: #a3a3a3;
+    }
+    .hero-fact-icon svg {
+      display: block;
+      width: 1.125rem;
+      height: 1.125rem;
+    }
+    .hero-fact-body { min-width: 0; flex: 1 1 auto; }
+    .hero-fact-label,
+    .hero-fact-link-long,
+    .hero-fact-note { display: none; }
+    .hero-fact-compact { display: block; }
+    .hero-fact-compact,
+    .hero-fact-value {
+      margin: 0;
+      font-size: 0.875rem;
+      font-weight: 400;
+      line-height: 1.35;
+      letter-spacing: 0;
+      white-space: normal;
+      overflow-wrap: break-word;
+      color: #404040;
+    }
+    #info-today { white-space: nowrap; }
+    a.hero-fact:nth-child(2) .hero-fact-body {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+    }
+    a.hero-fact:nth-child(2) .hero-fact-top { display: none; }
+    a.hero-fact:nth-child(2) .hero-fact-value { flex: 1 1 auto; }
+    .hero-fact-link-short {
+      display: inline;
+      flex: none;
+      max-width: none;
+      font-size: 0.75rem;
+      font-weight: 400;
+      line-height: 1.2;
+      color: #000;
+      text-align: right;
+      text-decoration: none;
+    }
+    a.hero-fact:nth-child(2):hover .hero-fact-link-short { color: #000; }
+    .hero-fact-chevron {
+      display: grid;
+      flex: none;
+      place-items: center;
+      width: 1rem;
+      height: 1rem;
+      margin-left: 0.75rem;
+      color: #171717;
+    }
+    .hero-fact-chevron svg {
+      display: block;
+      width: 1rem;
+      height: 1rem;
+    }
+    button.hero-social {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      width: 100%;
+      margin: 0;
+      border: 0;
+      border-top: 1px solid rgb(229 229 229 / 0.7);
+      background: transparent;
+      padding: 0.95rem 0;
+      color: #404040;
+      font: inherit;
+      font-size: 0.875rem;
+      line-height: 1.35;
+      text-align: left;
+      cursor: pointer;
+    }
+    #socials-sheet {
+      position: fixed;
+      z-index: 60;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      top: var(--socials-top, 12rem);
+      overflow: hidden;
+      overscroll-behavior: none;
+      background: #fff;
+      color: #171717;
+    }
+    #socials-sheet[hidden] { display: none; }
+    html.socials-open,
+    html.socials-open body {
+      overflow: hidden;
+      overscroll-behavior: none;
+    }
+    html.socials-open #quick-bar { visibility: hidden; }
+    .socials-sheet-inner {
+      width: 100%;
+      max-width: 48rem;
+      margin: 0 auto;
+      padding: 1.35rem 1.5rem calc(1.75rem + env(safe-area-inset-bottom));
+    }
+    .socials-sheet-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.25rem;
+      min-height: 3.25rem;
+      padding-bottom: 0.85rem;
+    }
+    #socials-sheet button.hero-social {
+      padding: 1.45rem 0;
+      font-size: 1rem;
+    }
+    #socials-title {
+      margin: 0;
+      font-family: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+      font-size: 1.65rem;
+      font-weight: 600;
+      line-height: 1.1;
+    }
+    #socials-close {
+      display: grid;
+      flex: none;
+      place-items: center;
+      width: 2.25rem;
+      height: 2.25rem;
+      margin: 0;
+      border: 0;
+      border-radius: 999px;
+      background: transparent;
+      color: inherit;
+      cursor: pointer;
+    }
+    #socials-close svg { width: 1.15rem; height: 1.15rem; }
+    button.hero-social:hover { color: #000; }
+    button.hero-social:focus-visible {
+      outline: 2px solid #a8a29e;
+      outline-offset: 2px;
+    }
+    .hero-fact-badge {
+      flex: none;
+      align-self: center;
+      margin-left: 0.75rem;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      padding: 0;
+      font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+      font-size: 0.875rem;
+      font-weight: 600;
+      letter-spacing: 0;
+      line-height: 1;
+      color: #171717;
+    }
+    @media (prefers-color-scheme: dark) {
+      #hero-facts,
+      a.hero-fact,
+      .hero-fact { background: transparent; }
+      #hero-facts > * + * { border-top-color: rgb(255 255 255 / 0.14); }
+      #hero-facts > *:last-child { border-bottom-color: rgb(255 255 255 / 0.14); }
+      #socials-sheet { background: #020617; color: #f8fafc; }
+      button.hero-social { border-top-color: rgb(255 255 255 / 0.14); color: #d4d4d4; }
+      button.hero-social:hover { color: #fafafa; }
+      .hero-fact-chevron { color: #d4d4d4; }
+      .hero-fact-compact,
+      .hero-fact-value { color: #d4d4d4; }
+      .hero-fact-icon,
+      .hero-fact-link-short { color: #a3a3a3; }
+      a.hero-fact:hover .hero-fact-compact,
+      a.hero-fact:hover .hero-fact-value,
+      a.hero-fact:hover .hero-fact-link-short,
+      a.hero-fact:hover .hero-fact-badge { color: #fafafa; }
+      a.hero-fact:nth-child(2):hover .hero-fact-link-short { color: #fafafa; }
+      .hero-fact-badge {
+        background: transparent;
+        border: 0;
+        color: #fafafa;
+      }
+    }
+    #hero-media,
+    #hero-media img {
+      border-radius: 1.25rem;
+    }
+    #hero-media {
+      width: 100%;
+      aspect-ratio: 16 / 5;
+      height: auto;
+    }
+    #hero-media img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 65%;
+    }
+    .hero-kicker { display: none; }
+    @media (max-width: 639px) {
+      .hero-intro { display: none; }
+      #inicio-hero {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        padding: 1.35rem 1.25rem 0;
+      }
+      .hero-stage {
+        position: relative;
+        margin-bottom: 2.25rem;
+        overflow: hidden;
+        border-radius: 1.25rem;
+      }
+      #hero-media {
+        aspect-ratio: auto;
+        height: 13rem;
+        max-height: 460px;
+        margin-top: 0;
+        margin-bottom: 0;
+      }
+      #hero-media img {
+        height: 100%;
+        max-height: none;
+        object-position: center 60%;
+      }
+      .hero-kicker {
+        display: block;
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        margin: 0;
+        padding: 2.75rem 1rem 0.85rem;
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.62), rgba(0, 0, 0, 0.12) 58%, transparent);
+        color: #fff;
+        text-align: center;
+        font-family: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+        font-size: 1.15rem;
+        font-weight: 500;
+        letter-spacing: 0.01em;
+        line-height: 1.2;
+        pointer-events: none;
+      }
+      #hero-facts { margin: 0; }
+      [data-page="inicio"] section[aria-labelledby="featured-title"] {
+        margin-top: 3.5rem;
+        padding: 0 1.25rem 2rem;
+      }
+      [data-page="inicio"] section[aria-labelledby="featured-title"] > div {
+        border-top-width: 0;
+        padding-top: 0;
+      }
+      #featured-title { margin-bottom: 1.85rem; }
+      #featured-list {
+        margin-top: 0;
+        gap: 1.65rem;
+      }
+      #featured-list > li:nth-child(n + 4) { display: none; }
+      .dish-price { top: 0.2rem; }
+      #panels h3 {
+        flex: 1 1 auto;
+        min-width: 0;
+        max-height: 2.5em;
+        min-height: 2.5em;
+        overflow: hidden;
+        line-height: 1.25;
+      }
+      #panels li p {
+        max-height: 4.125em;
+        min-height: 4.125em;
+        overflow: hidden;
+        line-height: 1.375;
+      }
+      [data-page="inicio"] { padding-bottom: 0; }
+      [data-page="carta"] > div:first-child,
+      [data-page="local"] > section,
+      [data-page="eventos"] > section,
+      [data-page="reservas"] > section {
+        padding-top: 1rem;
+      }
+      [data-page="reservas"] { padding-top: 0; }
+    }
+    @media (orientation: landscape) and (max-height: 500px) {
+      #contenido { min-height: 0; }
+      #quick-bar { position: static; box-shadow: none; }
+      footer { padding-bottom: 0; }
+      #allergen-dialog { max-height: none; }
+    }
+    html, body {
+      max-width: 100%;
+    }
+    main, footer, header {
+      max-width: 100%;
+      overflow-x: clip;
+    }
+    img, video, iframe { max-width: 100%; }
+    footer .grid > *,
+    .footer-panel,
+    .hours-row,
+    .btn-call,
+    .btn-whatsapp,
+    .btn-primary,
+    .btn-outline {
+      min-width: 0;
+      max-width: 100%;
+    }
+    .hours-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      column-gap: 1rem;
+    }
+    .hours-row > dd {
+      justify-self: end;
+      text-align: right;
+    }
+    .btn-call,
+    .btn-whatsapp {
+      height: auto;
+      white-space: normal;
+      text-align: center;
+    }
+    #reviews-score {
+      flex-wrap: wrap;
+      white-space: normal;
+    }
+    .site-nav-links {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      align-items: end;
+      width: 100%;
+      text-align: center;
+    }
+    .site-nav-link {
+      white-space: nowrap;
+    }
+    .site-nav-links.has-eventos {
+      display: flex;
+      grid-template-columns: none;
+      justify-content: flex-start;
+      align-items: center;
+      gap: 14px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    .site-nav-links.has-eventos::-webkit-scrollbar { display: none; }
+    .site-nav-links.has-eventos .site-nav-link {
+      flex: 0 0 auto;
+      width: auto;
+      min-width: max-content;
+      padding-left: 8px;
+      padding-right: 8px;
+    }
+    .site-nav-links.has-eventos .site-nav-link:last-child {
+      padding-right: 1.25rem;
+    }
+    @media (min-width: 640px) {
+      .site-nav-links.has-eventos {
+        gap: clamp(16px, 3vw, 36px);
+        justify-content: space-evenly;
+      }
+    }
+    .text-xs { font-size: 0.795rem; }
+    .text-sm,
+    .focus\:text-sm:focus,
+    .btn-primary,
+    .btn-outline,
+    .btn-whatsapp,
+    .hours-row,
+    .book-field input,
+    .book-field textarea,
+    .book-phone-plus,
+    .book-field .book-phone input,
+    .book-select-trigger,
+    .book-select-option { font-size: 0.928rem; }
+    @media (max-width: 639px) {
+      a.hero-cta {
+        min-height: 0;
+        padding: 0.625rem 1.5rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+      }
+    }
+    @media (min-width: 640px) {
+      .hero-title { margin-top: 1.25rem; line-height: 1.05; }
+      .hero-sub { margin-top: 1.25rem; line-height: 1.625; }
+      .hero-cta-wrap { margin-top: 2.25rem; }
+      #hero-media { margin-top: 2rem; }
+    }
+    .text-base,
+    .dish-price { font-size: 1.06rem; }
+    #featured-list .dish-price.is-low {
+      margin-top: 0.75rem;
+      top: 0;
+    }
+    .text-lg { font-size: 1.193rem; }
+    .text-xl { font-size: 1.325rem; }
+    .text-2xl { font-size: 1.59rem; }
+    .text-3xl { font-size: 1.988rem; }
+    .text-4xl { font-size: 2.385rem; }
+    .text-5xl { font-size: 3.18rem; }
+    .text-\[1\.65rem\] { font-size: 1.749rem; }
+    .text-\[9px\] { font-size: 10px; }
+    .text-\[10px\] { font-size: 11px; }
+    .text-\[11px\],
+    .pill-allergen,
+    .hours-closed,
+    .book-field,
+    .filter-chip { font-size: 12px; }
+    .text-\[13px\] { font-size: 14px; }
+    .text-\[15px\] { font-size: 16px; }
+    #nav-eventos[hidden],
+    [data-page="eventos"][hidden] { display: none !important; }
+    .eventos-hero {
+      position: relative;
+      overflow: hidden;
+      min-height: 26rem;
+      margin: 0;
+      border-radius: 1.35rem;
+      background: #3f2a1d;
+    }
+    .eventos-hero img,
+    .eventos-hero video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 42%;
+    }
+    @media (max-width: 639px) {
+      .eventos-hero img,
+      .eventos-hero video {
+        object-position: 68% 64%;
+        transform: scale(1.12);
+        transform-origin: 68% 64%;
+      }
+    }
+    .eventos-hero video {
+      z-index: 0;
+      opacity: 1;
+      transition: opacity 1s ease-in-out;
+    }
+    .eventos-hero video.is-cover { z-index: 1; }
+    .eventos-hero video.is-out { opacity: 0; }
+    .eventos-hero video.is-swap { transition: none; }
+    .eventos-hero::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background:
+        linear-gradient(180deg, rgba(32, 18, 10, 0.55) 0%, rgba(42, 24, 14, 0.12) 34%, rgba(28, 16, 8, 0.9) 100%);
+    }
+    .eventos-hero-copy {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      min-height: 26rem;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: 1.35rem 1.35rem 1.5rem;
+      color: #faf6f1;
+    }
+    .eventos-badge {
+      display: inline-flex;
+      width: fit-content;
+      max-width: 100%;
+      margin: 0;
+      padding: 0.32rem 0.72rem;
+      border: 1px solid rgba(255, 248, 240, 0.45);
+      border-radius: 999px;
+      background: rgba(28, 16, 8, 0.72);
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+    .eventos-hero-main {
+      display: flex;
+      max-width: 100%;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .eventos-hero-title {
+      margin: 0;
+      font-size: clamp(3.1rem, 11vw, 5rem);
+      font-weight: 500;
+      line-height: 0.92;
+      letter-spacing: -0.03em;
+    }
+    .eventos-hero-sub {
+      max-width: 18rem;
+      margin: 0.8rem 0 0;
+      font-size: clamp(1.28rem, 3.2vw, 1.75rem);
+      font-weight: 500;
+      line-height: 1.15;
+    }
+    .eventos-cta {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: fit-content;
+      min-height: 2.75rem;
+      margin-top: 1.15rem;
+      padding: 0 1.35rem;
+      border: 0;
+      border-radius: 999px;
+      background: #faf6f1;
+      color: #1c1917;
+      font: inherit;
+      font-size: 0.92rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .eventos-cta:hover { background: #fff; }
+    .eventos-lead {
+      max-width: 36rem;
+      margin: 1.65rem auto 0;
+      text-align: center;
+      font-size: 1.02rem;
+      line-height: 1.7;
+      color: #57534e;
+    }
+    .eventos-block-title {
+      margin: 3.15rem 0 1.15rem;
+      padding: 0 16px;
+      max-width: 100%;
+      box-sizing: border-box;
+      text-align: center;
+      font-size: clamp(1.65rem, 6.5vw, 2.5rem);
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+    }
+    .eventos-types,
+    .eventos-perks,
+    .eventos-steps-list {
+      display: grid;
+      gap: 0.85rem;
+    }
+    .eventos-types {
+      display: flex;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      gap: 16px;
+      padding: 8px 16px 16px;
+      scrollbar-width: none;
+    }
+    .eventos-types::-webkit-scrollbar { display: none; }
+    .eventos-types-dots {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 18px;
+      margin: 6px 0 0;
+      padding: 0;
+    }
+    .eventos-types-dots[hidden] { display: none; }
+    .eventos-types-dot {
+      width: 9px;
+      height: 9px;
+      padding: 0;
+      border: 0;
+      border-radius: 999px;
+      background: #d4d4d4;
+      cursor: pointer;
+    }
+    .eventos-types-dot[aria-current="true"] { background: #1c1917; }
+    .eventos-types-dot:focus-visible {
+      outline: 2px solid #9a6b3f;
+      outline-offset: 3px;
+    }
+    .eventos-photo {
+      display: flex;
+      min-width: 0;
+      flex: 0 0 84%;
+      flex-direction: column;
+      overflow: hidden;
+      scroll-snap-align: center;
+      scroll-snap-stop: always;
+      border: 1px solid rgba(226, 232, 240, 0.9);
+      border-radius: 1.15rem;
+      background: #fff;
+      box-shadow: 0 1px 2px rgba(28, 25, 23, 0.04);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+    .eventos-photo-media {
+      aspect-ratio: 4 / 3;
+      background: #3f2a1d;
+    }
+    .eventos-photo-media img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .eventos-photo-body {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      padding: 0.95rem 1rem 1.1rem;
+    }
+    .eventos-photo-tag {
+      margin: 0;
+      font-size: 0.64rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      line-height: 1.3;
+      overflow-wrap: break-word;
+      text-transform: uppercase;
+      color: #9a6b3f;
+    }
+    @media (max-width: 639px) {
+      .eventos-photo-tag {
+        font-size: 0.72rem;
+        letter-spacing: 0.08em;
+      }
+    }
+    .eventos-photo h3,
+    .eventos-perk h3,
+    .eventos-step h3 {
+      margin: 0;
+      font-size: 1.28rem;
+      font-weight: 600;
+      line-height: 1.15;
+      letter-spacing: -0.01em;
+    }
+    .eventos-photo p,
+    .eventos-perk p,
+    .eventos-step p {
+      margin: 0;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      color: #57534e;
+    }
+    .eventos-steps {
+      margin: 3.25rem -1.25rem 0;
+      padding: 2.35rem 1.25rem 2.5rem;
+      background: #F8F6F1;
+    }
+    .eventos-steps .eventos-block-title { margin-top: 0; }
+    .eventos-steps-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      gap: 1.35rem;
+    }
+    .eventos-step-num {
+      display: block;
+      margin-bottom: 0.45rem;
+      color: #9a6b3f;
+      font-size: 1.85rem;
+      font-weight: 500;
+      line-height: 1;
+      letter-spacing: -0.03em;
+    }
+    .eventos-step h3 { margin-bottom: 0.35rem; }
+    .eventos-perks { gap: 1.15rem 1.75rem; }
+    .eventos-perk {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: 0.8rem;
+      align-items: start;
+    }
+    .eventos-perk-icon {
+      display: grid;
+      width: 2.6rem;
+      height: 2.6rem;
+      place-items: center;
+      border-radius: 999px;
+      background: #F3E6D4;
+      color: #6b4630;
+    }
+    .eventos-perk-icon svg { width: 1.15rem; height: 1.15rem; }
+    .eventos-perk p { margin-top: 0.2rem; }
+    .eventos-close {
+      display: grid;
+      gap: 1rem;
+      margin-top: 1.15rem;
+      align-items: stretch;
+    }
+    .eventos-aside {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      border: 1px solid rgba(226, 232, 240, 0.9);
+      border-radius: 1rem;
+      background: #fff;
+      padding: 1.5rem;
+      box-shadow: 0 1px 2px rgba(28, 25, 23, 0.04);
+    }
+    .eventos-kicker {
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: #78716c;
+    }
+    .eventos-kicker-next { margin-top: 1.35rem; }
+    .eventos-capacity {
+      margin-top: 0.35rem;
+      font-size: 2rem;
+      font-weight: 600;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+    }
+    .eventos-hours {
+      margin-top: 0.4rem;
+      font-size: 0.95rem;
+      line-height: 1.55;
+      color: #57534e;
+    }
+    .eventos-checks {
+      display: grid;
+      gap: 0.7rem;
+      margin: 1.25rem 0 0;
+      padding: 0;
+      list-style: none;
+    }
+    .eventos-check {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: 0.6rem;
+      align-items: start;
+      font-size: 0.92rem;
+      line-height: 1.4;
+      color: #44403c;
+    }
+    .eventos-check-mark {
+      display: grid;
+      width: 1.25rem;
+      height: 1.25rem;
+      margin-top: 0.05rem;
+      place-items: center;
+      border-radius: 999px;
+      background: #F3E6D4;
+      color: #6b4630;
+    }
+    .eventos-check-mark svg { width: 0.78rem; height: 0.78rem; }
+    .eventos-checks { margin-bottom: 1.35rem; }
+    .eventos-aside .btn-primary { margin-top: auto; }
+    .eventos-ready {
+      display: grid;
+      gap: 1.35rem;
+      align-items: center;
+      margin-top: 2.75rem;
+    }
+    .eventos-ready-photo {
+      margin: 0;
+      overflow: hidden;
+      border-radius: 1.2rem;
+      aspect-ratio: 5 / 4;
+      background: #3f2a1d;
+    }
+    .eventos-ready-photo img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: 68% 58%;
+    }
+    .eventos-ready-copy h2 {
+      margin: 0;
+      font-size: clamp(1.9rem, 4vw, 2.45rem);
+      font-weight: 600;
+      line-height: 1.08;
+      letter-spacing: -0.02em;
+    }
+    #eventos-ready-points {
+      display: grid;
+      gap: 0.8rem;
+      margin: 1.15rem 0 0;
+      padding: 0;
+      list-style: none;
+    }
+    #eventos-ready-points li {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: 0.7rem;
+      align-items: start;
+      font-size: 0.98rem;
+      line-height: 1.45;
+      color: #44403c;
+    }
+    .eventos-ready-mark {
+      width: 0.55rem;
+      height: 0.55rem;
+      margin-top: 0.45rem;
+      border-radius: 999px;
+      background: #9a6b3f;
+    }
+    #eventos-ready-cta {
+      margin-top: 1.35rem;
+      border-radius: 999px;
+    }
+    .reservas-switch {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.25rem;
+      max-width: 26rem;
+      margin: 0 auto 1.75rem;
+      padding: 0.28rem;
+      border: 1px solid #e7e5e4;
+      border-radius: 999px;
+      background: #f5f5f4;
+    }
+    .reservas-switch button {
+      min-height: 2.55rem;
+      border: 0;
+      border-radius: 999px;
+      background: transparent;
+      color: #57534e;
+      font: inherit;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .reservas-switch button.is-active {
+      background: #0f172a;
+      color: #fff;
+    }
+    @media (max-width: 639px) {
+      .reservas-switch {
+        gap: 0.15rem;
+        margin: 0 auto 1.25rem;
+        padding: 0.15rem;
+      }
+      .reservas-switch button {
+        min-height: 2rem;
+        padding: 0.35rem 0.55rem;
+        font-size: 0.78rem;
+        font-weight: 500;
+        letter-spacing: 0.01em;
+        line-height: 1.2;
+      }
+      .reservas-switch button.is-active {
+        font-weight: 600;
+      }
+    }
+    #reservas-switch[hidden],
+    #booking-form[hidden],
+    #eventos-book-other-wrap {
+      display: grid;
+      grid-template-rows: 0fr;
+      opacity: 0;
+      margin-top: -1rem;
+      pointer-events: none;
+      transition: grid-template-rows 0.28s ease, opacity 0.28s ease, margin-top 0.28s ease;
+    }
+    #eventos-book-other-wrap.is-open {
+      grid-template-rows: 1fr;
+      opacity: 1;
+      margin-top: 0;
+      pointer-events: auto;
+    }
+    #eventos-book-other-wrap > .book-field { overflow: hidden; min-height: 0; }
+    @media (prefers-reduced-motion: reduce) {
+      #eventos-book-other-wrap { transition: none; }
+    }
+    #eventos-booking .book-select-trigger.is-placeholder { color: #9ca3af; }
+    #eventos-book-guests {
+      -moz-appearance: textfield;
+      appearance: textfield;
+    }
+    #eventos-book-guests::-webkit-outer-spin-button,
+    #eventos-book-guests::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    #eventos-booking[hidden] { display: none !important; }
+    #eventos-booking input:focus,
+    #eventos-booking input:focus-visible,
+    #eventos-booking textarea:focus,
+    #eventos-booking textarea:focus-visible,
+    #eventos-booking .book-select-trigger:focus,
+    #eventos-booking .book-select-trigger:focus-visible {
+      outline: 0 none transparent;
+      box-shadow: none;
+    }
+    #eventos-booking .book-select-menu { display: flex; flex-direction: column; gap: 0.375rem; }
+    #eventos-booking .book-select-option { border: 1px solid transparent; background: transparent; }
+    #eventos-booking .book-select-option[aria-selected='true'],
+    #eventos-booking .book-select-option[aria-selected='true']:hover { border-color: transparent; background: #f1f5f9; }
+    #eventos-booking .book-select-option:hover { border-color: #0f172a; background: #ffffff; }
+    #eventos-form .book-field { align-self: stretch; }
+    #eventos-form .book-field > span { white-space: nowrap; }
+    @media (min-width: 768px) {
+      .eventos-steps-list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .eventos-perks { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .eventos-close { grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr); }
+      .eventos-hero-sub { max-width: 32rem; }
+      .eventos-ready { grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr); gap: 1.75rem; }
+      .eventos-ready-photo { aspect-ratio: 4 / 5; }
+    }
+    @media (min-width: 901px) {
+      .eventos-types {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.85rem;
+        overflow: visible;
+        scroll-snap-type: none;
+        padding: 0;
+      }
+      .eventos-photo {
+        flex: none;
+        width: auto;
+        scroll-snap-align: none;
+        scroll-snap-stop: normal;
+      }
+      .eventos-photo:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+      }
+      .eventos-types-dots { display: none; }
+    }
+    @media (prefers-color-scheme: dark) {
+      .eventos-lead,
+      .eventos-photo p,
+      .eventos-perk p,
+      .eventos-step p,
+      .eventos-hours,
+      .eventos-check { color: #a8a29e; }
+      .eventos-photo,
+      .eventos-aside {
+        border-color: #1e293b;
+        background: #020617;
+      }
+      .eventos-steps { background: #2a241e; }
+      .eventos-perk-icon,
+      .eventos-check-mark { background: #3f2e22; color: #f3e6d4; }
+      .eventos-photo-tag,
+      .eventos-step-num { color: #e0c4a4; }
+      .eventos-types-dot { background: #57534e; }
+      .eventos-types-dot[aria-current="true"] { background: #faf6f1; }
+      .eventos-kicker { color: #a8a29e; }
+      #eventos-ready-points li { color: #d6d3d1; }
+      .reservas-switch { border-color: #44403c; background: #1c1917; }
+      .reservas-switch button { color: #a8a29e; }
+      .reservas-switch button.is-active { background: #faf6f1; color: #1c1917; }
+      #eventos-booking .book-select-option[aria-selected='true'],
+      #eventos-booking .book-select-option[aria-selected='true']:hover { border-color: transparent; background: #1e293b; }
+      #eventos-booking .book-select-option:hover { border-color: #f8fafc; background: transparent; }
+    }
+    #eventos-form .book-field select {
+      min-height: 2.75rem;
+      width: 100%;
+      border-radius: 0.75rem;
+      border: 1px solid #e2e8f0;
+      background-color: #fff;
+      padding: 0.625rem 0.75rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      text-transform: none;
+      letter-spacing: 0;
+      color: #0f172a;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+    @media (prefers-color-scheme: dark) {
+      #eventos-form .book-field select {
+        border-color: #334155;
+        background-color: #020617;
+        color: #f1f5f9;
+        color-scheme: dark;
+      }
+      #eventos-form input[type="date"] { color-scheme: dark; }
+    }
+    .site-nav-link { font-size: 0.795rem; }
+    @media (min-width: 640px) {
+      .sm\:text-xs { font-size: 0.795rem; }
+      .sm\:text-sm { font-size: 0.928rem; }
+      .sm\:text-base { font-size: 1.06rem; }
+      .sm\:text-lg { font-size: 1.193rem; }
+      .sm\:text-xl { font-size: 1.325rem; }
+      .sm\:text-4xl { font-size: 2.385rem; }
+      .sm\:text-7xl { font-size: 4.77rem; }
+      .sm\:text-\[13px\] { font-size: 14px; }
+      .tab,
+      .site-nav-link { font-size: 0.928rem; }
+    }
+  </style>
+</head>
+<body class="bg-white text-slate-900 dark:bg-slate-950 dark:text-slate-100">
+
+  <a href="#contenido" class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[80] focus:rounded-full focus:bg-slate-900 focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white dark:focus:bg-slate-100 dark:focus:text-slate-900" data-i18n="skipToContent">Ir al contenido</a>
+
+  <!-- ============================ CABECERA ============================ -->
+  <div data-site-sticky class="bg-white dark:bg-stone-900">
+  <header>
+    <div class="mx-auto max-w-3xl px-5">
+      <div class="flex items-center justify-between gap-3 border-b border-stone-200 py-3 dark:border-stone-800 sm:py-4">
+        <a href="#inicio" class="flex min-w-0 items-center gap-2.5 rounded-sm no-underline">
+          <div id="site-logo" class="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-stone-900 p-1.5 shadow-sm dark:bg-stone-800">
+            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M8 5h8c0 4-2.5 6.5-4 6.5S8 9 8 5z" fill="#f59e0b"/>
+              <path d="M12 11.5V18m-3.5 0h7" stroke="#f59e0b" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <span class="min-w-0">
+          <p id="site-name" class="font-serif text-lg font-semibold leading-tight tracking-tight text-slate-900 dark:text-slate-100 sm:text-xl">Tu restaurante</p>
+          <p id="status" class="mt-0.5 flex items-center">
+            <span class="mr-1 text-[10px] text-[#137333]">●</span>
+            <span id="status-text" class="text-xs font-medium text-stone-600">Abierto ahora</span>
+          </p>
+          </span>
+        </a>
+
+        <div class="flex shrink-0 items-center gap-4">
+          <a id="header-call" href="#" class="header-call" aria-label="Llamar al restaurante">
+            <span class="call-icon">
+              <svg class="call-phone h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6.6 10.8a12.8 12.8 0 0 0 5.6 5.6l2-2a1 1 0 0 1 1-.2 9.6 9.6 0 0 0 3.5.6 1 1 0 0 1 1 1V19a1 1 0 0 1-1 1A17 17 0 0 1 4 6a1 1 0 0 1 1-1h3.2a1 1 0 0 1 1 1 9.6 9.6 0 0 0 .6 3.5 1 1 0 0 1-.2 1l-2 2z"/></svg>
+              <span class="call-waves" aria-hidden="true"><span></span><span></span><span></span></span>
+            </span>
+          </a>
+          <button type="button" id="btn-lang-toggle" class="lang-btn" data-i18n-aria-label="langLabel" aria-label="Idioma">
+            <div class="lang-text-wrapper">
+              <span class="lang-text-sizer" aria-hidden="true">Hello</span>
+              <span id="lang-text" class="lang-text">ES</span>
+            </div>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </header>
+  </div>
+
+  <nav class="site-nav sticky top-0 z-50 border-b border-stone-200 bg-white shadow-sm dark:border-stone-800 dark:bg-stone-900" aria-label="Secciones" data-i18n-aria-label="navLabel">
+    <div class="site-nav-links mx-auto grid w-full max-w-3xl grid-cols-4 items-end px-6 text-center sm:px-7">
+      <a href="#inicio" data-nav="inicio" class="site-nav-link rounded-lg px-0.5 text-xs font-medium outline-none focus:outline-none focus-visible:ring-2 focus-visible:ring-stone-400/50 focus-visible:ring-offset-2 sm:px-2 sm:text-sm" aria-current="page" data-i18n="navHome">Inicio</a>
+      <a href="#carta" data-nav="carta" class="site-nav-link rounded-lg px-0.5 text-xs font-medium outline-none focus:outline-none focus-visible:ring-2 focus-visible:ring-stone-400/50 focus-visible:ring-offset-2 sm:px-2 sm:text-sm" data-i18n="navMenu">Carta</a>
+      <a href="#local" data-nav="local" class="site-nav-link rounded-lg px-0.5 text-xs font-medium outline-none focus:outline-none focus-visible:ring-2 focus-visible:ring-stone-400/50 focus-visible:ring-offset-2 sm:px-2 sm:text-sm" data-i18n="navLocal">El local</a>
+      <a href="#eventos" id="nav-eventos" data-nav="eventos" hidden class="site-nav-link rounded-lg px-0.5 text-xs font-medium outline-none focus:outline-none focus-visible:ring-2 focus-visible:ring-stone-400/50 focus-visible:ring-offset-2 sm:px-2 sm:text-sm" data-i18n="navEvents">Eventos</a>
+      <a href="#reservas" data-nav="reservas" class="site-nav-link rounded-lg px-0.5 text-xs font-medium outline-none focus:outline-none focus-visible:ring-2 focus-visible:ring-stone-400/50 focus-visible:ring-offset-2 sm:px-2 sm:text-sm" data-i18n="navBook">Reservas</a>
+    </div>
+  </nav>
+
+  <main id="contenido">
+
+    <!-- ============================== INICIO ============================== -->
+    <div data-page="inicio">
+      <section id="inicio-hero" class="mx-auto max-w-3xl px-5 py-3 sm:pt-12 sm:pb-8">
+        <div class="hero-intro">
+          <p class="text-center text-[11px] font-semibold uppercase tracking-[.28em] text-slate-600 dark:text-slate-400" data-i18n="heroEyebrow"></p>
+          <h1 class="hero-title mt-2 text-center font-serif text-3xl font-semibold leading-tight tracking-tight sm:text-7xl" data-i18n="heroTitle">El sabor de siempre.</h1>
+          <p class="hero-sub mx-auto mt-2 max-w-sm text-center text-sm leading-snug text-slate-600 dark:text-slate-400 sm:text-lg" data-i18n="heroSubtitle">Raciones y cocina tradicional.</p>
+        </div>
+
+        <div class="hero-stage">
+          <figure id="hero-media" class="mt-3 w-full overflow-hidden rounded-2xl bg-slate-100 shadow-sm dark:bg-slate-900 sm:mt-8"></figure>
+          <p class="hero-kicker" data-i18n="heroKicker">Cocina tradicional desde 1998</p>
+        </div>
+
+        <div id="hero-facts">
+          <a href="#ubicacion" class="hero-fact">
+            <span class="hero-fact-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21s7-6.1 7-11a7 7 0 1 0-14 0c0 4.9 7 11 7 11z"/><circle cx="12" cy="10" r="2.15"/></svg></span>
+            <div class="hero-fact-body">
+              <p class="hero-fact-label" data-i18n="labelAddress">Dirección</p>
+              <p id="info-address" class="hero-fact-value"></p>
+            </div>
+          </a>
+          <a href="#horarios" class="hero-fact">
+            <span class="hero-fact-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="8.25"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 7.75V12l3 1.75"/></svg></span>
+            <div class="hero-fact-body">
+              <div class="hero-fact-top">
+                <p class="hero-fact-label" data-i18n="labelToday">Horario de hoy</p>
+                <span class="hero-fact-link hero-fact-link-long" data-i18n="allHours">Ver todos los horarios</span>
+              </div>
+              <p id="info-today" class="hero-fact-value"></p>
+              <span class="hero-fact-link hero-fact-link-short" data-i18n="hoursShort">Horarios</span>
+            </div>
+          </a>
+          <a href="#menu-del-dia" class="hero-fact">
+            <span class="hero-fact-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M7 3.5v6.2a1.8 1.8 0 0 0 3.6 0V3.5M8.8 9.7V20.5M16.2 3.5c1.5 1.8 2.3 3.8 2.3 6.1 0 2.2-1.1 3.7-2.3 3.7V3.5zm0 9.8V20.5"/></svg></span>
+            <div class="hero-fact-body">
+              <p class="hero-fact-label" data-i18n="labelMenuDay">Menú del día</p>
+              <p class="hero-fact-value hero-fact-note" data-i18n="menuDayNote">De martes a viernes a mediodía</p>
+              <p class="hero-fact-compact" data-i18n="menuDayCompact">Menú del día (M-V)</p>
+            </div>
+            <span id="info-menu-badge" class="hero-fact-badge">13,50 €</span>
+          </a>
+          <button type="button" id="open-socials" class="hero-fact">
+            <span class="hero-fact-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="6.5" cy="12" r="2.1"/><circle cx="17.5" cy="6.5" r="2.1"/><circle cx="17.5" cy="17.5" r="2.1"/><path stroke-linecap="round" d="M8.4 11.1 15.4 7.4M8.5 12.9l6.9 3.6"/></svg></span>
+            <span class="hero-fact-body">
+              <span class="hero-fact-value" data-i18n="socialsLabel">Redes sociales</span>
+            </span>
+            <span class="hero-fact-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg></span>
+          </button>
+        </div>
+      </section>
+
+      <section class="mx-auto max-w-3xl px-5 pb-16" aria-labelledby="featured-title">
+        <div class="border-t border-slate-200 pt-12 dark:border-slate-800">
+          <h2 id="featured-title" class="text-center font-serif text-3xl font-semibold tracking-tight sm:text-4xl" data-i18n="featuredTitle">De la casa</h2>
+        </div>
+        <ul id="featured-list" class="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2"></ul>
+        <div class="mt-8 flex justify-center">
+          <a href="#carta" class="btn-outline" data-i18n="featuredCta">Ver la carta completa</a>
+        </div>
+      </section>
+    </div>
+
+    <!-- =============================== CARTA =============================== -->
+    <div data-page="carta" hidden>
+      <div class="mx-auto max-w-3xl px-5 pt-12">
+        <div class="mb-6 text-center sm:mb-8">
+          <h1 class="font-serif text-3xl font-semibold tracking-tight sm:text-4xl" data-i18n="menuTitle">La carta</h1>
+          <p class="mt-3 text-sm text-slate-600 dark:text-slate-400" data-i18n="menuSubtitle">Elaborada cada mañana con producto de mercado.</p>
+        </div>
+
+      </div>
+
+      <div id="menu-tabs-bar" class="sticky top-0 z-40 mb-3">
+        <div id="menu-chip-band">
+        <div class="mx-auto w-full max-w-3xl">
+        <div id="menu-chip-row" class="no-scrollbar flex items-center gap-2 overflow-x-auto px-4 pb-2.5">
+          <div id="tabs" class="flex shrink-0 items-center gap-2" role="tablist" aria-label="Categorías de la carta" data-i18n-aria-label="menuTabsLabel"></div>
+        </div>
+        </div>
+        </div>
+        <div class="relative mx-auto flex h-[48px] w-full max-w-3xl items-stretch">
+          <div id="allergen-below" class="relative flex h-[48px] flex-none items-center pl-4 pr-0 pt-[4px] pb-[6px]">
+            <div class="allergen-below-bg pointer-events-none absolute inset-y-0 left-0 right-[19px] z-0 bg-white dark:bg-stone-900"></div>
+            <svg class="menu-edge pointer-events-none absolute bottom-0 left-0 block h-[1px]" style="width: calc(100% - 19px)" aria-hidden="true"><line class="menu-notch-line" x1="0" y1="0.5" x2="100%" y2="0.5" stroke="#e5e7eb" stroke-width="1" /></svg>
+            <div id="allergen-chip" class="relative inline-flex shrink-0 items-center">
+              <button type="button" id="open-filter-btn" class="relative z-10 inline-flex h-[38px] shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border border-stone-300 bg-stone-100 px-3 text-xs font-semibold text-stone-700 dark:border-stone-700 dark:bg-stone-800 dark:text-stone-300" aria-expanded="false" aria-controls="allergen-filter-panel"><svg class="h-3.5 w-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4 5h16l-6.2 7.2V19l-3.6-1.8v-5L4 5z"/></svg><span data-i18n="allergenChip">Alérgenos</span></button>
+            </div>
+          </div>
+          <div class="menu-notch pointer-events-none relative z-0 -ml-[19px] h-[48px] w-[34px] flex-none" aria-hidden="true">
+            <svg viewBox="0 0 34 48" class="block h-[48px] w-[34px]">
+              <path class="menu-notch-fill" d="M 0 0 L 34 0 L 34 0.5 L 31.70 0.5 A 9.69 9.69 0 0 0 22.72 13.82 A 24.5 24.5 0 0 1 0 47.5 Z" fill="#ffffff" />
+              <path class="menu-notch-line" d="M 0 47.5 A 24.5 24.5 0 0 0 22.72 13.82 A 9.69 9.69 0 0 1 31.70 0.5 L 34 0.5" fill="none" stroke="#e5e7eb" stroke-width="1" />
+            </svg>
+          </div>
+          <div class="relative h-[48px] flex-1 bg-transparent">
+            <svg class="pointer-events-none block h-[48px] w-full" aria-hidden="true"><line class="menu-notch-line" x1="0" y1="0.5" x2="100%" y2="0.5" stroke="#e5e7eb" stroke-width="1" /></svg>
+          </div>
+        </div>
+      </div>
+      <div id="allergen-filter-root" class="allergen-filter-root" hidden>
+        <button type="button" id="allergen-filter-backdrop" class="allergen-filter-backdrop" aria-label="Cerrar"></button>
+        <div id="allergen-filter-panel" class="allergen-filter-panel" role="dialog" aria-modal="true" aria-labelledby="allergen-filter-title">
+          <button type="button" id="allergen-filter-close" class="allergen-filter-close" aria-label="Cerrar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+          <p id="allergen-filter-title" class="allergen-filter-title" data-i18n="allergenFilterTitle">Filtro de alérgenos</p>
+          <div id="allergen-filters" class="allergen-filter-list"></div>
+          <button type="button" id="clear-allergen-filters" class="text-xs font-medium text-slate-600 underline underline-offset-4 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100" hidden data-i18n="allergenFilterClear">Quitar filtros</button>
+        </div>
+      </div>
+
+      <div class="mx-auto max-w-3xl px-5">
+        <div id="panels" class="scroll-mt-14 opacity-100 transition-opacity duration-100"></div>
+        <p id="filter-empty" class="mt-10 hidden text-center text-sm text-slate-600 dark:text-slate-400" data-i18n="allergenFilterEmpty">Ningún plato coincide con el filtro.</p>
+
+        <section class="mt-14 pt-8" aria-labelledby="allergen-key-title">
+          <h2 id="allergen-key-title" class="border-b border-slate-200 pb-3 font-serif text-2xl font-semibold tracking-tight dark:border-slate-800" data-i18n="allergenKey">Leyenda de alérgenos</h2>
+          <ul id="allergen-key" class="mt-5 grid grid-cols-2 gap-x-6 gap-y-3 sm:grid-cols-3"></ul>
+
+          <div class="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">
+            <button type="button" id="open-allergen-table" class="btn-outline w-full sm:w-auto" data-i18n="allergenTableLink">Ver tabla completa</button>
+          </div>
+
+          <p class="mt-6 text-sm leading-relaxed text-slate-600 dark:text-slate-400" data-i18n="staffNotice">Consulta a nuestro personal la información completa.</p>
+          <p class="mt-2 text-xs leading-relaxed text-slate-600 dark:text-slate-400" data-i18n="vatNotice">Precios con IVA incluido. Pan y aceite: 1,20 € por persona (excepto en Menú del Día, donde está incluido).</p>
+        </section>
+
+        <section class="mt-14 border-t border-slate-200 pt-12 dark:border-slate-800" aria-labelledby="reviews-title">
+          <h2 id="reviews-title" class="font-serif text-3xl font-semibold tracking-tight" data-i18n="reviewsTitle">Opiniones</h2>
+          <p id="reviews-score" class="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1"></p>
+          <ul id="reviews-list" class="mt-6 grid grid-cols-1 items-stretch gap-4 md:grid-cols-3"></ul>
+        </section>
+      </div>
+    </div>
+
+    <!-- ============================ EL LOCAL ============================ -->
+    <div data-page="local" hidden>
+      <section class="mx-auto max-w-3xl px-5 pb-16 pt-12">
+        <div class="text-center">
+          <h1 class="font-serif text-3xl font-semibold tracking-tight sm:text-4xl" data-i18n="localTitle">El local</h1>
+          <p class="mx-auto mt-3 max-w-md text-sm leading-relaxed text-slate-600 dark:text-slate-400" data-i18n="localSubtitle">Salón, barra y terraza. Como una taberna de barrio, con mesa para quedarse.</p>
+        </div>
+
+        <dl id="local-stats" class="mt-10 grid grid-cols-3 gap-4"></dl>
+        <div id="local-gallery" class="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2"></div>
+
+        <section id="historia" class="mt-16 scroll-mt-28 border-t border-slate-200 pt-12 dark:border-slate-800" aria-labelledby="history-title">
+          <div class="text-center">
+            <h2 id="history-title" class="font-serif text-3xl font-semibold tracking-tight sm:text-4xl" data-i18n="historyTitle">Nuestra historia</h2>
+            <p id="history-lead" class="mx-auto mt-4 max-w-md text-sm leading-relaxed text-slate-600 dark:text-slate-400"></p>
+          </div>
+          <ol id="history-list" class="mt-12 space-y-10"></ol>
+        </section>
+
+        <section class="mt-16 border-t border-slate-200 pt-12 dark:border-slate-800" aria-labelledby="gbp-title">
+          <h2 id="gbp-title" class="font-serif text-3xl font-semibold tracking-tight" data-i18n="gbpTitle">Ficha de Google</h2>
+
+          <article class="mx-auto mt-8 max-w-xl select-none rounded-2xl border border-stone-200 bg-white p-4 font-sans antialiased shadow-sm dark:border-stone-800 dark:bg-[#202124] sm:p-5" style="padding-top:0.5rem">
+
+            <!-- 1. PESTAÑAS OFICIALES GOOGLE (CON SEPARACIÓN REAL) -->
+            <div class="no-scrollbar -mx-4 mb-4 flex items-center gap-5 overflow-x-auto whitespace-nowrap border-b border-stone-200/60 px-4 pb-2 text-xs font-medium dark:border-stone-700 sm:-mx-5 sm:px-5 sm:text-sm" role="tablist" aria-label="Ficha de Google">
+              <button type="button" role="tab" id="gbp-tab-overview" data-gbp-tab="overview" aria-selected="true" aria-controls="gbp-panel-overview" class="relative shrink-0 whitespace-nowrap font-semibold text-[#1a73e8] after:absolute after:-bottom-2 after:left-0 after:h-[3px] after:w-full after:rounded-full after:bg-[#1a73e8] after:content-[''] dark:text-[#8ab4f8] dark:after:bg-[#8ab4f8]" data-i18n="gbpTabOverview">Resumen</button>
+              <button type="button" role="tab" id="gbp-tab-menu" data-gbp-tab="menu" aria-selected="false" aria-controls="gbp-panel-menu" class="shrink-0 whitespace-nowrap text-stone-500 hover:text-stone-700 dark:text-stone-400" data-i18n="gbpTabMenu">Carta</button>
+              <button type="button" role="tab" id="gbp-tab-reviews" data-gbp-tab="reviews" aria-selected="false" aria-controls="gbp-panel-reviews" class="shrink-0 whitespace-nowrap text-stone-500 hover:text-stone-700 dark:text-stone-400" data-i18n="gbpTabReviews">Opiniones</button>
+              <button type="button" role="tab" id="gbp-tab-photos" data-gbp-tab="photos" aria-selected="false" aria-controls="gbp-panel-photos" class="shrink-0 whitespace-nowrap text-stone-500 hover:text-stone-700 dark:text-stone-400" data-i18n="gbpTabPhotos">Fotos</button>
+              <button type="button" role="tab" id="gbp-tab-about" data-gbp-tab="about" aria-selected="false" aria-controls="gbp-panel-about" class="shrink-0 whitespace-nowrap text-stone-500 hover:text-stone-700 dark:text-stone-400" data-i18n="gbpTabAbout">Información</button>
+            </div>
+
+            <!-- PANEL: RESUMEN -->
+            <div id="gbp-panel-overview" data-gbp-panel="overview" role="tabpanel" aria-labelledby="gbp-tab-overview" class="block pb-2">
+
+            <!-- 2. DATOS DEL RESTAURANTE -->
+            <div class="mb-4 space-y-1">
+              <h3 id="gbp-name" class="text-xl font-normal tracking-tight text-stone-900 dark:text-stone-100">Tu restaurante</h3>
+              <div id="gbp-score" class="flex items-center gap-1.5 text-xs sm:text-sm"></div>
+              <p id="gbp-category" class="text-xs text-stone-600 dark:text-stone-400"></p>
+              <p id="gbp-hours" class="text-xs"></p>
+            </div>
+
+            <!-- 3. CUATRO BOTONES CIRCULARES (ESTILO GOOGLE MAPS) -->
+            <div class="my-4 grid grid-cols-4 items-start gap-2 pt-1">
+
+              <!-- Cómo llegar -->
+              <a id="gbp-directions" href="#" class="flex cursor-pointer flex-col items-center no-underline">
+                <div class="flex h-10 w-10 items-center justify-center rounded-full bg-[#1a73e8] text-white shadow-sm sm:h-11 sm:w-11">
+                  <svg class="h-5 w-5 fill-current" viewBox="0 0 24 24" aria-hidden="true"><path d="M21.71 11.29l-9-9a.996.996 0 0 0-1.41 0l-9 9a.996.996 0 0 0 0 1.41l9 9c.39.39 1.02.39 1.41 0l9-9a.996.996 0 0 0 0-1.41zM14 14.5V12h-4v3H8v-4c0-.55.45-1 1-1h5V7.5l3.5 3.5-3.5 3.5z"/></svg>
+                </div>
+                <span class="mt-1.5 w-full text-center text-[11px] font-medium leading-tight text-[#1a73e8] dark:text-[#8ab4f8]" data-i18n="gbpDirections">Cómo llegar</span>
+              </a>
+
+              <!-- Llamar -->
+              <a id="gbp-call" href="#" class="flex cursor-pointer flex-col items-center no-underline">
+                <div class="flex h-10 w-10 items-center justify-center rounded-full border border-stone-300 text-[#1a73e8] dark:border-stone-700 dark:text-[#8ab4f8] sm:h-11 sm:w-11">
+                  <svg class="h-5 w-5 fill-current" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+                </div>
+                <span class="mt-1.5 text-center text-[11px] font-medium text-[#1a73e8] dark:text-[#8ab4f8]" data-i18n="gbpCall">Llamar</span>
+              </a>
+
+              <!-- Sitio web (con pulso sutil de destaque) -->
+              <a id="gbp-website" href="#inicio" class="relative flex cursor-pointer flex-col items-center no-underline">
+                <div class="relative flex h-10 w-10 items-center justify-center rounded-full border-2 border-[#1a73e8] bg-blue-50/60 text-[#1a73e8] dark:bg-blue-950/30 dark:text-[#8ab4f8] sm:h-11 sm:w-11">
+                  <svg class="h-5 w-5 fill-current" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                  <span class="absolute -right-1 -top-1 flex h-3 w-3" aria-hidden="true">
+                    <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-400 opacity-75"></span>
+                    <span class="relative inline-flex h-3 w-3 rounded-full bg-[#1a73e8]"></span>
+                  </span>
+                </div>
+                <span class="mt-1.5 text-center text-[11px] font-bold text-[#1a73e8] dark:text-[#8ab4f8]" data-i18n="gbpWebsite">Sitio web</span>
+              </a>
+
+              <!-- Guardar -->
+              <button type="button" id="gbp-save" class="flex cursor-pointer flex-col items-center">
+                <div class="flex h-10 w-10 items-center justify-center rounded-full border border-stone-300 text-[#1a73e8] dark:border-stone-700 dark:text-[#8ab4f8] sm:h-11 sm:w-11">
+                  <svg class="h-5 w-5 fill-none stroke-current stroke-2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg>
+                </div>
+                <span class="mt-1.5 text-center text-[11px] font-medium text-[#1a73e8] dark:text-[#8ab4f8]" data-i18n="gbpSave">Guardar</span>
+              </button>
+
+            </div>
+
+            <!-- 4. ATRIBUTOS CORRIDOS CON SEPARACIÓN LIMPIA -->
+            <div id="gbp-attrs" class="flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-stone-100 pb-3 pt-3 text-xs text-stone-600 dark:border-stone-800 dark:text-stone-300"></div>
+
+            <!-- 5. FOTOS EQUILIBRADAS SIN HUECOS VACÍOS (GRID DE 4) -->
+            <div id="gbp-photos" class="grid grid-cols-3 gap-2 pt-1"></div>
+            </div>
+
+            <!-- PANEL: CARTA -->
+            <div id="gbp-panel-menu" data-gbp-panel="menu" role="tabpanel" aria-labelledby="gbp-tab-menu" hidden>
+              <p class="text-xs font-medium text-stone-900 dark:text-stone-100" data-i18n="gbpMenuHeading">Platos populares</p>
+              <ul id="gbp-menu-list" class="mt-2 divide-y divide-stone-100 dark:divide-stone-800"></ul>
+              <a href="#carta" id="gbp-menu-cta" class="mt-3 inline-flex items-center gap-1.5 rounded-full border border-stone-300 px-3.5 py-1.5 text-xs font-medium text-[#1a73e8] no-underline dark:border-stone-700 dark:text-[#8ab4f8]">
+                <svg class="h-4 w-4 fill-current" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 7h2v2h-2V7zm0 4h2v6h-2v-6zm1-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+                <span data-i18n="gbpMenuCta">Ver la carta digital</span>
+              </a>
+            </div>
+
+            <!-- PANEL: OPINIONES -->
+            <div id="gbp-panel-reviews" data-gbp-panel="reviews" role="tabpanel" aria-labelledby="gbp-tab-reviews" hidden>
+              <div class="flex items-start gap-5">
+                <div class="shrink-0 text-center">
+                  <p id="gbp-rv-score" class="text-4xl font-normal leading-none text-stone-900 dark:text-stone-100">4,8</p>
+                  <div id="gbp-rv-stars" class="mt-1 flex justify-center gap-0.5 text-[#fbbc04]"></div>
+                  <p id="gbp-rv-count" class="mt-1 text-[11px] text-stone-500 dark:text-stone-400"></p>
+                </div>
+                <div id="gbp-rv-bars" class="min-w-0 flex-1 space-y-1"></div>
+              </div>
+              <ul id="gbp-rv-list" class="mt-4 divide-y divide-stone-100 border-t border-stone-100 dark:divide-stone-800 dark:border-stone-800"></ul>
+            </div>
+
+            <!-- PANEL: FOTOS -->
+            <div id="gbp-panel-photos" data-gbp-panel="photos" role="tabpanel" aria-labelledby="gbp-tab-photos" hidden>
+              <div id="gbp-ph-chips" class="no-scrollbar mb-3 flex gap-2 overflow-x-auto"></div>
+              <div id="gbp-ph-grid" class="grid grid-cols-3 gap-2"></div>
+            </div>
+
+            <!-- PANEL: INFORMACIÓN -->
+            <div id="gbp-panel-about" data-gbp-panel="about" role="tabpanel" aria-labelledby="gbp-tab-about" class="-mx-4 px-5 pb-5 pt-4 text-xs sm:-mx-5 sm:text-[13px]" hidden>
+              <ul id="gbp-about-list" class="space-y-4"></ul>
+            </div>
+          </article>
+        </section>
+
+        <section id="ubicacion" class="mt-14 scroll-mt-28 border-t border-slate-200 pt-12 dark:border-slate-800" aria-labelledby="map-title">
+          <h2 id="map-title" class="font-serif text-3xl font-semibold tracking-tight" data-i18n="mapTitle">Dónde estamos</h2>
+          <p id="map-address" class="mt-3 text-sm leading-relaxed text-slate-600 dark:text-slate-400"></p>
+
+          <div class="relative mt-6 block w-full">
+            <div class="relative aspect-[16/9] overflow-hidden rounded-2xl border border-stone-200 dark:border-stone-800 sm:aspect-[21/9]">
+              <img src="./assets/demo/alcobendas-mapa.webp" alt="" class="h-full w-full object-cover brightness-95 dark:brightness-75" width="1400" height="788" loading="lazy" decoding="async">
+            </div>
+          </div>
+
+          <div class="mt-5 flex flex-col gap-3 sm:flex-row">
+            <a id="map-directions" href="#" class="btn-outline w-full sm:w-auto" data-i18n="directions">Cómo llegar</a>
+            <a id="map-reserve" href="#reservas" class="btn-primary js-reserve-open w-full sm:w-auto" data-i18n="reserve">Reservar mesa</a>
+          </div>
+        </section>
+      </section>
+    </div>
+
+    <!-- ============================== EVENTOS ============================== -->
+    <div id="eventos" data-page="eventos" class="scroll-mt-32" hidden>
+      <section class="eventos-page mx-auto max-w-3xl px-5 pb-16 pt-6 sm:pt-10">
+        <figure class="eventos-hero">
+          <img id="eventos-hero-img" alt="" width="1800" height="1200">
+          <video id="eventos-hero-video" autoplay muted playsinline preload="auto" hidden></video>
+          <video id="eventos-hero-video-b" muted playsinline preload="auto" hidden></video>
+          <div class="eventos-hero-copy">
+            <p id="eventos-eyebrow" class="eventos-badge"></p>
+            <div class="eventos-hero-main">
+              <h1 id="eventos-title" class="eventos-hero-title font-serif"></h1>
+              <p id="eventos-subtitle" class="eventos-hero-sub font-serif"></p>
+              <button type="button" id="eventos-cta" class="eventos-cta"></button>
+            </div>
+          </div>
+        </figure>
+        <p id="eventos-lead" class="eventos-lead"></p>
+
+        <h2 id="eventos-types-title" class="eventos-block-title font-serif"></h2>
+        <div id="eventos-types" class="eventos-types"></div>
+        <div id="eventos-types-dots" class="eventos-types-dots" role="group" hidden></div>
+
+        <div class="eventos-ready">
+          <figure class="eventos-ready-photo">
+            <img id="eventos-ready-img" alt="" width="1400" height="1000">
+          </figure>
+          <div class="eventos-ready-copy">
+            <h2 id="eventos-ready-title" class="font-serif"></h2>
+            <ul id="eventos-ready-points"></ul>
+            <button type="button" id="eventos-ready-cta" class="btn-primary"></button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ============================== RESERVAS ============================== -->
+    <div id="reservas" data-page="reservas" class="scroll-mt-32 pt-8" hidden>
+      <section class="mx-auto max-w-3xl px-5 pb-16 pt-12">
+        <div id="reservas-switch" class="reservas-switch" role="tablist" hidden>
+          <button type="button" id="reservas-mode-mesa" role="tab" data-reservas-mode="mesa" aria-selected="true" data-i18n="reservasModeMesa">Reserva de mesa</button>
+          <button type="button" id="reservas-mode-eventos" role="tab" data-reservas-mode="eventos" aria-selected="false" data-i18n="reservasModeEventos">Eventos y grupos</button>
+        </div>
+        <div class="text-center">
+          <h1 id="reservas-title" class="font-serif text-3xl font-semibold tracking-tight sm:text-4xl" data-i18n="bookTitle">Reservar mesa</h1>
+          <p id="reservas-sub" class="mx-auto mt-3 max-w-md text-sm leading-relaxed text-slate-600 dark:text-slate-400" data-i18n="bookSubtitle">Elige día, hora y comensales. Verás el mensaje que recibiría el local.</p>
+        </div>
+
+        <form id="booking-form" class="contact-card mx-auto mt-10 max-w-lg" novalidate>
+          <div class="grid gap-4 sm:grid-cols-2">
+            <label class="book-field sm:col-span-2">
+              <span data-i18n="bookName">Nombre</span>
+              <input id="book-name" name="name" type="text" autocomplete="name" required maxlength="80">
+            </label>
+            <div class="book-field sm:col-span-2">
+              <label id="book-phone-label" for="book-phone" data-i18n="bookPhone">Teléfono</label>
+              <div class="book-phone">
+                <div class="book-phone-prefix">
+                  <span class="book-phone-plus" aria-hidden="true">+</span>
+                  <input id="book-prefix" name="prefix" type="text" inputmode="numeric" autocomplete="tel-country-code" value="34" maxlength="4" required data-i18n-aria-label="bookPrefix" aria-label="Prefijo">
+                </div>
+                <input id="book-phone" name="phone" type="tel" autocomplete="tel-national" inputmode="numeric" required placeholder="Número de teléfono" data-i18n-placeholder="bookPhonePlaceholder" aria-labelledby="book-phone-label">
+              </div>
+            </div>
+            <div class="book-field">
+              <span id="book-date-label" data-i18n="bookDate">Fecha</span>
+              <div class="book-date-wrap">
+                <input type="text" id="fecha-reserva" placeholder="Selecciona una fecha" readonly required data-i18n-placeholder="bookDatePlaceholder" aria-labelledby="book-date-label">
+                <svg class="book-date-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M7 3.5v2M17 3.5v2M4.75 8.25h14.5M6.5 5.25h11A1.75 1.75 0 0 1 19.25 7v12A1.75 1.75 0 0 1 17.5 20.75h-11A1.75 1.75 0 0 1 4.75 19V7A1.75 1.75 0 0 1 6.5 5.25Z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M8 16h.01M12 16h.01"/>
+                </svg>
+                <input type="hidden" id="book-date" name="date" required>
+              </div>
+            </div>
+            <div class="book-field">
+              <span id="book-time-label" data-i18n="bookTime">Hora</span>
+              <div class="book-select">
+                <input type="text" id="hora-reserva" placeholder="Elegir hora" readonly required data-i18n-placeholder="bookTimePlaceholder" aria-labelledby="book-time-label">
+                <svg class="book-select-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5.5 15.5 12 9 18.5"/></svg>
+              </div>
+              <div class="book-select">
+                <select id="book-time" name="time" required tabindex="-1" aria-labelledby="book-time-label"></select>
+              </div>
+              <div id="time-picker" hidden>
+              <div class="book-wheel">
+                <div class="book-wheel-lens"></div>
+                <span class="book-wheel-colon" aria-hidden="true">:</span>
+                <div id="wheel-hours" class="book-wheel-col no-scrollbar" role="listbox" aria-labelledby="book-time-label">
+                  <div class="time-hour-item" data-val="12" role="option">12</div>
+                  <div class="time-hour-item" data-val="13" role="option">13</div>
+                  <div class="time-hour-item" data-val="14" role="option">14</div>
+                  <div class="time-hour-item" data-val="15" role="option">15</div>
+                  <div class="time-hour-item" data-val="16" role="option">16</div>
+                  <div class="time-hour-item" data-val="19" role="option">19</div>
+                  <div class="time-hour-item" data-val="20" role="option">20</div>
+                  <div class="time-hour-item" data-val="21" role="option">21</div>
+                  <div class="time-hour-item" data-val="22" role="option">22</div>
+                  <div class="time-hour-item" data-val="23" role="option">23</div>
+                  <div class="time-hour-item" data-val="00" role="option">00</div>
+                </div>
+                <div id="wheel-minutes" class="book-wheel-col no-scrollbar" role="listbox" aria-label="Minutos">
+                  <div class="time-minute-item" data-val="00" role="option">00</div>
+                  <div class="time-minute-item" data-val="15" role="option">15</div>
+                  <div class="time-minute-item" data-val="30" role="option">30</div>
+                  <div class="time-minute-item" data-val="45" role="option">45</div>
+                </div>
+              </div>
+              <button type="button" id="book-time-pick" class="btn-primary mt-3 w-full" data-i18n="bookPick">Seleccionar</button>
+              </div>
+            </div>
+            <div class="book-field">
+              <span id="book-guests-label" data-i18n="bookGuests">Comensales</span>
+              <div class="book-select">
+                <input type="text" id="comensales-reserva" placeholder="Elegir comensales" readonly required data-i18n-placeholder="bookGuestsPlaceholder" aria-labelledby="book-guests-label">
+                <svg class="book-select-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5.5 15.5 12 9 18.5"/></svg>
+                <select id="book-guests" name="guests" required tabindex="-1" aria-labelledby="book-guests-label"></select>
+              </div>
+              <div id="guests-picker" hidden>
+                <div class="book-wheel book-wheel-single">
+                  <div class="book-wheel-lens"></div>
+                  <div id="wheel-guests" class="book-wheel-col no-scrollbar" role="listbox" aria-labelledby="book-guests-label"></div>
+                </div>
+                <button type="button" id="book-guests-pick" class="btn-primary mt-3 w-full" data-i18n="bookPick">Seleccionar</button>
+              </div>
+            </div>
+            <div class="book-field">
+              <span id="book-area-label" data-i18n="bookArea">Zona</span>
+              <div class="book-select">
+                <select id="book-area" name="area" tabindex="-1" aria-labelledby="book-area-label">
+                  <option value="any" data-i18n="bookAreaAny">Sin preferencia</option>
+                  <option value="salon" data-i18n="bookAreaSalon">Salón</option>
+                  <option value="terrace" data-i18n="bookAreaTerrace">Terraza</option>
+                  <option value="bar" data-i18n="bookAreaBar">Barra</option>
+                </select>
+                <button type="button" class="book-select-trigger" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="book-area-label">
+                  <span class="book-select-value"></span>
+                  <svg class="book-select-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5.5 15.5 12 9 18.5"/></svg>
+                </button>
+                <ul class="book-select-menu" role="listbox" hidden></ul>
+              </div>
+            </div>
+            <label class="book-field sm:col-span-2">
+              <span data-i18n="bookNotes">Comentario (opcional)</span>
+              <textarea id="book-notes" name="notes" rows="3" maxlength="280"></textarea>
+            </label>
+          </div>
+          <p id="book-feedback" class="mt-4 text-sm text-rose-600 dark:text-rose-300" role="status" hidden></p>
+          <p id="error-reserva" class="mt-2 hidden text-sm font-medium text-red-600"></p>
+          <button type="submit" id="btn-reserva" class="btn-primary mt-6 w-full">Reservar mesa</button>
+          <p class="mt-4 text-xs leading-relaxed text-slate-500" data-i18n="groupsNotice">Mesas de más de 8 personas con reserva previa de 24h.</p>
+        </form>
+
+        <form id="eventos-booking" class="contact-card mx-auto mt-10 max-w-lg" novalidate hidden>
+          <div class="grid gap-4">
+            <label class="book-field">
+              <span data-i18n="eventName">Nombre completo</span>
+              <input id="eventos-book-name" name="name" type="text" autocomplete="name" required maxlength="80">
+            </label>
+            <div class="book-field">
+              <span id="eventos-book-type-label" data-i18n="eventType">Tipo de evento</span>
+              <div class="book-select">
+                <select id="eventos-book-type" name="type" required tabindex="-1" aria-labelledby="eventos-book-type-label"></select>
+                <button type="button" class="book-select-trigger" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="eventos-book-type-label">
+                  <span class="book-select-value"></span>
+                  <svg class="book-select-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5.5 15.5 12 9 18.5"/></svg>
+                </button>
+                <ul class="book-select-menu" role="listbox" hidden></ul>
+              </div>
+            </div>
+            <div id="eventos-book-other-wrap" class="eventos-other" aria-hidden="true">
+              <label class="book-field">
+                <span data-i18n="eventTypeOther">Especifica el tipo de evento</span>
+                <input id="eventos-book-other" name="other" type="text" maxlength="80" autocomplete="off" placeholder="Ej. Bautizo, graduación, cena de aniversario..." data-i18n-placeholder="eventTypeOtherPlaceholder" disabled>
+              </label>
+            </div>
+            <div class="book-field">
+              <span id="eventos-book-date-label" data-i18n="eventDate">Fecha del evento</span>
+              <div class="book-date-wrap" id="eventos-fecha-wrap">
+                <input type="text" id="eventos-fecha" placeholder="Selecciona una fecha" readonly required data-i18n-placeholder="bookDatePlaceholder" aria-labelledby="eventos-book-date-label">
+                <svg class="book-date-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M7 3.5v2M17 3.5v2M4.75 8.25h14.5M6.5 5.25h11A1.75 1.75 0 0 1 19.25 7v12A1.75 1.75 0 0 1 17.5 20.75h-11A1.75 1.75 0 0 1 4.75 19V7A1.75 1.75 0 0 1 6.5 5.25Z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M8 16h.01M12 16h.01"/>
+                </svg>
+                <input type="hidden" id="eventos-book-date" name="date" required>
+              </div>
+            </div>
+            <label class="book-field">
+              <span data-i18n="eventGuests">Número de comensales (máximo 40 comensales)</span>
+              <input id="eventos-book-guests" name="party-size" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="2" autocomplete="off" required>
+            </label>
+            <label class="book-field">
+              <span data-i18n="eventNotes">Comentarios o ideas para el evento</span>
+              <textarea id="eventos-book-notes" name="notes" rows="3" maxlength="400"></textarea>
+            </label>
+          </div>
+          <p id="eventos-book-feedback" class="mt-4 text-sm text-rose-600 dark:text-rose-300" role="status" hidden></p>
+          <button type="submit" class="btn-primary mt-6 w-full" data-i18n="eventSubmit">Pedir presupuesto</button>
+        </form>
+      </section>
+    </div>
+
+  </main>
+
+  <div id="socials-sheet" hidden role="dialog" aria-modal="true" aria-labelledby="socials-title">
+    <div class="socials-sheet-inner">
+      <div class="socials-sheet-bar">
+        <h2 id="socials-title" data-i18n="socialsLabel">Redes sociales</h2>
+        <button type="button" id="socials-close" data-i18n-aria-label="close" aria-label="Cerrar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+        </button>
+      </div>
+      <button type="button" class="hero-social" data-social="instagram">Instagram<span class="hero-fact-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg></span></button>
+      <button type="button" class="hero-social" data-social="facebook">Facebook<span class="hero-fact-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg></span></button>
+      <button type="button" class="hero-social" data-social="x">X<span class="hero-fact-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg></span></button>
+      <button type="button" class="hero-social" data-social="tiktok">TikTok<span class="hero-fact-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg></span></button>
+    </div>
+  </div>
+
+  <!-- ================================ PIE ================================ -->
+  <footer class="site-split mt-20 bg-stone-50 pb-28 dark:bg-stone-950">
+    <div class="mx-auto max-w-4xl px-6 pb-0 pt-16 sm:pt-20">
+
+      <div class="mb-6 flex w-full justify-center">
+        <a href="#" id="back-home" class="flex items-center gap-1.5 text-sm text-stone-500 underline decoration-stone-300 underline-offset-4 transition-colors hover:text-stone-900 dark:text-stone-400 dark:decoration-stone-600 dark:hover:text-stone-100">
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+          <span data-i18n="backHome">Volver al inicio</span>
+        </a>
+      </div>
+
+      <div class="grid items-stretch md:grid-cols-2 md:gap-5">
+
+        <section id="horarios" class="footer-panel scroll-mt-24 border-0 bg-transparent p-0 md:rounded-[1.75rem] md:border md:border-stone-200/80 md:bg-white md:px-7 md:py-8 dark:md:border-stone-800 dark:md:bg-stone-950" aria-labelledby="hours-title">
+          <h2 id="hours-title" class="mb-3 font-serif text-xl font-semibold tracking-tight text-stone-900 dark:text-stone-100" data-i18n="kitchenHours">Horario de cocina</h2>
+          <dl id="hours-list" class="divide-y divide-neutral-200/70"></dl>
+        </section>
+
+        <section class="footer-panel is-split mt-6 border-0 border-t border-neutral-200/70 bg-transparent p-0 pt-6 md:mt-0 md:justify-between md:rounded-[1.75rem] md:border md:border-stone-200/80 md:bg-white md:px-7 md:py-8 md:pt-8 dark:border-stone-800/70 dark:md:border-stone-800 dark:md:bg-stone-950" aria-labelledby="contact-title">
+          <div>
+            <h2 id="contact-title" class="mb-3 font-serif text-xl font-semibold tracking-tight text-stone-900 dark:text-stone-100 md:mb-5" data-i18n="locationTitle">Ubicación y reservas</h2>
+
+            <div class="space-y-1.5 md:space-y-3">
+              <address id="footer-address" class="text-sm font-medium not-italic leading-relaxed text-neutral-900 dark:text-stone-100"></address>
+              <div class="flex items-center gap-4 md:gap-8">
+                <a id="footer-map" href="#" class="inline-flex items-center gap-1 text-sm font-medium text-neutral-800 underline underline-offset-4 dark:text-stone-100">
+                  <span data-i18n="viewOnMap">Ver en mapa ↗</span>
+                </a>
+                <a id="footer-phone" href="#" class="hidden items-center text-sm text-stone-900 underline decoration-stone-300 underline-offset-4 transition-colors hover:decoration-stone-900 dark:text-stone-100 dark:decoration-stone-600 dark:hover:decoration-stone-100 md:inline-flex">
+                  <span id="footer-phone-number" class="tabular">+34 600 00 00 00</span>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <a href="#reservas" class="btn-primary js-reserve-open mt-6 hidden w-full sm:flex md:mt-0" data-i18n="reserve">Reservar mesa</a>
+
+          <p class="mt-5 text-xs leading-relaxed text-neutral-500 dark:text-stone-500 md:mt-0" data-i18n="groupsNotice">Mesas de más de 8 personas con reserva previa de 24h.</p>
+        </section>
+      </div>
+
+      <div class="mt-10 flex flex-col items-center space-y-4 border-t border-neutral-200/80 pt-8 text-center dark:border-stone-800">
+        <nav class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-neutral-500 dark:text-stone-400" aria-label="Información legal" data-i18n-aria-label="legalTitle">
+          <a href="/aviso-legal.html" class="transition-colors hover:text-stone-700 dark:hover:text-stone-200" data-i18n="legalNotice">Aviso legal</a>
+          <a href="/politica-privacidad.html" class="transition-colors hover:text-stone-700 dark:hover:text-stone-200" data-i18n="privacy">Política de privacidad</a>
+          <a href="/politica-cookies.html" class="transition-colors hover:text-stone-700 dark:hover:text-stone-200" data-i18n="cookies">Política de cookies</a>
+        </nav>
+
+        <p class="text-[11px] text-neutral-400 dark:text-stone-500">
+          <a href="mesa/" class="underline decoration-neutral-300 underline-offset-2 transition-colors hover:text-stone-600 dark:decoration-stone-700 dark:hover:text-stone-300" data-i18n="mesaLink">Modo QR en mesa</a>
+        </p>
+
+        <p class="pt-2 text-[11px] text-neutral-400 dark:text-stone-500">
+          <span data-i18n="developedBy">Web desarrollada por</span>
+          <a href="https://visiwebmadrid.com" target="_blank" rel="noopener" class="underline transition-colors hover:text-slate-700 dark:hover:text-slate-200">VisiWeb Madrid</a>
+        </p>
+      </div>
+    </div>
+
+  </footer>
+
+  <!-- ====================== BARRA FIJA (SOLO MÓVIL) ====================== -->
+  <nav id="quick-bar" class="fixed inset-x-0 bottom-0 z-40 grid grid-cols-2 gap-3 border-t border-slate-200 bg-white px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] md:hidden dark:border-slate-800 dark:bg-slate-950" aria-label="Acciones rápidas" data-i18n-aria-label="quickActions">
+    <a id="bar-call" href="#" class="btn-outline min-w-0 px-3">
+      <span class="call-icon">
+        <svg class="call-phone h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6.6 10.8a12.8 12.8 0 0 0 5.6 5.6l2-2a1 1 0 0 1 1-.2 9.6 9.6 0 0 0 3.5.6 1 1 0 0 1 1 1V19a1 1 0 0 1-1 1A17 17 0 0 1 4 6a1 1 0 0 1 1-1h3.2a1 1 0 0 1 1 1 9.6 9.6 0 0 0 .6 3.5 1 1 0 0 1-.2 1l-2 2z"/></svg>
+        <span class="call-waves" aria-hidden="true"><span></span><span></span><span></span></span>
+      </span>
+      <span data-i18n="call">Llamar</span>
+    </a>
+    <a href="#reservas" class="btn-primary js-reserve-open min-w-0 px-3" data-i18n="reserve">Reservar mesa</a>
+  </nav>
+
+  <!-- ====================== TABLA DE ALÉRGENOS (MODAL) ====================== -->
+  <div id="booking-modal" hidden role="dialog" aria-modal="true" aria-labelledby="booking-modal-title">
+    <button type="button" id="booking-modal-backdrop" class="booking-modal-backdrop" data-i18n-aria-label="close" aria-label="Cerrar"></button>
+    <div class="contact-card relative z-10 w-full max-w-md text-center">
+      <div class="booking-wa-mark" aria-hidden="true">
+        <svg class="h-6 w-6" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm5.2 14c-.2.6-1.2 1.2-1.8 1.2-.5 0-1.1 0-2.4-.6a11 11 0 0 1-4.4-3.9c-.7-1.1-.8-2-.6-2.6.2-.5.8-1.1 1.2-1.2.3-.1.7 0 .9.4l.7 1.5c.1.3 0 .5-.2.7l-.4.5c-.1.2-.2.4 0 .7.4.7 1.4 1.8 2.5 2.3.3.1.5.1.7-.1l.5-.6c.2-.2.4-.2.7-.1l1.5.7c.3.2.5.5.4.9Z"/></svg>
+      </div>
+      <h2 id="booking-modal-title" class="mt-4 font-serif text-2xl font-semibold tracking-tight" data-i18n="bookSuccessTitle">Así llega la reserva</h2>
+      <p class="mt-2 text-sm leading-relaxed text-stone-600 dark:text-stone-300" data-i18n="bookSuccessLead">Este es el mensaje que recibiría el local por WhatsApp. No se envía hasta que abras WhatsApp.</p>
+      <div class="booking-wa-thread mt-5">
+        <div class="booking-wa-bubble">
+          <div id="booking-wa-message" class="text-[13px] leading-relaxed text-stone-800 dark:text-emerald-50"></div>
+          <p id="booking-wa-stamp" class="mt-1 text-right text-[10px] text-stone-500 dark:text-emerald-200/70"></p>
+        </div>
+      </div>
+      <div class="mt-6 flex flex-col gap-2.5">
+        <button type="button" id="booking-another" class="btn-primary w-full" data-i18n="bookWaClose">Cerrar</button>
+        <a id="booking-whatsapp" href="#" target="_blank" rel="noopener" class="btn-whatsapp w-full" data-i18n="bookWaTry">Abrir el mensaje en WhatsApp</a>
+      </div>
+    </div>
+  </div>
+
+  <dialog id="allergen-dialog" class="max-h-[90vh] w-[min(60rem,calc(100vw-1.5rem))] overflow-hidden rounded-xl bg-white p-0 text-slate-900 backdrop:bg-slate-900/60 open:flex open:flex-col dark:bg-slate-900 dark:text-slate-100">
+    <div class="flex shrink-0 items-center justify-between gap-4 border-b border-slate-200 px-5 py-4 dark:border-slate-800">
+      <div class="min-w-0">
+        <h2 class="font-serif text-xl font-semibold tracking-tight" data-i18n="allergenTableTitle">Tabla de alérgenos por plato</h2>
+        <p class="mt-1 text-xs text-slate-600 dark:text-slate-400" data-i18n="allergenTableHint">Desplaza la tabla en horizontal para ver los catorce alérgenos.</p>
+      </div>
+      <div id="allergen-info-box" class="hidden sm:inline-flex shrink-0 items-center gap-2 px-3 py-1.5 rounded-xl bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-xs text-stone-600 dark:text-stone-300 transition-all duration-200">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+        <span data-i18n="allergenInfoHint">Toca una sigla (GLU, LAC...) para ver su nombre</span>
+      </div>
+      <button type="button" id="close-allergen-dialog" class="grid h-11 w-11 shrink-0 place-items-center text-slate-900 transition-opacity hover:opacity-50 dark:text-white" data-i18n-aria-label="close" aria-label="Cerrar">
+        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+      </button>
+    </div>
+    <div class="min-h-0 flex-1 px-5 py-4">
+      <div class="no-scrollbar relative max-h-[60vh] overflow-auto rounded-xl border border-stone-200 dark:border-stone-800">
+        <table id="allergen-table" class="w-full border-separate border-spacing-0 text-left text-sm"></table>
+      </div>
+    </div>
+    <div class="shrink-0 border-t border-slate-200 px-5 py-4 dark:border-slate-800">
+      <p class="text-xs leading-relaxed text-slate-600 dark:text-slate-400" data-i18n="staffNotice">Consulta a nuestro personal la información completa.</p>
+    </div>
+  </dialog>
+
+  <div id="reserve-options-modal" hidden class="fixed inset-0 z-[100] flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="reserve-options-title">
+    <div id="reserve-options-backdrop" class="absolute inset-0 cursor-pointer bg-black/40 backdrop-blur-sm"></div>
+    <div class="relative z-10 w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
+      <div class="flex items-start justify-between gap-3">
+        <div class="min-w-0">
+          <h2 id="reserve-options-title" class="text-xl font-serif font-bold text-stone-900" data-i18n="reserveOptionsTitle">Haz tu reserva</h2>
+          <p class="mt-1 text-sm text-stone-500" data-i18n="reserveOptionsLead">Elige cómo quieres reservar.</p>
+        </div>
+        <button type="button" id="reserve-options-close" class="grid h-8 w-8 shrink-0 place-items-center rounded-full text-stone-500 transition-colors hover:bg-stone-100 hover:text-stone-900" data-i18n-aria-label="close" aria-label="Cerrar">
+          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+        </button>
+      </div>
+      <div class="mt-5 flex flex-col gap-3">
+        <button type="button" class="flex w-full cursor-pointer items-center gap-3 rounded-xl border border-stone-200 bg-white px-4 py-3 text-left transition-all hover:shadow-md" data-reserve-option="online">
+          <span class="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-stone-100 text-stone-700" aria-hidden="true">
+            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3.5" y="5" width="17" height="15.5" rx="2"/><path stroke-linecap="round" d="M8 3.5v3M16 3.5v3M3.5 9.5h17"/></svg>
+          </span>
+          <span class="min-w-0">
+            <span class="block text-sm font-semibold text-stone-900" data-i18n="reserveOnline">Reservar online</span>
+            <span class="mt-0.5 block text-xs text-stone-500" data-i18n="reserveOnlineHint">Día, hora y comensales, en esta misma página.</span>
+          </span>
+        </button>
+        <button type="button" class="flex w-full cursor-pointer items-center gap-3 rounded-xl border border-emerald-100 bg-emerald-50 px-4 py-3 text-left transition-all hover:shadow-md" data-reserve-option="whatsapp">
+          <span class="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-white text-[#25D366]" aria-hidden="true">
+            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm5.2 14c-.2.6-1.2 1.2-1.8 1.2-.5 0-1.1 0-2.4-.6a11 11 0 0 1-4.4-3.9c-.7-1.1-.8-2-.6-2.6.2-.5.8-1.1 1.2-1.2.3-.1.7 0 .9.4l.7 1.5c.1.3 0 .5-.2.7l-.4.5c-.1.2-.2.4 0 .7.4.7 1.4 1.8 2.5 2.3.3.1.5.1.7-.1l.5-.6c.2-.2.4-.2.7-.1l1.5.7c.3.2.5.5.4.9Z"/></svg>
+          </span>
+          <span class="min-w-0">
+            <span class="block text-sm font-semibold text-stone-900" data-i18n="reserveDirectWa">WhatsApp directo</span>
+            <span class="mt-0.5 block text-xs text-stone-500" data-i18n="reserveDirectWaHint">El mensaje llega directo al local.</span>
+          </span>
+        </button>
+        <button type="button" class="flex w-full cursor-pointer items-center gap-3 rounded-xl border border-stone-200 bg-stone-50 px-4 py-3 text-left transition-all hover:shadow-md" data-reserve-option="phone">
+          <span class="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-white text-stone-700" aria-hidden="true">
+            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path stroke-linecap="round" stroke-linejoin="round" d="M6.6 10.8a12.8 12.8 0 0 0 5.6 5.6l2-2a1 1 0 0 1 1-.2 9.6 9.6 0 0 0 3.5.6 1 1 0 0 1 1 1V19a1 1 0 0 1-1 1A17 17 0 0 1 4 6a1 1 0 0 1 1-1h3.2a1 1 0 0 1 1 1 9.6 9.6 0 0 0 .6 3.5 1 1 0 0 1-.2 1l-2 2z"/></svg>
+          </span>
+          <span class="min-w-0">
+            <span class="block text-sm font-semibold text-stone-900" data-i18n="callLong">Llamar al restaurante</span>
+          </span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="./data.js"></script>
+  <script src="./app.js"></script>
+  <script>
+    (function () {
+      var modal = document.getElementById('reserve-options-modal');
+      var closeBtn = document.getElementById('reserve-options-close');
+      var lastTrigger = null;
+
+      function openModal(trigger) {
+        lastTrigger = trigger;
+        modal.hidden = false;
+        document.body.classList.add('reserve-options-open');
+        closeBtn.focus();
+      }
+
+      function closeModal() {
+        if (modal.hidden) return;
+        modal.hidden = true;
+        document.body.classList.remove('reserve-options-open');
+        if (lastTrigger && lastTrigger.focus) lastTrigger.focus();
+      }
+
+      document.querySelectorAll('.js-reserve-open').forEach(function (node) {
+        node.addEventListener('click', function (event) {
+          event.preventDefault();
+          if (location.hash !== '#reservas') location.hash = 'reservas';
+          else window.scrollTo(0, 0);
+        });
+      });
+
+      document.addEventListener('open-reserve-options', function () {
+        openModal(document.getElementById('btn-reserva'));
+      });
+
+      closeBtn.addEventListener('click', closeModal);
+      document.getElementById('reserve-options-backdrop').addEventListener('click', closeModal);
+      document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape' && !modal.hidden) closeModal();
+      });
+
+      modal.addEventListener('click', function (event) {
+        var option = event.target.closest('[data-reserve-option]');
+        if (!option || modal.hidden) return;
+        var data = window.VISIWEB_DEMO;
+        var kind = option.getAttribute('data-reserve-option');
+        closeModal();
+        if (!data || !data.business) return;
+        if (kind === 'online') {
+          if (location.hash !== '#reservas') location.hash = 'reservas';
+          return;
+        }
+        if (kind === 'whatsapp') {
+          if (window.__visiwebBookingPreview && window.openBookingPreview) {
+            window.openBookingPreview();
+            return;
+          }
+          if (location.hash !== '#reservas') location.hash = 'reservas';
+          return;
+        }
+        if (kind === 'phone' && data.business.phone) window.location.href = 'tel:' + String(data.business.phone).replace(/\s/g, '');
+      });
+    })();
+  </script>
+  <script>
+    (function () {
+      var form = document.getElementById('booking-form');
+      var button = document.getElementById('btn-reserva');
+      var error = document.getElementById('error-reserva');
+      if (!form || !button || !error) return;
+
+      function completo() {
+        var fields = form.querySelectorAll('[required]');
+        for (var i = 0; i < fields.length; i++) {
+          if (!String(fields[i].value || '').trim() || !fields[i].checkValidity()) return false;
+        }
+        return true;
+      }
+
+      function copy(key, fallback) {
+        var pack = window.VISIWEB_DEMO && window.VISIWEB_DEMO.i18n;
+        var lang = document.documentElement.lang === 'en' ? 'en' : 'es';
+        return (pack && pack[lang] && pack[lang][key]) || fallback;
+      }
+
+      function sync() {
+        if (completo()) {
+          button.textContent = copy('reserveReady', 'Confirmar mesa');
+          error.classList.add('hidden');
+          return;
+        }
+        button.textContent = copy('reserve', 'Reservar mesa');
+      }
+
+      form.addEventListener('input', sync);
+      form.addEventListener('change', sync);
+      document.documentElement.addEventListener('langchange', sync);
+      form.addEventListener('submit', function (event) {
+        if (completo()) {
+          error.classList.add('hidden');
+          return;
+        }
+        event.preventDefault();
+        error.textContent = copy('bookMissing', 'Faltan apartados por rellenar');
+        error.classList.remove('hidden');
+        button.textContent = copy('reserve', 'Reservar mesa');
+      });
+      sync();
+    })();
+  </script>
+</body>
+</html>

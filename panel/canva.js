@@ -76,31 +76,59 @@
     current.address = data.address || '';
   }
 
+  function restaurantPayload() {
+    var current = ed();
+    var payload = {
+      name: current.name || '',
+      tagline: current.tagline || '',
+      description: current.description || '',
+      phone: current.phone || '',
+      whatsapp: current.whatsapp || '',
+      address: current.address || '',
+      schedule: current.schedule || '',
+      instagram: current.instagram || '',
+      cover_image_url: current.coverPreview || current.cover_url || current.cover_image_url || '',
+      plan_tier: current.plan_tier || '',
+      design_config: current.design,
+      design: current.design,
+      daily_menu: current.daily_menu,
+      accent: current.design && current.design.accent,
+      primary_color: current.design && current.design.accent,
+      categories: (current.categories || []).map(function (category) {
+        return {
+          id: category.id,
+          name: category.name || '',
+          items: (category.items || []).map(function (item) {
+            return {
+              id: item.id,
+              name: item.name || '',
+              description: item.description || '',
+              price: item.price,
+              image_url: item.preview || item.image_url || '',
+              allergens: item.allergens || [],
+              featured: !!item.featured
+            };
+          })
+        };
+      })
+    };
+    // Si el editor aún no tiene carta, no enviar categories vacías (evita pisar preview/data.js).
+    if (!payload.categories.length || (payload.categories.length === 1 && !payload.categories[0].name && !(payload.categories[0].items || []).some(function (item) { return item.name; }))) {
+      delete payload.categories;
+    }
+    return payload;
+  }
+
   function sendDesign() {
     var frame = document.getElementById('vw-canvas');
     var current = ed();
     if (!frame || !frame.contentWindow || !current) return;
-    var labels = current.design.labels || {};
+    if (current.fromPreview && !current.previewDirty) return;
+    var payload = restaurantPayload();
     frame.contentWindow.postMessage({
-      type: 'visiweb-design',
-      page: current.preview === 'mesa' ? 'mesa' : 'web',
-      design: current.design,
-      dailyMenu: current.daily_menu,
-      selected: current.selectedElementId || '',
-      editing: current.mode === 'edit',
-      copy: {
-        name: current.name,
-        phone: current.phone,
-        whatsapp: current.whatsapp,
-        address: current.address,
-        heroTitle: labels.heroTitle || current.tagline || current.name,
-        heroSubtitle: labels.heroSubtitle || '',
-        navHome: labels.navHome || '',
-        navMenu: labels.navMenu || '',
-        navLocal: labels.navLocal || '',
-        navBook: labels.navBook || '',
-        cover: current.coverPreview || current.cover_url || current.cover_image_url || ''
-      }
+      type: 'RESTAURANT_DATA',
+      payload: payload,
+      RESTAURANT_DATA: payload
     }, location.origin);
   }
 
@@ -111,10 +139,7 @@
   }
 
   function frameSrc() {
-    var current = ed();
-    return current.preview === 'mesa'
-      ? '/r/' + current.slug + '/mesa?editor=1'
-      : '/r/' + current.slug + '?editor=1';
+    return './preview/index.html#inicio';
   }
 
   var ICON = {
@@ -142,16 +167,21 @@
             '<button type="button" data-canva="viewport" data-value="mobile" class="h-7 rounded px-2 text-xs font-medium">Móvil</button>' +
             '<button type="button" data-canva="viewport" data-value="desktop" class="h-7 rounded px-2 text-xs font-medium">Escritorio</button>' +
           '</div>' +
-          '<div class="flex h-8 items-center rounded-md bg-neutral-100 p-0.5">' +
-            '<button type="button" data-canva="preview" data-value="web" class="h-7 rounded px-2 text-xs font-medium">Web</button>' +
-            '<button type="button" data-canva="preview" data-value="mesa" class="h-7 rounded px-2 text-xs font-medium">QR</button>' +
-          '</div>' +
           '<button type="button" data-canva="save" class="ml-auto h-8 rounded-md bg-neutral-900 px-3 text-xs font-medium text-white">Guardar</button>' +
         '</header>' +
         '<div id="vw-banner" class="shrink-0 px-3"></div>' +
         '<div class="flex min-h-0 flex-1">' +
-          '<div id="vw-stage" class="flex min-w-0 flex-1 justify-center overflow-auto bg-neutral-100 p-6">' +
-            '<iframe id="vw-canvas" title="Vista previa" class="h-full border border-neutral-200 bg-white shadow-sm" data-src="' + frameSrc() + '" src="' + frameSrc() + '"></iframe>' +
+          '<div id="vw-stage" class="flex min-w-0 flex-1 flex-col bg-neutral-100">' +
+            '<div class="flex shrink-0 items-center justify-center gap-2 border-b border-neutral-200 bg-white px-3 py-2">' +
+              '<span class="text-xs font-medium text-neutral-500">Vista</span>' +
+              '<div class="flex h-8 items-center rounded-md bg-neutral-100 p-0.5">' +
+                '<button type="button" data-canva="viewport" data-value="mobile" class="h-7 rounded px-2 text-xs font-medium">Móvil · 390px</button>' +
+                '<button type="button" data-canva="viewport" data-value="desktop" class="h-7 rounded px-2 text-xs font-medium">Escritorio · 100%</button>' +
+              '</div>' +
+            '</div>' +
+            '<div class="flex min-h-0 flex-1 justify-center overflow-auto p-6">' +
+              '<iframe id="vw-canvas" title="Vista previa" class="h-full border border-neutral-200 bg-white shadow-sm" data-src="' + frameSrc() + '" src="' + frameSrc() + '"></iframe>' +
+            '</div>' +
           '</div>' +
           '<aside id="vw-inspector" class="w-[340px] shrink-0 overflow-auto border-l border-neutral-200 bg-white"></aside>' +
         '</div>' +
@@ -179,9 +209,6 @@
     document.querySelectorAll('[data-canva="viewport"]').forEach(function (node) {
       node.className = 'h-7 rounded px-2 text-xs font-medium ' + (node.dataset.value === current.viewport ? 'bg-white text-neutral-900 shadow-sm' : 'text-neutral-500');
     });
-    document.querySelectorAll('[data-canva="preview"]').forEach(function (node) {
-      node.className = 'h-7 rounded px-2 text-xs font-medium ' + (node.dataset.value === current.preview ? 'bg-white text-neutral-900 shadow-sm' : 'text-neutral-500');
-    });
     document.querySelectorAll('[data-canva="mode"]').forEach(function (node) {
       node.className = 'flex h-7 items-center gap-1 rounded px-2 text-xs font-medium ' + (node.dataset.value === (current.mode || 'navigate') ? 'bg-white text-neutral-900 shadow-sm' : 'text-neutral-500');
     });
@@ -195,7 +222,7 @@
     var frame = document.getElementById('vw-canvas');
     if (frame) {
       frame.style.width = current.viewport === 'desktop' ? '100%' : '390px';
-      frame.style.maxWidth = current.viewport === 'desktop' ? '1100px' : '390px';
+      frame.style.maxWidth = current.viewport === 'desktop' ? '100%' : '390px';
       if (frame.dataset.src !== frameSrc()) {
         frame.dataset.src = frameSrc();
         frame.src = frameSrc();
@@ -687,7 +714,6 @@
       return;
     }
     if (kind === 'viewport') { current.viewport = button.dataset.value; updateChrome(); return; }
-    if (kind === 'preview') { current.preview = button.dataset.value; updateChrome(); updateInspector(); return; }
     if (kind === 'save') { api.saveAll(); return; }
     if (kind === 'select') {
       current.selectedElementId = '';
