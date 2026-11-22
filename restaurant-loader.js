@@ -260,6 +260,25 @@
     if (site) site.setAttribute('content', row.name || '');
     D.design = window.VisiwebDesign ? window.VisiwebDesign.merge(row.design_config) : (row.design_config || null);
     D.dailyMenu = window.VisiwebDesign ? window.VisiwebDesign.mergeDaily(row.daily_menu) : (row.daily_menu || null);
+    if (D.eventos) {
+      var planOk = String(row.plan_tier || '') === '790';
+      var labels = (D.design && D.design.labels) || {};
+      D.eventos.activo = planOk && labels.vw_events === '1';
+      var evCfg = D.design && D.design.eventos;
+      if (evCfg) {
+        if (evCfg.tipoVideo === 'salon' || evCfg.tipoVideo === 'terraza' || evCfg.tipoVideo === 'ninguno') {
+          D.eventos.tipoVideo = evCfg.tipoVideo;
+        }
+        ['eyebrow', 'title', 'subtitle', 'lead', 'cta', 'readyTitle', 'readyCta'].forEach(function (key) {
+          if (typeof evCfg[key] === 'string' && evCfg[key].trim()) {
+            D.eventos[key] = both(evCfg[key]);
+          }
+        });
+      }
+      D.eventos.phone = phone || D.eventos.phone;
+      D.eventos.phoneDisplay = phone || D.eventos.phoneDisplay;
+      D.eventos.whatsapp = String(row.whatsapp || D.eventos.whatsapp || '').replace(/\D/g, '');
+    }
     if (window.VisiwebDesign) window.VisiwebDesign.paint(D.design);
     window.VISIWEB_RESTAURANT_SLUG = row.slug;
     window.VISIWEB_RESTAURANT_STATUS = row.status;

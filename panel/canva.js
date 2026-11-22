@@ -423,6 +423,28 @@
         '<section class="space-y-1 px-3 py-2">' +
         colorRow('colors.pageBg', 'Fondo') + colorRow('colors.cardBg', 'Tarjetas') + colorRow('colors.textPrimary', 'Texto') +
         '</section>';
+      if (String(current.plan_tier || '') === '790') {
+        if (!design.labels) design.labels = {};
+        if (!design.eventos) design.eventos = { tipoVideo: 'salon', eyebrow: '', title: '', subtitle: '', lead: '', cta: '', readyTitle: '', readyCta: '' };
+        var eventsOn = design.labels.vw_events === '1';
+        var ev = design.eventos;
+        body += '<section class="border-b border-neutral-100 px-3 py-3">' +
+          labelOf('Eventos y grupos') +
+          '<button type="button" data-canva="events-flag" aria-pressed="' + (eventsOn ? 'true' : 'false') + '" class="flex h-8 w-full items-center justify-between rounded-md border border-neutral-200 px-2 text-xs font-medium ' + (eventsOn ? 'bg-neutral-900 text-white' : 'bg-white text-neutral-700') + '"><span>Activar módulo</span><span>' + (eventsOn ? 'ON' : 'OFF') + '</span></button>';
+        if (eventsOn) {
+          body += '<div class="mt-2">' + labelOf('Vídeo hero') + seg('events-video', ev.tipoVideo || 'salon', [['salon', 'Salón'], ['terraza', 'Terraza'], ['ninguno', 'Foto']]) + '</div>' +
+            '<div class="mt-2 space-y-1.5">' +
+            labelOf('Eyebrow') + boxInput('events.eyebrow', ev.eyebrow || '') +
+            labelOf('Título') + boxInput('events.title', ev.title || '') +
+            labelOf('Subtítulo') + boxInput('events.subtitle', ev.subtitle || '') +
+            labelOf('Lead') + '<textarea data-canva-input="events.lead" rows="3" class="w-full rounded-md border border-neutral-200 px-2 py-1.5 text-xs text-neutral-800">' + api.esc(ev.lead || '') + '</textarea>' +
+            labelOf('CTA hero') + boxInput('events.cta', ev.cta || '') +
+            labelOf('Título editorial') + boxInput('events.readyTitle', ev.readyTitle || '') +
+            labelOf('Botón editorial') + boxInput('events.readyCta', ev.readyCta || '') +
+            '</div>';
+        }
+        body += '</section>';
+      }
     }
     if (kind === 'text' || kind === 'nav') {
       var textItem = elementItem();
@@ -712,6 +734,22 @@
       postDesign(true);
       return;
     }
+    if (kind === 'events-flag') {
+      snapshot();
+      if (!current.design.labels) current.design.labels = {};
+      current.design.labels.vw_events = current.design.labels.vw_events === '1' ? '0' : '1';
+      updateInspector();
+      postDesign(true);
+      return;
+    }
+    if (kind === 'set' && button.dataset.group === 'events-video') {
+      snapshot();
+      if (!current.design.eventos) current.design.eventos = { tipoVideo: 'salon' };
+      current.design.eventos.tipoVideo = button.dataset.value;
+      updateInspector();
+      postDesign(true);
+      return;
+    }
     if (kind === 'set') {
       snapshot();
       current.design[button.dataset.group] = button.dataset.value;
@@ -766,6 +804,10 @@
       if (path === 'name' || path === 'tagline' || path === 'phone' || path === 'whatsapp' || path === 'address') current[path] = target.value;
       else if (path.indexOf('labels.') === 0) current.design.labels[path.slice(7)] = target.value;
       else if (path.indexOf('daily.') === 0) current.daily_menu[path.slice(6)] = target.value;
+      else if (path.indexOf('events.') === 0) {
+        if (!current.design.eventos) current.design.eventos = { tipoVideo: 'salon' };
+        current.design.eventos[path.slice(7)] = target.value;
+      }
       else if (path.indexOf('element.') === 0) {
         var key = path.slice(8);
         var piece = elementItem();

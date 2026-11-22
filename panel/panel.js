@@ -118,6 +118,46 @@
     if (!design.labels || typeof design.labels !== 'object') design.labels = {};
   }
 
+  function ensureEventos(design) {
+    ensureLabels(design);
+    if (!design.eventos || typeof design.eventos !== 'object') {
+      design.eventos = (window.VisiwebDesign && window.VisiwebDesign.blank().eventos) || {
+        tipoVideo: 'salon', eyebrow: '', title: '', subtitle: '', lead: '', cta: '', readyTitle: '', readyCta: ''
+      };
+    }
+    if (!design.eventos.tipoVideo) design.eventos.tipoVideo = 'salon';
+  }
+
+  function eventosEditor(design) {
+    ensureEventos(design);
+    var ev = design.eventos;
+    var on = design.labels.vw_events === '1';
+    var videos = [
+      ['salon', 'Vídeo salón'],
+      ['terraza', 'Vídeo terraza'],
+      ['ninguno', 'Solo foto']
+    ];
+    return (
+      flagButton('vw_events', 'Activar Eventos y grupos', on) +
+      (on
+        ? '<div class="space-y-3 rounded-3xl bg-white p-4 ring-1 ring-stone-200">' +
+            '<p class="text-sm font-semibold text-stone-800">Vídeo del hero</p>' +
+            '<div class="grid grid-cols-3 gap-2">' + videos.map(function (item) {
+              var active = ev.tipoVideo === item[0];
+              return '<button type="button" data-eventos-video="' + item[0] + '" aria-pressed="' + (active ? 'true' : 'false') + '" class="rounded-2xl px-2 py-3 text-xs font-semibold ring-1 ' + (active ? 'bg-stone-900 text-white ring-stone-900' : 'bg-stone-50 text-stone-700 ring-stone-200') + '">' + item[1] + '</button>';
+            }).join('') + '</div>' +
+            '<label class="block text-sm font-semibold">Eyebrow<input data-eventos="eyebrow" value="' + esc(ev.eyebrow || '') + '" class="mt-1 w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-base outline-none focus:border-stone-300" placeholder="Celebraciones y grupos"></label>' +
+            '<label class="block text-sm font-semibold">Título<input data-eventos="title" value="' + esc(ev.title || '') + '" class="mt-1 w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-base outline-none focus:border-stone-300" placeholder="Eventos"></label>' +
+            '<label class="block text-sm font-semibold">Subtítulo<input data-eventos="subtitle" value="' + esc(ev.subtitle || '') + '" class="mt-1 w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-base outline-none focus:border-stone-300"></label>' +
+            '<label class="block text-sm font-semibold">Texto introductorio<textarea data-eventos="lead" rows="3" class="mt-1 w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-base outline-none focus:border-stone-300">' + esc(ev.lead || '') + '</textarea></label>' +
+            '<label class="block text-sm font-semibold">CTA del hero<input data-eventos="cta" value="' + esc(ev.cta || '') + '" class="mt-1 w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-base outline-none focus:border-stone-300" placeholder="Pedir presupuesto"></label>' +
+            '<label class="block text-sm font-semibold">Título editorial<input data-eventos="readyTitle" value="' + esc(ev.readyTitle || '') + '" class="mt-1 w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-base outline-none focus:border-stone-300"></label>' +
+            '<label class="block text-sm font-semibold">Botón editorial<input data-eventos="readyCta" value="' + esc(ev.readyCta || '') + '" class="mt-1 w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-base outline-none focus:border-stone-300" placeholder="Ir a reservas"></label>' +
+          '</div>'
+        : '')
+    );
+  }
+
   function applyPlanLimits(editor) {
     var rank = planRank(editor.plan_tier);
     var design = editor.design;
@@ -143,6 +183,9 @@
       Object.keys(design.mesa || {}).forEach(function (key) { design.mesa[key] = false; });
       design.labels.vw_events = '0';
       if (design.labels.vw_lang === 'multi') design.labels.vw_lang = 'esen';
+    } else {
+      ensureEventos(design);
+      if (design.labels.vw_events !== '0' && design.labels.vw_events !== '1') design.labels.vw_events = '1';
     }
     if (rank >= 2 && design.labels.vw_allergens !== '0' && design.labels.vw_allergens !== '1') design.labels.vw_allergens = '1';
     if (rank >= 2 && design.labels.vw_social !== '0' && design.labels.vw_social !== '1') design.labels.vw_social = '1';
@@ -663,7 +706,9 @@
           (planRank(editor.plan_tier) === 2 ? lockedRow('Carta multilingüe (hasta 3 idiomas)', LOCK_TOTAL) : '') +
           (planRank(editor.plan_tier) < 2 ? lockedRow('Página de redes', LOCK_GASTRO) : flagButton('vw_social', 'Página de redes', design.labels.vw_social === '1')) +
           (planRank(editor.plan_tier) < 3 ? lockedRow('Diseño a medida', LOCK_TOTAL) : '<p class="rounded-3xl bg-white px-4 py-3 text-sm text-stone-600 ring-1 ring-stone-200">Diseño a medida incluido en este plan.</p>') +
-          (planRank(editor.plan_tier) < 3 ? lockedRow('Módulo de grupos/eventos', LOCK_TOTAL) : flagButton('vw_events', 'Módulo de grupos/eventos', design.labels.vw_events === '1')) +
+        '</section>' +
+        '<section class="space-y-2"><h2 class="text-lg font-semibold">Eventos y grupos</h2>' +
+          (planRank(editor.plan_tier) < 3 ? lockedRow('Eventos y grupos', LOCK_TOTAL) : eventosEditor(design)) +
         '</section>' +
         '<section class="space-y-2"><h2 class="text-lg font-semibold">Modo QR /mesa</h2>' +
           (planRank(editor.plan_tier) < 3
@@ -1140,6 +1185,17 @@
       editor.daily_menu[target.dataset.daily] = target.value;
       return;
     }
+    if (target.dataset.eventos) {
+      ensureEventos(editor.design);
+      editor.design.eventos[target.dataset.eventos] = target.value;
+      if (window.VisiwebCanva && editor.id) window.VisiwebCanva.sync(state, {
+        esc: esc, banner: banner, menuHtml: function () { return renderStepB(state.editor); },
+        uploadImage: function (file) { return uploadAsset(state.editor.id, file, 'pieza'); },
+        close: function () { state.editor = null; refresh(); },
+        saveAll: saveAll
+      });
+      return;
+    }
     var fieldName = target.dataset.field;
     if (fieldName === 'name') {
       editor.name = target.value;
@@ -1355,6 +1411,13 @@
       if ((flag === 'vw_allergens' || flag === 'vw_social') && flagRank < 2) return;
       ensureLabels(state.editor.design);
       state.editor.design.labels[flag] = state.editor.design.labels[flag] === '1' ? '0' : '1';
+      render();
+      return;
+    }
+    if (button.dataset.eventosVideo && state.editor) {
+      if (planRank(state.editor.plan_tier) < 3) return;
+      ensureEventos(state.editor.design);
+      state.editor.design.eventos.tipoVideo = button.dataset.eventosVideo;
       render();
       return;
     }

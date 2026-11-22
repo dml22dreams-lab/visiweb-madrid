@@ -653,6 +653,99 @@ window.VISIWEB_DEMO = (function () {
     ]
   };
 
+  /* --- Eventos y grupos (plan Digitalización Total, 790 €) ---------
+     activo: false oculta el enlace del menú y la sección entera.
+  ------------------------------------------------------------------- */
+  const EVENTOS = {
+    activo: true,
+    /* tipoVideo: "salon" | "terraza" | "ninguno" (solo foto estática) */
+    tipoVideo: 'salon',
+    videoSalon: '/assets/brindis-salon.mp4',
+    videoSalonInicio: 2.5,
+    videoSalonDuracion: 10,
+    videoTerraza: '/assets/brindis-terraza.mp4',
+    imagenHero: 'https://images.unsplash.com/photo-1519671482749-fd09be7ccebf?auto=format&fit=crop&w=1800&q=80',
+    imageAlt: {
+      es: 'Un grupo brindando con copas de vino',
+      en: 'A group toasting with wine glasses'
+    },
+    eyebrow: { es: 'Celebraciones y grupos', en: 'Celebrations and groups' },
+    title: { es: 'Eventos', en: 'Events' },
+    subtitle: {
+      es: 'Celebraciones con alma, buena mesa y atención a medida',
+      en: 'Celebrations with soul, a good table and care made to measure'
+    },
+    cta: { es: 'Pedir presupuesto', en: 'Request a quote' },
+    lead: {
+      es: 'Cumpleaños, cenas de grupo, aniversarios o una reunión de empresa. La mesa, el menú y los detalles los llevamos nosotros: tú llegas y celebras, sin ocuparte de nada más.',
+      en: 'Birthdays, group dinners, anniversaries or a company meeting. We look after the table, the menu and the details. You arrive and celebrate, with nothing else to arrange.'
+    },
+    typesTitle: { es: 'Tipos de celebración', en: 'Ways to celebrate' },
+    types: [
+      {
+        id: 'cumpleanos',
+        icon: 'cheers',
+        image: 'https://images.unsplash.com/photo-1528605248644-14dd04022da1?auto=format&fit=crop&w=1400&q=80',
+        imageAlt: { es: 'Amigos brindando y sonriendo alrededor de una mesa', en: 'Friends toasting and smiling around a table' },
+        capacityTag: { es: 'Grupos de 8 a 25 pers.', en: 'Groups of 8 to 25' },
+        title: { es: 'Cumpleaños y aniversarios', en: 'Birthdays and anniversaries' },
+        text: {
+          es: 'Brindis, mesas largas y un ambiente acogedor para festejar a lo grande.',
+          en: 'A toast, a long table and a warm room to celebrate properly.'
+        }
+      },
+      {
+        id: 'empresa',
+        icon: 'team',
+        image: 'https://images.unsplash.com/photo-1466978913421-dad2ebd01d17?auto=format&fit=crop&w=1400&q=80',
+        imageAlt: { es: 'Un equipo compartiendo la mesa', en: 'A team sharing the table' },
+        capacityTag: { es: 'Equipos de 6 a 30 pers.', en: 'Teams of 6 to 30' },
+        title: { es: 'Comidas y cenas de empresa', en: 'Company lunches and dinners' },
+        text: {
+          es: 'Menús cerrados ágiles y servicio impecable para equipos y clientes.',
+          en: 'Set menus that move quickly, and service that holds up for a team or a client.'
+        }
+      },
+      {
+        id: 'privada',
+        icon: 'private',
+        image: 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=1200&q=80',
+        imageAlt: { es: 'Mesa larga vestida con flores y cristalería', en: 'A long table dressed with flowers and glassware' },
+        capacityTag: { es: 'Hasta 40 pers.', en: 'Up to 40 guests' },
+        title: { es: 'Celebraciones privadas', en: 'Private celebrations' },
+        text: {
+          es: 'Espacios reservados y propuestas gastronómicas adaptadas a tu grupo.',
+          en: 'A reserved corner and a menu shaped around your group.'
+        }
+      }
+    ],
+    readyImage: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=1400&q=80',
+    readyImageAlt: {
+      es: 'Mesa larga preparada para una celebración',
+      en: 'A long table set for a celebration'
+    },
+    readyTitle: {
+      es: 'Todo listo para que solo disfrutes',
+      en: 'Everything ready, so you only have to enjoy it'
+    },
+    readyPoints: [
+      { es: 'Menú a medida, pensado para tu grupo.', en: 'A menu made to measure for your group.' },
+      { es: 'Espacio reservado, solo para vosotros.', en: 'A reserved space, just for you.' },
+      { es: 'Atención personalizada de principio a fin.', en: 'Personal attention from the first note to the last toast.' }
+    ],
+    readyCta: { es: 'Ir a reservas', en: 'Go to bookings' },
+    formTypes: [
+      { id: 'cumpleanos', label: { es: 'Cumpleaños', en: 'Birthday' } },
+      { id: 'empresa', label: { es: 'Fiesta o comida de empresa', en: 'Company party or meal' } },
+      { id: 'boda', label: { es: 'Boda / Aniversario', en: 'Wedding / Anniversary' } },
+      { id: 'familiar', label: { es: 'Celebración familiar', en: 'Family celebration' } },
+      { id: 'otro', label: { es: 'Otro', en: 'Other' } }
+    ],
+    phone: '+34600000000',
+    phoneDisplay: '+34 600 00 00 00',
+    whatsapp: '34600000000'
+  };
+
   /* --- Textos de interfaz ------------------------------------------- */
   const I18N = {
     es: {
@@ -675,6 +768,27 @@ window.VISIWEB_DEMO = (function () {
       navLocal: 'El local',
       navHistory: 'Historia',
       navBook: 'Reservas',
+      navEvents: 'Eventos',
+      eventosTitle: 'Eventos',
+      eventosError: 'Rellena nombre, fecha, comensales y tipo de evento.',
+      eventosWaIntro: 'Hola, soy {name}. Quiero solicitar un presupuesto para un evento en {restaurant}.',
+      eventosWaType: 'Tipo',
+      eventosWaDate: 'Fecha',
+      eventosWaGuests: 'Comensales',
+      eventosWaNotes: 'Comentarios',
+      reservasModeMesa: 'Reserva de mesa',
+      reservasModeEventos: 'Eventos y grupos',
+      eventBookTitle: 'Eventos y grupos',
+      eventBookSubtitle: 'Cuéntanos la fecha, el grupo y la idea. Te respondemos con menú y espacio.',
+      eventName: 'Nombre completo',
+      eventType: 'Tipo de evento',
+      eventTypePlaceholder: 'Elige un tipo',
+      eventTypeOther: 'Especifica el tipo de evento',
+      eventTypeOtherPlaceholder: 'Ej. Bautizo, graduación, cena de aniversario...',
+      eventDate: 'Fecha del evento',
+      eventGuests: 'Número de comensales (máximo 40 comensales)',
+      eventNotes: 'Comentarios o ideas para el evento',
+      eventSubmit: 'Pedir presupuesto',
       featuredTitle: 'De la casa',
       featuredCta: 'Ver la carta completa',
       localTitle: 'El local',
@@ -881,6 +995,27 @@ window.VISIWEB_DEMO = (function () {
       navLocal: 'The venue',
       navHistory: 'Our story',
       navBook: 'Book',
+      navEvents: 'Events',
+      eventosTitle: 'Events',
+      eventosError: 'Please fill in name, date, guests and event type.',
+      eventosWaIntro: 'Hello, this is {name}. I would like a quote for an event at {restaurant}.',
+      eventosWaType: 'Type',
+      eventosWaDate: 'Date',
+      eventosWaGuests: 'Guests',
+      eventosWaNotes: 'Comments',
+      reservasModeMesa: 'Table booking',
+      reservasModeEventos: 'Events and groups',
+      eventBookTitle: 'Events and groups',
+      eventBookSubtitle: 'Tell us the date, the group and the idea. We reply with a menu and a room.',
+      eventName: 'Full name',
+      eventType: 'Event type',
+      eventTypePlaceholder: 'Choose a type',
+      eventTypeOther: 'Specify the event type',
+      eventTypeOtherPlaceholder: 'E.g. christening, graduation, anniversary dinner...',
+      eventDate: 'Event date',
+      eventGuests: 'Number of guests (maximum 40 guests)',
+      eventNotes: 'Comments or ideas for the event',
+      eventSubmit: 'Request a quote',
       featuredTitle: 'House favourites',
       featuredCta: 'See the full menu',
       localTitle: 'The venue',
@@ -1086,6 +1221,7 @@ window.VISIWEB_DEMO = (function () {
     reviews: REVIEWS,
     local: LOCAL,
     history: HISTORY,
+    eventos: EVENTOS,
     gbp: GBP,
     booking: BOOKING,
     featured: FEATURED,

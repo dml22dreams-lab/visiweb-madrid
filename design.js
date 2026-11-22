@@ -52,7 +52,17 @@
       blockColors: {},
       labels: {},
       footerHidden: false,
-      elements: {}
+      elements: {},
+      eventos: {
+        tipoVideo: 'salon',
+        eyebrow: '',
+        title: '',
+        subtitle: '',
+        lead: '',
+        cta: '',
+        readyTitle: '',
+        readyCta: ''
+      }
     };
   }
 
@@ -165,6 +175,14 @@
     if (src.labels && typeof src.labels === 'object') {
       Object.keys(src.labels).forEach(function (key) {
         if (typeof src.labels[key] === 'string') base.labels[key] = src.labels[key].slice(0, 80);
+      });
+    }
+    if (src.eventos && typeof src.eventos === 'object') {
+      if (src.eventos.tipoVideo === 'salon' || src.eventos.tipoVideo === 'terraza' || src.eventos.tipoVideo === 'ninguno') {
+        base.eventos.tipoVideo = src.eventos.tipoVideo;
+      }
+      ['eyebrow', 'title', 'subtitle', 'lead', 'cta', 'readyTitle', 'readyCta'].forEach(function (key) {
+        if (typeof src.eventos[key] === 'string') base.eventos[key] = src.eventos[key].slice(0, 280);
       });
     }
     if (typeof src.footerHidden === 'boolean') base.footerHidden = src.footerHidden;
@@ -443,13 +461,14 @@
     text('[data-nav="inicio"]', labels.navHome);
     text('[data-nav="carta"]', labels.navMenu);
     text('[data-nav="local"]', labels.navLocal);
+    text('[data-nav="eventos"]', labels.navEvents);
     text('[data-nav="reservas"]', labels.navBook);
     text('#inicio-hero h1', labels.heroTitle);
     text('#inicio-hero .hero-sub', labels.heroSubtitle);
     text('#featured-title', labels.featuredTitle);
     text('#local h1, [data-page="local"] h1', labels.localTitle);
     text('#reviews-title', labels.reviewsTitle);
-    text('#reservas h1', labels.bookTitle);
+    text('#reservas-title, #reservas h1', labels.bookTitle);
   }
 
   function tag(node, id, label) {
@@ -704,6 +723,22 @@
       if (data.copy.address) demo.business.addressLine = data.copy.address;
       demo.dailyMenu = mergeDaily(data.dailyMenu);
       demo.design = window.VISIWEB_DESIGN;
+      if (demo.eventos && data.design && data.design.labels) {
+        if (typeof data.design.labels.vw_events === 'string') {
+          demo.eventos.activo = data.design.labels.vw_events === '1';
+        }
+      }
+      if (demo.eventos && data.design && data.design.eventos) {
+        var ev = data.design.eventos;
+        if (ev.tipoVideo === 'salon' || ev.tipoVideo === 'terraza' || ev.tipoVideo === 'ninguno') {
+          demo.eventos.tipoVideo = ev.tipoVideo;
+        }
+        ['eyebrow', 'title', 'subtitle', 'lead', 'cta', 'readyTitle', 'readyCta'].forEach(function (key) {
+          if (typeof ev[key] === 'string' && ev[key].trim()) {
+            demo.eventos[key] = { es: ev[key], en: ev[key] };
+          }
+        });
+      }
       ['es', 'en'].forEach(function (lng) {
         if (!demo.i18n || !demo.i18n[lng]) return;
         if (data.copy.heroTitle) demo.i18n[lng].heroTitle = data.copy.heroTitle;

@@ -14,7 +14,12 @@
   const STORE_LANG = 'visiweb-demo-lang';
   const SCHEMA_DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   const WEEK_ORDER = [1, 2, 3, 4, 5, 6, 0];
-  const PAGES = ['inicio', 'carta', 'local', 'reservas'];
+  let eventosOn = !!(D.eventos && D.eventos.activo);
+  function pagesList() {
+    return eventosOn
+      ? ['inicio', 'carta', 'local', 'eventos', 'reservas']
+      : ['inicio', 'carta', 'local', 'reservas'];
+  }
   const allergenFilters = new Set();
   const FILTER_OFF = ['bg-white', 'text-stone-700', 'border-stone-300', 'dark:bg-slate-950', 'dark:text-slate-300', 'dark:border-slate-600'];
   const FILTER_ON = ['bg-stone-900', 'text-white', 'border-stone-900', 'dark:bg-slate-100', 'dark:text-slate-900', 'dark:border-slate-100'];
@@ -66,6 +71,9 @@
 
   let lang = initialLang();
   let bookDatePicker = null;
+  let eventDatePicker = null;
+  let reservasMode = 'mesa';
+  let reservasEntry = 'mesa';
   const t = (key, vars) => {
     let out = D.i18n[lang][key] || D.i18n.es[key] || '';
     if (vars) Object.keys(vars).forEach((k) => { out = out.replace('{' + k + '}', vars[k]); });
@@ -225,11 +233,11 @@
     const figure = $('#hero-media');
     figure.textContent = '';
     if (D.images.hero) {
-      const img = el('img', 'max-h-[460px] w-full rounded-2xl object-cover object-[center_60%] shadow-sm');
+      const img = el('img', 'w-full rounded-2xl object-cover shadow-sm');
       img.src = D.images.hero;
       img.alt = L(D.images.heroAlt);
       img.width = 1600;
-      img.height = 900;
+      img.height = 500;
       img.decoding = 'async';
       img.setAttribute('fetchpriority', 'high');
       img.addEventListener('error', function () {
@@ -665,10 +673,22 @@
       openSocialsSheet();
       return;
     }
-    if (PAGES.indexOf(hash) >= 0) {
+    if (pagesList().indexOf(hash) >= 0) {
+      if (hash === 'reservas' && !(navOpts && navOpts.quiet)) {
+        reservasMode = reservasEntry === 'eventos' ? 'eventos' : 'mesa';
+        reservasEntry = 'mesa';
+      }
       showPage(hash, navOpts);
       if (hash === 'carta') applyAllergenFilter();
-      if (hash === 'reservas') refreshBookingSlots();
+      if (hash === 'reservas') {
+        refreshBookingSlots();
+        syncReservasMode();
+      }
+      return;
+    }
+    if (hash === 'eventos' && !eventosOn) {
+      showPage('inicio', navOpts);
+      history.replaceState(null, '', window.location.pathname + window.location.search + '#inicio');
       return;
     }
     if (hash === 'horarios') {
@@ -717,13 +737,562 @@
       name.style.whiteSpace = 'pre-line';
       name.textContent = L(item.name).replace(' con jamón', '\ncon jamón');
       const price = priceNode(lang === 'en' ? item.priceEn : item.price);
-      price.classList.add('mt-1', 'block');
+      price.classList.add(id === 'croquetas' || id === 'bravas' ? 'mt-3' : 'mt-1', 'block');
       body.append(name, price);
       link.appendChild(body);
       li.appendChild(link);
       list.appendChild(li);
     });
   }
+
+  function formatEventDate(ymd) {
+    const parts = String(ymd || '').split('-').map(Number);
+    if (parts.length !== 3 || parts.some((n) => !n)) return ymd;
+    const date = new Date(parts[0], parts[1] - 1, parts[2]);
+    try {
+      return new Intl.DateTimeFormat(t('locale') || 'es-ES', {
+        weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+      }).format(date);
+    } catch (e) {
+      return ymd;
+    }
+  }
+
+  function eventIcon(name) {
+    const paths = {
+      cheers: '<path d="M8 3h8l-1.15 6.1a2.85 2.85 0 0 1-5.7 0L8 3z"/><path d="M12 12.2V17"/><path d="M9 21h6"/>',
+      team: '<circle cx="9" cy="8" r="2.4"/><path d="M4.5 19.5v-1.2a3.2 3.2 0 0 1 3.2-3.2h2.6a3.2 3.2 0 0 1 3.2 3.2v1.2"/><circle cx="16.2" cy="8.4" r="2"/><path d="M16.2 15.1a3.1 3.1 0 0 1 3.1 2.6v1.8"/>',
+      private: '<path d="M6 21V6.2A1.2 1.2 0 0 1 7.2 5H14a1.2 1.2 0 0 1 1.2 1.2V21"/><path d="M4.8 21h14.4"/><path d="M12.4 12.4h.01"/>',
+      menu: '<path d="M5 16.5h14"/><path d="M7 16.5a5 5 0 0 1 10 0"/><path d="M12 7.2V5"/>',
+      room: '<path d="M4 20V9.2L12 4l8 5.2V20"/><path d="M9.5 20v-5.2h5V20"/>',
+      care: '<path d="M8 4.5h8"/><path d="M8 4.5A1.8 1.8 0 0 0 6.2 6.3v11.4A1.8 1.8 0 0 0 8 19.5h8a1.8 1.8 0 0 0 1.8-1.8V6.3A1.8 1.8 0 0 0 16 4.5"/><path d="M9 12.2l2 2 4-4"/>',
+      quote: '<path d="M7 3.8h10v16.4l-1.7-1.1-1.7 1.1-1.6-1.1-1.7 1.1-1.6-1.1L7 20.2z"/><path d="M9.2 8.2h5.6M9.2 11.6h5.6M9.2 15h3.2"/>'
+    };
+    const body = paths[name];
+    if (!body) return '';
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">' + body + '</svg>';
+  }
+
+  function eventImageSrc(src) {
+    if (!src) return '';
+    if (/^(https?:|data:|blob:)/i.test(src)) return src;
+    try { return new URL(src, window.location.href).href; } catch (e) { return src; }
+  }
+
+  function eventHeroClip(ev) {
+    if (!ev || !ev.tipoVideo || ev.tipoVideo === 'ninguno') return null;
+    const tipo = String(ev.tipoVideo);
+    const cap = tipo.charAt(0).toUpperCase() + tipo.slice(1);
+    const raw = ev['video' + cap];
+    if (!raw) return null;
+    const inicio = Number(ev['video' + cap + 'Inicio']);
+    const duracion = Number(ev['video' + cap + 'Duracion']);
+    return {
+      src: eventImageSrc(raw),
+      inicio: isFinite(inicio) && inicio > 0 ? inicio : 0,
+      duracion: isFinite(duracion) && duracion > 0 ? duracion : 5
+    };
+  }
+
+  function seekHeroVideo(video, time, done) {
+    let settled = false;
+    const finish = function () {
+      if (settled) return;
+      settled = true;
+      video.removeEventListener('seeked', finish);
+      if (done) done();
+    };
+    const apply = function () {
+      if (video.readyState >= 1 && Math.abs(video.currentTime - time) < 0.08) {
+        finish();
+        return;
+      }
+      video.addEventListener('seeked', finish);
+      try { video.currentTime = time; } catch (e) { finish(); }
+    };
+    if (video.readyState >= 1) apply();
+    else video.addEventListener('loadedmetadata', apply, { once: true });
+    setTimeout(function () {
+      if (settled) return;
+      if (video.readyState >= 1 && Math.abs(video.currentTime - time) > 0.3) {
+        try { video.currentTime = time; } catch (e) { finish(); }
+        return;
+      }
+      finish();
+    }, 700);
+  }
+
+  function startEventHeroLoop(primary, secondary, src, inicio, duracion) {
+    const LOOP = duracion > 0 ? duracion : 5;
+    const FADE = 1;
+    let alive = true;
+    let fading = false;
+    let top = primary;
+    let under = secondary;
+    let frame = 0;
+
+    function stop() {
+      alive = false;
+      if (frame) cancelAnimationFrame(frame);
+      primary.onerror = null;
+      secondary.onerror = null;
+      primary.classList.remove('is-out', 'is-swap', 'is-cover');
+      secondary.classList.remove('is-out', 'is-swap', 'is-cover');
+    }
+
+    function cover(video) {
+      primary.classList.remove('is-cover');
+      secondary.classList.remove('is-cover');
+      video.classList.add('is-cover');
+    }
+
+    function prep(video, time, play) {
+      video.muted = true;
+      video.playsInline = true;
+      video.loop = false;
+      let started = false;
+      const go = function () {
+        if (started || !alive) return;
+        started = true;
+        const limit = isFinite(video.duration) ? Math.max(0, video.duration - 0.05) : time;
+        seekHeroVideo(video, Math.min(time, limit), function () {
+          if (!alive) return;
+          if (play) {
+            const pending = video.play();
+            if (pending && typeof pending.catch === 'function') pending.catch(function () {});
+          } else {
+            video.pause();
+          }
+        });
+      };
+      if (video.getAttribute('src') !== src) {
+        video.addEventListener('loadedmetadata', go, { once: true });
+        video.src = src;
+        if (video.readyState >= 1) go();
+      } else if (video.readyState >= 1) {
+        go();
+      } else {
+        video.addEventListener('loadedmetadata', go, { once: true });
+      }
+    }
+
+    function fail() {
+      stop();
+      primary.hidden = true;
+      secondary.hidden = true;
+      primary.removeAttribute('src');
+      secondary.removeAttribute('src');
+    }
+
+    primary.hidden = false;
+    secondary.hidden = false;
+    primary.classList.add('is-out');
+    secondary.classList.add('is-out');
+    cover(top);
+    primary.onerror = fail;
+    secondary.onerror = fail;
+    prep(top, inicio, true);
+    prep(under, inicio, false);
+    seekHeroVideo(top, inicio, function () {
+      if (!alive) return;
+      top.classList.remove('is-out');
+    });
+
+    function finishFade() {
+      if (!alive || !fading) return;
+      fading = false;
+      const shown = under;
+      under = top;
+      top = shown;
+      cover(top);
+      under.classList.add('is-swap');
+      under.classList.remove('is-out');
+      void under.offsetWidth;
+      under.classList.remove('is-swap');
+      under.pause();
+      prep(under, inicio, false);
+    }
+
+    function beginFade() {
+      if (fading) return;
+      fading = true;
+      const outgoing = top;
+      const incoming = under;
+      seekHeroVideo(incoming, inicio, function () {
+        if (!alive) return;
+        incoming.classList.add('is-swap');
+        incoming.classList.remove('is-out');
+        void incoming.offsetWidth;
+        incoming.classList.remove('is-swap');
+        const pending = incoming.play();
+        if (pending && typeof pending.catch === 'function') pending.catch(function () {});
+        outgoing.classList.add('is-out');
+        const done = function (event) {
+          if (event && event.propertyName && event.propertyName !== 'opacity') return;
+          outgoing.removeEventListener('transitionend', done);
+          finishFade();
+        };
+        outgoing.addEventListener('transitionend', done);
+        setTimeout(function () {
+          outgoing.removeEventListener('transitionend', done);
+          finishFade();
+        }, (FADE * 1000) + 120);
+      });
+    }
+
+    function tick() {
+      if (!alive) return;
+      frame = requestAnimationFrame(tick);
+      if (fading || top.readyState < 2) return;
+      const duration = isFinite(top.duration) ? top.duration : inicio + LOOP;
+      const end = Math.min(inicio + LOOP, Math.max(inicio, duration - 0.05));
+      if (top.currentTime >= Math.max(inicio, end - FADE)) beginFade();
+    }
+
+    frame = requestAnimationFrame(tick);
+    return stop;
+  }
+
+  function eventPhotoCard(item) {
+    const article = el('article', 'eventos-photo');
+    const media = el('div', 'eventos-photo-media');
+    const img = el('img');
+    img.alt = L(item.imageAlt) || L(item.title) || '';
+    img.loading = 'eager';
+    img.decoding = 'async';
+    const src = eventImageSrc(item.image);
+    if (src) {
+      img.src = src;
+      img.onerror = function () { media.hidden = true; };
+    } else {
+      media.hidden = true;
+    }
+    media.appendChild(img);
+    const body = el('div', 'eventos-photo-body');
+    const tag = el('p', 'eventos-photo-tag');
+    tag.textContent = L(item.capacityTag);
+    const heading = el('h3', 'font-serif');
+    heading.textContent = L(item.title);
+    const copy = el('p');
+    copy.textContent = L(item.text);
+    body.append(tag, heading, copy);
+    article.append(media, body);
+    return article;
+  }
+
+  function syncReservasMode() {
+    const mode = eventosOn && reservasMode === 'eventos' ? 'eventos' : 'mesa';
+    reservasMode = mode;
+    const switcher = $('#reservas-switch');
+    if (switcher) switcher.hidden = !eventosOn;
+    document.querySelectorAll('[data-reservas-mode]').forEach((btn) => {
+      const active = btn.dataset.reservasMode === mode;
+      btn.setAttribute('aria-selected', active ? 'true' : 'false');
+      btn.classList.toggle('is-active', active);
+    });
+    const mesa = $('#booking-form');
+    const eventos = $('#eventos-booking');
+    if (mesa) mesa.hidden = mode === 'eventos';
+    if (eventos) eventos.hidden = mode !== 'eventos';
+    const title = $('#reservas-title');
+    const sub = $('#reservas-sub');
+    if (title) title.textContent = mode === 'eventos' ? t('eventBookTitle') : t('bookTitle');
+    if (sub) sub.textContent = mode === 'eventos' ? t('eventBookSubtitle') : t('bookSubtitle');
+  }
+
+  function openEventosBooking() {
+    reservasEntry = 'eventos';
+    const hash = decodeURIComponent(window.location.hash.replace('#', ''));
+    if (hash === 'reservas') {
+      reservasMode = 'eventos';
+      reservasEntry = 'mesa';
+      showPage('reservas');
+      syncReservasMode();
+      return;
+    }
+    window.location.hash = 'reservas';
+  }
+
+  function eventTypesScrollLeft(scroller, card) {
+    const scrollerBox = scroller.getBoundingClientRect();
+    const cardBox = card.getBoundingClientRect();
+    return scroller.scrollLeft + (cardBox.left - scrollerBox.left) - ((scroller.clientWidth - cardBox.width) / 2);
+  }
+
+  function activeEventTypeIndex(scroller) {
+    const cards = scroller.querySelectorAll('.eventos-photo');
+    const mid = scroller.getBoundingClientRect().left + (scroller.clientWidth / 2);
+    let index = 0;
+    let best = Infinity;
+    cards.forEach((card, i) => {
+      const box = card.getBoundingClientRect();
+      const dist = Math.abs((box.left + box.width / 2) - mid);
+      if (dist < best) {
+        best = dist;
+        index = i;
+      }
+    });
+    return index;
+  }
+
+  function syncEventTypesDots() {
+    const types = $('#eventos-types');
+    const dots = $('#eventos-types-dots');
+    if (!types || !dots) return;
+    const index = activeEventTypeIndex(types);
+    dots.querySelectorAll('button').forEach((btn, i) => {
+      btn.setAttribute('aria-current', i === index ? 'true' : 'false');
+    });
+  }
+
+  function renderEventTypesDots(types, items) {
+    const dots = $('#eventos-types-dots');
+    if (!dots) return;
+    dots.textContent = '';
+    dots.hidden = items.length < 2;
+    if (dots.hidden) return;
+    dots.setAttribute('aria-label', L(D.eventos.typesTitle) || '');
+    items.forEach((item, index) => {
+      const btn = el('button', 'eventos-types-dot');
+      btn.type = 'button';
+      btn.setAttribute('aria-label', L(item.title) || String(index + 1));
+      btn.setAttribute('aria-current', index === 0 ? 'true' : 'false');
+      btn.addEventListener('click', () => {
+        const card = types.querySelectorAll('.eventos-photo')[index];
+        if (!card) return;
+        types.scrollTo({ left: Math.max(0, eventTypesScrollLeft(types, card)), behavior: 'smooth' });
+      });
+      dots.appendChild(btn);
+    });
+  }
+
+  let eventTypesScrollBound = false;
+  function bindEventTypesCarousel() {
+    const types = $('#eventos-types');
+    if (!types || eventTypesScrollBound) return;
+    eventTypesScrollBound = true;
+    let frame = 0;
+    const schedule = () => {
+      if (frame) return;
+      frame = requestAnimationFrame(() => {
+        frame = 0;
+        syncEventTypesDots();
+      });
+    };
+    types.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule);
+  }
+
+  function renderEventos() {
+    const link = $('#nav-eventos');
+    const row = document.querySelector('.site-nav-links');
+    const page = document.querySelector('[data-page="eventos"]');
+    if (!eventosOn) {
+      if (link) link.hidden = true;
+      if (page) page.hidden = true;
+      if (row) row.classList.remove('has-eventos');
+      syncReservasMode();
+      return;
+    }
+    if (link) link.hidden = false;
+    if (row) row.classList.add('has-eventos');
+    syncReservasMode();
+    const ev = D.eventos;
+    const eyebrow = $('#eventos-eyebrow');
+    const title = $('#eventos-title');
+    const subtitle = $('#eventos-subtitle');
+    const cta = $('#eventos-cta');
+    const lead = $('#eventos-lead');
+    const hero = $('#eventos-hero-img');
+    const heroVideo = $('#eventos-hero-video');
+    const heroVideoB = $('#eventos-hero-video-b');
+    const typesTitle = $('#eventos-types-title');
+    const types = $('#eventos-types');
+    const readyTitle = $('#eventos-ready-title');
+    const readyPoints = $('#eventos-ready-points');
+    const readyCta = $('#eventos-ready-cta');
+    const readyImg = $('#eventos-ready-img');
+    const select = $('#eventos-book-type');
+    if (eyebrow) eyebrow.textContent = L(ev.eyebrow);
+    if (title) title.textContent = L(ev.title) || t('eventosTitle');
+    if (subtitle) subtitle.textContent = L(ev.subtitle);
+    if (cta) cta.textContent = L(ev.cta) || t('eventosSubmit');
+    if (lead) lead.textContent = L(ev.lead || ev.description);
+    if (typesTitle) typesTitle.textContent = L(ev.typesTitle);
+    if (readyTitle) readyTitle.textContent = L(ev.readyTitle);
+    if (readyCta) readyCta.textContent = L(ev.readyCta);
+    if (hero) {
+      hero.alt = L(ev.imageAlt);
+      const src = eventImageSrc(ev.imagenHero || ev.image);
+      if (src) {
+        hero.hidden = false;
+        hero.src = src;
+        hero.onerror = function () { hero.hidden = true; };
+      } else {
+        hero.hidden = true;
+        hero.removeAttribute('src');
+      }
+    }
+    if (heroVideo && heroVideoB) {
+      const clip = eventHeroClip(ev);
+      const poster = hero && hero.getAttribute('src');
+      if (poster) {
+        heroVideo.poster = poster;
+        heroVideoB.poster = poster;
+      }
+      if (clip && clip.src) {
+        const key = clip.src + '|' + clip.inicio + '|' + clip.duracion;
+        if (heroVideo._heroKey !== key) {
+          if (heroVideo._heroStop) heroVideo._heroStop();
+          heroVideo._heroKey = key;
+          heroVideo._heroStop = startEventHeroLoop(heroVideo, heroVideoB, clip.src, clip.inicio, clip.duracion);
+        }
+      } else if (heroVideo._heroStop || heroVideo.getAttribute('src')) {
+        if (heroVideo._heroStop) heroVideo._heroStop();
+        heroVideo._heroStop = null;
+        heroVideo._heroKey = '';
+        heroVideo.hidden = true;
+        heroVideoB.hidden = true;
+        heroVideo.removeAttribute('src');
+        heroVideoB.removeAttribute('src');
+        heroVideo.removeAttribute('poster');
+        heroVideoB.removeAttribute('poster');
+      }
+    }
+    if (readyImg) {
+      readyImg.alt = L(ev.readyImageAlt);
+      const src = eventImageSrc(ev.readyImage);
+      if (src) {
+        readyImg.hidden = false;
+        readyImg.src = src;
+        readyImg.onerror = function () { readyImg.hidden = true; };
+      } else {
+        readyImg.hidden = true;
+      }
+    }
+    if (types) {
+      types.textContent = '';
+      const items = ev.types || [];
+      items.forEach((type) => types.appendChild(eventPhotoCard(type)));
+      renderEventTypesDots(types, items);
+      bindEventTypesCarousel();
+      syncEventTypesDots();
+    }
+    if (readyPoints) {
+      readyPoints.textContent = '';
+      (ev.readyPoints || []).forEach((point) => {
+        const li = el('li');
+        const mark = el('span', 'eventos-ready-mark');
+        mark.setAttribute('aria-hidden', 'true');
+        const copy = el('span');
+        copy.textContent = L(point);
+        li.append(mark, copy);
+        readyPoints.appendChild(li);
+      });
+    }
+    if (select) {
+      const current = select.value;
+      select.textContent = '';
+      const placeholder = el('option');
+      placeholder.value = '';
+      placeholder.textContent = t('eventTypePlaceholder');
+      select.appendChild(placeholder);
+      (ev.formTypes || []).forEach((type) => {
+        const option = el('option');
+        option.value = type.id;
+        option.textContent = L(type.label);
+        select.appendChild(option);
+      });
+      if (current) select.value = current;
+      if (typeof syncBookSelect === 'function') syncBookSelect(select);
+      syncEventOtherField();
+    }
+    if (eventDatePicker) {
+      const locale = lang === 'es' && window.flatpickr && flatpickr.l10ns && flatpickr.l10ns.es ? 'es' : 'default';
+      eventDatePicker.set('locale', locale);
+    }
+  }
+
+  function syncEventOtherField() {
+    const select = $('#eventos-book-type');
+    const wrap = $('#eventos-book-other-wrap');
+    const input = $('#eventos-book-other');
+    if (!select || !wrap) return;
+    const open = select.value === 'otro';
+    wrap.classList.toggle('is-open', open);
+    wrap.setAttribute('aria-hidden', open ? 'false' : 'true');
+    if (!input) return;
+    input.disabled = !open;
+    if (!open) input.value = '';
+  }
+
+  function initEventos() {
+    const link = $('#nav-eventos');
+    const row = document.querySelector('.site-nav-links');
+    const page = document.querySelector('[data-page="eventos"]');
+    if (!eventosOn) {
+      if (link) link.hidden = true;
+      if (page) page.hidden = true;
+      if (row) row.classList.remove('has-eventos');
+    } else {
+      if (link) link.hidden = false;
+      if (row) row.classList.add('has-eventos');
+    }
+    [$('#eventos-cta'), $('#eventos-ready-cta')].forEach((btn) => {
+      if (!btn) return;
+      btn.addEventListener('click', openEventosBooking);
+    });
+    document.querySelectorAll('[data-reservas-mode]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        reservasMode = btn.dataset.reservasMode === 'eventos' ? 'eventos' : 'mesa';
+        syncReservasMode();
+      });
+    });
+    const form = $('#eventos-booking');
+    if (!form) return;
+    const guestsInput = $('#eventos-book-guests');
+    if (guestsInput) {
+      guestsInput.addEventListener('input', () => {
+        if (guestsInput.value === '') return;
+        if (Number(guestsInput.value) > 40) guestsInput.value = '40';
+      });
+    }
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const feedback = $('#eventos-book-feedback');
+      const name = ($('#eventos-book-name') && $('#eventos-book-name').value || '').trim();
+      const ymd = $('#eventos-book-date') && $('#eventos-book-date').value;
+      const guests = Number($('#eventos-book-guests') && $('#eventos-book-guests').value);
+      const typeId = $('#eventos-book-type') && $('#eventos-book-type').value;
+      const notes = ($('#eventos-book-notes') && $('#eventos-book-notes').value || '').trim();
+      const type = (D.eventos.formTypes || []).filter((item) => item.id === typeId)[0];
+      const other = ($('#eventos-book-other') && $('#eventos-book-other').value || '').trim();
+      if (!name || !ymd || !guests || guests < 1 || guests > 40 || !type) {
+        if (feedback) {
+          feedback.textContent = t('eventosError');
+          feedback.hidden = false;
+        }
+        return;
+      }
+      if (feedback) feedback.hidden = true;
+      const typeLabel = type.id === 'otro' && other ? L(type.label) + ' - ' + other : L(type.label);
+      const intro = t('eventosWaIntro', { name: name, restaurant: D.business.name });
+      const rows = [
+        [t('eventosWaType'), typeLabel],
+        [t('eventosWaDate'), formatEventDate(ymd)],
+        [t('eventosWaGuests'), String(guests)]
+      ];
+      if (notes) rows.push([t('eventosWaNotes'), notes]);
+      const textoWhatsApp = intro + '\n\n' + rows.map((row) => '*' + row[0] + ':* ' + row[1]).join('\n') + '\n';
+      const htmlMsg = '<p>' + esc(intro) + '</p>' + rows.map((row) =>
+        '<p><strong class="font-semibold text-stone-900 dark:text-emerald-50">' + esc(row[0]) + ':</strong> ' + esc(row[1]) + '</p>'
+      ).join('');
+      const phone = D.eventos.whatsapp || D.business.whatsapp;
+      window.__visiwebBookingPreview = { html: htmlMsg, textoWhatsApp: textoWhatsApp, phone: phone };
+      document.dispatchEvent(new CustomEvent('open-reserve-options'));
+    });
+  }
+
 
   function renderLocal() {
     const stats = $('#local-stats');
@@ -1884,6 +2453,10 @@
       const locale = lang === 'es' && window.flatpickr && flatpickr.l10ns && flatpickr.l10ns.es ? 'es' : 'default';
       bookDatePicker.set('locale', locale);
     }
+    if (eventDatePicker) {
+      const locale = lang === 'es' && window.flatpickr && flatpickr.l10ns && flatpickr.l10ns.es ? 'es' : 'default';
+      eventDatePicker.set('locale', locale);
+    }
   }
 
   function closeAllBookSelects() {
@@ -1910,6 +2483,9 @@
     const selected = select.options[select.selectedIndex];
     valueEl.textContent = selected ? selected.textContent : '';
     trigger.disabled = !!select.disabled;
+    if (select.id === 'eventos-book-type') {
+      trigger.classList.toggle('is-placeholder', !select.value);
+    }
 
     menu.textContent = '';
     Array.prototype.slice.call(select.options).forEach((opt) => {
@@ -1950,6 +2526,7 @@
         if (!option) return;
         select.value = option.dataset.value;
         syncBookSelect(select);
+        if (select.id === 'eventos-book-type') syncEventOtherField();
         closeAllBookSelects();
       });
     });
@@ -1959,8 +2536,11 @@
       if (!target.closest('#time-picker') && !target.closest('#hora-reserva')) setTimePickerOpen(false);
       if (!target.closest('#guests-picker') && !target.closest('#comensales-reserva')) setGuestsPickerOpen(false);
       if (!target.closest('.book-select')) closeAllBookSelects();
-      if (bookDatePicker && bookDatePicker.isOpen && !target.closest('.flatpickr-calendar') && !target.closest('#fecha-reserva') && !target.closest('.book-date-wrap')) {
+      if (bookDatePicker && bookDatePicker.isOpen && !target.closest('.flatpickr-calendar') && !target.closest('#fecha-reserva') && !target.closest('.book-date-wrap') && !target.closest('#eventos-fecha')) {
         bookDatePicker.close();
+      }
+      if (eventDatePicker && eventDatePicker.isOpen && !target.closest('.flatpickr-calendar') && !target.closest('#eventos-fecha') && !target.closest('.book-date-wrap')) {
+        eventDatePicker.close();
       }
     });
 
@@ -1970,6 +2550,7 @@
       setTimePickerOpen(false);
       setGuestsPickerOpen(false);
       if (bookDatePicker && bookDatePicker.isOpen) bookDatePicker.close();
+      if (eventDatePicker && eventDatePicker.isOpen) eventDatePicker.close();
     });
   }
 
@@ -2035,6 +2616,7 @@
         closeAllBookSelects();
         setTimePickerOpen(false);
         setGuestsPickerOpen(false);
+        if (eventDatePicker && eventDatePicker.isOpen) eventDatePicker.close();
       },
       onChange: function (dates) {
         if (!dates[0]) return;
@@ -2046,6 +2628,52 @@
     if (selected) bookDatePicker.setDate(selected, false);
   }
 
+  function initEventDatePicker() {
+    const visible = $('#eventos-fecha');
+    const hidden = $('#eventos-book-date');
+    if (!visible || !hidden || typeof flatpickr !== 'function') return;
+    if (eventDatePicker) {
+      eventDatePicker.destroy();
+      eventDatePicker = null;
+    }
+    visible.placeholder = t('bookDatePlaceholder');
+    eventDatePicker = flatpickr(visible, {
+      locale: lang === 'es' && window.flatpickr && flatpickr.l10ns && flatpickr.l10ns.es ? 'es' : 'default',
+      dateFormat: 'd/m/Y',
+      minDate: 'today',
+      disableMobile: true,
+      clickOpens: false,
+      monthSelectorType: 'static',
+      appendTo: document.body,
+      position: function (instance) {
+        const input = instance._input.getBoundingClientRect();
+        const cal = instance.calendarContainer;
+        cal.style.width = '';
+        cal.style.right = 'auto';
+        const width = cal.offsetWidth;
+        const gap = 6;
+        const height = cal.offsetHeight;
+        const spaceBelow = window.innerHeight - input.bottom;
+        const above = spaceBelow < height + gap && input.top > height + gap;
+        const left = Math.max(8, Math.min(input.left, window.innerWidth - width - 8));
+        cal.style.left = (left + window.scrollX) + 'px';
+        cal.style.top = (window.scrollY + (above ? input.top - height - gap : input.bottom + gap)) + 'px';
+      },
+      onOpen: function () {
+        closeAllBookSelects();
+        setTimePickerOpen(false);
+        setGuestsPickerOpen(false);
+        if (bookDatePicker && bookDatePicker.isOpen) bookDatePicker.close();
+      },
+      onChange: function (dates) {
+        if (!dates[0]) return;
+        hidden.value = madridYMD(dates[0]);
+        hidden.dispatchEvent(new Event('input', { bubbles: true }));
+      }
+    });
+  }
+
+
   function initBooking() {
     const form = $('#booking-form');
     const date = $('#book-date');
@@ -2053,10 +2681,16 @@
 
     if (!date.value) date.value = nextOpenYmd();
     initBookDatePicker();
+    initEventDatePicker();
     on('#fecha-reserva', 'click', () => {
       if (!bookDatePicker) return;
       if (bookDatePicker.isOpen) bookDatePicker.close();
       else bookDatePicker.open();
+    });
+    on('#eventos-fecha', 'click', () => {
+      if (!eventDatePicker) return;
+      if (eventDatePicker.isOpen) eventDatePicker.close();
+      else eventDatePicker.open();
     });
     fillGuestSelect();
     refreshBookingSlots();
@@ -2193,6 +2827,7 @@
     bookingWaText = textoWhatsApp || '';
     if (wa) wa.href = whatsappSendUrl(bookingWaPhone, bookingWaText);
     if (bookDatePicker && bookDatePicker.isOpen) bookDatePicker.close();
+    if (eventDatePicker && eventDatePicker.isOpen) eventDatePicker.close();
     setTimePickerOpen(false);
     setGuestsPickerOpen(false);
     closeAllBookSelects();
@@ -2484,7 +3119,32 @@
     }, 200);
   }
 
+
+  function syncEventosFromDesign() {
+    if (!D.eventos) {
+      eventosOn = false;
+      return;
+    }
+    const design = D.design || window.VISIWEB_DESIGN;
+    if (design && design.labels && typeof design.labels.vw_events === 'string') {
+      D.eventos.activo = design.labels.vw_events === '1';
+    }
+    if (design && design.eventos && typeof design.eventos === 'object') {
+      const src = design.eventos;
+      if (src.tipoVideo === 'salon' || src.tipoVideo === 'terraza' || src.tipoVideo === 'ninguno') {
+        D.eventos.tipoVideo = src.tipoVideo;
+      }
+      ['eyebrow', 'title', 'subtitle', 'lead', 'cta', 'readyTitle', 'readyCta'].forEach((key) => {
+        if (typeof src[key] === 'string' && src[key].trim()) {
+          D.eventos[key] = { es: src[key], en: src[key] };
+        }
+      });
+    }
+    eventosOn = !!D.eventos.activo;
+  }
+
   function renderAll() {
+    syncEventosFromDesign();
     applyI18n();
     renderAlternates();
     renderHero();
@@ -2495,6 +3155,7 @@
     renderFeatured();
     renderLocal();
     renderHistory();
+    renderEventos();
     renderGbp();
     renderMenu();
     renderAllergenFilters();
@@ -2692,11 +3353,11 @@
       const deltaY = touch.clientY - startY;
       if (Math.abs(deltaX) <= Math.abs(deltaY) * 1.5 || Math.abs(deltaX) <= MIN) return;
       const visible = document.querySelector('[data-page]:not([hidden])');
-      const index = PAGES.indexOf(visible ? visible.dataset.page : 'inicio');
+      const index = pagesList().indexOf(visible ? visible.dataset.page : 'inicio');
       if (index < 0) return;
       const next = deltaX < 0 ? index + 1 : index - 1;
-      if (next < 0 || next >= PAGES.length) return;
-      const id = PAGES[next];
+      if (next < 0 || next >= pagesList().length) return;
+      const id = pagesList()[next];
       hashNavOpts = { smooth: true };
       if (window.location.hash === '#' + id) applyHash();
       else window.location.hash = id;
@@ -2735,6 +3396,7 @@
   window.cambiarPestanaGoogle = cambiarPestanaGoogle;
     initAllergenFilters();
   initBooking();
+  initEventos();
   applyHash({ quiet: true });
   initAllergenDialog();
 
