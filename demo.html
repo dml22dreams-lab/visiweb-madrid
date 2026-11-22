@@ -940,10 +940,20 @@
       margin: 0;
       padding: 0 0.75rem;
     }
+    #open-filter-btn.is-active {
+      background: #15803d;
+      border-color: #166534;
+      color: #f0fdf4;
+    }
     .tab { justify-content: center; text-align: center; }
     .site-nav-link { justify-content: center; text-align: center; }
     @media (prefers-color-scheme: dark) {
       #open-filter-btn:hover { color: #fff; }
+      #open-filter-btn.is-active {
+        background: #15803d;
+        border-color: #166534;
+        color: #f0fdf4;
+      }
       .site-nav,
       #menu-tabs-bar::before,
       #menu-chip-band,
@@ -2845,7 +2855,7 @@
     <div class="mx-auto max-w-4xl px-6 pb-0 pt-16 sm:pt-20">
 
       <div class="mb-6 flex w-full justify-center">
-        <a href="#inicio" id="back-home" class="flex items-center gap-1.5 text-sm text-stone-500 underline decoration-stone-300 underline-offset-4 transition-colors hover:text-stone-900 dark:text-stone-400 dark:decoration-stone-600 dark:hover:text-stone-100">
+        <a href="#" id="back-home" class="flex items-center gap-1.5 text-sm text-stone-500 underline decoration-stone-300 underline-offset-4 transition-colors hover:text-stone-900 dark:text-stone-400 dark:decoration-stone-600 dark:hover:text-stone-100">
           <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
           <span data-i18n="backHome">Volver al inicio</span>
         </a>

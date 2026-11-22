@@ -509,9 +509,9 @@ body.is-searching { overflow: hidden; }
 }
 .mesa-allergens svg { width: 14px; height: 14px; display: block; flex: none; }
 .mesa-allergens.is-on {
-  border-color: #1c1917;
-  background: #1c1917;
-  color: #fff;
+  border-color: #166534;
+  background: #15803d;
+  color: #f0fdf4;
 }
 #mesa-cats {
   position: relative;

@@ -1717,6 +1717,16 @@
     if (clear) clear.hidden = allergenFilters.size === 0;
   }
 
+  function syncAllergenChip() {
+    const toggle = $('#open-filter-btn');
+    if (!toggle) return;
+    const n = allergenFilters.size;
+    toggle.classList.toggle('is-active', n > 0);
+    toggle.setAttribute('aria-pressed', n > 0 ? 'true' : 'false');
+    const badge = toggle.querySelector('.allergen-count');
+    if (badge) badge.remove();
+  }
+
   function applyAllergenFilter() {
     const empty = $('#filter-empty');
     const panels = $('#panels');
@@ -1741,6 +1751,7 @@
     }
     const clear = $('#clear-allergen-filters');
     if (clear) clear.hidden = allergenFilters.size === 0;
+    syncAllergenChip();
   }
 
   function placeAllergenPanel() {
@@ -3407,9 +3418,7 @@
   if (backHome) {
     backHome.addEventListener('click', (event) => {
       event.preventDefault();
-      hashNavOpts = { smooth: true };
-      if (decodeURIComponent(window.location.hash.replace('#', '')) === 'inicio') applyHash();
-      else window.location.hash = 'inicio';
+      if (window.scrollY > 0) window.scrollTo({ top: 0, behavior: 'smooth' });
     });
   }
 
