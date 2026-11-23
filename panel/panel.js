@@ -1913,15 +1913,25 @@
       updateCollabChrome();
 
       var jsonActual = restaurantPayloadFromEditor(state.editor);
+      var isLocal =
+        location.hostname === 'localhost' || location.hostname === '127.0.0.1';
       fetch('/api/editar-web', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ mensaje: mensaje, jsonActual: jsonActual })
       }).then(function (res) {
-        if (!res.ok) throw new Error('api');
-        return res.json();
+        return res.json().then(function (data) {
+          if (!res.ok) {
+            var errMsg =
+              (data && data.error) || ('Error ' + res.status + ' en /api/editar-web');
+            throw new Error(errMsg);
+          }
+          return data;
+        }, function () {
+          throw new Error('Error ' + res.status + ' en /api/editar-web');
+        });
       }).then(function (data) {
-        if (!data || !data.jsonActualizado) throw new Error('api');
+        if (!data || !data.jsonActualizado) throw new Error('Respuesta inválida de /api/editar-web');
         applyRestaurantUpdate(data.jsonActualizado);
         state.editor.chat.push({
           role: 'system',
@@ -1929,9 +1939,16 @@
         });
         updateCollabChrome();
         pushCollabPreview(true);
-      }).catch(function () {
-        var reply = applyChatCommand(mensaje);
-        state.editor.chat.push({ role: 'system', text: reply });
+      }).catch(function (err) {
+        if (isLocal) {
+          var reply = applyChatCommand(mensaje);
+          state.editor.chat.push({ role: 'system', text: reply });
+        } else {
+          state.editor.chat.push({
+            role: 'system',
+            text: (err && err.message) || 'Error al conectar con /api/editar-web'
+          });
+        }
         updateCollabChrome();
         pushCollabPreview(true);
       });

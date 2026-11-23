@@ -9,7 +9,7 @@ export async function onRequestPost(context) {
   try {
     const apiKey = context.env.GEMINI_API_KEY;
     if (!apiKey) {
-      return new Response(JSON.stringify({ error: 'Falta GEMINI_API_KEY' }), {
+      return new Response(JSON.stringify({ error: 'Falta GEMINI_API_KEY en Cloudflare' }), {
         status: 500,
         headers: cors
       });
@@ -61,23 +61,30 @@ export async function onRequestPost(context) {
       })
     });
 
+    const geminiData = await geminiRes.json().catch(function () {
+      return null;
+    });
+
     if (!geminiRes.ok) {
-      const detail = await geminiRes.text();
-      return new Response(JSON.stringify({ error: 'Error de Gemini', detail: detail.slice(0, 500) }), {
-        status: 502,
+      const googleMsg =
+        geminiData && geminiData.error && geminiData.error.message
+          ? geminiData.error.message
+          : 'Error de Gemini';
+      return new Response(JSON.stringify({ error: googleMsg }), {
+        status: geminiRes.status,
         headers: cors
       });
     }
 
-    const geminiData = await geminiRes.json();
     let raw =
       (((geminiData || {}).candidates || [])[0] || {}).content || {};
     raw = ((raw.parts || [])[0] || {}).text || '';
 
     let cleaned = String(raw).trim();
-    if (cleaned.indexOf('```') === 0) {
-      cleaned = cleaned.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '');
-    }
+    cleaned = cleaned
+      .replace(/^```(?:json)?\s*/i, '')
+      .replace(/\s*```$/i, '')
+      .trim();
 
     let parsed;
     try {
