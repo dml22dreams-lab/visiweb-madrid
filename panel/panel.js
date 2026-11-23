@@ -1915,7 +1915,10 @@
       var jsonActual = restaurantPayloadFromEditor(state.editor);
       var isLocal =
         location.hostname === 'localhost' || location.hostname === '127.0.0.1';
-      fetch('/api/editar-web', {
+      var editarWebUrl = isLocal
+        ? 'https://visiwebmadrid.com/api/editar-web'
+        : '/api/editar-web';
+      fetch(editarWebUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ mensaje: mensaje, jsonActual: jsonActual })
@@ -1940,15 +1943,10 @@
         updateCollabChrome();
         pushCollabPreview(true);
       }).catch(function (err) {
-        if (isLocal) {
-          var reply = applyChatCommand(mensaje);
-          state.editor.chat.push({ role: 'system', text: reply });
-        } else {
-          state.editor.chat.push({
-            role: 'system',
-            text: (err && err.message) || 'Error al conectar con /api/editar-web'
-          });
-        }
+        state.editor.chat.push({
+          role: 'system',
+          text: (err && err.message) || 'Error al conectar con /api/editar-web'
+        });
         updateCollabChrome();
         pushCollabPreview(true);
       });
