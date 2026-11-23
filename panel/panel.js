@@ -38,6 +38,10 @@
     auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false }
   });
 
+  var ADMIN_EMAIL = 'diego@visiwebmadrid.com';
+  var LS_ACTIVE = 'vw_panel_active_v1';
+  var LS_PROJECTS = 'vw_panel_projects_v1';
+
   var state = {
     ready: false,
     session: null,
@@ -49,10 +53,18 @@
     error: '',
     busy: false,
     copied: '',
-    adminTab: 'restaurants',
+    adminTab: 'people',
     proposals: [],
+    myProjects: [],
+    adminPeople: [],
+    expandedPersonId: null,
     selectedProposalId: null,
-    proposalViewport: 'mobile'
+    proposalViewport: 'mobile',
+    githubOpen: false,
+    githubSlug: '',
+    githubBusy: false,
+    githubNotice: '',
+    saveTimer: null
   };
 
   var app = document.getElementById('app');
@@ -304,6 +316,7 @@
     return {
       step: 'a',
       id: null,
+      proposalId: null,
       name: name,
       slug: slugify(name),
       autoSlug: true,
@@ -324,12 +337,265 @@
       daily_menu: window.VisiwebDesign.mergeDaily(demo && demo.dailyMenu),
       viewport: 'mobile',
       chat: null,
-      fromPreview: true
+      fromPreview: true,
+      previewDirty: false,
+      studioMode: 'chat',
+      ownerEmail: ''
     };
   }
 
+  function currentEmail() {
+    return String(
+      (state.profile && state.profile.email) ||
+      (state.session && state.session.user && state.session.user.email) ||
+      ''
+    ).trim().toLowerCase();
+  }
+
   function isAdmin() {
-    return state.profile && state.profile.role === 'admin';
+    if (currentEmail() === ADMIN_EMAIL) return true;
+    return !!(state.profile && state.profile.role === 'admin');
+  }
+
+  function userId() {
+    return (state.session && state.session.user && state.session.user.id) || '';
+  }
+
+  function serializeEditor(editor) {
+    if (!editor) return null;
+    try {
+      return JSON.parse(JSON.stringify({
+        step: editor.step || 'a',
+        id: editor.id || null,
+        proposalId: editor.proposalId || null,
+        name: editor.name || '',
+        slug: editor.slug || '',
+        autoSlug: !!editor.autoSlug,
+        tagline: editor.tagline || '',
+        description: editor.description || '',
+        phone: editor.phone || '',
+        whatsapp: editor.whatsapp || '',
+        address: editor.address || '',
+        schedule: editor.schedule || '',
+        instagram: editor.instagram || '',
+        plan_tier: editor.plan_tier || '',
+        status: editor.status || 'borrador',
+        cover_image_url: editor.cover_image_url || '',
+        coverPreview: editor.coverPreview || '',
+        categories: (editor.categories || []).map(function (category) {
+          return {
+            id: category.id || null,
+            name: category.name || '',
+            items: (category.items || []).map(function (item) {
+              return {
+                id: item.id || null,
+                name: item.name || '',
+                description: item.description || '',
+                price: item.price == null ? '' : String(item.price),
+                image_url: item.image_url || '',
+                preview: item.preview || '',
+                allergens: item.allergens || [],
+                featured: !!item.featured
+              };
+            })
+          };
+        }),
+        design: editor.design,
+        daily_menu: editor.daily_menu,
+        viewport: editor.viewport || 'mobile',
+        chat: editor.chat || null,
+        fromPreview: !!editor.fromPreview,
+        previewDirty: !!editor.previewDirty,
+        studioMode: editor.studioMode || 'chat',
+        ownerEmail: editor.ownerEmail || ''
+      }));
+    } catch (error) {
+      return null;
+    }
+  }
+
+  function persistActiveLocal() {
+    if (!userId() || !state.editor || state.editor.studioMode !== 'chat') {
+      try { window.localStorage.removeItem(LS_ACTIVE); } catch (error) {}
+      return;
+    }
+    var payload = {
+      userId: userId(),
+      proposalId: state.editor.proposalId || null,
+      editor: serializeEditor(state.editor),
+      savedAt: Date.now()
+    };
+    try { window.localStorage.setItem(LS_ACTIVE, JSON.stringify(payload)); } catch (error) {}
+  }
+
+  function clearActiveLocal() {
+    try { window.localStorage.removeItem(LS_ACTIVE); } catch (error) {}
+  }
+
+  function readActiveLocal() {
+    try {
+      var raw = window.localStorage.getItem(LS_ACTIVE);
+      if (!raw) return null;
+      var data = JSON.parse(raw);
+      if (!data || data.userId !== userId() || !data.editor) return null;
+      return data;
+    } catch (error) {
+      return null;
+    }
+  }
+
+  function persistProjectsLocal(list) {
+    if (!userId()) return;
+    try {
+      window.localStorage.setItem(LS_PROJECTS + ':' + userId(), JSON.stringify({
+        userId: userId(),
+        items: list || [],
+        savedAt: Date.now()
+      }));
+    } catch (error) {}
+  }
+
+  function readProjectsLocal() {
+    try {
+      var raw = window.localStorage.getItem(LS_PROJECTS + ':' + userId());
+      if (!raw) return [];
+      var data = JSON.parse(raw);
+      return (data && Array.isArray(data.items)) ? data.items : [];
+    } catch (error) {
+      return [];
+    }
+  }
+
+  function projectPayloadFromEditor(editor) {
+    var payload = restaurantPayloadFromEditor(editor);
+    payload._meta = {
+      chat: editor.chat || null,
+      viewport: editor.viewport || 'mobile',
+      slug: editor.slug || '',
+      studioMode: 'chat',
+      plan_tier: editor.plan_tier || '',
+      autoSlug: !!editor.autoSlug
+    };
+    return payload;
+  }
+
+  function editorFromProjectRow(row) {
+    var editor = blankEditor();
+    var data = (row && row.restaurant_data) || {};
+    var meta = data._meta || {};
+    var previous = state.editor;
+    state.editor = editor;
+    applyRestaurantUpdate(data);
+    state.editor = previous;
+    editor.proposalId = row.id;
+    editor.name = data.name || row.nombre_local || editor.name;
+    editor.slug = meta.slug || slugify(editor.name);
+    editor.autoSlug = meta.autoSlug != null ? !!meta.autoSlug : !editor.slug;
+    editor.plan_tier = meta.plan_tier || data.plan_tier || editor.plan_tier;
+    editor.viewport = meta.viewport || 'mobile';
+    editor.chat = meta.chat || null;
+    editor.fromPreview = false;
+    editor.previewDirty = true;
+    editor.studioMode = 'chat';
+    editor.ownerEmail = row.correo_colaborador || '';
+    editor.status = row.estado || 'borrador';
+    ensureCollabChat(editor);
+    return editor;
+  }
+
+  async function upsertProjectDraft(options) {
+    var editor = state.editor;
+    if (!editor || !state.session || editor.studioMode !== 'chat') return null;
+    var email = currentEmail();
+    var payload = projectPayloadFromEditor(editor);
+    var nombre = editor.name || 'Sin nombre';
+    var row;
+    if (editor.proposalId) {
+      var updated = await supabase.from('propuestas_webs').update({
+        nombre_local: nombre,
+        correo_colaborador: email || editor.ownerEmail || '',
+        restaurant_data: payload,
+        updated_at: new Date().toISOString()
+      }).eq('id', editor.proposalId).select('*').single();
+      if (updated.error) throw updated.error;
+      row = updated.data;
+    } else {
+      var inserted = await supabase.from('propuestas_webs').insert({
+        nombre_local: nombre,
+        correo_colaborador: email,
+        collaborator_id: state.session.user.id,
+        restaurant_data: payload,
+        estado: 'borrador',
+        updated_at: new Date().toISOString()
+      }).select('*').single();
+      if (inserted.error) throw inserted.error;
+      row = inserted.data;
+      editor.proposalId = row.id;
+    }
+    persistActiveLocal();
+    mergeProjectIntoLists(row);
+    return row;
+  }
+
+  function mergeProjectIntoLists(row) {
+    if (!row || !row.id) return;
+    var replace = function (list) {
+      var found = false;
+      var next = (list || []).map(function (item) {
+        if (item.id === row.id) { found = true; return row; }
+        return item;
+      });
+      if (!found) next.unshift(row);
+      return next;
+    };
+    state.myProjects = replace(state.myProjects);
+    state.proposals = replace(state.proposals);
+    persistProjectsLocal(state.myProjects);
+    rebuildAdminPeople();
+  }
+
+  function scheduleProjectSave() {
+    persistActiveLocal();
+    if (state.saveTimer) window.clearTimeout(state.saveTimer);
+    state.saveTimer = window.setTimeout(function () {
+      upsertProjectDraft().catch(function () {});
+    }, 450);
+  }
+
+  function rebuildAdminPeople() {
+    if (!isAdmin()) {
+      state.adminPeople = [];
+      return;
+    }
+    var map = {};
+    Object.keys(state.owners || {}).forEach(function (id) {
+      var person = state.owners[id];
+      map[id] = {
+        id: id,
+        full_name: person.full_name || '',
+        email: person.email || '',
+        projects: []
+      };
+    });
+    (state.proposals || []).forEach(function (row) {
+      var id = row.collaborator_id || ('email:' + String(row.correo_colaborador || '').toLowerCase());
+      if (!map[id]) {
+        map[id] = {
+          id: id,
+          full_name: '',
+          email: row.correo_colaborador || '',
+          projects: []
+        };
+      }
+      map[id].projects.push(row);
+    });
+    state.adminPeople = Object.keys(map).map(function (key) { return map[key]; }).sort(function (a, b) {
+      return String(a.email || a.full_name).localeCompare(String(b.email || b.full_name), 'es');
+    });
+  }
+
+  function trashIcon() {
+    return '<svg class="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M3 4h10M6 4V3h4v1M5 4l.5 9h5L11 4"/></svg>';
   }
 
   function ownerName(restaurant) {
@@ -650,10 +916,8 @@
             '<div id="collab-chat-list" class="min-h-0 flex-1 space-y-2 overflow-auto p-3">' + editor.chat.map(chatBubble).join('') + '</div>' +
             '<form id="collab-chat-form" class="shrink-0 border-t border-stone-200 p-3">' +
               '<label class="sr-only" for="collab-chat-input">Mensaje</label>' +
-              '<textarea id="collab-chat-input" rows="3" class="w-full resize-none rounded-2xl border border-stone-200 px-3 py-2 text-sm outline-none focus:border-stone-400" placeholder="Ej. nombre: Bar Pepe · color: #9f1239 · activa eventos"></textarea>' +
-              '<div class="mt-2 flex gap-2">' +
-                '<button type="submit" class="flex-1 rounded-full bg-stone-900 px-4 py-2.5 text-sm font-semibold text-white">Aplicar cambio</button>' +
-              '</div>' +
+              '<textarea id="collab-chat-input" rows="3" class="w-full resize-none rounded-2xl border border-stone-200 px-3 py-2 text-sm outline-none focus:border-stone-400" placeholder="Escribe un cambio y pulsa Enter · Shift+Enter para salto de línea"></textarea>' +
+              '<button type="submit" class="sr-only">Aplicar</button>' +
               '<button type="button" id="send-proposal" class="mt-2 w-full rounded-full bg-amber-500 px-4 py-3 text-sm font-semibold text-black"' + (state.busy ? ' disabled' : '') + '>' + (state.busy ? 'Enviando…' : 'Enviar propuesta al administrador') + '</button>' +
             '</form>' +
           '</section>' +
@@ -671,16 +935,34 @@
     state.notice = '';
     updateCollabChrome();
     try {
-      var payload = restaurantPayloadFromEditor(state.editor);
-      var email = (state.profile && state.profile.email) || (state.session.user && state.session.user.email) || '';
-      var result = await supabase.from('propuestas_webs').insert({
-        nombre_local: state.editor.name || '',
-        correo_colaborador: email,
-        collaborator_id: state.session.user.id,
-        restaurant_data: payload,
-        estado: 'pendiente'
-      }).select('id').single();
-      if (result.error) throw result.error;
+      var email = currentEmail();
+      var payload = projectPayloadFromEditor(state.editor);
+      var row;
+      if (state.editor.proposalId) {
+        var updated = await supabase.from('propuestas_webs').update({
+          nombre_local: state.editor.name || '',
+          correo_colaborador: email,
+          restaurant_data: payload,
+          estado: 'pendiente',
+          updated_at: new Date().toISOString()
+        }).eq('id', state.editor.proposalId).select('*').single();
+        if (updated.error) throw updated.error;
+        row = updated.data;
+      } else {
+        var inserted = await supabase.from('propuestas_webs').insert({
+          nombre_local: state.editor.name || '',
+          correo_colaborador: email,
+          collaborator_id: state.session.user.id,
+          restaurant_data: payload,
+          estado: 'pendiente',
+          updated_at: new Date().toISOString()
+        }).select('*').single();
+        if (inserted.error) throw inserted.error;
+        row = inserted.data;
+        state.editor.proposalId = row.id;
+      }
+      mergeProjectIntoLists(row);
+      persistActiveLocal();
       state.busy = false;
       ensureCollabChat(state.editor);
       state.editor.chat.push({ role: 'system', text: 'Propuesta enviada al administrador. Queda pendiente de revisión.' });
@@ -1038,8 +1320,9 @@
       return;
     }
     if (state.editor) {
-      if (!isAdmin()) {
+      if (state.editor.studioMode === 'chat' || !isAdmin()) {
         renderCollabStudio();
+        renderGithubDrawer();
         return;
       }
       if (state.editor.id && window.VisiwebCanva) {
@@ -1152,9 +1435,132 @@
     );
   }
 
+  function projectStatusLabel(estado) {
+    if (estado === 'publicada' || estado === 'aprobada') return 'Publicada';
+    if (estado === 'rechazada') return 'Rechazada';
+    if (estado === 'pendiente') return 'Pendiente';
+    return 'Borrador';
+  }
+
+  function projectCard(row) {
+    var name = row.nombre_local || ((row.restaurant_data && row.restaurant_data.name) || 'Sin nombre');
+    return (
+      '<article class="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-stone-200">' +
+        '<div class="flex items-start gap-3">' +
+          '<div class="min-w-0 flex-1">' +
+            '<h2 class="truncate font-serif text-2xl">' + esc(name) + '</h2>' +
+            '<p class="mt-1 text-sm text-stone-500">' + esc(projectStatusLabel(row.estado)) + ' · ' + esc(formatProposalDate(row.updated_at || row.created_at)) + '</p>' +
+            '<div class="mt-4 flex flex-wrap gap-2">' +
+              '<button type="button" data-open-project="' + esc(row.id) + '" class="rounded-full bg-stone-900 px-4 py-2 text-sm font-semibold text-white">Abrir</button>' +
+            '</div>' +
+          '</div>' +
+          '<button type="button" data-delete-project="' + esc(row.id) + '" class="shrink-0 rounded-full p-2 text-stone-400 hover:bg-red-50 hover:text-red-700" title="Eliminar" aria-label="Eliminar proyecto">' + trashIcon() + '</button>' +
+        '</div>' +
+      '</article>'
+    );
+  }
+
+  function adminPersonCard(person) {
+    var open = state.expandedPersonId === person.id;
+    var label = person.full_name || person.email || 'Colaborador';
+    var count = (person.projects || []).length;
+    return (
+      '<article class="rounded-3xl bg-white shadow-sm ring-1 ring-stone-200">' +
+        '<button type="button" data-expand-person="' + esc(person.id) + '" class="flex w-full items-center justify-between gap-3 px-5 py-4 text-left">' +
+          '<span class="min-w-0">' +
+            '<span class="block truncate font-serif text-xl text-stone-900">' + esc(label) + '</span>' +
+            '<span class="mt-0.5 block truncate text-sm text-stone-500">' + esc(person.email || '') + '</span>' +
+          '</span>' +
+          '<span class="shrink-0 rounded-full bg-stone-100 px-3 py-1 text-xs font-semibold text-stone-700">' + count + ' proyecto' + (count === 1 ? '' : 's') + '</span>' +
+        '</button>' +
+        (open
+          ? '<div class="space-y-2 border-t border-stone-100 px-5 py-4">' +
+              (count
+                ? person.projects.map(function (row) {
+                    var name = row.nombre_local || 'Sin nombre';
+                    return (
+                      '<div class="flex items-center gap-2 rounded-2xl bg-stone-50 px-3 py-3">' +
+                        '<div class="min-w-0 flex-1">' +
+                          '<p class="truncate text-sm font-semibold text-stone-900">' + esc(name) + '</p>' +
+                          '<p class="truncate text-xs text-stone-500">' + esc(projectStatusLabel(row.estado)) + '</p>' +
+                        '</div>' +
+                        '<button type="button" data-open-project="' + esc(row.id) + '" class="rounded-full bg-stone-900 px-3 py-1.5 text-xs font-semibold text-white">Abrir</button>' +
+                        '<button type="button" data-delete-project="' + esc(row.id) + '" class="rounded-full p-2 text-stone-400 hover:bg-red-50 hover:text-red-700" title="Eliminar" aria-label="Eliminar">' + trashIcon() + '</button>' +
+                      '</div>'
+                    );
+                  }).join('')
+                : '<p class="text-sm text-stone-500">Sin proyectos todavía.</p>') +
+            '</div>'
+          : '') +
+      '</article>'
+    );
+  }
+
+  function renderGithubDrawer() {
+    var existing = document.getElementById('github-drawer');
+    if (existing) existing.remove();
+    if (!isAdmin()) return;
+    var open = !!state.githubOpen;
+    var drawer = document.createElement('div');
+    drawer.id = 'github-drawer';
+    drawer.innerHTML =
+      '<div class="fixed inset-x-0 top-0 z-[80] transition-transform duration-200 ' + (open ? 'translate-y-0' : '-translate-y-full') + '">' +
+        '<div class="border-b border-stone-200 bg-white px-4 py-3 shadow-lg sm:px-6">' +
+          '<div class="mx-auto flex w-full max-w-3xl flex-col gap-3 sm:flex-row sm:items-end">' +
+            '<label class="block min-w-0 flex-1 text-xs font-semibold uppercase tracking-[0.12em] text-stone-500">Carpeta / slug del local' +
+              '<input id="github-slug" type="text" value="' + esc(state.githubSlug || '') + '" placeholder="bar-el-roble" class="mt-1 w-full rounded-2xl border border-stone-200 bg-white px-4 py-2.5 text-sm font-semibold normal-case tracking-normal text-stone-900 outline-none focus:border-stone-400">' +
+            '</label>' +
+            '<button type="button" id="github-publish" class="rounded-full bg-stone-900 px-4 py-2.5 text-sm font-semibold text-white"' + (state.githubBusy ? ' disabled' : '') + '>' + (state.githubBusy ? 'Subiendo…' : 'Subir cambios a GitHub') + '</button>' +
+            '<button type="button" id="github-close" class="rounded-full px-3 py-2.5 text-sm font-semibold text-stone-500">Cerrar</button>' +
+          '</div>' +
+          (state.githubNotice ? '<p class="mx-auto mt-2 max-w-3xl text-sm text-emerald-700">' + esc(state.githubNotice) + '</p>' : '') +
+          (state.error && open ? '<p class="mx-auto mt-2 max-w-3xl text-sm text-red-700">' + esc(state.error) + '</p>' : '') +
+          '<p class="mx-auto mt-2 max-w-3xl text-xs text-stone-400">Atajo: Ctrl + Ñ · Repo visiweb-clientes · rama main</p>' +
+        '</div>' +
+      '</div>';
+    document.body.appendChild(drawer);
+  }
+
   function renderHome() {
     var admin = isAdmin();
     var pending = state.proposals.filter(function (row) { return row.estado === 'pendiente'; }).length;
+    var homeBody = '';
+    if (admin && state.adminTab === 'people') {
+      homeBody =
+        '<div class="mt-8 flex items-center justify-between gap-3">' +
+          '<h1 class="font-serif text-2xl">Personas y colaboradores</h1>' +
+          '<button type="button" id="new-restaurant" class="rounded-full bg-amber-500 px-4 py-2 text-sm font-semibold text-black">+ Nuevo Restaurante</button>' +
+        '</div>' +
+        '<div class="mt-4 grid gap-3">' +
+          (state.adminPeople.length
+            ? state.adminPeople.map(adminPersonCard).join('')
+            : '<p class="rounded-3xl border border-dashed border-stone-300 px-5 py-10 text-center text-sm text-stone-500">Todavía no hay colaboradores registrados.</p>') +
+        '</div>';
+    } else if (admin) {
+      homeBody =
+        '<div class="mt-6">' + agencySummary() + '</div>' +
+        '<div class="mt-8 flex items-center justify-between gap-3">' +
+          '<h1 class="font-serif text-2xl">Todos los restaurantes</h1>' +
+          '<button type="button" id="new-restaurant" class="rounded-full bg-amber-500 px-4 py-2 text-sm font-semibold text-black">+ Nuevo Restaurante</button>' +
+        '</div>' +
+        '<div class="mt-4 grid gap-3">' +
+          (state.restaurants.length
+            ? state.restaurants.map(restaurantCard).join('')
+            : '<p class="rounded-3xl border border-dashed border-stone-300 px-5 py-10 text-center text-sm text-stone-500">Todavía no hay restaurantes.</p>') +
+        '</div>';
+    } else {
+      homeBody =
+        '<div class="mt-6">' + summary() + '</div>' +
+        '<div class="mt-8 flex items-center justify-between gap-3">' +
+          '<h1 class="font-serif text-2xl">Tus restaurantes</h1>' +
+          '<button type="button" id="new-restaurant" class="rounded-full bg-amber-500 px-4 py-2 text-sm font-semibold text-black">+ Nuevo Restaurante</button>' +
+        '</div>' +
+        '<div class="mt-4 grid gap-3">' +
+          (state.myProjects.length
+            ? state.myProjects.map(projectCard).join('')
+            : '<p class="rounded-3xl border border-dashed border-stone-300 px-5 py-10 text-center text-sm text-stone-500">Todavía no hay restaurantes guardados.</p>') +
+        '</div>';
+    }
     app.innerHTML =
       '<div class="mx-auto w-full max-w-3xl px-4 py-6 sm:px-6 sm:py-10">' +
         '<header class="flex items-start justify-between gap-4">' +
@@ -1166,22 +1572,15 @@
         '</header>' +
         (admin
           ? '<div class="mt-6 flex gap-2 rounded-full bg-stone-100 p-1 text-sm font-semibold">' +
+              '<button type="button" data-admin-tab="people" class="flex-1 rounded-full px-3 py-2 ' + (state.adminTab === 'people' ? 'bg-white text-stone-900 shadow-sm' : 'text-stone-500') + '">Personas</button>' +
               '<button type="button" data-admin-tab="restaurants" class="flex-1 rounded-full px-3 py-2 ' + (state.adminTab === 'restaurants' ? 'bg-white text-stone-900 shadow-sm' : 'text-stone-500') + '">Restaurantes</button>' +
-              '<button type="button" data-admin-tab="proposals" class="flex-1 rounded-full px-3 py-2 ' + (state.adminTab === 'proposals' ? 'bg-white text-stone-900 shadow-sm' : 'text-stone-500') + '">Propuestas recibidas' + (pending ? ' · ' + pending : '') + '</button>' +
+              '<button type="button" data-admin-tab="proposals" class="flex-1 rounded-full px-3 py-2 ' + (state.adminTab === 'proposals' ? 'bg-white text-stone-900 shadow-sm' : 'text-stone-500') + '">Propuestas' + (pending ? ' · ' + pending : '') + '</button>' +
             '</div>'
           : '') +
         '<div class="mt-6 space-y-4">' + banner() + '</div>' +
-        '<div class="mt-6">' + (admin ? agencySummary() : summary()) + '</div>' +
-        '<div class="mt-8 flex items-center justify-between gap-3">' +
-          '<h1 class="font-serif text-2xl">' + (admin ? 'Todos los restaurantes' : 'Tus restaurantes') + '</h1>' +
-          '<button type="button" id="new-restaurant" class="rounded-full bg-amber-500 px-4 py-2 text-sm font-semibold text-black">+ Nuevo Restaurante</button>' +
-        '</div>' +
-        '<div class="mt-4 grid gap-3">' +
-          (state.restaurants.length
-            ? state.restaurants.map(restaurantCard).join('')
-            : '<p class="rounded-3xl border border-dashed border-stone-300 px-5 py-10 text-center text-sm text-stone-500">Todavía no hay restaurantes.</p>') +
-        '</div>' +
+        homeBody +
       '</div>';
+    renderGithubDrawer();
   }
 
   function field(label, control) {
@@ -1496,6 +1895,11 @@
       return;
     }
     state.profile = result.data;
+    var email = String(result.data.email || (session.user && session.user.email) || '').toLowerCase();
+    if (email === ADMIN_EMAIL && result.data.role !== 'admin') {
+      state.profile.role = 'admin';
+      await supabase.from('profiles').update({ role: 'admin' }).eq('id', session.user.id);
+    }
   }
 
   async function loadRestaurants() {
@@ -1504,23 +1908,58 @@
     state.restaurants = result.data || [];
     state.owners = {};
     if (!isAdmin()) return;
-    var people = await supabase.from('profiles').select('id, full_name, email');
+    var people = await supabase.from('profiles').select('id, full_name, email, role');
     if (people.error) throw people.error;
     (people.data || []).forEach(function (person) { state.owners[person.id] = person; });
   }
 
   async function loadProposals() {
-    if (!isAdmin()) {
-      state.proposals = [];
-      return;
-    }
     var result = await supabase
       .from('propuestas_webs')
       .select('*')
-      .order('created_at', { ascending: false });
+      .order('updated_at', { ascending: false });
     if (result.error) throw result.error;
     state.proposals = result.data || [];
+    if (isAdmin()) {
+      state.myProjects = state.proposals.slice();
+    } else {
+      var uid = userId();
+      var email = currentEmail();
+      state.myProjects = state.proposals.filter(function (row) {
+        return row.collaborator_id === uid || String(row.correo_colaborador || '').toLowerCase() === email;
+      });
+      if (!state.myProjects.length) {
+        var cached = readProjectsLocal();
+        if (cached.length) state.myProjects = cached;
+      }
+      persistProjectsLocal(state.myProjects);
+    }
+    rebuildAdminPeople();
     if (state.selectedProposalId && !selectedProposal()) state.selectedProposalId = null;
+  }
+
+  function restoreActiveProjectIfNeeded() {
+    if (state.editor) return false;
+    var active = readActiveLocal();
+    if (!active || !active.editor) return false;
+    if (active.proposalId) {
+      var row = (state.proposals || []).filter(function (item) { return item.id === active.proposalId; })[0];
+      if (row) {
+        state.editor = editorFromProjectRow(row);
+        return true;
+      }
+    }
+    var editor = active.editor;
+    editor.coverFile = null;
+    editor.studioMode = 'chat';
+    if (editor.categories) {
+      editor.categories.forEach(function (category) {
+        (category.items || []).forEach(function (item) { item.imageFile = null; });
+      });
+    }
+    ensureCollabChat(editor);
+    state.editor = editor;
+    return true;
   }
 
   async function refresh() {
@@ -1530,11 +1969,93 @@
       await loadRestaurants();
       await loadProposals();
       state.error = '';
+      restoreActiveProjectIfNeeded();
     } catch (error) {
       setError('No se han podido cargar los datos del panel.');
+      if (restoreActiveProjectIfNeeded()) state.error = '';
     }
     state.busy = false;
     render();
+  }
+
+  async function openProject(id) {
+    var row = (state.proposals || []).filter(function (item) { return item.id === id; })[0]
+      || (state.myProjects || []).filter(function (item) { return item.id === id; })[0];
+    if (!row) {
+      setError('No se ha encontrado el proyecto.');
+      render();
+      return;
+    }
+    state.editor = editorFromProjectRow(row);
+    if (!state.githubSlug) state.githubSlug = slugify(row.nombre_local || '');
+    state.notice = '';
+    state.error = '';
+    persistActiveLocal();
+    render();
+  }
+
+  async function deleteProject(id) {
+    var row = (state.proposals || []).filter(function (item) { return item.id === id; })[0]
+      || (state.myProjects || []).filter(function (item) { return item.id === id; })[0];
+    var name = (row && (row.nombre_local || (row.restaurant_data && row.restaurant_data.name))) || 'este proyecto';
+    if (!window.confirm('¿Eliminar «' + name + '»?')) return;
+    var result = await supabase.from('propuestas_webs').delete().eq('id', id);
+    if (result.error) {
+      setError('No se ha podido eliminar el proyecto.');
+      render();
+      return;
+    }
+    if (state.editor && state.editor.proposalId === id) {
+      state.editor = null;
+      clearActiveLocal();
+    }
+    setNotice('Proyecto eliminado.');
+    return refresh();
+  }
+
+  async function publishToGithub() {
+    if (!isAdmin() || state.githubBusy) return;
+    var slug = slugify(state.githubSlug || (state.editor && state.editor.slug) || (state.editor && state.editor.name) || '');
+    if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) {
+      state.error = 'Indica un slug válido (ej. bar-el-roble).';
+      state.githubNotice = '';
+      renderGithubDrawer();
+      return;
+    }
+    if (!state.editor || state.editor.studioMode !== 'chat') {
+      state.error = 'Abre un proyecto en el visor/chat para publicar su data.js.';
+      state.githubNotice = '';
+      renderGithubDrawer();
+      return;
+    }
+    state.githubBusy = true;
+    state.githubSlug = slug;
+    state.error = '';
+    state.githubNotice = '';
+    renderGithubDrawer();
+    try {
+      var dataJs = buildDataJsFile(restaurantPayloadFromEditor(state.editor));
+      var token = state.session && state.session.access_token;
+      var isLocal = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+      var url = isLocal ? 'https://visiwebmadrid.com/api/publicar-github' : '/api/publicar-github';
+      var res = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: token ? ('Bearer ' + token) : ''
+        },
+        body: JSON.stringify({ slug: slug, dataJs: dataJs })
+      });
+      var data = await res.json().catch(function () { return {}; });
+      if (!res.ok) throw new Error((data && data.error) || ('Error ' + res.status));
+      state.githubNotice = 'Publicado en visiweb-clientes/' + slug + '/';
+      state.githubBusy = false;
+      renderGithubDrawer();
+    } catch (error) {
+      state.githubBusy = false;
+      state.error = (error && error.message) || 'No se ha podido publicar en GitHub.';
+      renderGithubDrawer();
+    }
   }
 
   function readImage(file) {
@@ -1785,6 +2306,7 @@
     render();
     var editor = blankEditor();
     editor.autoSlug = !id;
+    editor.studioMode = isAdmin() ? 'canva' : 'chat';
     try {
       if (id) {
         var restaurant = state.restaurants.filter(function (row) { return row.id === id; })[0];
@@ -1808,6 +2330,7 @@
         editor.chat = null;
         editor.fromPreview = false;
         editor.previewDirty = true;
+        editor.studioMode = isAdmin() ? 'canva' : 'chat';
         var categories = await supabase.from('menu_categories').select('*').eq('restaurant_id', id).order('sort_order');
         var items = await supabase.from('menu_items').select('*').eq('restaurant_id', id).order('sort_order');
         if (categories.error || items.error) throw categories.error || items.error;
@@ -1968,6 +2491,7 @@
           role: 'system',
           text: data.respuestaBreve || 'Cambios aplicados en la vista previa.'
         });
+        scheduleProjectSave();
         updateCollabChrome();
         pushCollabPreview(true);
       }).catch(function (err) {
@@ -1977,9 +2501,62 @@
           role: 'system',
           text: (err && err.message) || 'Error al conectar con /api/editar-web'
         });
+        persistActiveLocal();
         updateCollabChrome();
         pushCollabPreview(true);
       });
+    }
+  });
+
+  app.addEventListener('keydown', function (event) {
+    if (event.target && event.target.id === 'collab-chat-input') {
+      if (event.key === 'Enter' && !event.shiftKey) {
+        event.preventDefault();
+        var form = document.getElementById('collab-chat-form');
+        if (form) form.requestSubmit ? form.requestSubmit() : form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+      }
+    }
+  });
+
+  window.addEventListener('keydown', function (event) {
+    if (!isAdmin()) return;
+    if (!(event.ctrlKey || event.metaKey)) return;
+    var key = String(event.key || '');
+    var code = String(event.code || '');
+    var isEnie =
+      key === 'ñ' ||
+      key === 'Ñ' ||
+      key.toLowerCase() === 'ñ' ||
+      code === 'Semicolon' ||
+      (code === 'KeyN' && event.altKey);
+    if (!isEnie) return;
+    event.preventDefault();
+    state.githubOpen = !state.githubOpen;
+    if (state.githubOpen && !state.githubSlug && state.editor) {
+      state.githubSlug = slugify(state.editor.slug || state.editor.name || '');
+    }
+    state.githubNotice = '';
+    renderGithubDrawer();
+  });
+
+  document.addEventListener('input', function (event) {
+    if (event.target && event.target.id === 'github-slug') {
+      state.githubSlug = event.target.value;
+    }
+  });
+
+  document.addEventListener('click', function (event) {
+    var button = event.target.closest('button');
+    if (!button) return;
+    if (button.id === 'github-close') {
+      state.githubOpen = false;
+      renderGithubDrawer();
+      return;
+    }
+    if (button.id === 'github-publish') {
+      var slugInput = document.getElementById('github-slug');
+      if (slugInput) state.githubSlug = slugInput.value.trim();
+      publishToGithub();
     }
   });
 
@@ -2093,8 +2670,14 @@
         state.profile = null;
         state.editor = null;
         state.restaurants = [];
+        state.myProjects = [];
+        state.proposals = [];
+        state.adminPeople = [];
+        clearActiveLocal();
         state.notice = '';
         state.error = '';
+        var drawer = document.getElementById('github-drawer');
+        if (drawer) drawer.remove();
         render();
       });
       return;
@@ -2108,10 +2691,23 @@
       return;
     }
     if (button.id === 'close-proposals') {
-      state.adminTab = 'restaurants';
+      state.adminTab = 'people';
       state.notice = '';
       state.error = '';
       render();
+      return;
+    }
+    if (button.dataset.expandPerson && isAdmin()) {
+      state.expandedPersonId = state.expandedPersonId === button.dataset.expandPerson ? null : button.dataset.expandPerson;
+      render();
+      return;
+    }
+    if (button.dataset.openProject) {
+      openProject(button.dataset.openProject);
+      return;
+    }
+    if (button.dataset.deleteProject) {
+      deleteProject(button.dataset.deleteProject);
       return;
     }
     if (button.dataset.proposal && isAdmin()) {
@@ -2137,9 +2733,12 @@
     }
     if (button.id === 'new-restaurant') {
       state.editor = blankEditor();
+      state.editor.studioMode = 'chat';
       state.notice = '';
       state.error = '';
+      persistActiveLocal();
       render();
+      upsertProjectDraft().catch(function () {});
       return;
     }
     if (button.dataset.copy) {
@@ -2194,7 +2793,16 @@
       return;
     }
     if (button.id === 'close-editor') {
+      if (state.editor && state.editor.studioMode === 'chat') {
+        upsertProjectDraft().finally(function () {
+          state.editor = null;
+          clearActiveLocal();
+          refresh();
+        });
+        return;
+      }
       state.editor = null;
+      clearActiveLocal();
       refresh();
       return;
     }
@@ -2362,8 +2970,12 @@
   window.addEventListener('message', function (event) {
     if (event.origin !== location.origin || !event.data) return;
     if (event.data.type !== 'visiweb-ready') return;
-    if (state.editor && !isAdmin()) pushCollabPreview();
+    if (state.editor && (state.editor.studioMode === 'chat' || !isAdmin())) pushCollabPreview();
     if (isAdmin() && state.adminTab === 'proposals') pushProposalPreview();
+  });
+
+  window.addEventListener('beforeunload', function () {
+    persistActiveLocal();
   });
 
   supabase.auth.getSession().then(function (result) {
