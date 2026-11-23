@@ -423,6 +423,27 @@
     if (!editor.viewport) editor.viewport = 'mobile';
   }
 
+  function deepMerge(target, source) {
+    if (source == null) return target;
+    if (Array.isArray(source)) return source.slice();
+    if (typeof source !== 'object') return source;
+    var out = Array.isArray(target)
+      ? target.slice()
+      : Object.assign({}, target && typeof target === 'object' && !Array.isArray(target) ? target : {});
+    Object.keys(source).forEach(function (key) {
+      var sv = source[key];
+      var tv = out[key];
+      if (sv && typeof sv === 'object' && !Array.isArray(sv) && tv && typeof tv === 'object' && !Array.isArray(tv)) {
+        out[key] = deepMerge(tv, sv);
+      } else if (Array.isArray(sv)) {
+        out[key] = sv.slice();
+      } else {
+        out[key] = sv;
+      }
+    });
+    return out;
+  }
+
   function applyRestaurantUpdate(data) {
     var editor = state.editor;
     if (!editor || !data || typeof data !== 'object') return false;
@@ -1918,6 +1939,8 @@
       var editarWebUrl = isLocal
         ? 'https://visiwebmadrid.com/api/editar-web'
         : '/api/editar-web';
+      state.editor.chat.push({ role: 'system', text: 'Aplicando cambios...', pending: true });
+      updateCollabChrome();
       fetch(editarWebUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -1934,8 +1957,13 @@
           throw new Error('Error ' + res.status + ' en /api/editar-web');
         });
       }).then(function (data) {
-        if (!data || !data.jsonActualizado) throw new Error('Respuesta inválida de /api/editar-web');
-        applyRestaurantUpdate(data.jsonActualizado);
+        if (!data || typeof data.cambios !== 'object' || data.cambios === null || Array.isArray(data.cambios)) {
+          throw new Error('Respuesta inválida de /api/editar-web');
+        }
+        var merged = deepMerge(jsonActual, data.cambios);
+        applyRestaurantUpdate(merged);
+        var chat = state.editor.chat;
+        if (chat.length && chat[chat.length - 1].pending) chat.pop();
         state.editor.chat.push({
           role: 'system',
           text: data.respuestaBreve || 'Cambios aplicados en la vista previa.'
@@ -1943,6 +1971,8 @@
         updateCollabChrome();
         pushCollabPreview(true);
       }).catch(function (err) {
+        var chat = state.editor.chat;
+        if (chat.length && chat[chat.length - 1].pending) chat.pop();
         state.editor.chat.push({
           role: 'system',
           text: (err && err.message) || 'Error al conectar con /api/editar-web'

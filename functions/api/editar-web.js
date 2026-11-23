@@ -27,17 +27,18 @@ export async function onRequestPost(context) {
     }
 
     const systemPrompt =
-      'Eres un asistente que edita la configuración JSON de la web de un restaurante. ' +
+      'Eres un asistente que edita la configuración JSON de una web de restaurante. ' +
       'Recibirás el JSON actual y una instrucción del usuario. ' +
-      'Debes devolver ÚNICAMENTE un objeto JSON válido (sin markdown, sin explicaciones, sin bloques ```) con esta forma exacta:\n' +
+      'Devuelve ÚNICAMENTE un objeto JSON válido (sin markdown, sin explicaciones, sin bloques ```) con esta forma exacta:\n' +
       '{\n' +
-      '  "jsonActualizado": { ...el mismo esquema que jsonActual, con los cambios aplicados... },\n' +
-      '  "respuestaBreve": "frase corta en español confirmando el cambio"\n' +
+      '  "cambios": { ...solo las claves que el usuario ha pedido modificar... },\n' +
+      '  "respuestaBreve": "frase corta en español"\n' +
       '}\n' +
-      'Solo modifica lo que pida el usuario: nombre, descripción, tagline, colores (accent/primary_color), ' +
-      'teléfono, whatsapp, dirección, horario, Instagram, platos/categorías de la carta, ' +
-      'horarios o textos de Eventos (design.eventos, eventos_activo / labels.vw_events). ' +
-      'Conserva el resto de campos intactos.';
+      'Reglas:\n' +
+      '- "cambios" contiene SOLO las claves exactas a modificar (p. ej. name, tagline, phone, whatsapp, address, schedule, instagram, accent/primary_color, design, daily_menu, categories, eventos_activo).\n' +
+      '- NO devuelvas el JSON completo del restaurante.\n' +
+      '- Si el usuario solo saluda, pregunta o no pide un cambio, "cambios" debe ser {} y responde de forma breve y amable.\n' +
+      '- Campos editables: nombre, descripción, tagline, colores (accent/primary_color), teléfono, whatsapp, dirección, horario, Instagram, platos/categorías, Eventos (design.eventos, eventos_activo / labels.vw_events).';
 
     const userPrompt =
       'JSON actual:\n' +
@@ -56,7 +57,8 @@ export async function onRequestPost(context) {
         contents: [{ role: 'user', parts: [{ text: systemPrompt + '\n\n' + userPrompt }] }],
         generationConfig: {
           temperature: 0.2,
-          responseMimeType: 'application/json'
+          responseMimeType: 'application/json',
+          thinkingConfig: { thinkingBudget: 0 }
         }
       })
     });
@@ -96,21 +98,24 @@ export async function onRequestPost(context) {
       });
     }
 
-    let jsonActualizado = parsed.jsonActualizado || parsed;
+    let cambios =
+      parsed && parsed.cambios && typeof parsed.cambios === 'object' && !Array.isArray(parsed.cambios)
+        ? parsed.cambios
+        : null;
     let respuestaBreve =
       typeof parsed.respuestaBreve === 'string' && parsed.respuestaBreve.trim()
         ? parsed.respuestaBreve.trim()
-        : 'Cambios aplicados en la vista previa.';
+        : 'Listo.';
 
-    if (!jsonActualizado || typeof jsonActualizado !== 'object' || Array.isArray(jsonActualizado)) {
-      return new Response(JSON.stringify({ error: 'jsonActualizado inválido' }), {
+    if (!cambios) {
+      return new Response(JSON.stringify({ error: 'cambios inválido' }), {
         status: 502,
         headers: cors
       });
     }
 
     return new Response(
-      JSON.stringify({ jsonActualizado: jsonActualizado, respuestaBreve: respuestaBreve }),
+      JSON.stringify({ cambios: cambios, respuestaBreve: respuestaBreve }),
       { status: 200, headers: cors }
     );
   } catch (error) {
