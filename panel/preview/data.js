@@ -662,13 +662,10 @@ window.VISIWEB_DEMO = (function () {
     activo: true,
     /* tipoVideo: "salon" | "terraza" | "ninguno" (solo foto estática) */
     tipoVideo: 'salon',
-    videoSalon: 'assets/brindis-salon.mp4',
-    /* Segundos que se saltan. El bucle empieza aquí y dura videoSalonDuracion. */
+    videoSalon: window.VISIWEB_ASSET('brindis-salon.mp4'),
     videoSalonInicio: 2.5,
     videoSalonDuracion: 10,
-    videoTerraza: 'assets/brindis-terraza.mp4',
-    /* imagenHero: foto de respaldo si tipoVideo es "ninguno" o el vídeo no carga.
-       Admite una URL https, photo('archivo.webp') o ./assets/demo/archivo.webp */
+    videoTerraza: window.VISIWEB_ASSET('brindis-terraza.mp4'),
     imagenHero: 'https://images.unsplash.com/photo-1519671482749-fd09be7ccebf?auto=format&fit=crop&w=1800&q=80',
     imageAlt: {
       es: 'Un grupo brindando con copas de vino',
@@ -738,88 +735,13 @@ window.VISIWEB_DEMO = (function () {
       { es: 'Espacio reservado, solo para vosotros.', en: 'A reserved space, just for you.' },
       { es: 'Atención personalizada de principio a fin.', en: 'Personal attention from the first note to the last toast.' }
     ],
-    readyCta: { es: 'Pedir presupuesto', en: 'Request a quote' },
+    readyCta: { es: 'Ir a reservas', en: 'Go to bookings' },
     formTypes: [
       { id: 'cumpleanos', label: { es: 'Cumpleaños', en: 'Birthday' } },
       { id: 'empresa', label: { es: 'Fiesta o comida de empresa', en: 'Company party or meal' } },
       { id: 'boda', label: { es: 'Boda / Aniversario', en: 'Wedding / Anniversary' } },
       { id: 'familiar', label: { es: 'Celebración familiar', en: 'Family celebration' } },
       { id: 'otro', label: { es: 'Otro', en: 'Other' } }
-    ],
-    stepsTitle: { es: 'Cómo organizamos tu evento', en: 'How we organise your event' },
-    steps: [
-      {
-        n: '01',
-        title: { es: 'Nos cuentas tu idea y fecha', en: 'Tell us the idea and the date' },
-        text: {
-          es: 'Cuántos sois, qué celebráis y si hay alergias o un horario concreto.',
-          en: 'How many of you, what you are celebrating, and any allergies or a set time.'
-        }
-      },
-      {
-        n: '02',
-        title: { es: 'Te enviamos menú y espacio a medida en 24h', en: 'Menu and room, tailored, within 24h' },
-        text: {
-          es: 'Propuesta cerrada: sitio, menú y precio, sin sorpresas.',
-          en: 'A fixed proposal: the room, the menu and the price, with nothing left open.'
-        }
-      },
-      {
-        n: '03',
-        title: { es: 'Llegas y disfrutas sin preocuparte de nada', en: 'Arrive and enjoy, with nothing to arrange' },
-        text: {
-          es: 'La mesa, el servicio y los tiempos están listos cuando llegáis.',
-          en: 'The table, the service and the timing are ready when you walk in.'
-        }
-      }
-    ],
-    advantagesTitle: { es: 'Ventajas de celebrar tu evento aquí', en: 'Why celebrate it here' },
-    advantages: [
-      {
-        icon: 'menu',
-        title: { es: 'Menús 100 % a medida', en: 'Menus made entirely to measure' },
-        text: {
-          es: 'Opciones para compartir, menú cerrado y adaptación a alergias.',
-          en: 'Sharing plates, a set menu, and dishes adjusted for allergies.'
-        }
-      },
-      {
-        icon: 'room',
-        title: { es: 'Espacio reservado', en: 'A reserved space' },
-        text: {
-          es: 'Zona privada en salón o terraza según el tamaño del grupo.',
-          en: 'A private corner in the dining room or on the terrace, depending on the size of the group.'
-        }
-      },
-      {
-        icon: 'care',
-        title: { es: 'Organización sin estrés', en: 'No stress on the day' },
-        text: {
-          es: 'Un responsable coordina cada detalle antes y durante el evento.',
-          en: 'One person coordinates every detail before and during the event.'
-        }
-      },
-      {
-        icon: 'quote',
-        title: { es: 'Presupuesto cerrado', en: 'A fixed quote' },
-        text: {
-          es: 'Respuesta directa, sin compromisos ni sorpresas.',
-          en: 'A direct reply, with no commitment and no surprises.'
-        }
-      }
-    ],
-    bookingTitle: { es: 'Reservas y presupuesto', en: 'Bookings and quotes' },
-    capacityLabel: { es: 'Capacidad', en: 'Capacity' },
-    capacity: { es: 'Hasta 40 comensales', en: 'Up to 40 guests' },
-    hoursLabel: { es: 'Horarios flexibles', en: 'Flexible hours' },
-    hours: {
-      es: 'También fuera del servicio habitual, con reserva previa.',
-      en: 'Also outside regular service, with a booking ahead of time.'
-    },
-    guarantees: [
-      { es: 'Sin coste por reserva de espacio', en: 'No charge for holding the space' },
-      { es: 'Adaptación a alergias e intolerancias', en: 'Dishes adapted for allergies and intolerances' },
-      { es: 'Respuesta directa por WhatsApp en menos de 24 h', en: 'A direct WhatsApp reply in under 24 hours' }
     ],
     phone: '+34600000000',
     phoneDisplay: '+34 600 00 00 00',
@@ -850,16 +772,6 @@ window.VISIWEB_DEMO = (function () {
       navBook: 'Reservas',
       navEvents: 'Eventos',
       eventosTitle: 'Eventos',
-      eventosTypesLabel: 'Tipos de evento',
-      eventosCapacityLabel: 'Capacidad',
-      eventosCall: 'Llamar para presupuesto',
-      eventosName: 'Nombre',
-      eventosDate: 'Fecha',
-      eventosGuests: 'Comensales',
-      eventosType: 'Tipo de evento',
-      eventosTypePlaceholder: 'Elige un tipo',
-      eventosNotes: 'Comentarios',
-      eventosSubmit: 'Pedir presupuesto por WhatsApp',
       eventosError: 'Rellena nombre, fecha, comensales y tipo de evento.',
       eventosWaIntro: 'Hola, soy {name}. Quiero solicitar un presupuesto para un evento en {restaurant}.',
       eventosWaType: 'Tipo',
@@ -914,6 +826,8 @@ window.VISIWEB_DEMO = (function () {
       bookGuestsPlaceholder: 'Elegir comensales',
       bookPhonePlaceholder: 'Número de teléfono',
       bookPick: 'Seleccionar',
+      salesTap: 'Pulsa aquí',
+      salesBannerDetail: 'Así quedaría tu local. Esta demo es interactiva.',
       allergenChip: 'Alérgenos',
       allergenFilterTitle: 'Filtro de alérgenos',
       mapSearchHint: 'En la web del local, este mapa abre la ruta.',
@@ -1026,6 +940,17 @@ window.VISIWEB_DEMO = (function () {
       viewOnMap: 'Ver en mapa ↗',
       callDirect: 'Llamar directamente',
       credit: '© {year} {name} · Carta digital ultrarrápida creada por',
+      planBadge: 'Plan Gastro Premium',
+      planBanner: 'Esta demo interactiva incluye las características del Plan Gastro Premium (390 € montaje. IVA no inc.).',
+      planCta: 'Ver planes y contratar ↗',
+      salesBar: 'Demo de VisiWeb Madrid',
+      salesBarShort: 'Demo VisiWeb',
+      salesBarCta: 'Pide la tuya',
+      viewSwitch: 'Vista de la demo',
+      viewWeb: 'Web',
+      viewMesa: 'QR Mesa',
+      salesWhatsappText: 'Hola, he visto la demo y quiero una así para mi local.',
+      planHero: 'Demo Carta Digital · Nivel Gastro Premium',
       demoCreditLead: 'Web demo desarrollada por',
       demoCreditPlan: '· Realizada con el Plan Gastro Premium',
       mesaLink: 'Modo QR en mesa',
@@ -1074,16 +999,6 @@ window.VISIWEB_DEMO = (function () {
       navBook: 'Book',
       navEvents: 'Events',
       eventosTitle: 'Events',
-      eventosTypesLabel: 'Event types',
-      eventosCapacityLabel: 'Capacity',
-      eventosCall: 'Call for a quote',
-      eventosName: 'Name',
-      eventosDate: 'Date',
-      eventosGuests: 'Guests',
-      eventosType: 'Event type',
-      eventosTypePlaceholder: 'Choose a type',
-      eventosNotes: 'Comments',
-      eventosSubmit: 'Request a quote on WhatsApp',
       eventosError: 'Please fill in name, date, guests and event type.',
       eventosWaIntro: 'Hello, this is {name}. I would like a quote for an event at {restaurant}.',
       eventosWaType: 'Type',
@@ -1138,6 +1053,8 @@ window.VISIWEB_DEMO = (function () {
       bookGuestsPlaceholder: 'Choose guests',
       bookPhonePlaceholder: 'Phone number',
       bookPick: 'Select',
+      salesTap: 'Tap here',
+      salesBannerDetail: 'This is how your place would look. This demo is interactive.',
       allergenChip: 'Allergens',
       allergenFilterTitle: 'Allergen filter',
       mapSearchHint: 'On the real site, this map opens the route.',
@@ -1250,6 +1167,17 @@ window.VISIWEB_DEMO = (function () {
       viewOnMap: 'View on map ↗',
       callDirect: 'Call us directly',
       credit: '© {year} {name} · Ultra-fast digital menu built by',
+      planBadge: 'Gastro Premium Plan',
+      planBanner: 'This interactive demo includes the features of the Gastro Premium Plan (€390 setup. VAT not included).',
+      planCta: 'See plans and sign up ↗',
+      salesBar: 'VisiWeb Madrid demo',
+      salesBarShort: 'VisiWeb demo',
+      salesBarCta: 'Request yours',
+      viewSwitch: 'Demo view',
+      viewWeb: 'Web',
+      viewMesa: 'QR Mesa',
+      salesWhatsappText: 'Hello, I have seen the demo and I want one like this for my place.',
+      planHero: 'Digital menu demo · Gastro Premium',
       demoCreditLead: 'Demo website built by',
       demoCreditPlan: '· Built with the Gastro Premium Plan',
       mesaLink: 'Table QR mode',

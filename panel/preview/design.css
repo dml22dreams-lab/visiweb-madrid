@@ -1,0 +1,306 @@
+html[data-vw-theme] body {
+  background: var(--vw-bg);
+  color: var(--vw-ink);
+}
+html[data-vw-theme] .btn-primary,
+html[data-vw-theme] #vw-hero-actions a,
+html[data-vw-theme] #vw-hero-actions .vw-rate {
+  background: var(--block-buttonBg, var(--vw-button, var(--vw-accent))) !important;
+  color: var(--block-buttonText, var(--vw-button-text, #fff)) !important;
+  border-color: var(--block-buttonBg, var(--vw-button, var(--vw-accent))) !important;
+}
+html[data-vw-theme] .tab[aria-selected="true"],
+html[data-vw-theme] .pill[aria-current="true"] {
+  background: var(--block-pillActiveBg, var(--vw-pill, var(--vw-accent))) !important;
+  color: var(--block-pillActiveText, var(--vw-pill-text, #fff)) !important;
+  border-color: var(--block-pillActiveBg, var(--vw-pill, var(--vw-accent))) !important;
+}
+html[data-vw-theme] .dish-price,
+html[data-vw-theme] .vw-daily-price {
+  color: var(--block-priceColor, var(--vw-price, inherit));
+}
+html[data-vw-theme] .vw-tag,
+html[data-vw-theme] .pill-allergen {
+  background: var(--block-badgeBg, var(--vw-badge));
+  color: var(--block-badgeText, var(--vw-badge-text));
+}
+html.vw-editor.vw-editing [data-element].is-hover,
+html.vw-editor.vw-editing [data-element].is-selected {
+  outline: 1px solid #3b82f6;
+  outline-offset: 0;
+}
+.vw-element-off,
+.vw-text-empty { display: none !important; }
+html[data-vw-theme] .site-nav,
+html[data-vw-theme] #quick-bar,
+html[data-vw-theme] .contact-card,
+html[data-vw-theme] .mesa-cat,
+html[data-vw-theme] .sheet,
+html[data-vw-theme] .demo-bar {
+  background: var(--vw-card);
+  color: var(--vw-ink);
+}
+html[data-vw-theme="oscuro"] .text-slate-900,
+html[data-vw-theme="oscuro"] .text-stone-900,
+html[data-vw-theme="oscuro"] h1,
+html[data-vw-theme="oscuro"] h2,
+html[data-vw-theme="oscuro"] h3,
+html[data-vw-theme="oscuro"] .dish-name,
+html[data-vw-theme="oscuro"] .dish-price,
+html[data-vw-theme="oscuro"] .intro h1 {
+  color: var(--vw-ink) !important;
+}
+html[data-vw-theme="oscuro"] .text-slate-600,
+html[data-vw-theme="oscuro"] .text-stone-500,
+html[data-vw-theme="oscuro"] .text-stone-600,
+html[data-vw-theme="oscuro"] .text-neutral-500,
+html[data-vw-theme="oscuro"] .dish-desc,
+html[data-vw-theme="oscuro"] .lead {
+  color: var(--vw-muted) !important;
+}
+html[data-vw-theme="oscuro"] .bg-white,
+html[data-vw-theme="oscuro"] footer,
+html[data-vw-theme="oscuro"] [data-site-sticky] {
+  background: var(--vw-bg) !important;
+}
+html[data-vw-theme="oscuro"] .cat-band { background: var(--vw-card); }
+html[data-vw-theme="oscuro"] .border-stone-200,
+html[data-vw-theme="oscuro"] .border-slate-200,
+html[data-vw-theme="oscuro"] .border-neutral-200\/80 {
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+html[data-vw-fonts="moderna_sans"] body,
+html[data-vw-fonts="moderna_sans"] .font-serif,
+html[data-vw-fonts="moderna_sans"] h1,
+html[data-vw-fonts="moderna_sans"] h2,
+html[data-vw-fonts="moderna_sans"] .intro h1,
+html[data-vw-fonts="moderna_sans"] .mesa-cat h2 {
+  font-family: Outfit, Inter, ui-sans-serif, system-ui, sans-serif !important;
+}
+html[data-vw-fonts="artesanal"] .font-serif,
+html[data-vw-fonts="artesanal"] h1,
+html[data-vw-fonts="artesanal"] h2,
+html[data-vw-fonts="artesanal"] .intro h1,
+html[data-vw-fonts="artesanal"] .mesa-cat h2 {
+  font-family: Fraunces, Georgia, serif !important;
+}
+html[data-vw-fonts="artesanal"] .hero-sub,
+html[data-vw-fonts="artesanal"] .hero-kicker,
+html[data-vw-fonts="artesanal"] .lead {
+  font-family: Fraunces, Georgia, serif !important;
+  font-style: italic;
+}
+html[data-vw-fonts="sans_moderna"] body,
+html[data-vw-fonts="geometrica"] body,
+html[data-vw-fonts="sans_moderna"] .font-serif,
+html[data-vw-fonts="geometrica"] .font-serif,
+html[data-vw-fonts="sans_moderna"] h1,
+html[data-vw-fonts="geometrica"] h1,
+html[data-vw-fonts="sans_moderna"] h2,
+html[data-vw-fonts="geometrica"] h2 {
+  font-family: Outfit, Inter, ui-sans-serif, system-ui, sans-serif !important;
+}
+html[data-vw-fonts="editorial"] .font-serif,
+html[data-vw-fonts="editorial"] h1,
+html[data-vw-fonts="editorial"] h2 {
+  font-family: Fraunces, Georgia, serif !important;
+}
+html[data-vw-fonts="condensada"] body,
+html[data-vw-fonts="condensada"] h1,
+html[data-vw-fonts="condensada"] h2 {
+  font-family: "Barlow Condensed", Impact, sans-serif !important;
+}
+
+html[data-vw-shape="equilibrado"] .btn-primary,
+html[data-vw-shape="equilibrado"] .btn-outline,
+html[data-vw-shape="equilibrado"] .tab,
+html[data-vw-shape="equilibrado"] .pill,
+html[data-vw-shape="equilibrado"] .contact-card,
+html[data-vw-shape="equilibrado"] #hero-media,
+html[data-vw-shape="equilibrado"] .photo-hit,
+html[data-vw-shape="equilibrado"] #vw-hero-actions a,
+html[data-vw-shape="equilibrado"] .vw-daily {
+  border-radius: 12px !important;
+}
+html[data-vw-shape="recto"] .btn-primary,
+html[data-vw-shape="recto"] .btn-outline,
+html[data-vw-shape="recto"] .tab,
+html[data-vw-shape="recto"] .pill,
+html[data-vw-shape="recto"] .contact-card,
+html[data-vw-shape="recto"] #hero-media,
+html[data-vw-shape="recto"] .photo-hit,
+html[data-vw-shape="recto"] #vw-hero-actions a,
+html[data-vw-shape="recto"] .vw-daily,
+html[data-vw-shape="recto"] .rounded-full,
+html[data-vw-shape="recto"] .rounded-2xl,
+html[data-vw-shape="recto"] .rounded-3xl {
+  border-radius: 2px !important;
+}
+
+html[data-vw-accent="custom"] .btn-primary,
+html[data-vw-accent="custom"] .tab[aria-selected="true"],
+html[data-vw-accent="custom"] .pill[aria-current="true"],
+html[data-vw-accent="custom"] .pill-dark,
+html[data-vw-accent="custom"] #vw-hero-actions a,
+html[data-vw-accent="custom"] #vw-hero-actions .vw-rate {
+  background: var(--vw-accent) !important;
+  color: var(--vw-on) !important;
+  border-color: var(--vw-accent) !important;
+}
+html[data-vw-tabs="subrayado"] .tab,
+html[data-vw-tabs="subrayado"] .pill {
+  border: 0 !important;
+  border-bottom: 2px solid transparent !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: inherit !important;
+  box-shadow: none !important;
+}
+html[data-vw-tabs="subrayado"] .tab[aria-selected="true"],
+html[data-vw-tabs="subrayado"] .pill[aria-current="true"] {
+  background: transparent !important;
+  color: inherit !important;
+  border-bottom-color: var(--vw-accent) !important;
+}
+html[data-vw-tabs="bloques"] .tab,
+html[data-vw-tabs="bloques"] .pill {
+  border-radius: 2px !important;
+}
+
+@media (min-width: 768px) {
+  html[data-vw-hero="dividida"] #inicio-hero {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 1.5rem;
+    align-items: center;
+  }
+  html[data-vw-hero="dividida"] .hero-intro { grid-column: 1; grid-row: 1; }
+  html[data-vw-hero="dividida"] .hero-intro,
+  html[data-vw-hero="dividida"] .hero-intro > * { text-align: left; margin-left: 0; }
+  html[data-vw-hero="dividida"] #vw-hero-actions { grid-column: 1; }
+  html[data-vw-hero="dividida"] #hero-facts { grid-column: 1; margin-top: 1rem; }
+  html[data-vw-hero="dividida"] .hero-stage { grid-column: 2; grid-row: 1 / span 4; margin-top: 0; }
+}
+html[data-vw-hero="logo_centrado"] .hero-stage { display: none; }
+html[data-vw-hero="logo_centrado"] .hero-title { padding-top: 1.5rem; padding-bottom: 0.5rem; }
+html[data-vw-hero="pantalla_completa"] #inicio-hero { display: grid; }
+html[data-vw-hero="pantalla_completa"] .hero-stage { grid-area: 1 / 1; margin: 0; }
+html[data-vw-hero="pantalla_completa"] #hero-media {
+  position: relative;
+  height: min(78vh, 640px);
+  max-height: none;
+  border-radius: 0;
+}
+html[data-vw-hero="pantalla_completa"] #hero-media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0.08) 58%);
+}
+html[data-vw-hero="pantalla_completa"] .hero-intro {
+  grid-area: 1 / 1;
+  z-index: 1;
+  align-self: end;
+  padding: 1.5rem 0.25rem 1rem;
+}
+html[data-vw-hero="pantalla_completa"] .hero-intro,
+html[data-vw-hero="pantalla_completa"] .hero-intro * { color: #fff !important; }
+html[data-vw-hero="pantalla_completa"] #hero-facts,
+html[data-vw-hero="pantalla_completa"] #vw-hero-actions { position: relative; z-index: 1; }
+
+html[data-vw-dishes="tarjetas_grandes"] #panels ul,
+html[data-vw-dishes="tarjetas_grandes"] .mesa-cat {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+html[data-vw-dishes="tarjetas_grandes"] .cat-band { grid-column: 1 / -1; }
+html[data-vw-dishes="tarjetas_grandes"] .vw-card-dish,
+html[data-vw-dishes="tarjetas_grandes"] .dish {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 1.25rem;
+  padding: 8px;
+  background: var(--vw-card, #fff);
+}
+html[data-vw-dishes="tarjetas_grandes"] .vw-card-dish img,
+html[data-vw-dishes="tarjetas_grandes"] .photo-hit,
+html[data-vw-dishes="tarjetas_grandes"] .slot {
+  width: 100%;
+  height: 140px;
+}
+html[data-vw-dishes="tarjetas_grandes"] .photo-hit { border-radius: 1rem; }
+html[data-vw-dishes="solo_texto"] .vw-photo,
+html[data-vw-dishes="solo_texto"] .slot { display: none !important; }
+
+.vw-block-off { display: none !important; }
+html[data-vw-stack] [data-page]:not([hidden]) { display: block !important; }
+html.vw-restaurant,
+html.vw-editor { --demo-bar: 0px; }
+html.vw-restaurant #demo-sales-banner,
+html.vw-restaurant .demo-bar,
+html.vw-editor #demo-sales-banner,
+html.vw-editor .demo-bar { display: none !important; }
+
+#vw-hero-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+#vw-hero-actions:empty { display: none; }
+#vw-hero-actions a,
+#vw-hero-actions .vw-rate {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 16px;
+  border-radius: 999px;
+  background: #1c1917;
+  color: #fff;
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 650;
+  text-decoration: none;
+}
+.vw-daily {
+  margin: 1.25rem auto 0;
+  max-width: 48rem;
+  padding: 1.25rem 1.25rem 1rem;
+  border: 1px solid color-mix(in srgb, var(--vw-accent, #1c1917) 40%, transparent);
+  border-radius: 1.5rem;
+  background: var(--vw-card, #fffdf8);
+  color: var(--vw-ink, #1c1917);
+}
+.vw-daily-kicker {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--vw-accent, #1c1917);
+}
+.vw-daily-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.vw-daily h2 { margin: 0.15rem 0 0; font-size: 1.8rem; }
+.vw-daily h3 { margin: 0.9rem 0 0.25rem; font-size: 0.95rem; }
+.vw-daily ul { margin: 0; padding-left: 1.1rem; }
+.vw-daily-price { margin: 0; font-weight: 700; }
+.vw-daily-note, .vw-daily-days { margin: 0.75rem 0 0; font-size: 0.9rem; }
+.vw-tags { display: inline-flex; gap: 4px; margin-left: 6px; }
+.vw-tag {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  background: #f5f5f4;
+  color: #44403c;
+  font-family: Inter, sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  padding: 3px 6px;
+}
+html[data-vw-prices="0"] .dish-price,
+html[data-vw-prices="0"] .sheet-price,
+html[data-vw-prices="0"] .sel-price { display: none !important; }
+html[data-vw-tags="0"] .vw-tags { display: none !important; }
+html[data-vw-no-cart] .slot-act,
+html[data-vw-no-cart] #dock-split { display: none !important; }

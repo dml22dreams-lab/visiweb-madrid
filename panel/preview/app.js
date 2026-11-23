@@ -15,12 +15,14 @@
   const SCHEMA_DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   const WEEK_ORDER = [1, 2, 3, 4, 5, 6, 0];
   let eventosOn = !!(D.eventos && D.eventos.activo);
-  let PAGES = eventosOn
-    ? ['inicio', 'carta', 'local', 'eventos', 'reservas']
-    : ['inicio', 'carta', 'local', 'reservas'];
+  function pagesList() {
+    return eventosOn
+      ? ['inicio', 'carta', 'local', 'eventos', 'reservas']
+      : ['inicio', 'carta', 'local', 'reservas'];
+  }
   const allergenFilters = new Set();
   const FILTER_OFF = ['bg-white', 'text-stone-700', 'border-stone-300', 'dark:bg-slate-950', 'dark:text-slate-300', 'dark:border-slate-600'];
-  const FILTER_ON = ['filter-chip-on', 'text-white', 'border-transparent'];
+  const FILTER_ON = ['bg-stone-900', 'text-white', 'border-stone-900', 'dark:bg-slate-100', 'dark:text-slate-900', 'dark:border-slate-100'];
 
   /* ------------------------------- Utilidades ------------------------------- */
   const $ = (sel) => document.querySelector(sel);
@@ -166,30 +168,32 @@
     L(D.business.address.street) + (D.business.address.city ? ', ' + D.business.address.city : '')
   );
 
-  function showDemoNote(key) {
-    const note = $('#demo-action-note');
-    if (!note) return;
-    note.textContent = t(key);
-    note.hidden = false;
-    clearTimeout(showDemoNote.timer);
-    showDemoNote.timer = setTimeout(() => { note.hidden = true; }, 3400);
+  function phoneHref() {
+    const phone = String(D.business.phone || '').replace(/\s/g, '');
+    return phone ? ('tel:' + phone) : '#';
   }
-  window.visiwebDemoNote = showDemoNote;
 
-  function bindDemoActions() {
-    const guard = (selector, key) => {
-      document.querySelectorAll(selector).forEach((node) => {
-        if (node.dataset.demoGuard) return;
-        node.dataset.demoGuard = '1';
-        node.addEventListener('click', (event) => {
-          event.preventDefault();
-          showDemoNote(key);
-        });
-      });
-    };
-    guard('#header-call, #footer-phone, #bar-call, #gbp-call', 'demoCallNote');
-    guard('#gbp-directions, #map-directions, #footer-map', 'demoRouteNote');
-    guard('#gbp-save', 'demoSaveNote');
+  function mapsHref() {
+    const query = D.business.mapQuery || addressText();
+    if (!query) return '#';
+    return 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(query);
+  }
+
+  function socialHref(key) {
+    const raw = String(
+      (key === 'instagram' && D.business.instagram) ||
+      (key === 'facebook' && D.business.facebook) ||
+      (key === 'x' && (D.business.x || D.business.twitter)) ||
+      (key === 'tiktok' && D.business.tiktok) ||
+      ''
+    ).trim();
+    if (!raw) return '';
+    if (/^https?:\/\//i.test(raw)) return raw;
+    if (key === 'instagram') return 'https://instagram.com/' + raw.replace(/^@/, '');
+    if (key === 'facebook') return 'https://facebook.com/' + raw.replace(/^@/, '');
+    if (key === 'x') return 'https://x.com/' + raw.replace(/^@/, '');
+    if (key === 'tiktok') return 'https://www.tiktok.com/@' + raw.replace(/^@/, '');
+    return raw;
   }
 
   /* ------------------------------- Marcadores ------------------------------ */
@@ -235,7 +239,7 @@
       img.src = D.images.hero;
       img.alt = L(D.images.heroAlt);
       img.width = 1600;
-      img.height = 900;
+      img.height = 500;
       img.decoding = 'async';
       img.setAttribute('fetchpriority', 'high');
       img.addEventListener('error', function () {
@@ -261,14 +265,29 @@
       if (badge) badge.textContent = price;
     }
 
+    const tel = phoneHref();
     ['#bar-call', '#footer-phone', '#header-call', '#gbp-call'].forEach((sel) => {
       const node = $(sel);
-      if (node) node.href = '#';
+      if (node) node.href = tel;
     });
     $('#footer-phone-number').textContent = D.business.phoneDisplay;
 
-    const footerMap = $('#footer-map');
-    if (footerMap) footerMap.href = '#';
+    const salesWa = $('#sales-whatsapp');
+    if (salesWa) {
+      salesWa.href = 'https://wa.me/' + D.developer.whatsapp + '?text=' +
+        encodeURIComponent(t('salesWhatsappText'));
+    }
+
+    const maps = mapsHref();
+    ['#footer-map', '#map-directions', '#map-preview', '#gbp-directions'].forEach((sel) => {
+      const node = $(sel);
+      if (!node) return;
+      node.href = maps;
+      if (maps !== '#') {
+        node.target = '_blank';
+        node.rel = 'noopener';
+      }
+    });
   }
 
   function renderStatus() {
@@ -524,22 +543,28 @@
 
     row.addEventListener('pointerdown', (event) => {
       if (event.pointerType === 'mouse' && event.button !== 0) return;
-      chipRowDrag = true;
       chipSnapArmed = false;
       chipSlideToken += 1;
       window.clearTimeout(chipSnapTimer);
-      if (event.pointerType !== 'mouse') return;
+      if (event.pointerType !== 'mouse') {
+        chipRowDrag = true;
+        return;
+      }
       dragPointer = event.pointerId;
       dragStartX = event.clientX;
       dragStartScroll = row.scrollLeft;
       dragMoved = false;
-      row.classList.add('is-dragging');
-      try { row.setPointerCapture(event.pointerId); } catch (err) {}
     });
     row.addEventListener('pointermove', (event) => {
       if (event.pointerId !== dragPointer) return;
       const dx = event.clientX - dragStartX;
-      if (Math.abs(dx) > 4) dragMoved = true;
+      if (!dragMoved) {
+        if (Math.abs(dx) <= 6) return;
+        dragMoved = true;
+        chipRowDrag = true;
+        row.classList.add('is-dragging');
+        try { row.setPointerCapture(event.pointerId); } catch (err) {}
+      }
       row.scrollLeft = dragStartScroll - dx;
     });
     row.addEventListener('click', (event) => {
@@ -568,8 +593,12 @@
         endMouseDrag();
         if (moved) {
           window.setTimeout(() => { dragMoved = false; }, 0);
+          queueSnap();
           return;
         }
+        dragMoved = false;
+        queueSnap();
+        return;
       }
       chipRowDrag = false;
       queueSnap();
@@ -577,6 +606,7 @@
     document.addEventListener('pointercancel', (event) => {
       if (event.pointerId === dragPointer) endMouseDrag();
       chipRowDrag = false;
+      dragMoved = false;
     });
 
     let pageLock = 0;
@@ -665,7 +695,7 @@
       openSocialsSheet();
       return;
     }
-    if (PAGES.indexOf(hash) >= 0) {
+    if (pagesList().indexOf(hash) >= 0) {
       if (hash === 'reservas' && !(navOpts && navOpts.quiet)) {
         reservasMode = reservasEntry === 'eventos' ? 'eventos' : 'mesa';
         reservasEntry = 'mesa';
@@ -729,9 +759,7 @@
       name.style.whiteSpace = 'pre-line';
       name.textContent = L(item.name).replace(' con jamón', '\ncon jamón');
       const price = priceNode(lang === 'en' ? item.priceEn : item.price);
-      const lowPrice = id === 'croquetas' || id === 'bravas';
-      price.classList.add(lowPrice ? 'mt-3' : 'mt-1', 'block');
-      if (lowPrice) price.classList.add('is-low');
+      price.classList.add(id === 'croquetas' || id === 'bravas' ? 'mt-3' : 'mt-1', 'block');
       body.append(name, price);
       link.appendChild(body);
       li.appendChild(link);
@@ -1078,8 +1106,19 @@
   }
 
   function renderEventos() {
+    const link = $('#nav-eventos');
+    const row = document.querySelector('.site-nav-links');
+    const page = document.querySelector('[data-page="eventos"]');
+    if (!eventosOn) {
+      if (link) link.hidden = true;
+      if (page) page.hidden = true;
+      if (row) row.classList.remove('has-eventos');
+      syncReservasMode();
+      return;
+    }
+    if (link) link.hidden = false;
+    if (row) row.classList.add('has-eventos');
     syncReservasMode();
-    if (!eventosOn) return;
     const ev = D.eventos;
     const eyebrow = $('#eventos-eyebrow');
     const title = $('#eventos-title');
@@ -1258,18 +1297,24 @@
         return;
       }
       if (feedback) feedback.hidden = true;
-      const lines = [
-        t('eventosWaIntro', { name: name, restaurant: D.business.name }),
-        '',
-        '*' + t('eventosWaType') + ':* ' + (type.id === 'otro' && other ? L(type.label) + ' - ' + other : L(type.label)),
-        '*' + t('eventosWaDate') + ':* ' + formatEventDate(ymd),
-        '*' + t('eventosWaGuests') + ':* ' + String(guests)
+      const typeLabel = type.id === 'otro' && other ? L(type.label) + ' - ' + other : L(type.label);
+      const intro = t('eventosWaIntro', { name: name, restaurant: D.business.name });
+      const rows = [
+        [t('eventosWaType'), typeLabel],
+        [t('eventosWaDate'), formatEventDate(ymd)],
+        [t('eventosWaGuests'), String(guests)]
       ];
-      if (notes) lines.push('*' + t('eventosWaNotes') + ':* ' + notes);
+      if (notes) rows.push([t('eventosWaNotes'), notes]);
+      const textoWhatsApp = intro + '\n\n' + rows.map((row) => '*' + row[0] + ':* ' + row[1]).join('\n') + '\n';
+      const htmlMsg = '<p>' + esc(intro) + '</p>' + rows.map((row) =>
+        '<p><strong class="font-semibold text-stone-900 dark:text-emerald-50">' + esc(row[0]) + ':</strong> ' + esc(row[1]) + '</p>'
+      ).join('');
       const phone = D.eventos.whatsapp || D.business.whatsapp;
-      window.location.href = whatsappSendUrl(phone, lines.join('\n'));
+      window.__visiwebBookingPreview = { html: htmlMsg, textoWhatsApp: textoWhatsApp, phone: phone };
+      document.dispatchEvent(new CustomEvent('open-reserve-options'));
     });
   }
+
 
   function renderLocal() {
     const stats = $('#local-stats');
@@ -1388,9 +1433,15 @@
     }
 
     const directions = $('#gbp-directions');
-    if (directions) directions.href = '#';
+    if (directions) {
+      directions.href = mapsHref();
+      if (directions.href !== '#') {
+        directions.target = '_blank';
+        directions.rel = 'noopener';
+      }
+    }
     const call = $('#gbp-call');
-    if (call) call.href = '#';
+    if (call) call.href = phoneHref();
 
     attrs.textContent = '';
     D.gbp.attributes.forEach((attr) => {
@@ -1586,10 +1637,11 @@
 
     list.textContent = '';
 
-    const address = el('button', 'mt-0.5 block text-left leading-relaxed text-[#1a73e8] dark:text-[#8ab4f8]');
-    address.type = 'button';
+    const address = el('a', 'mt-0.5 block text-left leading-relaxed text-[#1a73e8] dark:text-[#8ab4f8]');
+    address.href = mapsHref();
+    address.target = '_blank';
+    address.rel = 'noopener';
     address.textContent = addressText();
-    address.addEventListener('click', () => showDemoNote('demoRouteNote'));
     row(ICONS.pin, t('gbpInfoAddress'), address);
 
     const hours = el('div', 'mt-1 text-stone-700 dark:text-stone-300');
@@ -1611,10 +1663,9 @@
     });
     row(ICONS.clock, t('gbpInfoHours'), hours);
 
-    const phone = el('button', 'mt-0.5 block text-left text-[#1a73e8] dark:text-[#8ab4f8]');
-    phone.type = 'button';
+    const phone = el('a', 'mt-0.5 block text-left text-[#1a73e8] dark:text-[#8ab4f8]');
+    phone.href = phoneHref();
     phone.textContent = D.business.phoneDisplay;
-    phone.addEventListener('click', () => showDemoNote('demoCallNote'));
     row(ICONS.phone, t('gbpInfoPhone'), phone);
 
     const web = el('a', 'mt-0.5 block break-all text-[#1a73e8] no-underline dark:text-[#8ab4f8]');
@@ -1692,8 +1743,16 @@
     }
     const clear = $('#clear-allergen-filters');
     if (clear) clear.hidden = allergenFilters.size === 0;
+  }
+
+  function syncAllergenChip() {
     const toggle = $('#open-filter-btn');
-    if (toggle) toggle.classList.toggle('is-on', allergenFilters.size > 0);
+    if (!toggle) return;
+    const n = allergenFilters.size;
+    toggle.classList.toggle('is-active', n > 0);
+    toggle.setAttribute('aria-pressed', n > 0 ? 'true' : 'false');
+    const badge = toggle.querySelector('.allergen-count');
+    if (badge) badge.remove();
   }
 
   function applyAllergenFilter() {
@@ -1720,8 +1779,7 @@
     }
     const clear = $('#clear-allergen-filters');
     if (clear) clear.hidden = allergenFilters.size === 0;
-    const toggle = $('#open-filter-btn');
-    if (toggle) toggle.classList.toggle('is-on', allergenFilters.size > 0);
+    syncAllergenChip();
   }
 
   function placeAllergenPanel() {
@@ -1993,7 +2051,7 @@
     starRow.setAttribute('role', 'img');
     starRow.setAttribute('aria-label', t('ratingOf', { rating: D.reviews.score }));
     const summary = el('span', 'text-sm font-normal text-stone-500');
-    summary.textContent = '· ' + D.reviews.count + (lang === 'en' ? ' reviews' : ' opiniones');
+    summary.textContent = t('reviewsScore', { count: D.reviews.count });
     scoreEl.append(scoreText, starRow, summary);
 
     const list = $('#reviews-list');
@@ -2434,6 +2492,10 @@
       const locale = lang === 'es' && window.flatpickr && flatpickr.l10ns && flatpickr.l10ns.es ? 'es' : 'default';
       bookDatePicker.set('locale', locale);
     }
+    if (eventDatePicker) {
+      const locale = lang === 'es' && window.flatpickr && flatpickr.l10ns && flatpickr.l10ns.es ? 'es' : 'default';
+      eventDatePicker.set('locale', locale);
+    }
   }
 
   function closeAllBookSelects() {
@@ -2459,12 +2521,14 @@
 
     const selected = select.options[select.selectedIndex];
     valueEl.textContent = selected ? selected.textContent : '';
-    trigger.classList.toggle('is-placeholder', select.id === 'eventos-book-type' && !select.value);
     trigger.disabled = !!select.disabled;
+    if (select.id === 'eventos-book-type') {
+      trigger.classList.toggle('is-placeholder', !select.value);
+    }
 
     menu.textContent = '';
     Array.prototype.slice.call(select.options).forEach((opt) => {
-      if (!opt.value && (select.id === 'book-time' || select.id === 'eventos-book-type')) return;
+      if (!opt.value && select.id === 'book-time') return;
       const li = el('li', 'book-select-option');
       li.setAttribute('role', 'option');
       li.dataset.value = opt.value;
@@ -2490,7 +2554,6 @@
         setTimePickerOpen(false);
         setGuestsPickerOpen(false);
         if (bookDatePicker && bookDatePicker.isOpen) bookDatePicker.close();
-        if (eventDatePicker && eventDatePicker.isOpen) eventDatePicker.close();
         if (open) return;
         wrap.classList.add('is-open');
         trigger.setAttribute('aria-expanded', 'true');
@@ -2512,10 +2575,10 @@
       if (!target.closest('#time-picker') && !target.closest('#hora-reserva')) setTimePickerOpen(false);
       if (!target.closest('#guests-picker') && !target.closest('#comensales-reserva')) setGuestsPickerOpen(false);
       if (!target.closest('.book-select')) closeAllBookSelects();
-      if (bookDatePicker && bookDatePicker.isOpen && !target.closest('.flatpickr-calendar') && !target.closest('#fecha-reserva')) {
+      if (bookDatePicker && bookDatePicker.isOpen && !target.closest('.flatpickr-calendar') && !target.closest('#fecha-reserva') && !target.closest('.book-date-wrap') && !target.closest('#eventos-fecha')) {
         bookDatePicker.close();
       }
-      if (eventDatePicker && eventDatePicker.isOpen && !target.closest('.flatpickr-calendar') && !target.closest('#eventos-fecha')) {
+      if (eventDatePicker && eventDatePicker.isOpen && !target.closest('.flatpickr-calendar') && !target.closest('#eventos-fecha') && !target.closest('.book-date-wrap')) {
         eventDatePicker.close();
       }
     });
@@ -2648,6 +2711,7 @@
       }
     });
   }
+
 
   function initBooking() {
     const form = $('#booking-form');
@@ -3094,7 +3158,32 @@
     }, 200);
   }
 
+
+  function syncEventosFromDesign() {
+    if (!D.eventos) {
+      eventosOn = false;
+      return;
+    }
+    const design = D.design || window.VISIWEB_DESIGN;
+    if (design && design.labels && typeof design.labels.vw_events === 'string') {
+      D.eventos.activo = design.labels.vw_events === '1';
+    }
+    if (design && design.eventos && typeof design.eventos === 'object') {
+      const src = design.eventos;
+      if (src.tipoVideo === 'salon' || src.tipoVideo === 'terraza' || src.tipoVideo === 'ninguno') {
+        D.eventos.tipoVideo = src.tipoVideo;
+      }
+      ['eyebrow', 'title', 'subtitle', 'lead', 'cta', 'readyTitle', 'readyCta'].forEach((key) => {
+        if (typeof src[key] === 'string' && src[key].trim()) {
+          D.eventos[key] = { es: src[key], en: src[key] };
+        }
+      });
+    }
+    eventosOn = !!D.eventos.activo;
+  }
+
   function renderAll() {
+    syncEventosFromDesign();
     applyI18n();
     renderAlternates();
     renderHero();
@@ -3215,6 +3304,37 @@
       event.preventDefault();
       closeSocialsSheet();
     });
+
+    document.querySelectorAll('[data-social]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const key = btn.getAttribute('data-social');
+        const href = socialHref(key);
+        if (!href) return;
+        window.open(href, '_blank', 'noopener');
+      });
+    });
+  }
+
+  function initSalesBar() {
+    const copy = $('#sales-copy');
+    const bar = document.getElementById('sales-bar');
+    if (!copy || !bar) return;
+    const mobile = () => window.matchMedia('(max-width: 767px), (pointer: coarse), (hover: none)').matches;
+    function setOpen(open) {
+      bar.classList.toggle('is-open', open);
+      copy.setAttribute('aria-expanded', open ? 'true' : 'false');
+      syncStickyOffset();
+    }
+    copy.addEventListener('click', (event) => {
+      if (!mobile()) return;
+      event.stopPropagation();
+      setOpen(!bar.classList.contains('is-open'));
+    });
+    document.addEventListener('click', (event) => {
+      if (!mobile() || !bar.classList.contains('is-open')) return;
+      if (event.target.closest('#sales-copy')) return;
+      setOpen(false);
+    });
   }
 
   function syncStickyOffset() {
@@ -3261,11 +3381,11 @@
       const deltaY = touch.clientY - startY;
       if (Math.abs(deltaX) <= Math.abs(deltaY) * 1.5 || Math.abs(deltaX) <= MIN) return;
       const visible = document.querySelector('[data-page]:not([hidden])');
-      const index = PAGES.indexOf(visible ? visible.dataset.page : 'inicio');
+      const index = pagesList().indexOf(visible ? visible.dataset.page : 'inicio');
       if (index < 0) return;
       const next = deltaX < 0 ? index + 1 : index - 1;
-      if (next < 0 || next >= PAGES.length) return;
-      const id = PAGES[next];
+      if (next < 0 || next >= pagesList().length) return;
+      const id = pagesList()[next];
       hashNavOpts = { smooth: true };
       if (window.location.hash === '#' + id) applyHash();
       else window.location.hash = id;
@@ -3275,9 +3395,8 @@
   }
 
   /* --------------------------------- Arranque ------------------------------ */
-  initEventos();
   initSocials();
-  bindDemoActions();
+  initSalesBar();
   syncStickyOffset();
   window.addEventListener('resize', syncStickyOffset);
   window.addEventListener('resize', placeAllergenChip);
@@ -3304,9 +3423,7 @@
   window.cambiarPestanaGoogle = cambiarPestanaGoogle;
     initAllergenFilters();
   initBooking();
-  if (!window.location.hash || window.location.hash === '#') {
-    history.replaceState(null, '', window.location.pathname + window.location.search + '#inicio');
-  }
+  initEventos();
   applyHash({ quiet: true });
   initAllergenDialog();
 
@@ -3317,7 +3434,7 @@
   if (backHome) {
     backHome.addEventListener('click', (event) => {
       event.preventDefault();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (window.scrollY > 0) window.scrollTo({ top: 0, behavior: 'smooth' });
     });
   }
 
@@ -3356,7 +3473,7 @@
     PAGES = eventosOn
       ? ['inicio', 'carta', 'local', 'eventos', 'reservas']
       : ['inicio', 'carta', 'local', 'reservas'];
-    var link = $('#nav-eventos');
+    var link = document.getElementById('nav-eventos');
     var row = document.querySelector('.site-nav-links');
     var page = document.querySelector('[data-page="eventos"]');
     if (!eventosOn) {
@@ -3471,10 +3588,12 @@
       var title = name + (tagline ? ' · ' + tagline : '');
       strings.metaTitle = title;
       strings.metaDescription = row.description || tagline || name || strings.metaDescription;
-      strings.heroTitle = tagline || name || strings.heroTitle;
-      strings.heroSubtitle = row.description || tagline || strings.heroSubtitle;
-      strings.heroEyebrow = address || strings.heroEyebrow;
-      strings.heroKicker = tagline || name || strings.heroKicker;
+      if (row.i18n && row.i18n[lng] && typeof row.i18n[lng] === 'object') {
+        var custom = row.i18n[lng];
+        ['heroEyebrow', 'heroTitle', 'heroSubtitle', 'heroKicker'].forEach(function (key) {
+          if (typeof custom[key] === 'string' && custom[key].trim()) strings[key] = custom[key].trim();
+        });
+      }
     });
     if (document.title !== undefined) document.title = name + (tagline ? ' · ' + tagline : '');
     if (D.eventos) {
@@ -3519,3 +3638,4 @@
     window.parent.postMessage({ type: 'visiweb-ready', page: 'web' }, location.origin);
   }
 })();
+

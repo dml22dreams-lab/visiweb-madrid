@@ -41,6 +41,7 @@
   var ADMIN_EMAIL = 'diego@visiwebmadrid.com';
   var LS_ACTIVE = 'vw_panel_active_v1';
   var LS_PROJECTS = 'vw_panel_projects_v1';
+  var LS_PREVIEW = 'vw_preview_payload_v1';
 
   var state = {
     ready: false,
@@ -337,6 +338,8 @@
       daily_menu: window.VisiwebDesign.mergeDaily(demo && demo.dailyMenu),
       viewport: 'mobile',
       chat: null,
+      chats: null,
+      activeChatId: null,
       fromPreview: true,
       previewDirty: false,
       studioMode: 'chat',
@@ -404,6 +407,8 @@
         daily_menu: editor.daily_menu,
         viewport: editor.viewport || 'mobile',
         chat: editor.chat || null,
+        chats: editor.chats || null,
+        activeChatId: editor.activeChatId || null,
         fromPreview: !!editor.fromPreview,
         previewDirty: !!editor.previewDirty,
         studioMode: editor.studioMode || 'chat',
@@ -470,6 +475,8 @@
     var payload = restaurantPayloadFromEditor(editor);
     payload._meta = {
       chat: editor.chat || null,
+      chats: editor.chats || null,
+      activeChatId: editor.activeChatId || null,
       viewport: editor.viewport || 'mobile',
       slug: editor.slug || '',
       studioMode: 'chat',
@@ -494,6 +501,8 @@
     editor.plan_tier = meta.plan_tier || data.plan_tier || editor.plan_tier;
     editor.viewport = meta.viewport || 'mobile';
     editor.chat = meta.chat || null;
+    editor.chats = meta.chats || null;
+    editor.activeChatId = meta.activeChatId || null;
     editor.fromPreview = false;
     editor.previewDirty = true;
     editor.studioMode = 'chat';
@@ -665,6 +674,20 @@
     };
   }
 
+  function writePreviewPayload(payload) {
+    try {
+      window.localStorage.setItem(LS_PREVIEW, JSON.stringify(payload || {}));
+    } catch (error) {}
+  }
+
+  function openFullscreenPreview() {
+    if (!state.editor) return;
+    var payload = restaurantPayloadFromEditor(state.editor);
+    writePreviewPayload(payload);
+    persistActiveLocal();
+    window.open('./preview/index.html?preview=1#inicio', '_blank', 'noopener');
+  }
+
   function pushCollabPreview(force) {
     var frame = document.getElementById('collab-preview');
     var editor = state.editor;
@@ -672,6 +695,7 @@
     // Primer pintado: la iframe ya carga ./preview/data.js; no la pisamos hasta el primer cambio del chat.
     if (!force && editor.fromPreview && !editor.previewDirty) return;
     var payload = restaurantPayloadFromEditor(editor);
+    writePreviewPayload(payload);
     frame.contentWindow.postMessage({
       type: 'RESTAURANT_DATA',
       payload: payload,
@@ -679,14 +703,147 @@
     }, location.origin);
   }
 
-  function ensureCollabChat(editor) {
-    if (!editor.chat) {
-      editor.chat = [{
-        role: 'system',
-        text: 'Entorno cerrado. Escribe cambios del bar (nombre, color, teléfono, horario, carta, eventos). La vista previa se actualiza al instante. No se descarga código: solo puedes enviar la propuesta al administrador.'
-      }];
+  var CHAT_WELCOME =
+    'Entorno cerrado. Escribe cambios del bar (nombre, color, teléfono, horario, carta, eventos). La vista previa se actualiza al instante. No se descarga código: solo puedes enviar la propuesta al administrador.';
+  var MAX_CHAT_TABS = 3;
+
+  function welcomeChatMessages() {
+    return [{ role: 'system', text: CHAT_WELCOME }];
+  }
+
+  function chatIconSvg(size) {
+    var s = size || 18;
+    return '<svg xmlns="http://www.w3.org/2000/svg" width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M5 3h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H9l-5 4v-4H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/></svg>';
+  }
+
+  function newChatId() {
+    return 'c' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+  }
+
+  function chatTabTitle(chat, index) {
+    var userMsg = (chat.messages || []).filter(function (m) { return m.role === 'user'; })[0];
+    if (userMsg && userMsg.text) {
+      var t = String(userMsg.text).trim().replace(/\s+/g, ' ');
+      if (t.length > 22) t = t.slice(0, 22) + '…';
+      return t;
     }
+    return 'Chat ' + ((index == null ? 0 : index) + 1);
+  }
+
+  function syncActiveChatRef(editor) {
+    var active = getActiveChat(editor);
+    editor.chat = active ? active.messages : [];
+    return active;
+  }
+
+  function getActiveChat(editor) {
+    if (!editor || !Array.isArray(editor.chats) || !editor.chats.length) return null;
+    var found = null;
+    editor.chats.forEach(function (c) {
+      if (c.id === editor.activeChatId) found = c;
+    });
+    if (!found) {
+      found = editor.chats[0];
+      editor.activeChatId = found.id;
+    }
+    return found;
+  }
+
+  function createChatTab(editor) {
+    if (!editor) return null;
+    if (!Array.isArray(editor.chats)) editor.chats = [];
+    if (editor.chats.length >= MAX_CHAT_TABS) return null;
+    var tab = {
+      id: newChatId(),
+      title: 'Chat ' + (editor.chats.length + 1),
+      messages: welcomeChatMessages()
+    };
+    editor.chats.push(tab);
+    editor.activeChatId = tab.id;
+    syncActiveChatRef(editor);
+    return tab;
+  }
+
+  function closeChatTab(editor, id) {
+    if (!editor || !Array.isArray(editor.chats)) return;
+    var idx = -1;
+    editor.chats.forEach(function (c, i) { if (c.id === id) idx = i; });
+    if (idx < 0) return;
+    editor.chats.splice(idx, 1);
+    if (!editor.chats.length) {
+      editor.activeChatId = null;
+      editor.chat = [];
+      return;
+    }
+    if (editor.activeChatId === id) {
+      var next = editor.chats[Math.min(idx, editor.chats.length - 1)];
+      editor.activeChatId = next.id;
+    }
+    syncActiveChatRef(editor);
+  }
+
+  function ensureCollabChat(editor) {
     if (!editor.viewport) editor.viewport = 'mobile';
+    if (!Array.isArray(editor.chats)) {
+      var legacy = Array.isArray(editor.chat) && editor.chat.length ? editor.chat : welcomeChatMessages();
+      var id = newChatId();
+      editor.chats = [{ id: id, title: 'Chat 1', messages: legacy }];
+      editor.activeChatId = id;
+    }
+    if (editor.chats.length > MAX_CHAT_TABS) editor.chats = editor.chats.slice(0, MAX_CHAT_TABS);
+    editor.chats.forEach(function (tab, i) {
+      if (!tab.id) tab.id = newChatId();
+      if (!Array.isArray(tab.messages)) tab.messages = welcomeChatMessages();
+      tab.title = chatTabTitle(tab, i);
+    });
+    syncActiveChatRef(editor);
+  }
+
+  function renderChatTabsHtml(editor) {
+    var tabs = (editor && editor.chats) || [];
+    if (!tabs.length) return '';
+    var items = tabs.map(function (tab, i) {
+      var active = tab.id === editor.activeChatId;
+      return (
+        '<div role="tab" data-chat-tab="' + esc(tab.id) + '" class="group flex max-w-[148px] shrink-0 cursor-pointer items-center gap-1.5 border-r border-stone-200 px-2.5 text-[12px] ' +
+          (active ? 'bg-white text-stone-900' : 'bg-stone-100 text-stone-500 hover:bg-stone-50 hover:text-stone-700') + '">' +
+          '<span class="shrink-0 opacity-70">' + chatIconSvg(13) + '</span>' +
+          '<span class="min-w-0 flex-1 truncate font-medium">' + esc(chatTabTitle(tab, i)) + '</span>' +
+          '<button type="button" data-close-chat="' + esc(tab.id) + '" aria-label="Cerrar chat" class="grid h-5 w-5 shrink-0 place-items-center rounded text-stone-400 hover:bg-stone-200 hover:text-stone-800">×</button>' +
+        '</div>'
+      );
+    }).join('');
+    var addBtn = tabs.length < MAX_CHAT_TABS
+      ? '<button type="button" id="chat-tab-add" aria-label="Nuevo chat" class="grid h-9 w-9 shrink-0 place-items-center text-stone-500 hover:bg-stone-50 hover:text-stone-800">+</button>'
+      : '';
+    return (
+      '<div id="collab-chat-tabs" class="flex h-9 shrink-0 items-stretch border-b border-stone-200 bg-stone-100">' +
+        '<div class="flex min-w-0 flex-1 items-stretch overflow-x-auto">' + items + '</div>' +
+        addBtn +
+      '</div>'
+    );
+  }
+
+  function syncChatPanelLayout(editor) {
+    var panel = document.getElementById('collab-chat-panel');
+    var open = !!(editor && Array.isArray(editor.chats) && editor.chats.length);
+    if (!panel) return;
+    if (open) {
+      panel.classList.remove('hidden');
+      panel.style.width = '';
+      panel.style.maxWidth = '';
+      panel.style.borderLeftWidth = '';
+    } else {
+      panel.classList.add('hidden');
+      panel.style.width = '0';
+      panel.style.maxWidth = '0';
+      panel.style.borderLeftWidth = '0';
+    }
+    var toggle = document.getElementById('toggle-chat-panel');
+    if (toggle) {
+      toggle.className = 'absolute right-3 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-md border border-stone-200 text-stone-800 hover:bg-stone-50 ' +
+        (open ? 'bg-stone-100' : 'bg-white');
+    }
   }
 
   function deepMerge(target, source) {
@@ -859,15 +1016,40 @@
     var editor = state.editor;
     if (!editor) return;
     ensureCollabChat(editor);
+    var active = syncActiveChatRef(editor);
+    var tabsWrap = document.getElementById('collab-chat-tabs');
+    var panel = document.getElementById('collab-chat-panel');
+    if (panel) {
+      var tabsHtml = renderChatTabsHtml(editor);
+      if (tabsWrap) {
+        tabsWrap.outerHTML = tabsHtml || '<div id="collab-chat-tabs" class="hidden"></div>';
+      } else if (tabsHtml) {
+        panel.insertAdjacentHTML('afterbegin', tabsHtml);
+      }
+    }
     var list = document.getElementById('collab-chat-list');
     if (list) {
-      list.innerHTML = editor.chat.map(chatBubble).join('');
+      var messages = active ? active.messages : [];
+      list.innerHTML = messages.map(chatBubble).join('');
       list.scrollTop = list.scrollHeight;
+    }
+    syncChatPanelLayout(editor);
+    var desktop = editor.viewport === 'desktop';
+    var stage = document.getElementById('collab-preview-stage');
+    if (stage) {
+      stage.className = desktop
+        ? 'flex min-h-0 flex-1 bg-white p-0'
+        : 'flex min-h-0 flex-1 justify-center overflow-auto bg-stone-100 p-4';
     }
     var frame = document.getElementById('collab-preview');
     if (frame) {
-      frame.style.width = editor.viewport === 'desktop' ? '100%' : '390px';
-      frame.style.maxWidth = editor.viewport === 'desktop' ? '100%' : '390px';
+      frame.className = desktop
+        ? 'h-full w-full border-0 bg-white'
+        : 'h-full border border-stone-200 bg-white shadow-sm';
+      frame.style.width = desktop ? '100%' : '390px';
+      frame.style.maxWidth = desktop ? '100%' : '390px';
+      frame.style.height = '100%';
+      frame.style.borderRadius = desktop ? '0' : '';
     }
     document.querySelectorAll('[data-collab-viewport]').forEach(function (node) {
       node.className = 'h-7 rounded px-2 text-xs font-medium ' + (node.dataset.collabViewport === editor.viewport ? 'bg-white text-stone-900 shadow-sm' : 'text-stone-500');
@@ -891,29 +1073,35 @@
       pushCollabPreview();
       return;
     }
+    var open = Array.isArray(editor.chats) && editor.chats.length > 0;
+    var active = syncActiveChatRef(editor);
+    var messages = active ? active.messages : [];
     app.innerHTML =
       '<div id="collab-studio" class="fixed inset-0 z-50 flex flex-col bg-stone-100">' +
         '<header class="flex h-12 shrink-0 items-center gap-2 border-b border-stone-200 bg-white px-3">' +
-          '<button type="button" id="close-editor" class="h-8 rounded-md px-2 text-xs font-medium text-stone-500">← Panel</button>' +
+          '<button type="button" id="close-editor" class="h-10 rounded-md px-2 text-base font-semibold text-black">← Panel</button>' +
           '<p id="collab-title" class="truncate text-sm font-semibold text-stone-900">' + esc(editor.name || 'Nuevo restaurante') + '</p>' +
           '<span class="rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-semibold text-amber-900">Colaborador · sin descarga</span>' +
         '</header>' +
         '<div id="collab-banner" class="shrink-0 px-3 pt-2">' + banner() + '</div>' +
         '<div class="flex min-h-0 flex-1">' +
           '<section class="flex min-w-0 flex-1 flex-col">' +
-            '<div class="flex shrink-0 items-center justify-center gap-2 border-b border-stone-200 bg-white px-3 py-2">' +
+            '<div class="relative flex shrink-0 items-center justify-center gap-2 border-b border-stone-200 bg-white px-3 py-2 pr-14">' +
               '<span class="text-xs font-medium text-stone-500">Vista</span>' +
               '<div class="flex h-8 items-center rounded-md bg-stone-100 p-0.5">' +
                 '<button type="button" data-collab-viewport="mobile" class="h-7 rounded px-2 text-xs font-medium">Móvil · 390px</button>' +
                 '<button type="button" data-collab-viewport="desktop" class="h-7 rounded px-2 text-xs font-medium">Escritorio · 100%</button>' +
               '</div>' +
+              '<button type="button" id="ampliar-preview" class="h-8 rounded-md border border-stone-200 bg-white px-3 text-xs font-semibold text-stone-800">Ampliar</button>' +
+              '<button type="button" id="toggle-chat-panel" aria-label="Abrir chat" class="absolute right-3 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-md border border-stone-200 text-stone-800 hover:bg-stone-50 ' + (open ? 'bg-stone-100' : 'bg-white') + '">' + chatIconSvg(16) + '</button>' +
             '</div>' +
-            '<div class="flex min-h-0 flex-1 justify-center overflow-auto bg-stone-100 p-4">' +
-              '<iframe id="collab-preview" title="Vista previa" src="./preview/index.html#inicio" class="h-full border border-stone-200 bg-white shadow-sm" style="width:' + (editor.viewport === 'desktop' ? '100%' : '390px') + ';max-width:' + (editor.viewport === 'desktop' ? '100%' : '390px') + '"></iframe>' +
+            '<div id="collab-preview-stage" class="' + (editor.viewport === 'desktop' ? 'flex min-h-0 flex-1 bg-white p-0' : 'flex min-h-0 flex-1 justify-center overflow-auto bg-stone-100 p-4') + '">' +
+              '<iframe id="collab-preview" title="Vista previa" src="./preview/index.html#inicio" class="' + (editor.viewport === 'desktop' ? 'h-full w-full border-0 bg-white' : 'h-full border border-stone-200 bg-white shadow-sm') + '" style="width:' + (editor.viewport === 'desktop' ? '100%' : '390px') + ';max-width:' + (editor.viewport === 'desktop' ? '100%' : '390px') + ';height:100%"></iframe>' +
             '</div>' +
           '</section>' +
-          '<section class="flex w-full max-w-md shrink-0 flex-col border-l border-stone-200 bg-white">' +
-            '<div id="collab-chat-list" class="min-h-0 flex-1 space-y-2 overflow-auto p-3">' + editor.chat.map(chatBubble).join('') + '</div>' +
+          '<section id="collab-chat-panel" class="flex w-full max-w-md shrink-0 flex-col border-l border-stone-200 bg-white' + (open ? '' : ' hidden') + '"' + (open ? '' : ' style="width:0;max-width:0;border-left-width:0"') + '>' +
+            renderChatTabsHtml(editor) +
+            '<div id="collab-chat-list" class="min-h-0 flex-1 space-y-2 overflow-auto p-3">' + messages.map(chatBubble).join('') + '</div>' +
             '<form id="collab-chat-form" class="shrink-0 border-t border-stone-200 p-3">' +
               '<label class="sr-only" for="collab-chat-input">Mensaje</label>' +
               '<textarea id="collab-chat-input" rows="3" class="w-full resize-none rounded-2xl border border-stone-200 px-3 py-2 text-sm outline-none focus:border-stone-400" placeholder="Escribe un cambio y pulsa Enter · Shift+Enter para salto de línea"></textarea>' +
@@ -965,7 +1153,11 @@
       persistActiveLocal();
       state.busy = false;
       ensureCollabChat(state.editor);
-      state.editor.chat.push({ role: 'system', text: 'Propuesta enviada al administrador. Queda pendiente de revisión.' });
+      var activeSend = syncActiveChatRef(state.editor);
+      if (activeSend) {
+        activeSend.messages.push({ role: 'system', text: 'Propuesta enviada al administrador. Queda pendiente de revisión.' });
+        activeSend.title = chatTabTitle(activeSend, state.editor.chats.indexOf(activeSend));
+      }
       setNotice('Propuesta enviada al administrador.');
       updateCollabChrome();
     } catch (error) {
@@ -1316,8 +1508,7 @@
       return;
     }
     if (isAdmin() && state.adminTab === 'proposals') {
-      renderAdminProposals();
-      return;
+      state.adminTab = 'people';
     }
     if (state.editor) {
       if (state.editor.studioMode === 'chat' || !isAdmin()) {
@@ -1462,14 +1653,18 @@
 
   function adminPersonCard(person) {
     var open = state.expandedPersonId === person.id;
-    var label = person.full_name || person.email || 'Colaborador';
+    var mine =
+      person.id === userId() ||
+      String(person.email || '').toLowerCase() === currentEmail();
+    var label = mine ? 'Tus proyectos' : (person.full_name || person.email || 'Colaborador');
+    var subtitle = mine ? 'Tú' : (person.email || '');
     var count = (person.projects || []).length;
     return (
       '<article class="rounded-3xl bg-white shadow-sm ring-1 ring-stone-200">' +
         '<button type="button" data-expand-person="' + esc(person.id) + '" class="flex w-full items-center justify-between gap-3 px-5 py-4 text-left">' +
           '<span class="min-w-0">' +
             '<span class="block truncate font-serif text-xl text-stone-900">' + esc(label) + '</span>' +
-            '<span class="mt-0.5 block truncate text-sm text-stone-500">' + esc(person.email || '') + '</span>' +
+            (subtitle ? '<span class="mt-0.5 block truncate text-sm text-stone-500">' + esc(subtitle) + '</span>' : '') +
           '</span>' +
           '<span class="shrink-0 rounded-full bg-stone-100 px-3 py-1 text-xs font-semibold text-stone-700">' + count + ' proyecto' + (count === 1 ? '' : 's') + '</span>' +
         '</button>' +
@@ -1523,8 +1718,8 @@
 
   function renderHome() {
     var admin = isAdmin();
-    var pending = state.proposals.filter(function (row) { return row.estado === 'pendiente'; }).length;
     var homeBody = '';
+    if (admin && state.adminTab === 'proposals') state.adminTab = 'people';
     if (admin && state.adminTab === 'people') {
       homeBody =
         '<div class="mt-8 flex items-center justify-between gap-3">' +
@@ -1574,7 +1769,6 @@
           ? '<div class="mt-6 flex gap-2 rounded-full bg-stone-100 p-1 text-sm font-semibold">' +
               '<button type="button" data-admin-tab="people" class="flex-1 rounded-full px-3 py-2 ' + (state.adminTab === 'people' ? 'bg-white text-stone-900 shadow-sm' : 'text-stone-500') + '">Personas</button>' +
               '<button type="button" data-admin-tab="restaurants" class="flex-1 rounded-full px-3 py-2 ' + (state.adminTab === 'restaurants' ? 'bg-white text-stone-900 shadow-sm' : 'text-stone-500') + '">Restaurantes</button>' +
-              '<button type="button" data-admin-tab="proposals" class="flex-1 rounded-full px-3 py-2 ' + (state.adminTab === 'proposals' ? 'bg-white text-stone-900 shadow-sm' : 'text-stone-500') + '">Propuestas' + (pending ? ' · ' + pending : '') + '</button>' +
             '</div>'
           : '') +
         '<div class="mt-6 space-y-4">' + banner() + '</div>' +
@@ -2328,6 +2522,8 @@
         editor.daily_menu = window.VisiwebDesign.mergeDaily(restaurant.daily_menu);
         editor.viewport = 'mobile';
         editor.chat = null;
+        editor.chats = null;
+        editor.activeChatId = null;
         editor.fromPreview = false;
         editor.previewDirty = true;
         editor.studioMode = isAdmin() ? 'canva' : 'chat';
@@ -2447,9 +2643,16 @@
       var value = input ? input.value : '';
       if (!state.editor) return;
       ensureCollabChat(state.editor);
+      if (!Array.isArray(state.editor.chats) || !state.editor.chats.length) {
+        createChatTab(state.editor);
+      }
+      var targetTab = syncActiveChatRef(state.editor);
+      if (!targetTab) return;
       if (!String(value || '').trim()) return;
       var mensaje = value.trim();
-      state.editor.chat.push({ role: 'user', text: mensaje });
+      var messages = targetTab.messages;
+      messages.push({ role: 'user', text: mensaje });
+      targetTab.title = chatTabTitle(targetTab, state.editor.chats.indexOf(targetTab));
       if (input) input.value = '';
       state.editor.previewDirty = true;
       state.notice = '';
@@ -2462,7 +2665,7 @@
       var editarWebUrl = isLocal
         ? 'https://visiwebmadrid.com/api/editar-web'
         : '/api/editar-web';
-      state.editor.chat.push({ role: 'system', text: 'Aplicando cambios...', pending: true });
+      messages.push({ role: 'system', text: 'Aplicando cambios...', pending: true });
       updateCollabChrome();
       fetch(editarWebUrl, {
         method: 'POST',
@@ -2485,9 +2688,8 @@
         }
         var merged = deepMerge(jsonActual, data.cambios);
         applyRestaurantUpdate(merged);
-        var chat = state.editor.chat;
-        if (chat.length && chat[chat.length - 1].pending) chat.pop();
-        state.editor.chat.push({
+        if (messages.length && messages[messages.length - 1].pending) messages.pop();
+        messages.push({
           role: 'system',
           text: data.respuestaBreve || 'Cambios aplicados en la vista previa.'
         });
@@ -2495,9 +2697,8 @@
         updateCollabChrome();
         pushCollabPreview(true);
       }).catch(function (err) {
-        var chat = state.editor.chat;
-        if (chat.length && chat[chat.length - 1].pending) chat.pop();
-        state.editor.chat.push({
+        if (messages.length && messages[messages.length - 1].pending) messages.pop();
+        messages.push({
           role: 'system',
           text: (err && err.message) || 'Error al conectar con /api/editar-web'
         });
@@ -2682,6 +2883,23 @@
       });
       return;
     }
+    var closeChatBtn = event.target.closest('[data-close-chat]');
+    if (closeChatBtn && state.editor) {
+      event.preventDefault();
+      event.stopPropagation();
+      closeChatTab(state.editor, closeChatBtn.getAttribute('data-close-chat'));
+      updateCollabChrome();
+      persistActiveLocal();
+      return;
+    }
+    var chatTabEl = event.target.closest('[data-chat-tab]');
+    if (chatTabEl && state.editor && !event.target.closest('[data-close-chat]')) {
+      state.editor.activeChatId = chatTabEl.getAttribute('data-chat-tab');
+      syncActiveChatRef(state.editor);
+      updateCollabChrome();
+      persistActiveLocal();
+      return;
+    }
     if (!button || button.dataset.canva) return;
     if (button.dataset.adminTab && isAdmin()) {
       state.adminTab = button.dataset.adminTab;
@@ -2804,6 +3022,32 @@
       state.editor = null;
       clearActiveLocal();
       refresh();
+      return;
+    }
+    if (button.id === 'ampliar-preview') {
+      openFullscreenPreview();
+      return;
+    }
+    if (button.id === 'toggle-chat-panel' && state.editor) {
+      if (!Array.isArray(state.editor.chats)) state.editor.chats = [];
+      if (!state.editor.chats.length || state.editor.chats.length < MAX_CHAT_TABS) {
+        createChatTab(state.editor);
+        updateCollabChrome();
+        persistActiveLocal();
+        var focusInput = document.getElementById('collab-chat-input');
+        if (focusInput) focusInput.focus();
+      }
+      return;
+    }
+    if (button.id === 'chat-tab-add' && state.editor) {
+      if (!Array.isArray(state.editor.chats)) state.editor.chats = [];
+      if (state.editor.chats.length < MAX_CHAT_TABS) {
+        createChatTab(state.editor);
+        updateCollabChrome();
+        persistActiveLocal();
+        var addInput = document.getElementById('collab-chat-input');
+        if (addInput) addInput.focus();
+      }
       return;
     }
     if (button.dataset.collabViewport && state.editor) {

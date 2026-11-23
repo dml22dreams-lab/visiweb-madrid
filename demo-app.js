@@ -532,22 +532,28 @@
 
     row.addEventListener('pointerdown', (event) => {
       if (event.pointerType === 'mouse' && event.button !== 0) return;
-      chipRowDrag = true;
       chipSnapArmed = false;
       chipSlideToken += 1;
       window.clearTimeout(chipSnapTimer);
-      if (event.pointerType !== 'mouse') return;
+      if (event.pointerType !== 'mouse') {
+        chipRowDrag = true;
+        return;
+      }
       dragPointer = event.pointerId;
       dragStartX = event.clientX;
       dragStartScroll = row.scrollLeft;
       dragMoved = false;
-      row.classList.add('is-dragging');
-      try { row.setPointerCapture(event.pointerId); } catch (err) {}
     });
     row.addEventListener('pointermove', (event) => {
       if (event.pointerId !== dragPointer) return;
       const dx = event.clientX - dragStartX;
-      if (Math.abs(dx) > 4) dragMoved = true;
+      if (!dragMoved) {
+        if (Math.abs(dx) <= 6) return;
+        dragMoved = true;
+        chipRowDrag = true;
+        row.classList.add('is-dragging');
+        try { row.setPointerCapture(event.pointerId); } catch (err) {}
+      }
       row.scrollLeft = dragStartScroll - dx;
     });
     row.addEventListener('click', (event) => {
@@ -576,8 +582,12 @@
         endMouseDrag();
         if (moved) {
           window.setTimeout(() => { dragMoved = false; }, 0);
+          queueSnap();
           return;
         }
+        dragMoved = false;
+        queueSnap();
+        return;
       }
       chipRowDrag = false;
       queueSnap();
@@ -585,6 +595,7 @@
     document.addEventListener('pointercancel', (event) => {
       if (event.pointerId === dragPointer) endMouseDrag();
       chipRowDrag = false;
+      dragMoved = false;
     });
 
     let pageLock = 0;
