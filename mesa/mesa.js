@@ -143,8 +143,13 @@
     }
   };
 
-  const CATS = buildMenu();
+  let CATS = buildMenu();
   const ITEMS = new Map();
+  function syncCatalog() {
+    CATS = buildMenu();
+    ITEMS.clear();
+    CATS.forEach((cat) => cat.items.forEach((item) => ITEMS.set(item.id, item)));
+  }
   CATS.forEach((cat) => cat.items.forEach((item) => ITEMS.set(item.id, item)));
 
   const $ = (id) => document.getElementById(id);
@@ -1594,8 +1599,142 @@
   paint();
   onSpy();
   window.visiwebRepaintMesa = paint;
+
+  function both(text) {
+    var value = text || '';
+    return { es: value, en: value };
+  }
+
+  function money(value) {
+    var n = Number(String(value == null ? '' : value).replace(',', '.').replace(/[^\d.-]/g, ''));
+    if (!isFinite(n)) n = 0;
+    return {
+      n: n,
+      es: n.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €',
+      en: '€' + n.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+    };
+  }
+
+  function slugify(text) {
+    return String(text || 'carta')
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-|-$/g, '') || 'carta';
+  }
+
+  function applyRestaurantData(row) {
+    if (!row || typeof row !== 'object') return;
+    if (!window.VISIWEB_RESTAURANT_SLUG) window.VISIWEB_RESTAURANT_SLUG = row.slug || 'panel-preview';
+    var categories = Array.isArray(row.categories) ? row.categories : (Array.isArray(row.menu) ? row.menu : []);
+    var usedAnchors = {};
+    var featured = [];
+    var menu = categories.map(function (category, index) {
+      var name = category.name;
+      if (name && typeof name === 'object') name = name.es || name.en || 'Carta';
+      name = name || 'Carta';
+      var anchor = slugify(name);
+      if (usedAnchors[anchor]) anchor = anchor + '-' + (index + 1);
+      usedAnchors[anchor] = true;
+      var items = (category.items || category.menu_items || []).map(function (item, itemIndex) {
+        var itemName = item.name;
+        if (itemName && typeof itemName === 'object') itemName = itemName.es || itemName.en || '';
+        itemName = itemName || 'Plato';
+        var desc = item.description || item.desc || '';
+        if (desc && typeof desc === 'object') desc = desc.es || desc.en || '';
+        var price = money(item.price != null ? item.price : item.priceValue);
+        var id = String(item.id || ('item-' + index + '-' + itemIndex));
+        if (item.featured || item.is_featured) featured.push(id);
+        return {
+          id: id,
+          name: both(itemName),
+          desc: both(desc),
+          price: price.es,
+          priceEn: price.en,
+          priceValue: price.n,
+          allergens: Array.isArray(item.allergens) ? item.allergens : [],
+          tags: Array.isArray(item.tags) ? item.tags : [],
+          featured: !!(item.featured || item.is_featured),
+          image: item.image_url || item.image || item.preview || null
+        };
+      });
+      return {
+        id: String(category.id || ('cat-' + index)),
+        anchor: anchor,
+        name: both(name),
+        desc: both(category.subtitle || category.desc || ''),
+        items: items
+      };
+    });
+    var phone = row.phone || '';
+    var address = row.address || '';
+    var name = row.name || D.business.name || '';
+    var tagline = row.tagline || '';
+    D.business.name = name;
+    D.business.type = both(tagline);
+    D.business.phone = phone;
+    D.business.phoneDisplay = phone;
+    D.business.whatsapp = String(row.whatsapp || '').replace(/\D/g, '');
+    D.business.instagram = row.instagram || '';
+    D.business.addressLine = address;
+    D.business.address = {
+      street: both(address),
+      postalCode: (D.business.address && D.business.address.postalCode) || '',
+      city: (D.business.address && D.business.address.city) || '',
+      region: (D.business.address && D.business.address.region) || '',
+      country: 'ES'
+    };
+    if (row.cover_image_url || row.cover) {
+      var cover = row.cover_image_url || row.cover;
+      D.images.hero = cover;
+      D.images.facade = cover;
+    }
+    if (row.schedule) {
+      D.hours = { 0: [], 1: [], 2: [], 3: [], 4: [], 5: [], 6: [] };
+      D.scheduleText = row.schedule;
+    }
+    if (menu.length) {
+      D.menu = menu;
+      D.featured = featured;
+    }
+    var design = row.design_config || row.design;
+    if (design && window.VisiwebDesign) {
+      D.design = window.VisiwebDesign.merge(design);
+      window.VISIWEB_DESIGN = D.design;
+      window.VisiwebDesign.paint(D.design);
+    }
+    if (row.daily_menu && window.VisiwebDesign) {
+      D.dailyMenu = window.VisiwebDesign.mergeDaily(row.daily_menu);
+    }
+    syncCatalog();
+    paint();
+  }
+
+  function readRestaurantPayload(data) {
+    if (!data || typeof data !== 'object') return null;
+    if (data.RESTAURANT_DATA && typeof data.RESTAURANT_DATA === 'object') return data.RESTAURANT_DATA;
+    if (data.type === 'RESTAURANT_DATA' && data.payload && typeof data.payload === 'object') return data.payload;
+    if (data.type === 'RESTAURANT_DATA' && data.data && typeof data.data === 'object') return data.data;
+    return null;
+  }
+
+  window.addEventListener('message', function (event) {
+    if (event.origin !== location.origin) return;
+    var payload = readRestaurantPayload(event.data);
+    if (!payload) return;
+    applyRestaurantData(payload);
+  });
+
+  window.visiwebApplyRestaurantData = applyRestaurantData;
+
+  if (window.parent !== window) {
+    var demoBar = document.querySelector('.demo-bar');
+    if (demoBar) demoBar.hidden = true;
+    document.documentElement.classList.add('vw-embed');
+    window.parent.postMessage({ type: 'visiweb-ready', page: 'mesa' }, location.origin);
+  }
   if (document.documentElement.classList.contains('vw-editor') && window.parent !== window) {
     if (window.VisiwebDesign) window.VisiwebDesign.markTargets();
-    window.parent.postMessage({ type: 'visiweb-ready', page: 'mesa' }, location.origin);
   }
 })();

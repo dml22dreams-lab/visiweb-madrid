@@ -472,13 +472,10 @@
     if (focus) tab.focus();
     revealActiveCategory(quiet ? 'auto' : 'smooth');
     if (quiet) return;
-    scrollCategoryToStart();
     history.replaceState(null, '', '#' + tab.dataset.anchor);
   }
 
   let chipRowDrag = false;
-  let chipSnapTimer = 0;
-  let chipSnapArmed = false;
   let chipSlideToken = 0;
 
   function revealActiveCategory(behavior) {
@@ -497,9 +494,6 @@
     next = Math.max(0, Math.min(max, next));
     const start = row.scrollLeft;
     if (Math.abs(next - start) < 1) return;
-    chipSnapArmed = false;
-    window.clearTimeout(chipSnapTimer);
-    chipSnapTimer = 0;
     const token = ++chipSlideToken;
     if (behavior === 'auto') {
       row.scrollLeft = next;
@@ -524,17 +518,6 @@
     let dragStartScroll = 0;
     let dragMoved = false;
 
-    function queueSnap() {
-      chipSnapArmed = true;
-      window.clearTimeout(chipSnapTimer);
-      chipSnapTimer = window.setTimeout(() => {
-        chipSnapArmed = false;
-        chipSnapTimer = 0;
-        if (chipRowDrag) return;
-        revealActiveCategory('smooth');
-      }, 140);
-    }
-
     function endMouseDrag() {
       chipRowDrag = false;
       dragPointer = 0;
@@ -543,9 +526,7 @@
 
     row.addEventListener('pointerdown', (event) => {
       if (event.pointerType === 'mouse' && event.button !== 0) return;
-      chipSnapArmed = false;
       chipSlideToken += 1;
-      window.clearTimeout(chipSnapTimer);
       if (event.pointerType !== 'mouse') {
         chipRowDrag = true;
         return;
@@ -580,41 +561,27 @@
       const delta = event.shiftKey ? event.deltaY : event.deltaX;
       if (!delta) return;
       row.scrollLeft += delta;
-      chipSnapArmed = false;
       chipSlideToken += 1;
       event.preventDefault();
     }, { passive: false });
-    row.addEventListener('scroll', () => {
-      if (!chipRowDrag && chipSnapArmed) queueSnap();
-    }, { passive: true });
     document.addEventListener('pointerup', (event) => {
       if (event.pointerId === dragPointer) {
         const moved = dragMoved;
         endMouseDrag();
         if (moved) {
           window.setTimeout(() => { dragMoved = false; }, 0);
-          queueSnap();
           return;
         }
         dragMoved = false;
-        queueSnap();
         return;
       }
       chipRowDrag = false;
-      queueSnap();
     });
     document.addEventListener('pointercancel', (event) => {
       if (event.pointerId === dragPointer) endMouseDrag();
       chipRowDrag = false;
       dragMoved = false;
     });
-
-    let pageLock = 0;
-    window.addEventListener('scroll', () => {
-      if (chipRowDrag || pageLock) return;
-      pageLock = window.setTimeout(() => { pageLock = 0; }, 320);
-      revealActiveCategory('smooth');
-    }, { passive: true });
   }
 
   function scrollCategoryToStart() {

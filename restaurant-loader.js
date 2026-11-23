@@ -324,7 +324,7 @@
         }
         applyRestaurant(result.data);
         applyPublication(result.data.status);
-        var src = page === 'mesa' ? '/mesa/mesa.js?v=55' : '/demo-app.js?v=79';
+        var src = page === 'mesa' ? '/mesa/mesa.js?v=56' : '/demo-app.js?v=79';
         return loadScript(src).then(function () {
           document.documentElement.classList.remove('vw-pending');
           return true;

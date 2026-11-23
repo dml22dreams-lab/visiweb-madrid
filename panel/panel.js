@@ -337,6 +337,7 @@
       design: design,
       daily_menu: window.VisiwebDesign.mergeDaily(demo && demo.dailyMenu),
       viewport: 'mobile',
+      preview: 'web',
       chat: null,
       chats: null,
       activeChatId: null,
@@ -406,6 +407,7 @@
         design: editor.design,
         daily_menu: editor.daily_menu,
         viewport: editor.viewport || 'mobile',
+        preview: editor.preview || 'web',
         chat: editor.chat || null,
         chats: editor.chats || null,
         activeChatId: editor.activeChatId || null,
@@ -478,6 +480,7 @@
       chats: editor.chats || null,
       activeChatId: editor.activeChatId || null,
       viewport: editor.viewport || 'mobile',
+      preview: editor.preview || 'web',
       slug: editor.slug || '',
       studioMode: 'chat',
       plan_tier: editor.plan_tier || '',
@@ -500,6 +503,7 @@
     editor.autoSlug = meta.autoSlug != null ? !!meta.autoSlug : !editor.slug;
     editor.plan_tier = meta.plan_tier || data.plan_tier || editor.plan_tier;
     editor.viewport = meta.viewport || 'mobile';
+    editor.preview = meta.preview || 'web';
     editor.chat = meta.chat || null;
     editor.chats = meta.chats || null;
     editor.activeChatId = meta.activeChatId || null;
@@ -680,12 +684,19 @@
     } catch (error) {}
   }
 
+  function collabFrameSrc(editor) {
+    return (editor && editor.preview === 'mesa') ? '../mesa/' : './preview/index.html#inicio';
+  }
+
   function openFullscreenPreview() {
     if (!state.editor) return;
     var payload = restaurantPayloadFromEditor(state.editor);
     writePreviewPayload(payload);
     persistActiveLocal();
-    window.open('./preview/index.html?preview=1#inicio', '_blank', 'noopener');
+    var url = state.editor.preview === 'mesa'
+      ? '../mesa/?preview=1'
+      : './preview/index.html?preview=1#inicio';
+    window.open(url, '_blank', 'noopener');
   }
 
   function pushCollabPreview(force) {
@@ -693,7 +704,7 @@
     var editor = state.editor;
     if (!frame || !frame.contentWindow || !editor) return;
     // Primer pintado: la iframe ya carga ./preview/data.js; no la pisamos hasta el primer cambio del chat.
-    if (!force && editor.fromPreview && !editor.previewDirty) return;
+    if (!force && editor.fromPreview && !editor.previewDirty && editor.preview !== 'mesa') return;
     var payload = restaurantPayloadFromEditor(editor);
     writePreviewPayload(payload);
     frame.contentWindow.postMessage({
@@ -1051,9 +1062,18 @@
       frame.style.height = '100%';
       frame.style.borderRadius = desktop ? '0' : '';
     }
+    if (!editor.preview) editor.preview = 'web';
     document.querySelectorAll('[data-collab-viewport]').forEach(function (node) {
       node.className = 'h-7 rounded px-2 text-xs font-medium ' + (node.dataset.collabViewport === editor.viewport ? 'bg-white text-stone-900 shadow-sm' : 'text-stone-500');
     });
+    document.querySelectorAll('[data-collab-preview]').forEach(function (node) {
+      node.className = 'h-7 rounded px-2 text-xs font-medium ' + (node.dataset.collabPreview === editor.preview ? 'bg-white text-stone-900 shadow-sm' : 'text-stone-500');
+    });
+    var frameSrc = collabFrameSrc(editor);
+    if (frame && frame.dataset.surface !== editor.preview) {
+      frame.dataset.surface = editor.preview;
+      frame.src = frameSrc;
+    }
     var send = document.getElementById('send-proposal');
     if (send) {
       send.disabled = !!state.busy;
@@ -1082,6 +1102,10 @@
           '<button type="button" id="close-editor" class="h-10 rounded-md px-2 text-base font-semibold text-black">← Panel</button>' +
           '<p id="collab-title" class="truncate text-sm font-semibold text-stone-900">' + esc(editor.name || 'Nuevo restaurante') + '</p>' +
           '<span class="rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-semibold text-amber-900">Colaborador · sin descarga</span>' +
+          '<div class="ml-auto flex h-8 items-center rounded-md bg-stone-100 p-0.5">' +
+            '<button type="button" data-collab-preview="web" class="h-7 rounded px-2 text-xs font-medium">Web</button>' +
+            '<button type="button" data-collab-preview="mesa" class="h-7 rounded px-2 text-xs font-medium">QR Mesa</button>' +
+          '</div>' +
         '</header>' +
         '<div id="collab-banner" class="shrink-0 px-3 pt-2">' + banner() + '</div>' +
         '<div class="flex min-h-0 flex-1">' +
@@ -1096,7 +1120,7 @@
               '<button type="button" id="toggle-chat-panel" aria-label="Abrir chat" class="absolute right-3 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-md border border-stone-200 text-stone-800 hover:bg-stone-50 ' + (open ? 'bg-stone-100' : 'bg-white') + '">' + chatIconSvg(16) + '</button>' +
             '</div>' +
             '<div id="collab-preview-stage" class="' + (editor.viewport === 'desktop' ? 'flex min-h-0 flex-1 bg-white p-0' : 'flex min-h-0 flex-1 justify-center overflow-auto bg-stone-100 p-4') + '">' +
-              '<iframe id="collab-preview" title="Vista previa" src="./preview/index.html#inicio" class="' + (editor.viewport === 'desktop' ? 'h-full w-full border-0 bg-white' : 'h-full border border-stone-200 bg-white shadow-sm') + '" style="width:' + (editor.viewport === 'desktop' ? '100%' : '390px') + ';max-width:' + (editor.viewport === 'desktop' ? '100%' : '390px') + ';height:100%"></iframe>' +
+              '<iframe id="collab-preview" title="Vista previa" data-surface="' + (editor.preview === 'mesa' ? 'mesa' : 'web') + '" src="' + collabFrameSrc(editor) + '" class="' + (editor.viewport === 'desktop' ? 'h-full w-full border-0 bg-white' : 'h-full border border-stone-200 bg-white shadow-sm') + '" style="width:' + (editor.viewport === 'desktop' ? '100%' : '390px') + ';max-width:' + (editor.viewport === 'desktop' ? '100%' : '390px') + ';height:100%"></iframe>' +
             '</div>' +
           '</section>' +
           '<section id="collab-chat-panel" class="flex w-full max-w-md shrink-0 flex-col border-l border-stone-200 bg-white' + (open ? '' : ' hidden') + '"' + (open ? '' : ' style="width:0;max-width:0;border-left-width:0"') + '>' +
@@ -1111,9 +1135,10 @@
           '</section>' +
         '</div>' +
       '</div>';
+    if (!editor.preview) editor.preview = 'web';
     updateCollabChrome();
     var frame = document.getElementById('collab-preview');
-    if (frame) frame.addEventListener('load', function () { pushCollabPreview(); });
+    if (frame) frame.addEventListener('load', function () { pushCollabPreview(true); });
   }
 
   async function sendProposal() {
@@ -2521,6 +2546,7 @@
         editor.design = window.VisiwebDesign.merge(restaurant.design_config);
         editor.daily_menu = window.VisiwebDesign.mergeDaily(restaurant.daily_menu);
         editor.viewport = 'mobile';
+        editor.preview = 'web';
         editor.chat = null;
         editor.chats = null;
         editor.activeChatId = null;
@@ -3055,6 +3081,13 @@
       updateCollabChrome();
       return;
     }
+    if (button.dataset.collabPreview && state.editor) {
+      state.editor.preview = button.dataset.collabPreview;
+      if (state.editor.preview === 'mesa') state.editor.viewport = 'mobile';
+      updateCollabChrome();
+      persistActiveLocal();
+      return;
+    }
     if (button.id === 'send-proposal') {
       sendProposal();
       return;
@@ -3214,7 +3247,7 @@
   window.addEventListener('message', function (event) {
     if (event.origin !== location.origin || !event.data) return;
     if (event.data.type !== 'visiweb-ready') return;
-    if (state.editor && (state.editor.studioMode === 'chat' || !isAdmin())) pushCollabPreview();
+    if (state.editor && (state.editor.studioMode === 'chat' || !isAdmin())) pushCollabPreview(true);
     if (isAdmin() && state.adminTab === 'proposals') pushProposalPreview();
   });
 

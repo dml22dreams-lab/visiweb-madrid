@@ -1446,17 +1446,24 @@
     @media (min-width: 768px) {
       .site-nav-links {
         width: 100%;
-        justify-content: space-between;
+        justify-content: stretch;
         gap: 0;
         overflow-x: visible;
-        padding-left: 2.75rem;
-        padding-right: 2.75rem;
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+      }
+      .site-nav-links .site-nav-link {
+        flex: 1 1 0;
+        width: auto;
+        min-width: 0;
+        justify-content: center;
+        padding: 8px 8px;
       }
       .site-nav-links .site-nav-link:first-child {
-        padding-left: 4px;
+        padding-left: 8px;
       }
       .site-nav-links .site-nav-link:last-child {
-        padding-right: 4px;
+        padding-right: 8px;
       }
     }
     #nav-eventos[hidden],
@@ -3030,7 +3037,7 @@
     if (window.VisiwebRestaurant && window.VisiwebRestaurant.dynamic === 'web') {
       window.VisiwebRestaurant.start('web');
     } else {
-      document.write('<script src="/demo-app.js?v=80"><\/script>');
+      document.write('<script src="/demo-app.js?v=82"><\/script>');
     }
   </script>
   <script>

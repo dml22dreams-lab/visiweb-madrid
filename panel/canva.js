@@ -139,6 +139,8 @@
   }
 
   function frameSrc() {
+    var current = ed();
+    if (current && current.preview === 'mesa') return '../mesa/?editor=1';
     return './preview/index.html#inicio';
   }
 
@@ -157,6 +159,10 @@
         '<header class="flex h-12 shrink-0 items-center gap-1.5 border-b border-neutral-200 bg-white px-2">' +
           '<button type="button" data-canva="close" class="h-8 rounded-md px-2 text-xs font-medium text-neutral-500">← Panel</button>' +
           '<p class="w-[120px] truncate text-xs font-medium text-neutral-900">' + api.esc(current.name || 'Restaurante') + '</p>' +
+          '<div class="flex h-8 items-center rounded-md bg-neutral-100 p-0.5">' +
+            '<button type="button" data-canva="preview" data-value="web" class="h-7 rounded px-2 text-xs font-medium">Web</button>' +
+            '<button type="button" data-canva="preview" data-value="mesa" class="h-7 rounded px-2 text-xs font-medium">QR Mesa</button>' +
+          '</div>' +
           '<div class="flex h-8 items-center rounded-md bg-neutral-100 p-0.5">' +
             '<button type="button" data-canva="mode" data-value="navigate" class="flex h-7 items-center gap-1 rounded px-2 text-xs font-medium">' + ICON.cursor + 'Navegar</button>' +
             '<button type="button" data-canva="mode" data-value="edit" class="flex h-7 items-center gap-1 rounded px-2 text-xs font-medium">' + ICON.pencil + 'Editar</button>' +
@@ -208,6 +214,9 @@
     if (name && name.nextElementSibling) name.nextElementSibling.textContent = current.name || 'Restaurante';
     document.querySelectorAll('[data-canva="viewport"]').forEach(function (node) {
       node.className = 'h-7 rounded px-2 text-xs font-medium ' + (node.dataset.value === current.viewport ? 'bg-white text-neutral-900 shadow-sm' : 'text-neutral-500');
+    });
+    document.querySelectorAll('[data-canva="preview"]').forEach(function (node) {
+      node.className = 'h-7 rounded px-2 text-xs font-medium ' + (node.dataset.value === (current.preview || 'web') ? 'bg-white text-neutral-900 shadow-sm' : 'text-neutral-500');
     });
     document.querySelectorAll('[data-canva="mode"]').forEach(function (node) {
       node.className = 'flex h-7 items-center gap-1 rounded px-2 text-xs font-medium ' + (node.dataset.value === (current.mode || 'navigate') ? 'bg-white text-neutral-900 shadow-sm' : 'text-neutral-500');
@@ -714,6 +723,12 @@
       return;
     }
     if (kind === 'viewport') { current.viewport = button.dataset.value; updateChrome(); return; }
+    if (kind === 'preview') {
+      current.preview = button.dataset.value;
+      if (current.preview === 'mesa') current.viewport = 'mobile';
+      updateChrome();
+      return;
+    }
     if (kind === 'save') { api.saveAll(); return; }
     if (kind === 'select') {
       current.selectedElementId = '';
