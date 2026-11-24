@@ -1429,27 +1429,94 @@
     applyAllergenFilter();
   });
 
-  $('mesa-cats').addEventListener('pointerdown', (event) => {
-    catsHold = true;
-    catsUser = true;
-    catsX = event.clientX;
-    catsLeft = $('mesa-cats').scrollLeft;
-  });
-  $('mesa-cats').addEventListener('pointerup', () => { catsHold = false; });
-  $('mesa-cats').addEventListener('pointercancel', () => { catsHold = false; });
-  $('mesa-cats').addEventListener('scroll', () => {
-    if (catsProg) return;
-    if (catsUser) catsDrifted = true;
-  }, { passive: true });
-  $('mesa-cats').addEventListener('click', (event) => {
-    const pill = event.target.closest('[data-spy]');
-    if (!pill) return;
-    const moved = Math.abs(event.clientX - catsX) > 8 || Math.abs($('mesa-cats').scrollLeft - catsLeft) > 4;
-    if (moved) return;
-    catsUser = false;
-    catsDrifted = false;
-    goTo(pill.dataset.spy);
-  });
+  (function initMesaCatsDrag() {
+    const row = $('mesa-cats');
+    if (!row) return;
+    let dragPointer = 0;
+    let dragStartX = 0;
+    let dragStartScroll = 0;
+    let dragMoved = false;
+
+    function endMouseDrag() {
+      catsHold = false;
+      dragPointer = 0;
+      row.classList.remove('is-dragging');
+    }
+
+    row.addEventListener('pointerdown', (event) => {
+      if (event.pointerType === 'mouse' && event.button !== 0) return;
+      catsHold = true;
+      catsUser = true;
+      catsX = event.clientX;
+      catsLeft = row.scrollLeft;
+      if (event.pointerType !== 'mouse') return;
+      dragPointer = event.pointerId;
+      dragStartX = event.clientX;
+      dragStartScroll = row.scrollLeft;
+      dragMoved = false;
+    });
+    row.addEventListener('pointermove', (event) => {
+      if (event.pointerId !== dragPointer) return;
+      const dx = event.clientX - dragStartX;
+      if (!dragMoved) {
+        if (Math.abs(dx) <= 5) return;
+        dragMoved = true;
+        row.classList.add('is-dragging');
+        try { row.setPointerCapture(event.pointerId); } catch (err) {}
+      }
+      row.scrollLeft = dragStartScroll - dx;
+      event.preventDefault();
+    });
+    row.addEventListener('click', (event) => {
+      if (dragMoved) {
+        event.preventDefault();
+        event.stopPropagation();
+        dragMoved = false;
+        return;
+      }
+      const pill = event.target.closest('[data-spy]');
+      if (!pill) return;
+      const moved = Math.abs(event.clientX - catsX) > 5 || Math.abs(row.scrollLeft - catsLeft) > 4;
+      if (moved) return;
+      catsUser = false;
+      catsDrifted = false;
+      goTo(pill.dataset.spy);
+    }, true);
+    row.addEventListener('wheel', (event) => {
+      if (row.scrollWidth - row.clientWidth <= 1) return;
+      const horizontal = Math.abs(event.deltaX) > Math.abs(event.deltaY) || event.shiftKey;
+      const delta = horizontal
+        ? (event.shiftKey ? event.deltaY : event.deltaX)
+        : event.deltaY;
+      if (!delta) return;
+      catsUser = true;
+      catsDrifted = true;
+      row.scrollLeft += delta;
+      event.preventDefault();
+    }, { passive: false });
+    row.addEventListener('scroll', () => {
+      if (catsProg) return;
+      if (catsUser || dragMoved) catsDrifted = true;
+    }, { passive: true });
+    document.addEventListener('pointerup', (event) => {
+      if (event.pointerId === dragPointer) {
+        const moved = dragMoved;
+        endMouseDrag();
+        if (moved) {
+          window.setTimeout(() => { dragMoved = false; }, 0);
+          return;
+        }
+        dragMoved = false;
+        return;
+      }
+      catsHold = false;
+    });
+    document.addEventListener('pointercancel', (event) => {
+      if (event.pointerId === dragPointer) endMouseDrag();
+      catsHold = false;
+      dragMoved = false;
+    });
+  })();
   $('hero-kicker').addEventListener('click', () => {
     const first = visibleSections()[0];
     if (!first) return;
@@ -1624,9 +1691,44 @@
       .replace(/^-|-$/g, '') || 'carta';
   }
 
+  function mergeDemoMenu(menu) {
+    if (!Array.isArray(menu) || !menu.length) return;
+    var byItem = {};
+    var byCat = {};
+    menu.forEach(function (cat) {
+      if (cat && cat.id != null) byCat[String(cat.id)] = cat;
+      (cat.items || []).forEach(function (item) {
+        if (item && item.id != null) byItem[String(item.id)] = item;
+      });
+    });
+    (D.menu || []).forEach(function (cat) {
+      var nextCat = byCat[String(cat.id)];
+      if (nextCat) {
+        if (nextCat.name) cat.name = nextCat.name;
+        if (nextCat.desc) cat.desc = nextCat.desc;
+      }
+      (cat.items || []).forEach(function (item) {
+        var next = byItem[String(item.id)];
+        if (!next) return;
+        if (next.name) item.name = next.name;
+        if (next.desc) item.desc = next.desc;
+        if (next.price != null) item.price = next.price;
+        if (next.priceEn != null) item.priceEn = next.priceEn;
+        if (next.priceValue != null) item.priceValue = next.priceValue;
+        if (next.image) item.image = next.image;
+        if (Array.isArray(next.allergens)) item.allergens = next.allergens;
+        if (Array.isArray(next.tags)) item.tags = next.tags;
+        item.featured = !!next.featured;
+      });
+    });
+  }
+
   function applyRestaurantData(row) {
     if (!row || typeof row !== 'object') return;
-    if (!window.VISIWEB_RESTAURANT_SLUG) window.VISIWEB_RESTAURANT_SLUG = row.slug || 'panel-preview';
+    var keepDemoLayout = !!(row.fromPreview || row.keepDemoLayout);
+    if (!keepDemoLayout && !window.VISIWEB_RESTAURANT_SLUG) {
+      window.VISIWEB_RESTAURANT_SLUG = row.slug || 'panel-preview';
+    }
     var categories = Array.isArray(row.categories) ? row.categories : (Array.isArray(row.menu) ? row.menu : []);
     var usedAnchors = {};
     var featured = [];
@@ -1659,11 +1761,13 @@
           image: item.image_url || item.image || item.preview || null
         };
       });
+      var catDesc = category.subtitle || category.desc || '';
+      if (catDesc && typeof catDesc === 'object') catDesc = catDesc.es || catDesc.en || '';
       return {
         id: String(category.id || ('cat-' + index)),
         anchor: anchor,
         name: both(name),
-        desc: both(category.subtitle || category.desc || ''),
+        desc: both(catDesc),
         items: items
       };
     });
@@ -1695,8 +1799,12 @@
       D.scheduleText = row.schedule;
     }
     if (menu.length) {
-      D.menu = menu;
-      D.featured = featured;
+      if (keepDemoLayout && !window.VISIWEB_RESTAURANT_SLUG) {
+        mergeDemoMenu(menu);
+      } else {
+        D.menu = menu;
+        D.featured = featured;
+      }
     }
     var design = row.design_config || row.design;
     if (design && window.VisiwebDesign) {
@@ -1732,6 +1840,7 @@
     var demoBar = document.querySelector('.demo-bar');
     if (demoBar) demoBar.hidden = true;
     document.documentElement.classList.add('vw-embed');
+    document.documentElement.style.setProperty('--demo-bar', '0px');
     window.parent.postMessage({ type: 'visiweb-ready', page: 'mesa' }, location.origin);
   }
   if (document.documentElement.classList.contains('vw-editor') && window.parent !== window) {

@@ -94,10 +94,14 @@
       daily_menu: current.daily_menu,
       accent: current.design && current.design.accent,
       primary_color: current.design && current.design.accent,
+      fromPreview: !!current.fromPreview,
+      slug: current.slug || '',
       categories: (current.categories || []).map(function (category) {
         return {
           id: category.id,
           name: category.name || '',
+          subtitle: category.subtitle || category.desc || '',
+          desc: category.subtitle || category.desc || '',
           items: (category.items || []).map(function (item) {
             return {
               id: item.id,
@@ -106,6 +110,7 @@
               price: item.price,
               image_url: item.preview || item.image_url || '',
               allergens: item.allergens || [],
+              tags: item.tags || [],
               featured: !!item.featured
             };
           })

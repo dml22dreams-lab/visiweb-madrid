@@ -522,6 +522,11 @@ body.is-searching { overflow: hidden; }
   background: #fff;
   scrollbar-width: none;
   touch-action: pan-x;
+  cursor: grab;
+}
+#mesa-cats.is-dragging {
+  cursor: grabbing;
+  user-select: none;
 }
 #mesa-cats::-webkit-scrollbar { display: none; }
 .mesa-filter-list {

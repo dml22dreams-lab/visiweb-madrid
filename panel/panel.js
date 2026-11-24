@@ -263,12 +263,13 @@
     return menu.map(function (category) {
       var items = Array.isArray(category.items) ? category.items : [];
       return {
-        id: null,
+        id: category.id || null,
         name: langText(category.name),
+        subtitle: langText(category.desc || category.subtitle),
         items: items.length
           ? items.map(function (item) {
               return {
-                id: null,
+                id: item.id || null,
                 name: langText(item.name),
                 description: langText(item.desc || item.description),
                 price: priceFromDemo(item),
@@ -276,6 +277,7 @@
                 imageFile: null,
                 preview: '',
                 allergens: Array.isArray(item.allergens) ? item.allergens.slice() : [],
+                tags: Array.isArray(item.tags) ? item.tags.slice() : [],
                 featured: !!(item.featured || (demo.featured && demo.featured.indexOf(item.id) >= 0))
               };
             })
@@ -390,6 +392,7 @@
           return {
             id: category.id || null,
             name: category.name || '',
+            subtitle: category.subtitle || '',
             items: (category.items || []).map(function (item) {
               return {
                 id: item.id || null,
@@ -399,6 +402,7 @@
                 image_url: item.image_url || '',
                 preview: item.preview || '',
                 allergens: item.allergens || [],
+                tags: item.tags || [],
                 featured: !!item.featured
               };
             })
@@ -643,6 +647,7 @@
     ensureEventos(editor.design);
     return {
       name: editor.name || '',
+      slug: editor.slug || '',
       tagline: editor.tagline || '',
       description: editor.description || '',
       phone: editor.phone || '',
@@ -658,10 +663,13 @@
       accent: editor.design.accent,
       primary_color: editor.design.accent,
       eventos_activo: editor.design.labels.vw_events === '1',
+      fromPreview: !!editor.fromPreview,
       categories: (editor.categories || []).map(function (category) {
         return {
           id: category.id,
           name: category.name || '',
+          subtitle: category.subtitle || category.desc || '',
+          desc: category.subtitle || category.desc || '',
           items: (category.items || []).map(function (item) {
             return {
               id: item.id,
@@ -670,6 +678,7 @@
               price: item.price,
               image_url: item.preview || item.image_url || '',
               allergens: item.allergens || [],
+              tags: item.tags || [],
               featured: !!item.featured
             };
           })
@@ -703,8 +712,8 @@
     var frame = document.getElementById('collab-preview');
     var editor = state.editor;
     if (!frame || !frame.contentWindow || !editor) return;
-    // Primer pintado: la iframe ya carga ./preview/data.js; no la pisamos hasta el primer cambio del chat.
-    if (!force && editor.fromPreview && !editor.previewDirty && editor.preview !== 'mesa') return;
+    // Demo intacta hasta el primer cambio: Web usa preview/data.js y QR Mesa usa /mesa/ nativo.
+    if (editor.fromPreview && !editor.previewDirty) return;
     var payload = restaurantPayloadFromEditor(editor);
     writePreviewPayload(payload);
     frame.contentWindow.postMessage({
@@ -897,6 +906,7 @@
         return {
           id: category.id || null,
           name: category.name || '',
+          subtitle: category.subtitle || category.desc || '',
           items: (category.items || []).map(function (item) {
             return {
               id: item.id || null,
@@ -907,6 +917,7 @@
               imageFile: null,
               preview: item.preview || '',
               allergens: item.allergens || [],
+              tags: item.tags || [],
               featured: !!item.featured
             };
           })
@@ -2157,6 +2168,19 @@
     if (state.selectedProposalId && !selectedProposal()) state.selectedProposalId = null;
   }
 
+  function applyLocalChatState(editor, localEditor) {
+    if (!editor || !localEditor || !Array.isArray(localEditor.chats)) return;
+    editor.chats = localEditor.chats;
+    editor.activeChatId = localEditor.activeChatId || null;
+    editor.chat = Array.isArray(localEditor.chat) ? localEditor.chat : [];
+    if (editor.chats.length) {
+      ensureCollabChat(editor);
+    } else {
+      editor.activeChatId = null;
+      editor.chat = [];
+    }
+  }
+
   function restoreActiveProjectIfNeeded() {
     if (state.editor) return false;
     var active = readActiveLocal();
@@ -2165,6 +2189,7 @@
       var row = (state.proposals || []).filter(function (item) { return item.id === active.proposalId; })[0];
       if (row) {
         state.editor = editorFromProjectRow(row);
+        applyLocalChatState(state.editor, active.editor);
         return true;
       }
     }
@@ -2176,7 +2201,12 @@
         (category.items || []).forEach(function (item) { item.imageFile = null; });
       });
     }
-    ensureCollabChat(editor);
+    if (Array.isArray(editor.chats) && !editor.chats.length) {
+      editor.activeChatId = null;
+      editor.chat = [];
+    } else {
+      ensureCollabChat(editor);
+    }
     state.editor = editor;
     return true;
   }
@@ -2915,7 +2945,7 @@
       event.stopPropagation();
       closeChatTab(state.editor, closeChatBtn.getAttribute('data-close-chat'));
       updateCollabChrome();
-      persistActiveLocal();
+      scheduleProjectSave();
       return;
     }
     var chatTabEl = event.target.closest('[data-chat-tab]');
