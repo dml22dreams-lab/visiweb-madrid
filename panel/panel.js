@@ -2218,11 +2218,10 @@
       await loadRestaurants();
       await loadProposals();
       state.error = '';
-      restoreActiveProjectIfNeeded();
     } catch (error) {
       setError('No se han podido cargar los datos del panel.');
-      if (restoreActiveProjectIfNeeded()) state.error = '';
     }
+    if (!state.editor) clearActiveLocal();
     state.busy = false;
     render();
   }
