@@ -495,7 +495,6 @@
     if (focus) tab.focus();
     revealActiveCategory(quiet ? 'auto' : 'smooth');
     if (quiet) return;
-    scrollCategoryToStart();
     history.replaceState(null, '', '#' + tab.dataset.anchor);
   }
 
