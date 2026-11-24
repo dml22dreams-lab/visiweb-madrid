@@ -669,7 +669,7 @@ window.VISIWEB_DEMO = (function () {
     videoTerraza: 'assets/brindis-terraza.mp4',
     /* imagenHero: foto de respaldo si tipoVideo es "ninguno" o el vídeo no carga.
        Admite una URL https, photo('archivo.webp') o ./assets/demo/archivo.webp */
-    imagenHero: 'https://images.unsplash.com/photo-1519671482749-fd09be7ccebf?auto=format&fit=crop&w=1800&q=80',
+    imagenHero: photo('salon.webp'),
     imageAlt: {
       es: 'Un grupo brindando con copas de vino',
       en: 'A group toasting with wine glasses'
@@ -690,7 +690,7 @@ window.VISIWEB_DEMO = (function () {
       {
         id: 'cumpleanos',
         icon: 'cheers',
-        image: 'https://images.unsplash.com/photo-1528605248644-14dd04022da1?auto=format&fit=crop&w=1400&q=80',
+        image: photo('salon-2.webp'),
         imageAlt: { es: 'Amigos brindando y sonriendo alrededor de una mesa', en: 'Friends toasting and smiling around a table' },
         capacityTag: { es: 'Grupos de 8 a 25 pers.', en: 'Groups of 8 to 25' },
         title: { es: 'Cumpleaños y aniversarios', en: 'Birthdays and anniversaries' },
@@ -702,7 +702,7 @@ window.VISIWEB_DEMO = (function () {
       {
         id: 'empresa',
         icon: 'team',
-        image: 'https://images.unsplash.com/photo-1466978913421-dad2ebd01d17?auto=format&fit=crop&w=1400&q=80',
+        image: photo('barra.webp'),
         imageAlt: { es: 'Un equipo compartiendo la mesa', en: 'A team sharing the table' },
         capacityTag: { es: 'Equipos de 6 a 30 pers.', en: 'Teams of 6 to 30' },
         title: { es: 'Comidas y cenas de empresa', en: 'Company lunches and dinners' },
@@ -714,7 +714,7 @@ window.VISIWEB_DEMO = (function () {
       {
         id: 'privada',
         icon: 'private',
-        image: 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=1200&q=80',
+        image: photo('terraza.webp'),
         imageAlt: { es: 'Mesa larga vestida con flores y cristalería', en: 'A long table dressed with flowers and glassware' },
         capacityTag: { es: 'Hasta 40 pers.', en: 'Up to 40 guests' },
         title: { es: 'Celebraciones privadas', en: 'Private celebrations' },
@@ -724,7 +724,7 @@ window.VISIWEB_DEMO = (function () {
         }
       }
     ],
-    readyImage: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=1400&q=80',
+    readyImage: photo('fachada.webp'),
     readyImageAlt: {
       es: 'Mesa larga preparada para una celebración',
       en: 'A long table set for a celebration'

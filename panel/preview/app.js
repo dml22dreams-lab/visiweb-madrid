@@ -257,10 +257,10 @@
     img.src = src;
     img.alt = alt;
     img.decoding = 'async';
+    img.loading = 'lazy';
     if (size) {
       img.width = size;
       img.height = size;
-      img.loading = 'lazy';
     }
     img.addEventListener('error', function () {
       img.replaceWith(placeholderBox(size));
@@ -1027,8 +1027,19 @@
   }
 
   function syncEventosHero(pageId) {
-    if (pageId === 'eventos') playEventosHero();
-    else pauseEventosHero();
+    if (pageId === 'eventos') {
+      hydrateEventosImages();
+      playEventosHero();
+    } else {
+      pauseEventosHero();
+    }
+  }
+
+  function hydrateEventosImages() {
+    document.querySelectorAll('[data-page="eventos"] img[data-src]').forEach(function (img) {
+      if (img.getAttribute('src')) return;
+      img.src = img.dataset.src;
+    });
   }
 
   function eventPhotoCard(item) {
@@ -1036,11 +1047,13 @@
     const media = el('div', 'eventos-photo-media');
     const img = el('img');
     img.alt = L(item.imageAlt) || L(item.title) || '';
-    img.loading = 'eager';
+    img.loading = 'lazy';
     img.decoding = 'async';
     const src = eventImageSrc(item.image);
     if (src) {
-      img.src = src;
+      const page = document.querySelector('[data-page="eventos"]');
+      if (page && !page.hidden) img.src = src;
+      else img.dataset.src = src;
       img.onerror = function () { media.hidden = true; };
     } else {
       media.hidden = true;
@@ -1188,31 +1201,39 @@
     if (typesTitle) typesTitle.textContent = L(ev.typesTitle);
     if (readyTitle) readyTitle.textContent = L(ev.readyTitle);
     if (readyCta) readyCta.textContent = L(ev.readyCta);
+    const page = document.querySelector('[data-page="eventos"]');
+    const onEventos = !!(page && !page.hidden);
     if (hero) {
       hero.alt = L(ev.imageAlt);
+      hero.loading = 'lazy';
+      hero.decoding = 'async';
       const src = eventImageSrc(ev.imagenHero || ev.image);
       if (src) {
         hero.hidden = false;
-        hero.src = src;
+        hero.dataset.src = src;
+        if (onEventos) hero.src = src;
+        else hero.removeAttribute('src');
         hero.onerror = function () { hero.hidden = true; };
       } else {
         hero.hidden = true;
         hero.removeAttribute('src');
+        delete hero.dataset.src;
       }
     }
     if (heroVideo && heroVideoB) {
       const clip = eventHeroClip(ev);
-      const poster = hero && hero.getAttribute('src');
-      if (poster) {
-        heroVideo.poster = poster;
-        heroVideoB.poster = poster;
+      const posterSrc = hero && (hero.getAttribute('src') || hero.dataset.src);
+      if (posterSrc && onEventos) {
+        heroVideo.poster = posterSrc;
+        heroVideoB.poster = posterSrc;
+      } else {
+        heroVideo.removeAttribute('poster');
+        heroVideoB.removeAttribute('poster');
       }
       heroVideo.setAttribute('preload', 'none');
       heroVideoB.setAttribute('preload', 'none');
       if (clip && clip.src) {
         const key = clip.src + '|' + clip.inicio + '|' + clip.duracion;
-        const page = document.querySelector('[data-page="eventos"]');
-        const onEventos = !!(page && !page.hidden);
         if (heroVideo._heroKey !== key) {
           pauseEventosHero();
           heroVideo._heroKey = '';
@@ -1225,8 +1246,12 @@
             try { heroVideoB.load(); } catch (e) { /* ignore */ }
           }
         }
-        if (onEventos) playEventosHero();
-        else pauseEventosHero();
+        if (onEventos) {
+          hydrateEventosImages();
+          playEventosHero();
+        } else {
+          pauseEventosHero();
+        }
       } else if (heroVideo._heroStop || heroVideo.getAttribute('src') || heroVideo._heroKey) {
         pauseEventosHero();
         heroVideo._heroKey = '';
@@ -1242,13 +1267,19 @@
     }
     if (readyImg) {
       readyImg.alt = L(ev.readyImageAlt);
+      readyImg.loading = 'lazy';
+      readyImg.decoding = 'async';
       const src = eventImageSrc(ev.readyImage);
       if (src) {
         readyImg.hidden = false;
-        readyImg.src = src;
+        readyImg.dataset.src = src;
+        if (onEventos) readyImg.src = src;
+        else readyImg.removeAttribute('src');
         readyImg.onerror = function () { readyImg.hidden = true; };
       } else {
         readyImg.hidden = true;
+        readyImg.removeAttribute('src');
+        delete readyImg.dataset.src;
       }
     }
     if (types) {
@@ -1339,7 +1370,10 @@
         return;
       }
       const visible = document.querySelector('[data-page="eventos"]');
-      if (visible && !visible.hidden) playEventosHero();
+      if (visible && !visible.hidden) {
+        hydrateEventosImages();
+        playEventosHero();
+      }
     });
     const form = $('#eventos-booking');
     if (!form) return;
