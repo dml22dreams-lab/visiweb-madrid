@@ -1,5 +1,5 @@
 const ADMIN_EMAIL = 'diego@visiwebmadrid.com';
-const DEFAULT_OWNER = 'visiwebmadrid';
+const DEFAULT_OWNER = 'dml22dreams-lab';
 const DEFAULT_REPO = 'visiweb-clientes';
 const TEMPLATE_PATH = '_plantilla-base';
 
