@@ -2,7 +2,7 @@
   "rewrites": [
     { "source": "/r/:slug/mesa", "destination": "/mesa/index.html" },
     { "source": "/r/:slug/mesa/", "destination": "/mesa/index.html" },
-    { "source": "/r/:slug", "destination": "/demo.html" },
-    { "source": "/r/:slug/", "destination": "/demo.html" }
+    { "source": "/r/:slug", "destination": "/panel/preview/index.html" },
+    { "source": "/r/:slug/", "destination": "/panel/preview/index.html" }
   ]
 }
