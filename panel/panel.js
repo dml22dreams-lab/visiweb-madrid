@@ -5,9 +5,65 @@
   var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF0Y2dyZGZ6eWJvcXZkdnRmeW16Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE5OTc1NTksImV4cCI6MjEwNzU3MzU1OX0.LKMVrtcqd_suMUeyWeedPs5yuzTYLVbz7Lel9A0iKY8';
 
   var PLANS = [
-    { id: '120', name: 'Plan Básico', price: 120, summary: 'Web One-Page con carta categorizada y precios, botón de WhatsApp y QR básico.' },
-    { id: '390', name: 'Plan Gastro Premium', price: 390, summary: 'Web multipágina (Carta, El Local, Reservas), carta bilingüe ES/EN, filtro de alérgenos y página de redes.' },
-    { id: '790', name: 'Plan Digitalización Total', price: 790, summary: 'Todo lo anterior, más diseño a medida, carta multilingüe (hasta 3 idiomas), módulo de grupos/eventos y Modo QR en Mesa.' }
+    {
+      id: 'basico',
+      legacyIds: ['120'],
+      name: 'Básico',
+      price: 120,
+      tagline: 'Cervecerías y bares de tapas',
+      summary: 'One-Page + Carta + WhatsApp',
+      delivery: 'Entrega lista en 3 días laborables',
+      features: [
+        'Web One-Page ultrarrápida adaptada a móvil',
+        'Carta digital completa categorizada con precios',
+        'Botón directo de reserva y pedidos por WhatsApp',
+        'Código QR vectorial en alta resolución para imprimir',
+        'Enlace web vinculado en tu ficha de Google',
+        'Textos legales y aviso de privacidad RGPD'
+      ]
+    },
+    {
+      id: 'gastro-premium',
+      legacyIds: ['390'],
+      name: 'Gastro Premium',
+      price: 390,
+      tagline: 'Restaurantes que quieren destacar',
+      summary: 'Multipágina + Bilingüe ES/EN + Alérgenos + Redes',
+      delivery: 'Entrega en 7 a 10 días laborables',
+      features: [
+        'Web multipágina estructurada (Carta, El Local, Reservas)',
+        'Fotos de platos y local optimizadas',
+        'Carta bilingüe interactiva (Español / Inglés)',
+        'Filtro interactivo de alérgenos y platos recomendados',
+        'Módulo de reserva directa por WhatsApp',
+        'Optimización de horarios en Google Maps',
+        'Código QR vectorial',
+        'Página de redes: Instagram, Facebook, X y TikTok',
+        'Textos legales y aviso de privacidad RGPD'
+      ]
+    },
+    {
+      id: 'digitalizacion-total',
+      legacyIds: ['790'],
+      name: 'Digitalización Total',
+      price: 790,
+      tagline: 'Digitalización completa del local',
+      summary: 'Todo + 3 idiomas + Modo QR Mesa /mesa + Eventos privados',
+      delivery: 'Entrega en 15 a 18 días laborables',
+      features: [
+        'Diseño y arquitectura web a medida',
+        'Fotos de platos y local optimizadas',
+        'Carta multilingüe (hasta 3 idiomas con selector)',
+        'Página de redes accesible también desde QR mesa',
+        'Modo QR Mesa (/mesa) con lista de camarero y reseñas Google',
+        'Optimización completa del perfil en Google Maps',
+        'Diseño de expositores QR de mesa listos para imprimir',
+        'Módulo web de eventos privados y grupos',
+        'Pack físico: 15 expositores acrílicos con QR',
+        'Microdatos Schema gastronómicos y SEO local prioritario',
+        'Configuración de correo corporativo'
+      ]
+    }
   ];
   var LOCK_GASTRO = 'Exclusivo desde el Plan Gastro Premium · 390 €';
   var LOCK_TOTAL = 'Exclusivo del Plan Digitalización Total · 790 €';
@@ -65,7 +121,8 @@
     githubSlug: '',
     githubBusy: false,
     githubNotice: '',
-    saveTimer: null
+    saveTimer: null,
+    createModal: null
   };
 
   var app = document.getElementById('app');
@@ -95,8 +152,20 @@
     });
   }
 
+  function normalizePlanId(id) {
+    var raw = String(id || '').trim();
+    if (!raw) return '';
+    if (raw === '120' || raw === 'basico') return 'basico';
+    if (raw === '390' || raw === 'gastro-premium') return 'gastro-premium';
+    if (raw === '790' || raw === 'digitalizacion-total') return 'digitalizacion-total';
+    return raw;
+  }
+
   function planById(id) {
-    return PLANS.filter(function (plan) { return plan.id === id; })[0] || null;
+    var normalized = normalizePlanId(id);
+    return PLANS.filter(function (plan) {
+      return plan.id === normalized || (plan.legacyIds || []).indexOf(String(id || '')) >= 0;
+    })[0] || null;
   }
 
   function planLabel(id) {
@@ -104,11 +173,29 @@
     return found ? found.name + ' · ' + found.price + ' €' : 'Sin plan';
   }
 
+  function planPrice(id) {
+    var found = planById(id);
+    return found ? found.price : 0;
+  }
+
   function planRank(id) {
-    if (id === '790') return 3;
-    if (id === '390') return 2;
-    if (id === '120') return 1;
+    var normalized = normalizePlanId(id);
+    if (normalized === 'digitalizacion-total') return 3;
+    if (normalized === 'gastro-premium') return 2;
+    if (normalized === 'basico') return 1;
     return 0;
+  }
+
+  function planAiContext(plan) {
+    if (!plan) return 'Sin plan contratado todavía.';
+    return (
+      'Plan contratado: ' + plan.name + ' (' + plan.price + ' € · id «' + plan.id + '»). ' +
+      plan.summary + '. Características incluidas: ' + plan.features.join('; ') + '. ' +
+      'Adapta la web SOLO a lo que incluye esta tarifa. No actives /mesa, 3 idiomas ni eventos privados si el plan no los incluye. ' +
+      (planRank(plan.id) < 2 ? 'Plan Básico: One-Page, carta y WhatsApp. Sin multipágina, alérgenos, bilingüe ni redes.' : '') +
+      (planRank(plan.id) === 2 ? 'Gastro Premium: multipágina, ES/EN, alérgenos y redes. Sin /mesa ni eventos.' : '') +
+      (planRank(plan.id) >= 3 ? 'Digitalización Total: incluye /mesa con lista camarero y reseñas, hasta 3 idiomas y eventos privados.' : '')
+    );
   }
 
   function lockIcon() {
@@ -120,9 +207,10 @@
   }
 
   function planPicker(editor) {
+    var current = normalizePlanId(editor.plan_tier);
     return '<fieldset class="mt-6"><legend class="text-sm font-semibold">Plan contratado</legend><div class="mt-2 grid gap-2">' +
       PLANS.map(function (plan) {
-        var on = editor.plan_tier === plan.id;
+        var on = current === plan.id;
         return '<label class="block cursor-pointer rounded-3xl px-4 py-3 text-left ring-1 ' + (on ? 'bg-[#FAF9F6] ring-2 ring-[#18181B]' : 'bg-white ring-stone-200') + '">' +
           '<input class="sr-only" type="radio" name="plan-tier" data-plan="' + plan.id + '" value="' + plan.id + '"' + (on ? ' checked' : '') + '>' +
           '<span class="flex items-baseline justify-between gap-3"><span class="font-semibold text-stone-900">' + plan.name + '</span><span class="font-serif text-lg text-stone-900">' + plan.price + ' €</span></span>' +
@@ -176,11 +264,16 @@
   }
 
   function applyPlanLimits(editor) {
+    editor.plan_tier = normalizePlanId(editor.plan_tier) || editor.plan_tier;
     var rank = planRank(editor.plan_tier);
     var design = editor.design;
     var plan = planById(editor.plan_tier);
     ensureLabels(design);
-    if (plan) design.labels.vw_plan = plan.name;
+    if (plan) {
+      design.labels.vw_plan = plan.name;
+      design.labels.vw_plan_id = plan.id;
+      design.labels.vw_plan_features = plan.features.join(' · ');
+    }
     if (rank < 2) {
       design.blocks.forEach(function (block) {
         if (block.id === 'local' || block.id === 'reserva') block.visible = false;
@@ -418,7 +511,8 @@
         fromPreview: !!editor.fromPreview,
         previewDirty: !!editor.previewDirty,
         studioMode: editor.studioMode || 'chat',
-        ownerEmail: editor.ownerEmail || ''
+        ownerEmail: editor.ownerEmail || '',
+        assigneeId: editor.assigneeId || ''
       }));
     } catch (error) {
       return null;
@@ -479,6 +573,7 @@
 
   function projectPayloadFromEditor(editor) {
     var payload = restaurantPayloadFromEditor(editor);
+    var plan = planById(editor.plan_tier);
     payload._meta = {
       chat: editor.chat || null,
       chats: editor.chats || null,
@@ -487,8 +582,11 @@
       preview: editor.preview || 'web',
       slug: editor.slug || '',
       studioMode: 'chat',
-      plan_tier: editor.plan_tier || '',
-      autoSlug: !!editor.autoSlug
+      plan_tier: normalizePlanId(editor.plan_tier) || editor.plan_tier || '',
+      plan_features: plan ? plan.features.slice() : [],
+      plan_summary: plan ? plan.summary : '',
+      autoSlug: !!editor.autoSlug,
+      restaurantId: editor.id || null
     };
     return payload;
   }
@@ -505,7 +603,7 @@
     editor.name = data.name || row.nombre_local || editor.name;
     editor.slug = meta.slug || slugify(editor.name);
     editor.autoSlug = meta.autoSlug != null ? !!meta.autoSlug : !editor.slug;
-    editor.plan_tier = meta.plan_tier || data.plan_tier || editor.plan_tier;
+    editor.plan_tier = normalizePlanId(meta.plan_tier || data.plan_tier || editor.plan_tier) || editor.plan_tier;
     editor.viewport = meta.viewport || 'mobile';
     editor.preview = meta.preview || 'web';
     editor.chat = meta.chat || null;
@@ -523,14 +621,16 @@
   async function upsertProjectDraft(options) {
     var editor = state.editor;
     if (!editor || !state.session || editor.studioMode !== 'chat') return null;
-    var email = currentEmail();
+    var email = editor.ownerEmail || currentEmail();
+    var collabId = editor.assigneeId || state.session.user.id;
     var payload = projectPayloadFromEditor(editor);
     var nombre = editor.name || 'Sin nombre';
     var row;
     if (editor.proposalId) {
       var updated = await supabase.from('propuestas_webs').update({
         nombre_local: nombre,
-        correo_colaborador: email || editor.ownerEmail || '',
+        correo_colaborador: email || '',
+        collaborator_id: collabId || null,
         restaurant_data: payload,
         updated_at: new Date().toISOString()
       }).eq('id', editor.proposalId).select('*').single();
@@ -540,7 +640,7 @@
       var inserted = await supabase.from('propuestas_webs').insert({
         nombre_local: nombre,
         correo_colaborador: email,
-        collaborator_id: state.session.user.id,
+        collaborator_id: collabId || state.session.user.id,
         restaurant_data: payload,
         estado: 'borrador',
         updated_at: new Date().toISOString()
@@ -645,6 +745,7 @@
   function restaurantPayloadFromEditor(editor) {
     ensureLabels(editor.design);
     ensureEventos(editor.design);
+    var plan = planById(editor.plan_tier);
     return {
       name: editor.name || '',
       slug: editor.slug || '',
@@ -656,7 +757,15 @@
       schedule: editor.schedule || '',
       instagram: editor.instagram || '',
       cover_image_url: editor.coverPreview || editor.cover_image_url || '',
-      plan_tier: editor.plan_tier || '',
+      plan_tier: normalizePlanId(editor.plan_tier) || editor.plan_tier || '',
+      plan: plan ? {
+        id: plan.id,
+        name: plan.name,
+        price: plan.price,
+        summary: plan.summary,
+        features: plan.features.slice(),
+        delivery: plan.delivery
+      } : null,
       design_config: editor.design,
       design: editor.design,
       daily_menu: editor.daily_menu,
@@ -727,8 +836,11 @@
     'Entorno cerrado. Escribe cambios del bar (nombre, color, teléfono, horario, carta, eventos). La vista previa se actualiza al instante. No se descarga código: solo puedes enviar la propuesta al administrador.';
   var MAX_CHAT_TABS = 3;
 
-  function welcomeChatMessages() {
-    return [{ role: 'system', text: CHAT_WELCOME }];
+  function welcomeChatMessages(editor) {
+    var plan = planById(editor && editor.plan_tier);
+    var text = CHAT_WELCOME;
+    if (plan) text += '\n\n' + planAiContext(plan);
+    return [{ role: 'system', text: text }];
   }
 
   function chatIconSvg(size) {
@@ -776,7 +888,7 @@
     var tab = {
       id: newChatId(),
       title: 'Chat ' + (editor.chats.length + 1),
-      messages: welcomeChatMessages()
+      messages: welcomeChatMessages(editor)
     };
     editor.chats.push(tab);
     editor.activeChatId = tab.id;
@@ -805,7 +917,7 @@
   function ensureCollabChat(editor) {
     if (!editor.viewport) editor.viewport = 'mobile';
     if (!Array.isArray(editor.chats)) {
-      var legacy = Array.isArray(editor.chat) && editor.chat.length ? editor.chat : welcomeChatMessages();
+      var legacy = Array.isArray(editor.chat) && editor.chat.length ? editor.chat : welcomeChatMessages(editor);
       var id = newChatId();
       editor.chats = [{ id: id, title: 'Chat 1', messages: legacy }];
       editor.activeChatId = id;
@@ -813,7 +925,7 @@
     if (editor.chats.length > MAX_CHAT_TABS) editor.chats = editor.chats.slice(0, MAX_CHAT_TABS);
     editor.chats.forEach(function (tab, i) {
       if (!tab.id) tab.id = newChatId();
-      if (!Array.isArray(tab.messages)) tab.messages = welcomeChatMessages();
+      if (!Array.isArray(tab.messages)) tab.messages = welcomeChatMessages(editor);
       tab.title = chatTabTitle(tab, i);
     });
     syncActiveChatRef(editor);
@@ -973,7 +1085,7 @@
       ensureLabels(editor.design);
       ensureEventos(editor.design);
       editor.design.labels.vw_events = '1';
-      if (!editor.plan_tier || planRank(editor.plan_tier) < 3) editor.plan_tier = '790';
+      if (!editor.plan_tier || planRank(editor.plan_tier) < 3) editor.plan_tier = 'digitalizacion-total';
       return 'Sección Eventos activada.';
     }
     if (/^(desactiva|desactivar|ocultar)\s+eventos/i.test(text)) {
@@ -1021,8 +1133,12 @@
       });
       return 'Plato añadido en «' + catName + '»: ' + (dishName || 'Plato');
     }
-    match = text.match(/^plan\s*[:\-]?\s*(120|390|790)$/i);
-    if (match) { editor.plan_tier = match[1]; applyPlanLimits(editor); return 'Plan ' + match[1] + ' € aplicado.'; }
+    match = text.match(/^plan\s*[:\-]?\s*(120|390|790|basico|gastro-premium|digitalizacion-total)$/i);
+    if (match) {
+      editor.plan_tier = normalizePlanId(match[1]);
+      applyPlanLimits(editor);
+      return 'Plan ' + planLabel(editor.plan_tier) + ' aplicado.';
+    }
     return 'No he entendido el cambio. Prueba: «nombre: …», «color: #1c1917», «horario: …», «activa eventos», «plato: Entrantes|Croquetas|8.5|Caseras» o pega un JSON.';
   }
 
@@ -1347,6 +1463,11 @@
       featured: featured,
       design: design,
       dailyMenu: data.daily_menu || null,
+      plan_tier: normalizePlanId(data.plan_tier) || data.plan_tier || '',
+      plan: (function () {
+        var p = planById(data.plan_tier);
+        return p ? { id: p.id, name: p.name, price: p.price, summary: p.summary, features: p.features.slice() } : null;
+      })(),
       i18n: {
         es: {
           metaTitle: name + (tagline ? ' · ' + tagline : ''),
@@ -1537,10 +1658,12 @@
   function render() {
     if (!state.ready) {
       app.innerHTML = '<p class="px-6 py-16 text-center text-sm text-stone-500">Cargando…</p>';
+      renderCreateModal();
       return;
     }
     if (!state.session || !state.profile) {
       renderLogin();
+      renderCreateModal();
       return;
     }
     if (isAdmin() && state.adminTab === 'proposals') {
@@ -1550,6 +1673,7 @@
       if (state.editor.studioMode === 'chat' || !isAdmin()) {
         renderCollabStudio();
         renderGithubDrawer();
+        renderCreateModal();
         return;
       }
       if (state.editor.id && window.VisiwebCanva) {
@@ -1564,9 +1688,11 @@
           },
           saveAll: saveAll
         });
+        renderCreateModal();
         return;
       }
       renderEditor();
+      renderCreateModal();
       return;
     }
     renderHome();
@@ -1598,7 +1724,7 @@
 
   function summary() {
     var closed = state.restaurants.filter(function (restaurant) { return restaurant.status === 'activo'; });
-    var sales = closed.reduce(function (sum, restaurant) { return sum + (Number(restaurant.plan_tier) || 0); }, 0);
+    var sales = closed.reduce(function (sum, restaurant) { return sum + planPrice(restaurant.plan_tier); }, 0);
     return (
       '<section class="grid gap-3 sm:grid-cols-2">' +
         '<article class="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-stone-200">' +
@@ -1617,7 +1743,7 @@
 
   function agencySummary() {
     var active = state.restaurants.filter(function (restaurant) { return restaurant.status === 'activo'; });
-    var revenue = active.reduce(function (sum, restaurant) { return sum + (Number(restaurant.plan_tier) || 0); }, 0);
+    var revenue = active.reduce(function (sum, restaurant) { return sum + planPrice(restaurant.plan_tier); }, 0);
     return (
       '<section class="grid gap-3 sm:grid-cols-2">' +
         '<article class="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-stone-200">' +
@@ -1669,14 +1795,29 @@
     return 'Borrador';
   }
 
+  function projectPlanFromRow(row) {
+    var data = (row && row.restaurant_data) || {};
+    var meta = data._meta || {};
+    return planById(meta.plan_tier || data.plan_tier || '');
+  }
+
   function projectCard(row) {
     var name = row.nombre_local || ((row.restaurant_data && row.restaurant_data.name) || 'Sin nombre');
+    var plan = projectPlanFromRow(row);
+    var slug = ((row.restaurant_data && row.restaurant_data._meta && row.restaurant_data._meta.slug) || (row.restaurant_data && row.restaurant_data.slug) || '');
     return (
       '<article class="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-stone-200">' +
         '<div class="flex items-start gap-3">' +
           '<div class="min-w-0 flex-1">' +
-            '<h2 class="truncate font-serif text-2xl">' + esc(name) + '</h2>' +
+            '<div class="flex items-start justify-between gap-3">' +
+              '<div class="min-w-0">' +
+                '<h2 class="truncate font-serif text-2xl">' + esc(name) + '</h2>' +
+                (slug ? '<p class="mt-1 truncate text-sm text-stone-500">/r/' + esc(slug) + '</p>' : '') +
+              '</div>' +
+              (plan ? '<p class="shrink-0 text-sm font-semibold">' + esc(plan.name + ' · ' + plan.price + ' €') + '</p>' : '') +
+            '</div>' +
             '<p class="mt-1 text-sm text-stone-500">' + esc(projectStatusLabel(row.estado)) + ' · ' + esc(formatProposalDate(row.updated_at || row.created_at)) + '</p>' +
+            (plan ? '<p class="mt-2 text-xs leading-snug text-stone-500">' + esc(plan.summary) + '</p>' : '') +
             '<div class="mt-4 flex flex-wrap gap-2">' +
               '<button type="button" data-open-project="' + esc(row.id) + '" class="rounded-full bg-stone-900 px-4 py-2 text-sm font-semibold text-white">Abrir</button>' +
             '</div>' +
@@ -1709,11 +1850,12 @@
               (count
                 ? person.projects.map(function (row) {
                     var name = row.nombre_local || 'Sin nombre';
+                    var plan = projectPlanFromRow(row);
                     return (
                       '<div class="flex items-center gap-2 rounded-2xl bg-stone-50 px-3 py-3">' +
                         '<div class="min-w-0 flex-1">' +
                           '<p class="truncate text-sm font-semibold text-stone-900">' + esc(name) + '</p>' +
-                          '<p class="truncate text-xs text-stone-500">' + esc(projectStatusLabel(row.estado)) + '</p>' +
+                          '<p class="truncate text-xs text-stone-500">' + esc(projectStatusLabel(row.estado)) + (plan ? ' · ' + esc(plan.name) : '') + '</p>' +
                         '</div>' +
                         '<button type="button" data-open-project="' + esc(row.id) + '" class="rounded-full bg-stone-900 px-3 py-1.5 text-xs font-semibold text-white">Abrir</button>' +
                         '<button type="button" data-delete-project="' + esc(row.id) + '" class="rounded-full p-2 text-stone-400 hover:bg-red-50 hover:text-red-700" title="Eliminar" aria-label="Eliminar">' + trashIcon() + '</button>' +
@@ -1750,6 +1892,271 @@
         '</div>' +
       '</div>';
     document.body.appendChild(drawer);
+  }
+
+  function blankCreateModal() {
+    return {
+      open: true,
+      name: '',
+      slug: '',
+      autoSlug: true,
+      plan: '',
+      assigneeId: userId(),
+      cuisine: '',
+      phone: '',
+      address: '',
+      notesOpen: false,
+      notes: '',
+      featuresOpen: '',
+      error: '',
+      busy: false
+    };
+  }
+
+  function openCreateModal() {
+    state.createModal = blankCreateModal();
+    state.error = '';
+    state.notice = '';
+    render();
+  }
+
+  function closeCreateModal() {
+    state.createModal = null;
+    render();
+  }
+
+  function assigneeOptions() {
+    var seen = {};
+    var list = [];
+    var push = function (id, label, email) {
+      if (!id || seen[id]) return;
+      seen[id] = true;
+      list.push({ id: id, label: label || email || 'Usuario', email: email || '' });
+    };
+    push(userId(), 'Tú · ' + (currentEmail() || 'sesión actual'), currentEmail());
+    Object.keys(state.owners || {}).forEach(function (id) {
+      var person = state.owners[id];
+      push(id, person.full_name || person.email || 'Colaborador', person.email || '');
+    });
+    (state.adminPeople || []).forEach(function (person) {
+      push(person.id, person.full_name || person.email || 'Colaborador', person.email || '');
+    });
+    return list;
+  }
+
+  function slugTaken(slug, ignoreRestaurantId) {
+    var clean = slugify(slug);
+    if (!clean) return false;
+    var inRestaurants = (state.restaurants || []).some(function (row) {
+      return row.slug === clean && row.id !== ignoreRestaurantId;
+    });
+    if (inRestaurants) return true;
+    return (state.myProjects || []).concat(state.proposals || []).some(function (row) {
+      var data = row.restaurant_data || {};
+      var meta = data._meta || {};
+      var existing = slugify(meta.slug || data.slug || '');
+      return existing === clean && row.id !== (state.createModal && state.createModal.ignoreProposalId);
+    });
+  }
+
+  function createModalPlanCard(plan, selected, featuresOpen) {
+    var on = selected === plan.id;
+    var open = featuresOpen === plan.id;
+    return (
+      '<article class="flex min-w-0 flex-col rounded-3xl border bg-[#FAF9F6] p-4 ' + (on ? 'border-stone-900 ring-2 ring-stone-900' : 'border-stone-200') + '">' +
+        '<button type="button" data-create-plan="' + esc(plan.id) + '" class="w-full text-left">' +
+          '<p class="font-serif text-xl font-semibold text-stone-900">' + esc(plan.name) + '</p>' +
+          '<p class="mt-0.5 text-xs text-stone-500">' + esc(plan.tagline) + '</p>' +
+          '<p class="mt-3 text-2xl font-bold text-stone-900">' + plan.price + ' €</p>' +
+          '<p class="mt-0.5 text-xs text-stone-500">IVA no incluido</p>' +
+          '<p class="mt-1 text-xs text-stone-500">Web en propiedad · Sin permanencia</p>' +
+          '<p class="mt-3 inline-flex items-center gap-1.5 rounded-full border border-stone-200 bg-white px-2.5 py-1 text-[11px] font-medium text-stone-700">' +
+            '<svg class="h-3.5 w-3.5 shrink-0" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="8" cy="8" r="5.5"/><path d="M8 5.5V8l2 1.2"/></svg>' +
+            esc(plan.delivery) +
+          '</p>' +
+          '<p class="mt-3 text-sm leading-snug text-stone-600">' + esc(plan.summary) + '</p>' +
+        '</button>' +
+        '<button type="button" data-create-features="' + esc(plan.id) + '" class="mt-3 flex w-full items-center justify-center gap-1 text-xs font-semibold text-stone-500">' +
+          (open ? 'Ocultar características' : 'Ver características') +
+          '<span aria-hidden="true">' + (open ? '▴' : '▾') + '</span>' +
+        '</button>' +
+        (open
+          ? '<ul class="mt-2 space-y-0 divide-y divide-stone-200/80 border-t border-stone-200/80">' +
+              plan.features.map(function (feature) {
+                return '<li class="flex gap-2 py-2 text-xs leading-snug text-stone-600"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-stone-300"></span><span>' + esc(feature) + '</span></li>';
+              }).join('') +
+            '</ul>'
+          : '') +
+        '<button type="button" data-create-plan="' + esc(plan.id) + '" class="mt-4 w-full rounded-full px-3 py-2.5 text-sm font-semibold ' +
+          (on ? 'bg-[#f59e0b] text-black' : 'border border-stone-300 bg-white text-stone-900') + '">' +
+          (on ? 'Seleccionado' : 'Elegir este') +
+        '</button>' +
+      '</article>'
+    );
+  }
+
+  function renderCreateModal() {
+    var existing = document.getElementById('create-restaurant-modal');
+    if (existing) existing.remove();
+    var modal = state.createModal;
+    if (!modal || !modal.open) return;
+    var people = assigneeOptions();
+    var assigneeLocked = !isAdmin() && people.length <= 1;
+    var root = document.createElement('div');
+    root.id = 'create-restaurant-modal';
+    root.innerHTML =
+      '<div class="fixed inset-0 z-[90] flex items-start justify-center overflow-y-auto bg-stone-900/40 px-4 py-6 sm:py-10">' +
+        '<div class="w-full max-w-5xl rounded-[28px] border border-stone-200 bg-[#FAF9F6] shadow-2xl" role="dialog" aria-modal="true" aria-labelledby="create-restaurant-title">' +
+          '<div class="flex items-start justify-between gap-3 border-b border-stone-200 px-5 py-4 sm:px-6">' +
+            '<div>' +
+              '<h2 id="create-restaurant-title" class="font-serif text-2xl text-stone-900">Nuevo restaurante</h2>' +
+              '<p class="mt-1 text-sm text-stone-500">Crea el local, elige el plan y abre el editor.</p>' +
+            '</div>' +
+            '<button type="button" id="create-modal-close" class="rounded-full px-3 py-2 text-sm font-semibold text-stone-500" aria-label="Cerrar">Cerrar</button>' +
+          '</div>' +
+          '<form id="create-restaurant-form" class="space-y-6 px-5 py-5 sm:px-6 sm:py-6">' +
+            (modal.error ? '<p class="rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-800">' + esc(modal.error) + '</p>' : '') +
+            '<div class="grid gap-4 sm:grid-cols-2">' +
+              '<label class="block text-sm font-semibold">Nombre del restaurante' +
+                '<input data-create="name" type="text" required value="' + esc(modal.name) + '" placeholder="Bar El Roble" class="mt-1 w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-base outline-none focus:border-stone-400">' +
+              '</label>' +
+              '<label class="block text-sm font-semibold">Slug / Carpeta' +
+                '<span class="mt-1 flex overflow-hidden rounded-2xl border border-stone-200 bg-white focus-within:border-stone-400">' +
+                  '<span class="px-3 py-3 text-sm text-stone-400">/r/</span>' +
+                  '<input data-create="slug" type="text" required value="' + esc(modal.slug) + '" placeholder="bar-el-roble" class="w-full bg-transparent py-3 pr-4 text-base outline-none">' +
+                '</span>' +
+              '</label>' +
+            '</div>' +
+            '<div>' +
+              '<p class="text-sm font-semibold">Plan / Tipo de web</p>' +
+              '<div class="mt-3 grid gap-3 lg:grid-cols-3">' +
+                PLANS.map(function (plan) { return createModalPlanCard(plan, modal.plan, modal.featuresOpen); }).join('') +
+              '</div>' +
+            '</div>' +
+            '<label class="block text-sm font-semibold">Asignado a' +
+              '<select data-create="assigneeId"' + (assigneeLocked ? ' disabled' : '') + ' class="mt-1 w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-base outline-none focus:border-stone-400">' +
+                people.map(function (person) {
+                  return '<option value="' + esc(person.id) + '"' + (person.id === modal.assigneeId ? ' selected' : '') + '>' + esc(person.label) + (person.email && person.label.indexOf(person.email) < 0 ? ' · ' + esc(person.email) : '') + '</option>';
+                }).join('') +
+              '</select>' +
+            '</label>' +
+            '<section class="rounded-3xl border border-stone-200 bg-white p-4 sm:p-5">' +
+              '<p class="text-sm font-semibold text-stone-900">Datos iniciales opcionales</p>' +
+              '<div class="mt-4 space-y-4">' +
+                '<label class="block text-sm font-semibold">Tipo de cocina / Estilo' +
+                  '<input data-create="cuisine" type="text" value="' + esc(modal.cuisine) + '" placeholder="Cervecería y raciones" class="mt-1 w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-base outline-none focus:border-stone-400">' +
+                '</label>' +
+                '<div class="grid gap-4 sm:grid-cols-2">' +
+                  '<label class="block text-sm font-semibold">Teléfono / WhatsApp' +
+                    '<input data-create="phone" type="tel" value="' + esc(modal.phone) + '" placeholder="34600000000" class="mt-1 w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-base outline-none focus:border-stone-400">' +
+                  '</label>' +
+                  '<label class="block text-sm font-semibold">Dirección' +
+                    '<input data-create="address" type="text" value="' + esc(modal.address) + '" placeholder="Calle, ciudad" class="mt-1 w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-base outline-none focus:border-stone-400">' +
+                  '</label>' +
+                '</div>' +
+                '<button type="button" id="create-notes-toggle" class="rounded-full border border-dashed border-stone-300 px-4 py-2 text-sm font-semibold text-stone-700">' +
+                  (modal.notesOpen ? '− Ocultar carta o notas' : '+ Añadir carta o notas iniciales') +
+                '</button>' +
+                (modal.notesOpen
+                  ? '<label class="block text-sm font-semibold">Carta o notas iniciales' +
+                      '<textarea data-create="notes" rows="4" placeholder="Entrantes, platos estrella, tono de la web…" class="mt-1 w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-base outline-none focus:border-stone-400">' + esc(modal.notes) + '</textarea>' +
+                    '</label>'
+                  : '') +
+              '</div>' +
+            '</section>' +
+            '<div class="flex flex-col-reverse gap-2 border-t border-stone-200 pt-4 sm:flex-row sm:justify-end">' +
+              '<button type="button" id="create-modal-cancel" class="rounded-full px-4 py-3 text-sm font-semibold text-stone-500">Cancelar</button>' +
+              '<button type="submit" class="rounded-full bg-[#f59e0b] px-5 py-3 text-sm font-semibold text-black"' + (modal.busy ? ' disabled' : '') + '>' +
+                (modal.busy ? 'Creando…' : 'Crear y abrir editor') +
+              '</button>' +
+            '</div>' +
+          '</form>' +
+        '</div>' +
+      '</div>';
+    document.body.appendChild(root);
+  }
+
+  async function createRestaurantFromModal() {
+    var modal = state.createModal;
+    if (!modal || modal.busy) return;
+    var name = String(modal.name || '').trim();
+    var slug = slugify(modal.slug || name);
+    var planId = normalizePlanId(modal.plan);
+    var plan = planById(planId);
+    var phone = String(modal.phone || '').trim();
+    var address = String(modal.address || '').trim();
+    var cuisine = String(modal.cuisine || '').trim();
+    var notes = String(modal.notes || '').trim();
+    var assigneeId = modal.assigneeId || userId();
+
+    if (!name) {
+      modal.error = 'Escribe el nombre del restaurante.';
+      renderCreateModal();
+      return;
+    }
+    if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) {
+      modal.error = 'El slug solo puede llevar minúsculas, números y guiones.';
+      renderCreateModal();
+      return;
+    }
+    if (!plan) {
+      modal.error = 'Elige un plan / tipo de web.';
+      renderCreateModal();
+      return;
+    }
+    if (slugTaken(slug)) {
+      modal.error = 'Ese slug ya está en uso. Cámbialo.';
+      renderCreateModal();
+      return;
+    }
+
+    modal.busy = true;
+    modal.error = '';
+    renderCreateModal();
+
+    try {
+      var editor = blankEditor();
+      editor.name = name;
+      editor.slug = slug;
+      editor.autoSlug = false;
+      editor.tagline = cuisine || editor.tagline;
+      editor.phone = phone;
+      editor.whatsapp = phone.replace(/\D/g, '');
+      editor.address = address;
+      if (notes) editor.description = notes;
+      editor.plan_tier = plan.id;
+      editor.studioMode = 'chat';
+      editor.fromPreview = true;
+      editor.previewDirty = true;
+      editor.status = 'borrador';
+      editor.assigneeId = assigneeId;
+      editor.ownerEmail = ((state.owners[assigneeId] && state.owners[assigneeId].email) || currentEmail());
+      applyPlanLimits(editor);
+      ensureCollabChat(editor);
+
+      var payload = restaurantPayload(editor);
+      payload.collaborator_id = assigneeId;
+      payload.status = 'borrador';
+      var inserted = await supabase.from('restaurants').insert(payload).select('*').single();
+      if (inserted.error) throw inserted.error;
+      editor.id = inserted.data.id;
+      editor.status = inserted.data.status || 'borrador';
+      state.restaurants = [inserted.data].concat(state.restaurants || []);
+
+      state.editor = editor;
+      await upsertProjectDraft();
+      persistActiveLocal();
+
+      state.createModal = null;
+      state.notice = 'Restaurante creado · ' + planLabel(plan.id);
+      state.error = '';
+      state.busy = false;
+      render();
+    } catch (error) {
+      modal.busy = false;
+      modal.error = dbMessage(error) || 'No se ha podido crear el restaurante.';
+      renderCreateModal();
+    }
   }
 
   function renderHome() {
@@ -1811,6 +2218,7 @@
         homeBody +
       '</div>';
     renderGithubDrawer();
+    renderCreateModal();
   }
 
   function field(label, control) {
@@ -2334,12 +2742,13 @@
       name: editor.name.trim(),
       slug: slugify(editor.slug),
       tagline: editor.tagline.trim() || null,
+      description: (editor.description || '').trim() || null,
       phone: editor.phone.trim() || null,
       whatsapp: editor.whatsapp.trim() || null,
       address: editor.address.trim() || null,
       schedule: editor.schedule.trim() || null,
       instagram: editor.instagram.trim() || null,
-      plan_tier: editor.plan_tier,
+      plan_tier: normalizePlanId(editor.plan_tier) || editor.plan_tier,
       design_config: editor.design,
       cover_image_url: editor.cover_image_url || null
     };
@@ -2349,7 +2758,8 @@
     if (!editor.name.trim()) return 'Escribe el nombre del local.';
     var slug = slugify(editor.slug || editor.name);
     if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) return 'El enlace solo puede llevar minúsculas, números y guiones.';
-    if (PLANS.every(function (plan) { return plan.id !== editor.plan_tier; })) return 'Elige un plan.';
+    if (!planById(editor.plan_tier)) return 'Elige un plan.';
+    editor.plan_tier = normalizePlanId(editor.plan_tier);
     return '';
   }
 
@@ -2569,7 +2979,7 @@
         editor.address = restaurant.address || '';
         editor.schedule = restaurant.schedule || '';
         editor.instagram = restaurant.instagram || '';
-        editor.plan_tier = restaurant.plan_tier || '';
+        editor.plan_tier = normalizePlanId(restaurant.plan_tier) || restaurant.plan_tier || '';
         editor.status = restaurant.status || 'borrador';
         editor.cover_image_url = restaurant.cover_image_url || '';
         editor.design = window.VisiwebDesign.merge(restaurant.design_config);
@@ -2799,6 +3209,39 @@
     if (event.target && event.target.id === 'github-slug') {
       state.githubSlug = event.target.value;
     }
+    var createField = event.target && event.target.dataset && event.target.dataset.create;
+    if (createField && state.createModal) {
+      if (createField === 'name') {
+        state.createModal.name = event.target.value;
+        if (state.createModal.autoSlug) {
+          state.createModal.slug = slugify(event.target.value);
+          var slugNode = document.querySelector('#create-restaurant-modal [data-create="slug"]');
+          if (slugNode) slugNode.value = state.createModal.slug;
+        }
+        return;
+      }
+      if (createField === 'slug') {
+        state.createModal.autoSlug = false;
+        state.createModal.slug = event.target.value;
+        return;
+      }
+      if (createField === 'cuisine' || createField === 'phone' || createField === 'address' || createField === 'notes') {
+        state.createModal[createField] = event.target.value;
+      }
+    }
+  });
+
+  document.addEventListener('change', function (event) {
+    if (event.target && event.target.dataset && event.target.dataset.create === 'assigneeId' && state.createModal) {
+      state.createModal.assigneeId = event.target.value;
+    }
+  });
+
+  document.addEventListener('submit', function (event) {
+    if (event.target && event.target.id === 'create-restaurant-form') {
+      event.preventDefault();
+      createRestaurantFromModal();
+    }
   });
 
   document.addEventListener('click', function (event) {
@@ -2813,6 +3256,32 @@
       var slugInput = document.getElementById('github-slug');
       if (slugInput) state.githubSlug = slugInput.value.trim();
       publishToGithub();
+      return;
+    }
+    if (button.id === 'create-modal-close' || button.id === 'create-modal-cancel') {
+      closeCreateModal();
+      return;
+    }
+    if (button.id === 'create-notes-toggle' && state.createModal) {
+      state.createModal.notesOpen = !state.createModal.notesOpen;
+      renderCreateModal();
+      return;
+    }
+    if (button.dataset.createPlan && state.createModal) {
+      state.createModal.plan = button.dataset.createPlan;
+      state.createModal.error = '';
+      renderCreateModal();
+      return;
+    }
+    if (button.dataset.createFeatures && state.createModal) {
+      state.createModal.featuresOpen = state.createModal.featuresOpen === button.dataset.createFeatures
+        ? ''
+        : button.dataset.createFeatures;
+      renderCreateModal();
+      return;
+    }
+    if (event.target.matches && event.target.matches('#create-restaurant-modal > div')) {
+      closeCreateModal();
     }
   });
 
@@ -2892,7 +3361,7 @@
       return;
     }
     if (target.dataset.plan && state.editor) {
-      state.editor.plan_tier = target.dataset.plan;
+      state.editor.plan_tier = normalizePlanId(target.dataset.plan);
       applyPlanLimits(state.editor);
       state.error = '';
       render();
@@ -3005,13 +3474,7 @@
       return;
     }
     if (button.id === 'new-restaurant') {
-      state.editor = blankEditor();
-      state.editor.studioMode = 'chat';
-      state.notice = '';
-      state.error = '';
-      persistActiveLocal();
-      render();
-      upsertProjectDraft().catch(function () {});
+      openCreateModal();
       return;
     }
     if (button.dataset.copy) {

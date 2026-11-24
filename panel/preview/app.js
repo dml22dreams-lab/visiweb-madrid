@@ -3622,7 +3622,7 @@
     });
     if (document.title !== undefined) document.title = name + (tagline ? ' · ' + tagline : '');
     if (D.eventos) {
-      var planOk = String(row.plan_tier || '') === '790' || row.eventos_activo === true || (row.eventos && row.eventos.activo);
+      var planOk = String(row.plan_tier || '') === '790' || String(row.plan_tier || '') === 'digitalizacion-total' || row.eventos_activo === true || (row.eventos && row.eventos.activo);
       var labels = (row.design_config && row.design_config.labels) || (row.design && row.design.labels) || {};
       var evCfg = (row.design_config && row.design_config.eventos) || (row.design && row.design.eventos) || row.eventos || {};
       if (typeof row.eventos_activo === 'boolean') D.eventos.activo = row.eventos_activo;

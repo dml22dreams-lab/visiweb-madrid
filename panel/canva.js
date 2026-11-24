@@ -464,7 +464,7 @@
         '<section class="space-y-1 px-3 py-2">' +
         colorRow('colors.pageBg', 'Fondo') + colorRow('colors.cardBg', 'Tarjetas') + colorRow('colors.textPrimary', 'Texto') +
         '</section>';
-      if (String(current.plan_tier || '') === '790') {
+      if (String(current.plan_tier || '') === '790' || String(current.plan_tier || '') === 'digitalizacion-total') {
         if (!design.labels) design.labels = {};
         if (!design.eventos) design.eventos = { tipoVideo: 'salon', eyebrow: '', title: '', subtitle: '', lead: '', cta: '', readyTitle: '', readyCta: '' };
         var eventsOn = design.labels.vw_events === '1';
