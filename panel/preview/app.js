@@ -546,6 +546,8 @@
     let dragStartX = 0;
     let dragStartScroll = 0;
     let dragMoved = false;
+    let pressedTab = null;
+    let suppressTabClick = false;
 
     function queueSnap() {
       chipSnapArmed = true;
@@ -566,6 +568,7 @@
 
     row.addEventListener('pointerdown', (event) => {
       if (event.pointerType === 'mouse' && event.button !== 0) return;
+      pressedTab = event.target.closest('[role="tab"]');
       chipRowDrag = true;
       chipSnapArmed = false;
       chipSlideToken += 1;
@@ -580,8 +583,9 @@
       if (event.pointerId !== dragPointer) return;
       const dx = event.clientX - dragStartX;
       if (!dragMoved) {
-        if (Math.abs(dx) <= 5) return;
+        if (Math.abs(dx) <= 8) return;
         dragMoved = true;
+        pressedTab = null;
         row.classList.add('is-dragging');
         try { row.setPointerCapture(event.pointerId); } catch (err) {}
       }
@@ -589,10 +593,16 @@
       event.preventDefault();
     });
     row.addEventListener('click', (event) => {
-      if (!dragMoved) return;
-      event.preventDefault();
-      event.stopPropagation();
-      dragMoved = false;
+      if (suppressTabClick || dragMoved) {
+        event.preventDefault();
+        event.stopPropagation();
+        suppressTabClick = false;
+        dragMoved = false;
+        return;
+      }
+      const tab = event.target.closest('[role="tab"]');
+      if (!tab) return;
+      selectTab(tab, false);
     }, true);
     row.addEventListener('wheel', (event) => {
       if (row.scrollWidth - row.clientWidth <= 1) return;
@@ -612,21 +622,29 @@
     document.addEventListener('pointerup', (event) => {
       if (event.pointerId === dragPointer) {
         const moved = dragMoved;
+        const tab = pressedTab;
+        pressedTab = null;
         endMouseDrag();
         if (moved) {
           window.setTimeout(() => { dragMoved = false; }, 0);
           return;
         }
         dragMoved = false;
+        if (tab) {
+          suppressTabClick = true;
+          selectTab(tab, false);
+        }
         return;
       }
       chipRowDrag = false;
+      pressedTab = null;
       queueSnap();
     });
     document.addEventListener('pointercancel', (event) => {
       if (event.pointerId === dragPointer) endMouseDrag();
       chipRowDrag = false;
       dragMoved = false;
+      pressedTab = null;
     });
 
     let pageLock = 0;

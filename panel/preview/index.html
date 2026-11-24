@@ -892,7 +892,11 @@
       justify-content: flex-start;
       cursor: grab;
     }
-    #menu-chip-row.is-dragging {
+    #menu-chip-row .tab {
+      cursor: pointer;
+    }
+    #menu-chip-row.is-dragging,
+    #menu-chip-row.is-dragging .tab {
       cursor: grabbing;
       user-select: none;
     }
@@ -2781,7 +2785,7 @@
     if (window.VisiwebRestaurant && window.VisiwebRestaurant.dynamic === 'web') {
       window.VisiwebRestaurant.start('web');
     } else {
-      document.write('<script src="./app.js"><\/script>');
+      document.write('<script src="./app.js?v=8"><\/script>');
     }
   </script>
   <script>
