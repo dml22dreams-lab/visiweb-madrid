@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex">
+  <title>Taberna El Norte · Carta en mesa</title>
+  <meta name="theme-color" content="#ffffff">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%231c1917'/%3E%3Cpath d='M11 7h10c0 5-3 8-5 8s-5-3-5-8z' fill='%23f59e0b'/%3E%3Cpath d='M16 15v8m-4 0h8' stroke='%23f59e0b' stroke-width='2.5' stroke-linecap='round'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <div class="col">
+    <header class="hero">
+      <img id="hero" class="h-48 object-cover" src="../assets/demo/hero.webp" alt="">
+      <button type="button" id="hero-kicker" class="hero-kicker">LA CARTA</button>
+      <div class="hero-tools">
+        <button type="button" id="btn-lang" class="tool lang" aria-label="Idioma">
+          <span class="lang-text-wrapper">
+            <span class="lang-text-sizer" aria-hidden="true">Hello</span>
+            <span id="lang-text" class="lang-text">ES</span>
+          </span>
+        </button>
+        <button type="button" id="btn-search" class="tool search" aria-expanded="false" aria-label="Buscar platos"></button>
+      </div>
+    </header>
+
+    <section class="intro" aria-label="Taberna El Norte">
+      <h1>Taberna El Norte</h1>
+      <button type="button" id="open-reviews" class="fact">
+        <span class="fact-main">
+          <span class="fact-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="#e0a106"><path d="M12 3.2 14.7 8.7l6 .9-4.4 4.2 1 6L12 17.8 6.7 20.8l1-6L3.3 9.6l6-.9L12 3.2z"/></svg></span>
+          <span class="fact-line"><span id="reviews-score"></span> <span id="reviews-count"></span></span>
+        </span>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5.5 15.5 12 9 18.5"/></svg>
+      </button>
+      <button type="button" id="open-info" class="fact">
+        <span class="fact-main">
+          <span class="fact-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="8.25"/><path stroke-linecap="round" d="M12 11v5"/><circle cx="12" cy="8" r=".8" fill="currentColor" stroke="none"/></svg></span>
+          <span class="fact-copy">
+            <span id="info-k" class="fact-k"></span>
+            <span id="info-s" class="fact-s"></span>
+          </span>
+        </span>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5.5 15.5 12 9 18.5"/></svg>
+      </button>
+    </section>
+
+    <div class="mesa-line" aria-hidden="true"></div>
+
+    <div id="mesa-bar" class="mesa-bar">
+      <p id="mesa-name" class="mesa-name">Taberna El Norte</p>
+      <nav id="mesa-cats" aria-label="Categorías"></nav>
+      <div class="mesa-allergen-row">
+        <div class="mesa-allergens-slot">
+          <div class="mesa-allergens-bg" aria-hidden="true"></div>
+          <svg class="mesa-edge" aria-hidden="true"><line x1="0" y1="0.5" x2="100%" y2="0.5" stroke="#e5e7eb" stroke-width="1" /></svg>
+          <button type="button" id="mesa-allergens" class="mesa-allergens" aria-expanded="false" aria-controls="mesa-filter">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4 5h16l-6.2 7.2V19l-3.6-1.8v-5L4 5z"/></svg>
+            <span id="mesa-allergens-label">Alérgenos</span>
+          </button>
+        </div>
+        <div class="mesa-notch" aria-hidden="true">
+          <svg viewBox="0 0 34 48">
+            <path class="mesa-notch-fill" d="M 0 0 L 34 0 L 34 0.5 L 31.70 0.5 A 9.69 9.69 0 0 0 22.72 13.82 A 24.5 24.5 0 0 1 0 47.5 Z" fill="#ffffff" />
+            <path class="mesa-notch-line" d="M 0 47.5 A 24.5 24.5 0 0 0 22.72 13.82 A 9.69 9.69 0 0 1 31.70 0.5 L 34 0.5" fill="none" stroke="#e5e7eb" stroke-width="1" />
+          </svg>
+        </div>
+        <div class="mesa-allergen-rest" aria-hidden="true">
+          <svg><line x1="0" y1="0.5" x2="100%" y2="0.5" stroke="#e5e7eb" stroke-width="1" /></svg>
+        </div>
+      </div>
+    </div>
+    <div id="mesa-filter-root" class="mesa-filter-root" hidden>
+      <button type="button" id="mesa-filter-backdrop" class="mesa-filter-backdrop" aria-label="Cerrar"></button>
+      <div id="mesa-filter" class="mesa-filter" role="dialog" aria-modal="true" aria-labelledby="mesa-filter-title">
+        <button type="button" id="mesa-filter-close" class="mesa-filter-close" aria-label="Cerrar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+        <p id="mesa-filter-title" class="mesa-filter-title">Filtro de alérgenos</p>
+        <div id="mesa-filter-list" class="mesa-filter-list"></div>
+        <button type="button" id="mesa-filter-clear" class="mesa-filter-clear" hidden>Quitar filtros</button>
+      </div>
+    </div>
+    <main id="menu"></main>
+  </div>
+
+  <div id="search-root" class="search-screen" hidden>
+    <header class="search-bar">
+      <button type="button" id="search-back" class="search-back" aria-label="Volver">←</button>
+      <input id="q" type="text" enterkeyhint="search" autocomplete="off" placeholder="Buscar ..." autofocus>
+    </header>
+    <div id="search-results" class="search-results"></div>
+  </div>
+
+    <div id="dock" class="dock">
+    <button type="button" id="dock-rate" class="pill-dark">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M6 16.5 4.5 20l3.2-1.2A8.5 8.5 0 1 0 6 16.5z"/><path stroke-linecap="round" d="M8.5 10.5h7M8.5 13.5h4.5"/></svg>
+      <span id="dock-rate-label">Valora tu experiencia</span>
+    </button>
+    <div id="dock-split" class="dock-split" hidden>
+      <button type="button" id="dock-rate-mini" class="pill-light">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M6 16.5 4.5 20l3.2-1.2A8.5 8.5 0 1 0 6 16.5z"/></svg>
+        <span id="dock-rate-mini-label">Valora</span>
+      </button>
+      <button type="button" id="dock-mine" class="pill-dark dock-mine">
+        <span class="dock-mine-lead">
+          <span class="dock-plus" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path stroke-linecap="round" d="M12 5v14M5 12h14"/></svg></span>
+          <span id="dock-mine-label">Mi selección</span>
+        </span>
+        <span id="dock-count" class="badge">0</span>
+      </button>
+    </div>
+  </div>
+
+  <div id="dish-root" class="overlay" hidden>
+    <button type="button" class="backdrop" data-close="dish" aria-label="Cerrar"></button>
+    <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="dish-title" tabindex="-1"></div>
+  </div>
+
+  <div id="sel-root" class="overlay" hidden>
+    <button type="button" class="backdrop" data-close="sel" aria-label="Cerrar"></button>
+    <div class="sheet sheet-sel" role="dialog" aria-modal="true" aria-labelledby="sel-title" tabindex="-1"></div>
+  </div>
+
+  <div id="info-root" class="overlay" hidden>
+    <button type="button" class="backdrop" data-close="info" aria-label="Cerrar"></button>
+    <div class="sheet" role="dialog" aria-modal="true" aria-label="Información" tabindex="-1"></div>
+  </div>
+
+  <div id="socials-root" class="overlay" hidden>
+    <div class="sheet-full" role="dialog" aria-modal="true" aria-labelledby="soc-title" tabindex="-1"></div>
+  </div>
+
+  <div id="review-root" class="overlay" hidden>
+    <button type="button" class="backdrop" data-close="review" aria-label="Cerrar"></button>
+    <div class="sheet-full" role="dialog" aria-modal="true" aria-labelledby="rev-title" tabindex="-1"></div>
+  </div>
+
+  <script src="../data.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>

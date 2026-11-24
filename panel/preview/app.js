@@ -1,3 +1,4 @@
+/* sync-trigger */
 /* =====================================================================
    VisiWeb Madrid · Plantilla de carta digital — lógica de la página.
    Todos los datos salen de demo-data.js (fuente única).
@@ -7,6 +8,47 @@
 (function () {
   'use strict';
 
+  function isQrMesaMode() {
+    if (window.FORCE_QR_MESA === true) return true;
+    var path = String(window.location.pathname || '').replace(/\/+$/, '') || '/';
+    if (path === '/qr' || /\/qr$/i.test(path)) return true;
+    try {
+      var params = new URLSearchParams(window.location.search || '');
+      if (params.get('qr') === '1' || params.get('modo') === 'qr') return true;
+    } catch (e) { /* ignore */ }
+    return false;
+  }
+
+  function resolveMesaHref() {
+    var path = String(window.location.pathname || '');
+    var base;
+    if (/\/qr(?:\/index\.html)?\/?$/i.test(path)) {
+      base = path.replace(/\/qr(?:\/index\.html)?\/?$/i, '/mesa/');
+    } else if (/\/qr-mesa(?:\/index\.html)?\/?$/i.test(path)) {
+      base = path.replace(/\/qr-mesa(?:\/index\.html)?\/?$/i, '/_plantilla-base/mesa/');
+    } else {
+      base = new URL('mesa/', window.location.href).pathname;
+    }
+    if (!/\/$/.test(base)) base += '/';
+    var params = new URLSearchParams(window.location.search || '');
+    params.delete('qr');
+    params.delete('modo');
+    var qs = params.toString();
+    return base + (qs ? '?' + qs : '') + (window.location.hash || '');
+  }
+
+  if (isQrMesaMode()) {
+    var here = String(window.location.pathname || '').replace(/\/+$/, '');
+    if (!/\/mesa$/i.test(here)) {
+      try {
+        document.documentElement.style.visibility = 'hidden';
+        document.documentElement.style.backgroundColor = '#ffffff';
+      } catch (e) { /* ignore */ }
+      window.location.replace(resolveMesaHref());
+    }
+    return;
+  }
+
   const D = window.VISIWEB_DEMO;
   if (!D) return;
 
@@ -15,14 +57,12 @@
   const SCHEMA_DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   const WEEK_ORDER = [1, 2, 3, 4, 5, 6, 0];
   let eventosOn = !!(D.eventos && D.eventos.activo);
-  function pagesList() {
-    return eventosOn
-      ? ['inicio', 'carta', 'local', 'eventos', 'reservas']
-      : ['inicio', 'carta', 'local', 'reservas'];
-  }
+  let PAGES = eventosOn
+    ? ['inicio', 'carta', 'local', 'eventos', 'reservas']
+    : ['inicio', 'carta', 'local', 'reservas'];
   const allergenFilters = new Set();
   const FILTER_OFF = ['bg-white', 'text-stone-700', 'border-stone-300', 'dark:bg-slate-950', 'dark:text-slate-300', 'dark:border-slate-600'];
-  const FILTER_ON = ['bg-stone-900', 'text-white', 'border-stone-900', 'dark:bg-slate-100', 'dark:text-slate-900', 'dark:border-slate-100'];
+  const FILTER_ON = ['filter-chip-on', 'text-white', 'border-transparent'];
 
   /* ------------------------------- Utilidades ------------------------------- */
   const $ = (sel) => document.querySelector(sel);
@@ -168,32 +208,30 @@
     L(D.business.address.street) + (D.business.address.city ? ', ' + D.business.address.city : '')
   );
 
-  function phoneHref() {
-    const phone = String(D.business.phone || '').replace(/\s/g, '');
-    return phone ? ('tel:' + phone) : '#';
+  function showDemoNote(key) {
+    const note = $('#demo-action-note');
+    if (!note) return;
+    note.textContent = t(key);
+    note.hidden = false;
+    clearTimeout(showDemoNote.timer);
+    showDemoNote.timer = setTimeout(() => { note.hidden = true; }, 3400);
   }
+  window.visiwebDemoNote = showDemoNote;
 
-  function mapsHref() {
-    const query = D.business.mapQuery || addressText();
-    if (!query) return '#';
-    return 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(query);
-  }
-
-  function socialHref(key) {
-    const raw = String(
-      (key === 'instagram' && D.business.instagram) ||
-      (key === 'facebook' && D.business.facebook) ||
-      (key === 'x' && (D.business.x || D.business.twitter)) ||
-      (key === 'tiktok' && D.business.tiktok) ||
-      ''
-    ).trim();
-    if (!raw) return '';
-    if (/^https?:\/\//i.test(raw)) return raw;
-    if (key === 'instagram') return 'https://instagram.com/' + raw.replace(/^@/, '');
-    if (key === 'facebook') return 'https://facebook.com/' + raw.replace(/^@/, '');
-    if (key === 'x') return 'https://x.com/' + raw.replace(/^@/, '');
-    if (key === 'tiktok') return 'https://www.tiktok.com/@' + raw.replace(/^@/, '');
-    return raw;
+  function bindDemoActions() {
+    const guard = (selector, key) => {
+      document.querySelectorAll(selector).forEach((node) => {
+        if (node.dataset.demoGuard) return;
+        node.dataset.demoGuard = '1';
+        node.addEventListener('click', (event) => {
+          event.preventDefault();
+          showDemoNote(key);
+        });
+      });
+    };
+    guard('#header-call, #footer-phone, #bar-call, #gbp-call', 'demoCallNote');
+    guard('#gbp-directions, #map-directions, #footer-map', 'demoRouteNote');
+    guard('#gbp-save', 'demoSaveNote');
   }
 
   /* ------------------------------- Marcadores ------------------------------ */
@@ -239,7 +277,7 @@
       img.src = D.images.hero;
       img.alt = L(D.images.heroAlt);
       img.width = 1600;
-      img.height = 500;
+      img.height = 900;
       img.decoding = 'async';
       img.setAttribute('fetchpriority', 'high');
       img.addEventListener('error', function () {
@@ -265,29 +303,14 @@
       if (badge) badge.textContent = price;
     }
 
-    const tel = phoneHref();
     ['#bar-call', '#footer-phone', '#header-call', '#gbp-call'].forEach((sel) => {
       const node = $(sel);
-      if (node) node.href = tel;
+      if (node) node.href = '#';
     });
     $('#footer-phone-number').textContent = D.business.phoneDisplay;
 
-    const salesWa = $('#sales-whatsapp');
-    if (salesWa) {
-      salesWa.href = 'https://wa.me/' + D.developer.whatsapp + '?text=' +
-        encodeURIComponent(t('salesWhatsappText'));
-    }
-
-    const maps = mapsHref();
-    ['#footer-map', '#map-directions', '#map-preview', '#gbp-directions'].forEach((sel) => {
-      const node = $(sel);
-      if (!node) return;
-      node.href = maps;
-      if (maps !== '#') {
-        node.target = '_blank';
-        node.rel = 'noopener';
-      }
-    });
+    const footerMap = $('#footer-map');
+    if (footerMap) footerMap.href = '#';
   }
 
   function renderStatus() {
@@ -472,10 +495,13 @@
     if (focus) tab.focus();
     revealActiveCategory(quiet ? 'auto' : 'smooth');
     if (quiet) return;
+    scrollCategoryToStart();
     history.replaceState(null, '', '#' + tab.dataset.anchor);
   }
 
   let chipRowDrag = false;
+  let chipSnapTimer = 0;
+  let chipSnapArmed = false;
   let chipSlideToken = 0;
 
   function revealActiveCategory(behavior) {
@@ -494,6 +520,9 @@
     next = Math.max(0, Math.min(max, next));
     const start = row.scrollLeft;
     if (Math.abs(next - start) < 1) return;
+    chipSnapArmed = false;
+    window.clearTimeout(chipSnapTimer);
+    chipSnapTimer = 0;
     const token = ++chipSlideToken;
     if (behavior === 'auto') {
       row.scrollLeft = next;
@@ -518,6 +547,17 @@
     let dragStartScroll = 0;
     let dragMoved = false;
 
+    function queueSnap() {
+      chipSnapArmed = true;
+      window.clearTimeout(chipSnapTimer);
+      chipSnapTimer = window.setTimeout(() => {
+        chipSnapArmed = false;
+        chipSnapTimer = 0;
+        if (chipRowDrag) return;
+        revealActiveCategory('smooth');
+      }, 140);
+    }
+
     function endMouseDrag() {
       chipRowDrag = false;
       dragPointer = 0;
@@ -526,26 +566,22 @@
 
     row.addEventListener('pointerdown', (event) => {
       if (event.pointerType === 'mouse' && event.button !== 0) return;
+      chipRowDrag = true;
+      chipSnapArmed = false;
       chipSlideToken += 1;
-      if (event.pointerType !== 'mouse') {
-        chipRowDrag = true;
-        return;
-      }
+      window.clearTimeout(chipSnapTimer);
+      if (event.pointerType !== 'mouse') return;
       dragPointer = event.pointerId;
       dragStartX = event.clientX;
       dragStartScroll = row.scrollLeft;
       dragMoved = false;
+      row.classList.add('is-dragging');
+      try { row.setPointerCapture(event.pointerId); } catch (err) {}
     });
     row.addEventListener('pointermove', (event) => {
       if (event.pointerId !== dragPointer) return;
       const dx = event.clientX - dragStartX;
-      if (!dragMoved) {
-        if (Math.abs(dx) <= 6) return;
-        dragMoved = true;
-        chipRowDrag = true;
-        row.classList.add('is-dragging');
-        try { row.setPointerCapture(event.pointerId); } catch (err) {}
-      }
+      if (Math.abs(dx) > 4) dragMoved = true;
       row.scrollLeft = dragStartScroll - dx;
     });
     row.addEventListener('click', (event) => {
@@ -561,9 +597,13 @@
       const delta = event.shiftKey ? event.deltaY : event.deltaX;
       if (!delta) return;
       row.scrollLeft += delta;
+      chipSnapArmed = false;
       chipSlideToken += 1;
       event.preventDefault();
     }, { passive: false });
+    row.addEventListener('scroll', () => {
+      if (!chipRowDrag && chipSnapArmed) queueSnap();
+    }, { passive: true });
     document.addEventListener('pointerup', (event) => {
       if (event.pointerId === dragPointer) {
         const moved = dragMoved;
@@ -572,16 +612,21 @@
           window.setTimeout(() => { dragMoved = false; }, 0);
           return;
         }
-        dragMoved = false;
-        return;
       }
       chipRowDrag = false;
+      queueSnap();
     });
     document.addEventListener('pointercancel', (event) => {
       if (event.pointerId === dragPointer) endMouseDrag();
       chipRowDrag = false;
-      dragMoved = false;
     });
+
+    let pageLock = 0;
+    window.addEventListener('scroll', () => {
+      if (chipRowDrag || pageLock) return;
+      pageLock = window.setTimeout(() => { pageLock = 0; }, 320);
+      revealActiveCategory('smooth');
+    }, { passive: true });
   }
 
   function scrollCategoryToStart() {
@@ -662,7 +707,7 @@
       openSocialsSheet();
       return;
     }
-    if (pagesList().indexOf(hash) >= 0) {
+    if (PAGES.indexOf(hash) >= 0) {
       if (hash === 'reservas' && !(navOpts && navOpts.quiet)) {
         reservasMode = reservasEntry === 'eventos' ? 'eventos' : 'mesa';
         reservasEntry = 'mesa';
@@ -726,7 +771,9 @@
       name.style.whiteSpace = 'pre-line';
       name.textContent = L(item.name).replace(' con jamón', '\ncon jamón');
       const price = priceNode(lang === 'en' ? item.priceEn : item.price);
-      price.classList.add(id === 'croquetas' || id === 'bravas' ? 'mt-3' : 'mt-1', 'block');
+      const lowPrice = id === 'croquetas' || id === 'bravas';
+      price.classList.add(lowPrice ? 'mt-3' : 'mt-1', 'block');
+      if (lowPrice) price.classList.add('is-low');
       body.append(name, price);
       link.appendChild(body);
       li.appendChild(link);
@@ -1073,19 +1120,8 @@
   }
 
   function renderEventos() {
-    const link = $('#nav-eventos');
-    const row = document.querySelector('.site-nav-links');
-    const page = document.querySelector('[data-page="eventos"]');
-    if (!eventosOn) {
-      if (link) link.hidden = true;
-      if (page) page.hidden = true;
-      if (row) row.classList.remove('has-eventos');
-      syncReservasMode();
-      return;
-    }
-    if (link) link.hidden = false;
-    if (row) row.classList.add('has-eventos');
     syncReservasMode();
+    if (!eventosOn) return;
     const ev = D.eventos;
     const eyebrow = $('#eventos-eyebrow');
     const title = $('#eventos-title');
@@ -1264,24 +1300,18 @@
         return;
       }
       if (feedback) feedback.hidden = true;
-      const typeLabel = type.id === 'otro' && other ? L(type.label) + ' - ' + other : L(type.label);
-      const intro = t('eventosWaIntro', { name: name, restaurant: D.business.name });
-      const rows = [
-        [t('eventosWaType'), typeLabel],
-        [t('eventosWaDate'), formatEventDate(ymd)],
-        [t('eventosWaGuests'), String(guests)]
+      const lines = [
+        t('eventosWaIntro', { name: name, restaurant: D.business.name }),
+        '',
+        '*' + t('eventosWaType') + ':* ' + (type.id === 'otro' && other ? L(type.label) + ' - ' + other : L(type.label)),
+        '*' + t('eventosWaDate') + ':* ' + formatEventDate(ymd),
+        '*' + t('eventosWaGuests') + ':* ' + String(guests)
       ];
-      if (notes) rows.push([t('eventosWaNotes'), notes]);
-      const textoWhatsApp = intro + '\n\n' + rows.map((row) => '*' + row[0] + ':* ' + row[1]).join('\n') + '\n';
-      const htmlMsg = '<p>' + esc(intro) + '</p>' + rows.map((row) =>
-        '<p><strong class="font-semibold text-stone-900 dark:text-emerald-50">' + esc(row[0]) + ':</strong> ' + esc(row[1]) + '</p>'
-      ).join('');
+      if (notes) lines.push('*' + t('eventosWaNotes') + ':* ' + notes);
       const phone = D.eventos.whatsapp || D.business.whatsapp;
-      window.__visiwebBookingPreview = { html: htmlMsg, textoWhatsApp: textoWhatsApp, phone: phone };
-      document.dispatchEvent(new CustomEvent('open-reserve-options'));
+      window.location.href = whatsappSendUrl(phone, lines.join('\n'));
     });
   }
-
 
   function renderLocal() {
     const stats = $('#local-stats');
@@ -1400,15 +1430,9 @@
     }
 
     const directions = $('#gbp-directions');
-    if (directions) {
-      directions.href = mapsHref();
-      if (directions.href !== '#') {
-        directions.target = '_blank';
-        directions.rel = 'noopener';
-      }
-    }
+    if (directions) directions.href = '#';
     const call = $('#gbp-call');
-    if (call) call.href = phoneHref();
+    if (call) call.href = '#';
 
     attrs.textContent = '';
     D.gbp.attributes.forEach((attr) => {
@@ -1604,11 +1628,10 @@
 
     list.textContent = '';
 
-    const address = el('a', 'mt-0.5 block text-left leading-relaxed text-[#1a73e8] dark:text-[#8ab4f8]');
-    address.href = mapsHref();
-    address.target = '_blank';
-    address.rel = 'noopener';
+    const address = el('button', 'mt-0.5 block text-left leading-relaxed text-[#1a73e8] dark:text-[#8ab4f8]');
+    address.type = 'button';
     address.textContent = addressText();
+    address.addEventListener('click', () => showDemoNote('demoRouteNote'));
     row(ICONS.pin, t('gbpInfoAddress'), address);
 
     const hours = el('div', 'mt-1 text-stone-700 dark:text-stone-300');
@@ -1630,9 +1653,10 @@
     });
     row(ICONS.clock, t('gbpInfoHours'), hours);
 
-    const phone = el('a', 'mt-0.5 block text-left text-[#1a73e8] dark:text-[#8ab4f8]');
-    phone.href = phoneHref();
+    const phone = el('button', 'mt-0.5 block text-left text-[#1a73e8] dark:text-[#8ab4f8]');
+    phone.type = 'button';
     phone.textContent = D.business.phoneDisplay;
+    phone.addEventListener('click', () => showDemoNote('demoCallNote'));
     row(ICONS.phone, t('gbpInfoPhone'), phone);
 
     const web = el('a', 'mt-0.5 block break-all text-[#1a73e8] no-underline dark:text-[#8ab4f8]');
@@ -1710,16 +1734,8 @@
     }
     const clear = $('#clear-allergen-filters');
     if (clear) clear.hidden = allergenFilters.size === 0;
-  }
-
-  function syncAllergenChip() {
     const toggle = $('#open-filter-btn');
-    if (!toggle) return;
-    const n = allergenFilters.size;
-    toggle.classList.toggle('is-active', n > 0);
-    toggle.setAttribute('aria-pressed', n > 0 ? 'true' : 'false');
-    const badge = toggle.querySelector('.allergen-count');
-    if (badge) badge.remove();
+    if (toggle) toggle.classList.toggle('is-on', allergenFilters.size > 0);
   }
 
   function applyAllergenFilter() {
@@ -1746,7 +1762,8 @@
     }
     const clear = $('#clear-allergen-filters');
     if (clear) clear.hidden = allergenFilters.size === 0;
-    syncAllergenChip();
+    const toggle = $('#open-filter-btn');
+    if (toggle) toggle.classList.toggle('is-on', allergenFilters.size > 0);
   }
 
   function placeAllergenPanel() {
@@ -2018,7 +2035,7 @@
     starRow.setAttribute('role', 'img');
     starRow.setAttribute('aria-label', t('ratingOf', { rating: D.reviews.score }));
     const summary = el('span', 'text-sm font-normal text-stone-500');
-    summary.textContent = t('reviewsScore', { count: D.reviews.count });
+    summary.textContent = '· ' + D.reviews.count + (lang === 'en' ? ' reviews' : ' opiniones');
     scoreEl.append(scoreText, starRow, summary);
 
     const list = $('#reviews-list');
@@ -2459,10 +2476,6 @@
       const locale = lang === 'es' && window.flatpickr && flatpickr.l10ns && flatpickr.l10ns.es ? 'es' : 'default';
       bookDatePicker.set('locale', locale);
     }
-    if (eventDatePicker) {
-      const locale = lang === 'es' && window.flatpickr && flatpickr.l10ns && flatpickr.l10ns.es ? 'es' : 'default';
-      eventDatePicker.set('locale', locale);
-    }
   }
 
   function closeAllBookSelects() {
@@ -2488,14 +2501,12 @@
 
     const selected = select.options[select.selectedIndex];
     valueEl.textContent = selected ? selected.textContent : '';
+    trigger.classList.toggle('is-placeholder', select.id === 'eventos-book-type' && !select.value);
     trigger.disabled = !!select.disabled;
-    if (select.id === 'eventos-book-type') {
-      trigger.classList.toggle('is-placeholder', !select.value);
-    }
 
     menu.textContent = '';
     Array.prototype.slice.call(select.options).forEach((opt) => {
-      if (!opt.value && select.id === 'book-time') return;
+      if (!opt.value && (select.id === 'book-time' || select.id === 'eventos-book-type')) return;
       const li = el('li', 'book-select-option');
       li.setAttribute('role', 'option');
       li.dataset.value = opt.value;
@@ -2521,6 +2532,7 @@
         setTimePickerOpen(false);
         setGuestsPickerOpen(false);
         if (bookDatePicker && bookDatePicker.isOpen) bookDatePicker.close();
+        if (eventDatePicker && eventDatePicker.isOpen) eventDatePicker.close();
         if (open) return;
         wrap.classList.add('is-open');
         trigger.setAttribute('aria-expanded', 'true');
@@ -2542,10 +2554,10 @@
       if (!target.closest('#time-picker') && !target.closest('#hora-reserva')) setTimePickerOpen(false);
       if (!target.closest('#guests-picker') && !target.closest('#comensales-reserva')) setGuestsPickerOpen(false);
       if (!target.closest('.book-select')) closeAllBookSelects();
-      if (bookDatePicker && bookDatePicker.isOpen && !target.closest('.flatpickr-calendar') && !target.closest('#fecha-reserva') && !target.closest('.book-date-wrap') && !target.closest('#eventos-fecha')) {
+      if (bookDatePicker && bookDatePicker.isOpen && !target.closest('.flatpickr-calendar') && !target.closest('#fecha-reserva')) {
         bookDatePicker.close();
       }
-      if (eventDatePicker && eventDatePicker.isOpen && !target.closest('.flatpickr-calendar') && !target.closest('#eventos-fecha') && !target.closest('.book-date-wrap')) {
+      if (eventDatePicker && eventDatePicker.isOpen && !target.closest('.flatpickr-calendar') && !target.closest('#eventos-fecha')) {
         eventDatePicker.close();
       }
     });
@@ -2678,7 +2690,6 @@
       }
     });
   }
-
 
   function initBooking() {
     const form = $('#booking-form');
@@ -3125,32 +3136,7 @@
     }, 200);
   }
 
-
-  function syncEventosFromDesign() {
-    if (!D.eventos) {
-      eventosOn = false;
-      return;
-    }
-    const design = D.design || window.VISIWEB_DESIGN;
-    if (design && design.labels && typeof design.labels.vw_events === 'string') {
-      D.eventos.activo = design.labels.vw_events === '1';
-    }
-    if (design && design.eventos && typeof design.eventos === 'object') {
-      const src = design.eventos;
-      if (src.tipoVideo === 'salon' || src.tipoVideo === 'terraza' || src.tipoVideo === 'ninguno') {
-        D.eventos.tipoVideo = src.tipoVideo;
-      }
-      ['eyebrow', 'title', 'subtitle', 'lead', 'cta', 'readyTitle', 'readyCta'].forEach((key) => {
-        if (typeof src[key] === 'string' && src[key].trim()) {
-          D.eventos[key] = { es: src[key], en: src[key] };
-        }
-      });
-    }
-    eventosOn = !!D.eventos.activo;
-  }
-
   function renderAll() {
-    syncEventosFromDesign();
     applyI18n();
     renderAlternates();
     renderHero();
@@ -3271,37 +3257,6 @@
       event.preventDefault();
       closeSocialsSheet();
     });
-
-    document.querySelectorAll('[data-social]').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const key = btn.getAttribute('data-social');
-        const href = socialHref(key);
-        if (!href) return;
-        window.open(href, '_blank', 'noopener');
-      });
-    });
-  }
-
-  function initSalesBar() {
-    const copy = $('#sales-copy');
-    const bar = document.getElementById('sales-bar');
-    if (!copy || !bar) return;
-    const mobile = () => window.matchMedia('(max-width: 767px), (pointer: coarse), (hover: none)').matches;
-    function setOpen(open) {
-      bar.classList.toggle('is-open', open);
-      copy.setAttribute('aria-expanded', open ? 'true' : 'false');
-      syncStickyOffset();
-    }
-    copy.addEventListener('click', (event) => {
-      if (!mobile()) return;
-      event.stopPropagation();
-      setOpen(!bar.classList.contains('is-open'));
-    });
-    document.addEventListener('click', (event) => {
-      if (!mobile() || !bar.classList.contains('is-open')) return;
-      if (event.target.closest('#sales-copy')) return;
-      setOpen(false);
-    });
   }
 
   function syncStickyOffset() {
@@ -3348,11 +3303,11 @@
       const deltaY = touch.clientY - startY;
       if (Math.abs(deltaX) <= Math.abs(deltaY) * 1.5 || Math.abs(deltaX) <= MIN) return;
       const visible = document.querySelector('[data-page]:not([hidden])');
-      const index = pagesList().indexOf(visible ? visible.dataset.page : 'inicio');
+      const index = PAGES.indexOf(visible ? visible.dataset.page : 'inicio');
       if (index < 0) return;
       const next = deltaX < 0 ? index + 1 : index - 1;
-      if (next < 0 || next >= pagesList().length) return;
-      const id = pagesList()[next];
+      if (next < 0 || next >= PAGES.length) return;
+      const id = PAGES[next];
       hashNavOpts = { smooth: true };
       if (window.location.hash === '#' + id) applyHash();
       else window.location.hash = id;
@@ -3362,8 +3317,9 @@
   }
 
   /* --------------------------------- Arranque ------------------------------ */
+  initEventos();
   initSocials();
-  initSalesBar();
+  bindDemoActions();
   syncStickyOffset();
   window.addEventListener('resize', syncStickyOffset);
   window.addEventListener('resize', placeAllergenChip);
@@ -3390,7 +3346,6 @@
   window.cambiarPestanaGoogle = cambiarPestanaGoogle;
     initAllergenFilters();
   initBooking();
-  initEventos();
   applyHash({ quiet: true });
   initAllergenDialog();
 
@@ -3401,7 +3356,7 @@
   if (backHome) {
     backHome.addEventListener('click', (event) => {
       event.preventDefault();
-      if (window.scrollY > 0) window.scrollTo({ top: 0, behavior: 'smooth' });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     });
   }
 
@@ -3414,12 +3369,12 @@
   }, 60000);
   window.visiwebRepaint = renderAll;
 
-  function both(text) {
+  function bothLive(text) {
     var value = text || '';
     return { es: value, en: value };
   }
 
-  function money(value) {
+  function moneyLive(value) {
     var n = Number(value);
     if (!isFinite(n)) n = 0;
     return {
@@ -3487,13 +3442,13 @@
         itemName = itemName || 'Plato';
         var desc = item.description || item.desc || '';
         if (desc && typeof desc === 'object') desc = desc.es || desc.en || '';
-        var price = money(item.price != null ? item.price : item.priceValue);
+        var price = moneyLive(item.price != null ? item.price : item.priceValue);
         var id = String(item.id || ('item-' + index + '-' + itemIndex));
         if (item.featured || item.is_featured) featured.push(id);
         return {
           id: id,
-          name: both(itemName),
-          desc: both(desc),
+          name: bothLive(itemName),
+          desc: bothLive(desc),
           price: price.es,
           priceEn: price.en,
           priceValue: price.n,
@@ -3506,8 +3461,8 @@
       return {
         id: String(category.id || ('cat-' + index)),
         anchor: anchor,
-        name: both(name),
-        desc: both(category.subtitle || category.desc || ''),
+        name: bothLive(name),
+        desc: bothLive(category.subtitle || category.desc || ''),
         items: items
       };
     });
@@ -3517,14 +3472,14 @@
     var name = row.name || D.business.name || '';
     var tagline = row.tagline || '';
     D.business.name = name;
-    D.business.type = both(tagline);
+    D.business.type = bothLive(tagline);
     D.business.phone = phone;
     D.business.phoneDisplay = phone;
     D.business.whatsapp = String(row.whatsapp || '').replace(/\D/g, '');
     D.business.instagram = row.instagram || '';
     D.business.addressLine = address;
     D.business.address = {
-      street: both(address),
+      street: bothLive(address),
       postalCode: (D.business.address && D.business.address.postalCode) || '',
       city: (D.business.address && D.business.address.city) || '',
       region: (D.business.address && D.business.address.region) || '',
@@ -3574,7 +3529,7 @@
         D.eventos.tipoVideo = evCfg.tipoVideo;
       }
       ['eyebrow', 'title', 'subtitle', 'lead', 'cta', 'readyTitle', 'readyCta'].forEach(function (key) {
-        if (typeof evCfg[key] === 'string' && evCfg[key].trim()) D.eventos[key] = both(evCfg[key]);
+        if (typeof evCfg[key] === 'string' && evCfg[key].trim()) D.eventos[key] = bothLive(evCfg[key]);
       });
       D.eventos.phone = phone || D.eventos.phone;
       D.eventos.phoneDisplay = phone || D.eventos.phoneDisplay;
@@ -3592,17 +3547,18 @@
     return null;
   }
 
-  window.addEventListener('message', function (event) {
-    if (event.origin !== location.origin) return;
-    var payload = readRestaurantPayload(event.data);
-    if (!payload) return;
-    applyRestaurantData(payload);
-  });
+  if (window.parent !== window) {
+    window.addEventListener('message', function (event) {
+      if (event.origin !== location.origin) return;
+      var payload = readRestaurantPayload(event.data);
+      if (!payload) return;
+      applyRestaurantData(payload);
+    });
+  }
 
   window.visiwebApplyRestaurantData = applyRestaurantData;
 
-  if (window.parent !== window) {
+  if (document.documentElement.classList.contains('vw-editor') && window.parent !== window) {
     window.parent.postMessage({ type: 'visiweb-ready', page: 'web' }, location.origin);
   }
 })();
-
