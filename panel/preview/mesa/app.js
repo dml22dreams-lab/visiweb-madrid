@@ -1419,18 +1419,14 @@
       dragStartX = event.clientX;
       dragStartScroll = row.scrollLeft;
       dragMoved = false;
+      row.classList.add('is-dragging');
+      try { row.setPointerCapture(event.pointerId); } catch (err) {}
     });
     row.addEventListener('pointermove', (event) => {
       if (event.pointerId !== dragPointer) return;
       const dx = event.clientX - dragStartX;
-      if (!dragMoved) {
-        if (Math.abs(dx) <= 5) return;
-        dragMoved = true;
-        row.classList.add('is-dragging');
-        try { row.setPointerCapture(event.pointerId); } catch (err) {}
-      }
+      if (Math.abs(dx) > 5) dragMoved = true;
       row.scrollLeft = dragStartScroll - dx;
-      event.preventDefault();
     });
     row.addEventListener('click', (event) => {
       if (dragMoved) {
@@ -1450,9 +1446,8 @@
     row.addEventListener('wheel', (event) => {
       if (row.scrollWidth - row.clientWidth <= 1) return;
       const horizontal = Math.abs(event.deltaX) > Math.abs(event.deltaY) || event.shiftKey;
-      const delta = horizontal
-        ? (event.shiftKey ? event.deltaY : event.deltaX)
-        : event.deltaY;
+      if (!horizontal) return;
+      const delta = event.shiftKey ? event.deltaY : event.deltaX;
       if (!delta) return;
       catsUser = true;
       catsDrifted = true;
@@ -1461,9 +1456,9 @@
     }, { passive: false });
     row.addEventListener('scroll', () => {
       if (catsProg) return;
-      if (catsUser || dragMoved) catsDrifted = true;
+      if (catsUser) catsDrifted = true;
     }, { passive: true });
-    document.addEventListener('pointerup', (event) => {
+    row.addEventListener('pointerup', (event) => {
       if (event.pointerId === dragPointer) {
         const moved = dragMoved;
         endMouseDrag();
@@ -1471,15 +1466,17 @@
           window.setTimeout(() => { dragMoved = false; }, 0);
           return;
         }
-        dragMoved = false;
-        return;
       }
       catsHold = false;
     });
-    document.addEventListener('pointercancel', (event) => {
+    row.addEventListener('pointercancel', (event) => {
       if (event.pointerId === dragPointer) endMouseDrag();
       catsHold = false;
-      dragMoved = false;
+    });
+    row.addEventListener('pointerleave', (event) => {
+      if (event.pointerId !== dragPointer) return;
+      if (event.buttons) return;
+      endMouseDrag();
     });
   })();
   $('hero-kicker').addEventListener('click', () => {

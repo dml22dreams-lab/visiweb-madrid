@@ -495,6 +495,7 @@
     if (focus) tab.focus();
     revealActiveCategory(quiet ? 'auto' : 'smooth');
     if (quiet) return;
+    scrollCategoryToStart();
     history.replaceState(null, '', '#' + tab.dataset.anchor);
   }
 
@@ -545,8 +546,6 @@
     let dragStartX = 0;
     let dragStartScroll = 0;
     let dragMoved = false;
-    let pressedTab = null;
-    let suppressTabClick = false;
 
     function queueSnap() {
       chipSnapArmed = true;
@@ -567,7 +566,6 @@
 
     row.addEventListener('pointerdown', (event) => {
       if (event.pointerType === 'mouse' && event.button !== 0) return;
-      pressedTab = event.target.closest('[role="tab"]');
       chipRowDrag = true;
       chipSnapArmed = false;
       chipSlideToken += 1;
@@ -577,38 +575,26 @@
       dragStartX = event.clientX;
       dragStartScroll = row.scrollLeft;
       dragMoved = false;
+      row.classList.add('is-dragging');
+      try { row.setPointerCapture(event.pointerId); } catch (err) {}
     });
     row.addEventListener('pointermove', (event) => {
       if (event.pointerId !== dragPointer) return;
       const dx = event.clientX - dragStartX;
-      if (!dragMoved) {
-        if (Math.abs(dx) <= 8) return;
-        dragMoved = true;
-        pressedTab = null;
-        row.classList.add('is-dragging');
-        try { row.setPointerCapture(event.pointerId); } catch (err) {}
-      }
+      if (Math.abs(dx) > 4) dragMoved = true;
       row.scrollLeft = dragStartScroll - dx;
-      event.preventDefault();
     });
     row.addEventListener('click', (event) => {
-      if (suppressTabClick || dragMoved) {
-        event.preventDefault();
-        event.stopPropagation();
-        suppressTabClick = false;
-        dragMoved = false;
-        return;
-      }
-      const tab = event.target.closest('[role="tab"]');
-      if (!tab) return;
-      selectTab(tab, false);
+      if (!dragMoved) return;
+      event.preventDefault();
+      event.stopPropagation();
+      dragMoved = false;
     }, true);
     row.addEventListener('wheel', (event) => {
       if (row.scrollWidth - row.clientWidth <= 1) return;
       const horizontal = Math.abs(event.deltaX) > Math.abs(event.deltaY) || event.shiftKey;
-      const delta = horizontal
-        ? (event.shiftKey ? event.deltaY : event.deltaX)
-        : event.deltaY;
+      if (!horizontal) return;
+      const delta = event.shiftKey ? event.deltaY : event.deltaX;
       if (!delta) return;
       row.scrollLeft += delta;
       chipSnapArmed = false;
@@ -621,29 +607,18 @@
     document.addEventListener('pointerup', (event) => {
       if (event.pointerId === dragPointer) {
         const moved = dragMoved;
-        const tab = pressedTab;
-        pressedTab = null;
         endMouseDrag();
         if (moved) {
           window.setTimeout(() => { dragMoved = false; }, 0);
           return;
         }
-        dragMoved = false;
-        if (tab) {
-          suppressTabClick = true;
-          selectTab(tab, false);
-        }
-        return;
       }
       chipRowDrag = false;
-      pressedTab = null;
       queueSnap();
     });
     document.addEventListener('pointercancel', (event) => {
       if (event.pointerId === dragPointer) endMouseDrag();
       chipRowDrag = false;
-      dragMoved = false;
-      pressedTab = null;
     });
 
     let pageLock = 0;
@@ -700,6 +675,7 @@
       if (link.dataset.nav === id) link.setAttribute('aria-current', 'page');
       else link.removeAttribute('aria-current');
     });
+    syncEventosHero(id);
     if (id === 'carta') {
       placeAllergenChip();
       requestAnimationFrame(() => requestAnimationFrame(placeAllergenChip));
@@ -897,6 +873,8 @@
       if (frame) cancelAnimationFrame(frame);
       primary.onerror = null;
       secondary.onerror = null;
+      try { primary.pause(); } catch (e) { /* ignore */ }
+      try { secondary.pause(); } catch (e) { /* ignore */ }
       primary.classList.remove('is-out', 'is-swap', 'is-cover');
       secondary.classList.remove('is-out', 'is-swap', 'is-cover');
     }
@@ -1012,6 +990,45 @@
 
     frame = requestAnimationFrame(tick);
     return stop;
+  }
+
+  function pauseEventosHero() {
+    const heroVideo = $('#eventos-hero-video');
+    const heroVideoB = $('#eventos-hero-video-b');
+    if (!heroVideo) return;
+    if (heroVideo._heroStop) {
+      heroVideo._heroStop();
+      heroVideo._heroStop = null;
+    }
+    [heroVideo, heroVideoB].forEach(function (video) {
+      if (!video) return;
+      try { video.pause(); } catch (e) { /* ignore */ }
+    });
+  }
+
+  function playEventosHero() {
+    if (!eventosOn || isQrMesaMode()) {
+      pauseEventosHero();
+      return;
+    }
+    const heroVideo = $('#eventos-hero-video');
+    const heroVideoB = $('#eventos-hero-video-b');
+    if (!heroVideo || !heroVideoB) return;
+    const clip = eventHeroClip(D.eventos);
+    if (!clip || !clip.src) {
+      pauseEventosHero();
+      return;
+    }
+    const key = clip.src + '|' + clip.inicio + '|' + clip.duracion;
+    if (heroVideo._heroKey === key && heroVideo._heroStop) return;
+    if (heroVideo._heroStop) heroVideo._heroStop();
+    heroVideo._heroKey = key;
+    heroVideo._heroStop = startEventHeroLoop(heroVideo, heroVideoB, clip.src, clip.inicio, clip.duracion);
+  }
+
+  function syncEventosHero(pageId) {
+    if (pageId === 'eventos') playEventosHero();
+    else pauseEventosHero();
   }
 
   function eventPhotoCard(item) {
@@ -1190,16 +1207,28 @@
         heroVideo.poster = poster;
         heroVideoB.poster = poster;
       }
+      heroVideo.setAttribute('preload', 'none');
+      heroVideoB.setAttribute('preload', 'none');
       if (clip && clip.src) {
         const key = clip.src + '|' + clip.inicio + '|' + clip.duracion;
+        const page = document.querySelector('[data-page="eventos"]');
+        const onEventos = !!(page && !page.hidden);
         if (heroVideo._heroKey !== key) {
-          if (heroVideo._heroStop) heroVideo._heroStop();
-          heroVideo._heroKey = key;
-          heroVideo._heroStop = startEventHeroLoop(heroVideo, heroVideoB, clip.src, clip.inicio, clip.duracion);
+          pauseEventosHero();
+          heroVideo._heroKey = '';
+          heroVideo.hidden = true;
+          heroVideoB.hidden = true;
+          if (heroVideo.getAttribute('src')) {
+            heroVideo.removeAttribute('src');
+            heroVideoB.removeAttribute('src');
+            try { heroVideo.load(); } catch (e) { /* ignore */ }
+            try { heroVideoB.load(); } catch (e) { /* ignore */ }
+          }
         }
-      } else if (heroVideo._heroStop || heroVideo.getAttribute('src')) {
-        if (heroVideo._heroStop) heroVideo._heroStop();
-        heroVideo._heroStop = null;
+        if (onEventos) playEventosHero();
+        else pauseEventosHero();
+      } else if (heroVideo._heroStop || heroVideo.getAttribute('src') || heroVideo._heroKey) {
+        pauseEventosHero();
         heroVideo._heroKey = '';
         heroVideo.hidden = true;
         heroVideoB.hidden = true;
@@ -1207,6 +1236,8 @@
         heroVideoB.removeAttribute('src');
         heroVideo.removeAttribute('poster');
         heroVideoB.removeAttribute('poster');
+        try { heroVideo.load(); } catch (e) { /* ignore */ }
+        try { heroVideoB.load(); } catch (e) { /* ignore */ }
       }
     }
     if (readyImg) {
@@ -1297,6 +1328,18 @@
         reservasMode = btn.dataset.reservasMode === 'eventos' ? 'eventos' : 'mesa';
         syncReservasMode();
       });
+    });
+    document.querySelectorAll('a[data-i18n="mesaLink"], a[data-view="mesa"]').forEach((mesaLink) => {
+      mesaLink.addEventListener('click', pauseEventosHero);
+    });
+    window.addEventListener('pagehide', pauseEventosHero);
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) {
+        pauseEventosHero();
+        return;
+      }
+      const visible = document.querySelector('[data-page="eventos"]');
+      if (visible && !visible.hidden) playEventosHero();
     });
     const form = $('#eventos-booking');
     if (!form) return;
@@ -3427,6 +3470,7 @@
       if (link) link.hidden = true;
       if (page) page.hidden = true;
       if (row) row.classList.remove('has-eventos');
+      pauseEventosHero();
       var visible = document.querySelector('[data-page]:not([hidden])');
       if (visible && visible.dataset.page === 'eventos') showPage('inicio', { quiet: true });
     } else {
