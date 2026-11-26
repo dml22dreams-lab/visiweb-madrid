@@ -8,6 +8,32 @@
 (function () {
   'use strict';
 
+  /* Anti-recursión: corta la carga si un iframe anida esta página en bucle. */
+  try {
+    var __vwFrameDepth = 0;
+    var __vwFrameWin = window;
+    while (__vwFrameWin !== __vwFrameWin.top) {
+      __vwFrameDepth += 1;
+      if (__vwFrameDepth > 2) {
+        if (typeof window.stop === 'function') window.stop();
+        document.documentElement.textContent = '';
+        return;
+      }
+      try {
+        var __vwParentHref = String(__vwFrameWin.parent.location.href || '').split('#')[0];
+        var __vwSelfHref = String(__vwFrameWin.location.href || '').split('#')[0];
+        if (__vwParentHref && __vwSelfHref && __vwParentHref === __vwSelfHref && __vwFrameDepth > 1) {
+          if (typeof window.stop === 'function') window.stop();
+          document.documentElement.textContent = '';
+          return;
+        }
+        __vwFrameWin = __vwFrameWin.parent;
+      } catch (__vwFrameErr) {
+        break;
+      }
+    }
+  } catch (__vwAntiFrameErr) { /* ignore */ }
+
   function normalizePlanId(value) {
     var raw = String(value || '').toLowerCase().trim();
     if (raw === '120' || raw === 'basico' || raw === 'básico') return 'basico';
@@ -988,11 +1014,24 @@
     let fading = false;
     let top = primary;
     let under = secondary;
-    let frame = 0;
+
+    function onTimeCheck() {
+      if (!alive || fading || !top || top.readyState < 2) return;
+      const duration = isFinite(top.duration) ? top.duration : inicio + LOOP;
+      const end = Math.min(inicio + LOOP, Math.max(inicio, duration - 0.05));
+      if (top.currentTime >= Math.max(inicio, end - FADE)) beginFade();
+    }
+
+    function bindTimeWatch(video, on) {
+      if (!video) return;
+      video.removeEventListener('timeupdate', onTimeCheck);
+      if (on) video.addEventListener('timeupdate', onTimeCheck);
+    }
 
     function stop() {
       alive = false;
-      if (frame) cancelAnimationFrame(frame);
+      bindTimeWatch(primary, false);
+      bindTimeWatch(secondary, false);
       primary.onerror = null;
       secondary.onerror = null;
       try { primary.pause(); } catch (e) { /* ignore */ }
@@ -1008,24 +1047,18 @@
     }
 
     function bindClipSource(video, clipSrc) {
-      const source = video.querySelector('source');
-      if (source && source.getAttribute('src') !== clipSrc) {
-        source.setAttribute('src', clipSrc);
-      }
-      if (video.getAttribute('src') !== clipSrc) {
-        video.setAttribute('src', clipSrc);
-        try { video.load(); } catch (e) { /* ignore */ }
-        return true;
-      }
-      return false;
+      if (video.getAttribute('src') === clipSrc) return false;
+      video.setAttribute('src', clipSrc);
+      video.setAttribute('preload', 'metadata');
+      try { video.load(); } catch (e) { /* ignore */ }
+      return true;
     }
 
     function prep(video, time, play) {
       video.muted = true;
       video.playsInline = true;
       video.loop = false;
-      /* metadata (no none): evita deadlock preload=none + esperar loadedmetadata antes de play() */
-      video.setAttribute('preload', 'metadata');
+      video.setAttribute('preload', 'none');
       let started = false;
       const go = function () {
         if (started || !alive) return;
@@ -1035,27 +1068,21 @@
           if (!alive) return;
           if (play) {
             const pending = video.play();
-            if (pending && typeof pending.then === 'function') {
-              pending.then(function () {
-                if (alive) video.classList.remove('is-out');
-              }).catch(function () {});
-            } else {
-              video.classList.remove('is-out');
-            }
+            if (pending && typeof pending.catch === 'function') pending.catch(function () {});
           } else {
             video.pause();
           }
         });
       };
-      bindClipSource(video, src);
-      if (video.readyState >= 1) {
+      const changed = bindClipSource(video, src);
+      if (changed) {
+        video.addEventListener('loadedmetadata', go, { once: true });
+        if (video.readyState >= 1) go();
+      } else if (video.readyState >= 1) {
         go();
       } else {
         video.addEventListener('loadedmetadata', go, { once: true });
         try { video.load(); } catch (e) { /* ignore */ }
-        setTimeout(function () {
-          if (!started && alive) go();
-        }, 800);
       }
     }
 
@@ -1093,6 +1120,8 @@
       under = top;
       top = shown;
       cover(top);
+      bindTimeWatch(under, false);
+      bindTimeWatch(top, true);
       under.classList.add('is-swap');
       under.classList.remove('is-out');
       void under.offsetWidth;
@@ -1128,17 +1157,20 @@
       });
     }
 
-    function tick() {
-      if (!alive) return;
-      frame = requestAnimationFrame(tick);
-      if (fading || top.readyState < 2) return;
-      const duration = isFinite(top.duration) ? top.duration : inicio + LOOP;
-      const end = Math.min(inicio + LOOP, Math.max(inicio, duration - 0.05));
-      if (top.currentTime >= Math.max(inicio, end - FADE)) beginFade();
-    }
-
-    frame = requestAnimationFrame(tick);
+    bindTimeWatch(top, true);
     return stop;
+  }
+
+  function releaseEventosHeroBuffer(video) {
+    if (!video) return;
+    try { video.pause(); } catch (e) { /* ignore */ }
+    video.removeAttribute('src');
+    video.removeAttribute('poster');
+    const source = video.querySelector('source');
+    if (source) source.removeAttribute('src');
+    try { video.load(); } catch (e) { /* ignore */ }
+    video.hidden = true;
+    video.classList.remove('is-out', 'is-swap', 'is-cover');
   }
 
   function pauseEventosHero() {
@@ -1149,11 +1181,9 @@
       heroVideo._heroStop();
       heroVideo._heroStop = null;
     }
-    [heroVideo, heroVideoB].forEach(function (video) {
-      if (!video) return;
-      try { video.pause(); } catch (e) { /* ignore */ }
-      video.setAttribute('preload', 'none');
-    });
+    heroVideo._heroKey = '';
+    releaseEventosHeroBuffer(heroVideo);
+    releaseEventosHeroBuffer(heroVideoB);
   }
 
   function playEventosHero() {
@@ -1372,57 +1402,23 @@
     }
     if (heroVideo && heroVideoB) {
       const clip = eventHeroClip(ev);
-      const posterSrc = hero && (hero.getAttribute('src') || hero.dataset.src);
-      if (posterSrc && onEventos) {
-        heroVideo.poster = posterSrc;
-        heroVideoB.poster = posterSrc;
-      } else {
-        heroVideo.removeAttribute('poster');
-        heroVideoB.removeAttribute('poster');
-      }
-      if (onEventos) {
-        heroVideo.setAttribute('preload', 'metadata');
-        heroVideoB.setAttribute('preload', 'metadata');
-      } else {
-        heroVideo.setAttribute('preload', 'none');
-        heroVideoB.setAttribute('preload', 'none');
-      }
-      if (clip && clip.src) {
-        [heroVideo, heroVideoB].forEach(function (video) {
-          const source = video.querySelector('source');
-          if (source) source.setAttribute('src', clip.src);
-        });
-        const key = clip.src + '|' + clip.inicio + '|' + clip.duracion;
-        if (heroVideo._heroKey !== key) {
-          pauseEventosHero();
-          heroVideo._heroKey = '';
-          heroVideo.hidden = true;
-          heroVideoB.hidden = true;
-          if (heroVideo.getAttribute('src')) {
-            heroVideo.removeAttribute('src');
-            heroVideoB.removeAttribute('src');
-          }
-        }
-        if (onEventos) {
-          hydrateEventosImages();
-          playEventosHero();
-        } else {
-          pauseEventosHero();
-        }
-      } else if (heroVideo._heroStop || heroVideo.getAttribute('src') || heroVideo._heroKey) {
+      heroVideo.setAttribute('preload', 'none');
+      heroVideoB.setAttribute('preload', 'none');
+      if (!onEventos) {
         pauseEventosHero();
-        heroVideo._heroKey = '';
-        heroVideo.hidden = true;
-        heroVideoB.hidden = true;
-        heroVideo.removeAttribute('src');
-        heroVideoB.removeAttribute('src');
-        heroVideo.removeAttribute('poster');
-        heroVideoB.removeAttribute('poster');
-        [heroVideo, heroVideoB].forEach(function (video) {
-          const source = video.querySelector('source');
-          if (source) source.removeAttribute('src');
-          try { video.load(); } catch (e) { /* ignore */ }
-        });
+      } else if (clip && clip.src) {
+        const posterSrc = hero && (hero.getAttribute('src') || hero.dataset.src);
+        if (posterSrc) {
+          heroVideo.poster = posterSrc;
+          heroVideoB.poster = posterSrc;
+        } else {
+          heroVideo.removeAttribute('poster');
+          heroVideoB.removeAttribute('poster');
+        }
+        hydrateEventosImages();
+        playEventosHero();
+      } else {
+        pauseEventosHero();
       }
     }
     if (readyImg) {
@@ -3460,33 +3456,40 @@
     }, 200);
   }
 
+  let renderAllBusy = false;
   function renderAll() {
-    syncPlanMode();
-    applyI18n();
-    renderAlternates();
-    renderHero();
-    renderBusinessInfo();
-    renderStatus();
-    renderToday();
-    renderHoursList();
-    renderFeatured();
-    renderLocal();
-    renderHistory();
-    renderEventos();
-    renderGbp();
-    renderMenu();
-    renderAllergenFilters();
-    renderAllergenKey();
-    renderAllergenTable();
-    renderReviews();
-    fillGuestSelect();
-    refreshBookingSlots();
-    applyI18nBookingOptions();
-    renderJsonLd();
-    applyAllergenFilter();
-    updateBasicoCta();
-    syncStickyOffset();
-    if (window.VisiwebDesign && window.VISIWEB_DESIGN) window.VisiwebDesign.mountWeb(D, lang);
+    if (renderAllBusy) return;
+    renderAllBusy = true;
+    try {
+      syncPlanMode();
+      applyI18n();
+      renderAlternates();
+      renderHero();
+      renderBusinessInfo();
+      renderStatus();
+      renderToday();
+      renderHoursList();
+      renderFeatured();
+      renderLocal();
+      renderHistory();
+      renderEventos();
+      renderGbp();
+      renderMenu();
+      renderAllergenFilters();
+      renderAllergenKey();
+      renderAllergenTable();
+      renderReviews();
+      fillGuestSelect();
+      refreshBookingSlots();
+      applyI18nBookingOptions();
+      renderJsonLd();
+      applyAllergenFilter();
+      updateBasicoCta();
+      syncStickyOffset();
+      if (window.VisiwebDesign && window.VISIWEB_DESIGN) window.VisiwebDesign.mountWeb(D, lang);
+    } finally {
+      renderAllBusy = false;
+    }
   }
 
   function setLang(next) {

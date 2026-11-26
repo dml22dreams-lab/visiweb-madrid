@@ -40,9 +40,9 @@
   <meta name="twitter:title" content="Taberna El Norte · Cervecería y raciones en Alcobendas">
   <meta name="twitter:description" content="Carta bilingüe con alérgenos, salón y terraza, historia del local y reservas online.">
 
-  <link rel="preload" href="/panel/preview/assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="/panel/preview/assets/fonts/cormorant-garamond-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/panel/preview/style.css">
+  <link rel="preload" href="./assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="./assets/fonts/cormorant-garamond-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="./style.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" media="print" onload="this.media='all'">
   <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"></noscript>
   <style>
@@ -306,10 +306,8 @@
       font-weight: 600;
       font-size: 12px;
       letter-spacing: 0.4px;
-      background: rgba(250, 250, 249, 0.4);
+      background: rgba(250, 250, 249, 0.94);
       background-image: none;
-      -webkit-backdrop-filter: blur(16px) saturate(180%);
-      backdrop-filter: blur(16px) saturate(180%);
       border: 1px solid rgba(231, 229, 228, 0.9);
       box-shadow: 0 1px 2px rgba(28, 25, 23, 0.06);
     }
@@ -356,9 +354,7 @@
       border-radius: 9999px;
       color: #4b5563;
       text-decoration: none;
-      background: rgba(250, 250, 249, 0.4);
-      -webkit-backdrop-filter: blur(16px) saturate(180%);
-      backdrop-filter: blur(16px) saturate(180%);
+      background: rgba(250, 250, 249, 0.94);
       border: 1px solid rgba(231, 229, 228, 0.9);
       box-shadow: 0 1px 2px rgba(28, 25, 23, 0.06);
     }
@@ -367,10 +363,10 @@
       transform-origin: center center;
     }
     .header-call:hover .call-phone {
-      animation: phone-shake .22s ease-in-out infinite;
+      animation: phone-shake .22s ease-in-out 2;
     }
     .header-call:hover .call-waves span {
-      animation: wave-out .7s ease-out infinite;
+      animation: wave-out .7s ease-out 1;
     }
     .header-call:hover .call-waves span:nth-child(2) { animation-delay: .12s; }
     .header-call:hover .call-waves span:nth-child(3) { animation-delay: .24s; }
@@ -411,10 +407,10 @@
     .call-waves span:nth-child(2) { width: 7px; height: 7px; }
     .call-waves span:nth-child(3) { width: 10px; height: 10px; }
     #bar-call:hover .call-phone {
-      animation: phone-ring .5s ease-in-out infinite;
+      animation: phone-ring .5s ease-in-out 1;
     }
     #bar-call:hover .call-waves span {
-      animation: wave-out .7s ease-out infinite;
+      animation: wave-out .7s ease-out 1;
     }
     #bar-call:hover .call-waves span:nth-child(2) { animation-delay: .12s; }
     #bar-call:hover .call-waves span:nth-child(3) { animation-delay: .24s; }
@@ -508,9 +504,7 @@
       position: absolute;
       inset: 0;
       border: 0;
-      background: rgba(28, 25, 23, 0.35);
-      -webkit-backdrop-filter: blur(6px);
-      backdrop-filter: blur(6px);
+      background: rgba(28, 25, 23, 0.45);
       cursor: pointer;
     }
     body.booking-modal-open { overflow: hidden; }
@@ -2317,7 +2311,6 @@
                 <div class="relative flex h-10 w-10 items-center justify-center rounded-full border-2 border-[#1a73e8] bg-blue-50/60 text-[#1a73e8] dark:bg-blue-950/30 dark:text-[#8ab4f8] sm:h-11 sm:w-11">
                   <svg class="h-5 w-5 fill-current" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
                   <span class="absolute -right-1 -top-1 flex h-3 w-3" aria-hidden="true">
-                    <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-400 opacity-75"></span>
                     <span class="relative inline-flex h-3 w-3 rounded-full bg-[#1a73e8]"></span>
                   </span>
                 </div>
@@ -2400,12 +2393,8 @@
       <section class="eventos-page mx-auto max-w-3xl px-5 pb-16 pt-6 sm:pt-10">
         <figure class="eventos-hero">
           <img id="eventos-hero-img" alt="" width="1800" height="1200">
-          <video id="eventos-hero-video" muted playsinline preload="none" hidden>
-            <source src="./assets/brindis-salon.mp4" type="video/mp4">
-          </video>
-          <video id="eventos-hero-video-b" muted playsinline preload="none" hidden>
-            <source src="./assets/brindis-salon.mp4" type="video/mp4">
-          </video>
+          <video id="eventos-hero-video" muted playsinline preload="none" hidden></video>
+          <video id="eventos-hero-video-b" muted playsinline preload="none" hidden></video>
           <div class="eventos-hero-copy">
             <p id="eventos-eyebrow" class="eventos-badge"></p>
             <div class="eventos-hero-main">
@@ -2719,7 +2708,7 @@
         <p class="mt-1 text-xs text-slate-600 dark:text-slate-400" data-i18n="allergenTableHint">Desplaza la tabla en horizontal para ver los catorce alérgenos.</p>
       </div>
       <div id="allergen-info-box" class="hidden sm:inline-flex shrink-0 items-center gap-2 px-3 py-1.5 rounded-xl bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-xs text-stone-600 dark:text-stone-300 transition-all duration-200">
-        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
         <span data-i18n="allergenInfoHint">Toca una sigla (GLU, LAC...) para ver su nombre</span>
       </div>
       <button type="button" id="close-allergen-dialog" class="grid h-11 w-11 shrink-0 place-items-center text-slate-900 transition-opacity hover:opacity-50 dark:text-white" data-i18n-aria-label="close" aria-label="Cerrar">
@@ -2737,7 +2726,7 @@
   </dialog>
 
   <div id="reserve-options-modal" hidden class="fixed inset-0 z-[100] flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="reserve-options-title">
-    <div id="reserve-options-backdrop" class="absolute inset-0 cursor-pointer bg-black/40 backdrop-blur-sm"></div>
+    <div id="reserve-options-backdrop" class="absolute inset-0 cursor-pointer bg-black/50"></div>
     <div class="relative z-10 w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
       <div class="flex items-start justify-between gap-3">
         <div class="min-w-0">
@@ -2783,12 +2772,12 @@
   <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
   <script src="/design.js?v=6"></script>
   <script src="/restaurant-loader.js?v=7"></script>
-  <script src="/panel/preview/data.js"></script>
+  <script src="./data.js"></script>
   <script>
     if (window.VisiwebRestaurant && window.VisiwebRestaurant.dynamic === 'web') {
       window.VisiwebRestaurant.start('web');
     } else {
-      document.write('<script src="/panel/preview/app.js?v=10"><\/script>');
+      document.write('<script src="./app.js?v=10"><\/script>');
     }
   </script>
   <script>
