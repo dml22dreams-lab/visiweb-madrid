@@ -37,16 +37,33 @@
       justify-content: space-between;
       gap: 0.5rem;
       padding: 0.5rem 0.75rem;
+      position: relative;
     }
-    #demo-sales-banner p {
+    #demo-sales-banner .demo-banner-copy {
       min-width: 0;
       margin: 0;
+      overflow: hidden;
+    }
+    #demo-sales-banner .demo-banner-copy .label-row {
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
       font-size: 11px;
       font-weight: 500;
       color: #57534e;
+    }
+    #demo-banner-detail {
+      display: none;
+      margin-top: 0.15rem;
+      font-size: 10px;
+      line-height: 1.35;
+      color: #78716c;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    @media (min-width: 640px) {
+      #demo-banner-detail { display: block; }
     }
     #demo-sales-banner .label-short { display: inline; }
     #demo-sales-banner .label-long { display: none; }
@@ -130,28 +147,34 @@
     }
   </style>
   <script>
+    window.FORCE_PLAN = 'digitalizacion-total';
     (function () {
       try {
         var params = new URLSearchParams(window.location.search || '');
         if (params.get('qr') === '1' || params.get('modo') === 'qr') {
           window.FORCE_QR_MESA = true;
         }
+        params.set('plan', 'digitalizacion-total');
       } catch (e) { /* ignore */ }
     })();
   </script>
+  <script src="./demo-guides.js"></script>
 </head>
 <body>
   <div id="demo-sales-banner">
     <div>
-      <p>
-        <span class="label-short" data-i18n="salesBarShort">Demo VisiWeb</span>
-        <span class="label-long" data-i18n="salesBar">Demo de VisiWeb Madrid</span>
-      </p>
-      <div class="demo-view-switch" role="group" aria-label="Vista de la demo">
-        <a href="./demo.html" id="demo-view-web" data-i18n="viewWeb" aria-current="page">Web</a>
-        <a href="./demo.html?qr=1" id="demo-view-mesa" data-i18n="viewMesa">QR Mesa</a>
+      <div class="demo-banner-copy">
+        <p class="label-row">
+          <span class="label-short" data-i18n="salesBarShort">Demo VisiWeb</span>
+          <span class="label-long" data-i18n="salesBar">Demo de VisiWeb Madrid</span>
+        </p>
+        <p id="demo-banner-detail">Así quedaría tu local. Esta demo es interactiva.</p>
       </div>
-      <a id="plan-gastro-link" href="https://visiwebmadrid.com/#gastro-premium" data-i18n="planBadge">Plan Gastro Premium</a>
+      <div class="demo-view-switch" role="group" aria-label="Vista de la demo">
+        <a href="./demo.html?plan=digitalizacion-total" id="demo-view-web" data-i18n="viewWeb" aria-current="page">Web</a>
+        <a href="./demo.html?qr=1&plan=digitalizacion-total" id="demo-view-mesa" data-i18n="viewMesa">QR Mesa</a>
+      </div>
+      <a id="plan-gastro-link" href="https://visiwebmadrid.com/#digitalizacion-total" data-i18n="planBadge">Plan Digitalización Total</a>
       <a id="sales-whatsapp" href="https://wa.me/34608975906?text=Hola%2C%20he%20visto%20la%20demo%20y%20quiero%20una%20as%C3%AD%20para%20mi%20local." target="_blank" rel="noopener">
         <span data-i18n="salesBarCta">Pide la tuya</span>
       </a>
@@ -162,12 +185,15 @@
     (function () {
       'use strict';
 
+      var FORCE_PLAN = 'digitalizacion-total';
+      window.FORCE_PLAN = FORCE_PLAN;
+
       var I18N = {
         es: {
           salesBar: 'Demo de VisiWeb Madrid',
           salesBarShort: 'Demo VisiWeb',
           salesBarCta: 'Pide la tuya',
-          planBadge: 'Plan Gastro Premium',
+          planBadge: 'Plan Digitalización Total',
           viewWeb: 'Web',
           viewMesa: 'QR Mesa',
           viewSwitch: 'Vista de la demo',
@@ -177,7 +203,7 @@
           salesBar: 'VisiWeb Madrid demo',
           salesBarShort: 'VisiWeb demo',
           salesBarCta: 'Request yours',
-          planBadge: 'Gastro Premium Plan',
+          planBadge: 'Digitalización Total Plan',
           viewWeb: 'Web',
           viewMesa: 'QR Mesa',
           viewSwitch: 'Demo view',
@@ -192,6 +218,7 @@
       var btnWeb = document.getElementById('demo-view-web');
       var btnMesa = document.getElementById('demo-view-mesa');
       var switcher = document.querySelector('.demo-view-switch');
+      var guides = window.VisiwebDemoGuides;
 
       function copy(key) {
         return (I18N[lang] && I18N[lang][key]) || I18N.es[key] || '';
@@ -208,20 +235,34 @@
         });
       }
 
-      function withLang(url) {
+      function withParams(url, mode) {
         var next = new URL(url, window.location.href);
+        next.searchParams.set('plan', FORCE_PLAN);
         if (lang === 'en') next.searchParams.set('lang', 'en');
         else next.searchParams.delete('lang');
+        if (mode === 'mesa') {
+          next.searchParams.set('qr', '1');
+        } else {
+          next.searchParams.delete('qr');
+          next.searchParams.delete('modo');
+        }
         return next.pathname + next.search + next.hash;
       }
 
       function srcFor(mode) {
-        if (mode === 'mesa') return withLang('panel/preview/mesa/');
-        return withLang('panel/preview/');
+        if (mode === 'mesa') return withParams('panel/preview/mesa/', 'mesa');
+        return withParams('panel/preview/', 'web');
       }
 
       function setMode(mode, syncUrl) {
         mesaMode = mode === 'mesa';
+        if (mesaMode) window.FORCE_QR_MESA = true;
+        else window.FORCE_QR_MESA = false;
+
+        if (guides && guides.configure) {
+          guides.configure({ lang: lang, mesa: mesaMode });
+        }
+
         frame.src = srcFor(mesaMode ? 'mesa' : 'web');
         if (mesaMode) btnWeb.removeAttribute('aria-current');
         else btnWeb.setAttribute('aria-current', 'page');
@@ -230,6 +271,7 @@
         if (!syncUrl) return;
         try {
           var url = new URL(window.location.href);
+          url.searchParams.set('plan', FORCE_PLAN);
           if (mesaMode) url.searchParams.set('qr', '1');
           else url.searchParams.delete('qr');
           url.searchParams.delete('modo');
@@ -239,8 +281,11 @@
         } catch (e) { /* ignore */ }
       }
 
+      if (guides && guides.bind) guides.bind(frame);
+
       applyI18n();
-      setMode(mesaMode ? 'mesa' : 'web', false);
+      if (guides && guides.configure) guides.configure({ lang: lang, mesa: mesaMode });
+      setMode(mesaMode ? 'mesa' : 'web', true);
 
       btnWeb.addEventListener('click', function (event) {
         event.preventDefault();

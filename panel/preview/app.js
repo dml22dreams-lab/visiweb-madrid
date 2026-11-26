@@ -1024,7 +1024,8 @@
       video.muted = true;
       video.playsInline = true;
       video.loop = false;
-      video.setAttribute('preload', 'none');
+      /* metadata (no none): evita deadlock preload=none + esperar loadedmetadata antes de play() */
+      video.setAttribute('preload', 'metadata');
       let started = false;
       const go = function () {
         if (started || !alive) return;
@@ -1034,21 +1035,27 @@
           if (!alive) return;
           if (play) {
             const pending = video.play();
-            if (pending && typeof pending.catch === 'function') pending.catch(function () {});
+            if (pending && typeof pending.then === 'function') {
+              pending.then(function () {
+                if (alive) video.classList.remove('is-out');
+              }).catch(function () {});
+            } else {
+              video.classList.remove('is-out');
+            }
           } else {
             video.pause();
           }
         });
       };
-      const changed = bindClipSource(video, src);
-      if (changed) {
-        video.addEventListener('loadedmetadata', go, { once: true });
-        if (video.readyState >= 1) go();
-      } else if (video.readyState >= 1) {
+      bindClipSource(video, src);
+      if (video.readyState >= 1) {
         go();
       } else {
         video.addEventListener('loadedmetadata', go, { once: true });
         try { video.load(); } catch (e) { /* ignore */ }
+        setTimeout(function () {
+          if (!started && alive) go();
+        }, 800);
       }
     }
 
@@ -1145,6 +1152,7 @@
     [heroVideo, heroVideoB].forEach(function (video) {
       if (!video) return;
       try { video.pause(); } catch (e) { /* ignore */ }
+      video.setAttribute('preload', 'none');
     });
   }
 
@@ -1372,8 +1380,13 @@
         heroVideo.removeAttribute('poster');
         heroVideoB.removeAttribute('poster');
       }
-      heroVideo.setAttribute('preload', 'none');
-      heroVideoB.setAttribute('preload', 'none');
+      if (onEventos) {
+        heroVideo.setAttribute('preload', 'metadata');
+        heroVideoB.setAttribute('preload', 'metadata');
+      } else {
+        heroVideo.setAttribute('preload', 'none');
+        heroVideoB.setAttribute('preload', 'none');
+      }
       if (clip && clip.src) {
         [heroVideo, heroVideoB].forEach(function (video) {
           const source = video.querySelector('source');
