@@ -495,7 +495,6 @@
     if (focus) tab.focus();
     revealActiveCategory(quiet ? 'auto' : 'smooth');
     if (quiet) return;
-    scrollCategoryToStart();
     history.replaceState(null, '', '#' + tab.dataset.anchor);
   }
 
@@ -546,6 +545,8 @@
     let dragStartX = 0;
     let dragStartScroll = 0;
     let dragMoved = false;
+    let pressedTab = null;
+    let suppressTabClick = false;
 
     function queueSnap() {
       chipSnapArmed = true;
@@ -566,6 +567,7 @@
 
     row.addEventListener('pointerdown', (event) => {
       if (event.pointerType === 'mouse' && event.button !== 0) return;
+      pressedTab = event.target.closest('[role="tab"]');
       chipRowDrag = true;
       chipSnapArmed = false;
       chipSlideToken += 1;
@@ -575,26 +577,38 @@
       dragStartX = event.clientX;
       dragStartScroll = row.scrollLeft;
       dragMoved = false;
-      row.classList.add('is-dragging');
-      try { row.setPointerCapture(event.pointerId); } catch (err) {}
     });
     row.addEventListener('pointermove', (event) => {
       if (event.pointerId !== dragPointer) return;
       const dx = event.clientX - dragStartX;
-      if (Math.abs(dx) > 4) dragMoved = true;
+      if (!dragMoved) {
+        if (Math.abs(dx) <= 8) return;
+        dragMoved = true;
+        pressedTab = null;
+        row.classList.add('is-dragging');
+        try { row.setPointerCapture(event.pointerId); } catch (err) {}
+      }
       row.scrollLeft = dragStartScroll - dx;
+      event.preventDefault();
     });
     row.addEventListener('click', (event) => {
-      if (!dragMoved) return;
-      event.preventDefault();
-      event.stopPropagation();
-      dragMoved = false;
+      if (suppressTabClick || dragMoved) {
+        event.preventDefault();
+        event.stopPropagation();
+        suppressTabClick = false;
+        dragMoved = false;
+        return;
+      }
+      const tab = event.target.closest('[role="tab"]');
+      if (!tab) return;
+      selectTab(tab, false);
     }, true);
     row.addEventListener('wheel', (event) => {
       if (row.scrollWidth - row.clientWidth <= 1) return;
       const horizontal = Math.abs(event.deltaX) > Math.abs(event.deltaY) || event.shiftKey;
-      if (!horizontal) return;
-      const delta = event.shiftKey ? event.deltaY : event.deltaX;
+      const delta = horizontal
+        ? (event.shiftKey ? event.deltaY : event.deltaX)
+        : event.deltaY;
       if (!delta) return;
       row.scrollLeft += delta;
       chipSnapArmed = false;
@@ -607,18 +621,29 @@
     document.addEventListener('pointerup', (event) => {
       if (event.pointerId === dragPointer) {
         const moved = dragMoved;
+        const tab = pressedTab;
+        pressedTab = null;
         endMouseDrag();
         if (moved) {
           window.setTimeout(() => { dragMoved = false; }, 0);
           return;
         }
+        dragMoved = false;
+        if (tab) {
+          suppressTabClick = true;
+          selectTab(tab, false);
+        }
+        return;
       }
       chipRowDrag = false;
+      pressedTab = null;
       queueSnap();
     });
     document.addEventListener('pointercancel', (event) => {
       if (event.pointerId === dragPointer) endMouseDrag();
       chipRowDrag = false;
+      dragMoved = false;
+      pressedTab = null;
     });
 
     let pageLock = 0;
@@ -885,10 +910,24 @@
       video.classList.add('is-cover');
     }
 
+    function bindClipSource(video, clipSrc) {
+      const source = video.querySelector('source');
+      if (source && source.getAttribute('src') !== clipSrc) {
+        source.setAttribute('src', clipSrc);
+      }
+      if (video.getAttribute('src') !== clipSrc) {
+        video.setAttribute('src', clipSrc);
+        try { video.load(); } catch (e) { /* ignore */ }
+        return true;
+      }
+      return false;
+    }
+
     function prep(video, time, play) {
       video.muted = true;
       video.playsInline = true;
       video.loop = false;
+      video.setAttribute('preload', 'none');
       let started = false;
       const go = function () {
         if (started || !alive) return;
@@ -904,14 +943,15 @@
           }
         });
       };
-      if (video.getAttribute('src') !== src) {
+      const changed = bindClipSource(video, src);
+      if (changed) {
         video.addEventListener('loadedmetadata', go, { once: true });
-        video.src = src;
         if (video.readyState >= 1) go();
       } else if (video.readyState >= 1) {
         go();
       } else {
         video.addEventListener('loadedmetadata', go, { once: true });
+        try { video.load(); } catch (e) { /* ignore */ }
       }
     }
 
@@ -921,6 +961,11 @@
       secondary.hidden = true;
       primary.removeAttribute('src');
       secondary.removeAttribute('src');
+      [primary, secondary].forEach(function (video) {
+        const source = video.querySelector('source');
+        if (source) source.removeAttribute('src');
+        try { video.load(); } catch (e) { /* ignore */ }
+      });
     }
 
     primary.hidden = false;
@@ -1233,6 +1278,10 @@
       heroVideo.setAttribute('preload', 'none');
       heroVideoB.setAttribute('preload', 'none');
       if (clip && clip.src) {
+        [heroVideo, heroVideoB].forEach(function (video) {
+          const source = video.querySelector('source');
+          if (source) source.setAttribute('src', clip.src);
+        });
         const key = clip.src + '|' + clip.inicio + '|' + clip.duracion;
         if (heroVideo._heroKey !== key) {
           pauseEventosHero();
@@ -1242,8 +1291,6 @@
           if (heroVideo.getAttribute('src')) {
             heroVideo.removeAttribute('src');
             heroVideoB.removeAttribute('src');
-            try { heroVideo.load(); } catch (e) { /* ignore */ }
-            try { heroVideoB.load(); } catch (e) { /* ignore */ }
           }
         }
         if (onEventos) {
@@ -1261,8 +1308,11 @@
         heroVideoB.removeAttribute('src');
         heroVideo.removeAttribute('poster');
         heroVideoB.removeAttribute('poster');
-        try { heroVideo.load(); } catch (e) { /* ignore */ }
-        try { heroVideoB.load(); } catch (e) { /* ignore */ }
+        [heroVideo, heroVideoB].forEach(function (video) {
+          const source = video.querySelector('source');
+          if (source) source.removeAttribute('src');
+          try { video.load(); } catch (e) { /* ignore */ }
+        });
       }
     }
     if (readyImg) {

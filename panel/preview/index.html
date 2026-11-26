@@ -4,6 +4,16 @@
   <meta charset="UTF-8">
   <meta name="robots" content="noindex">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <script>
+    (function () {
+      var path = location.pathname.replace(/\/+$/, '') || '/';
+      if (/^\/r\/[^/]+$/.test(path)) {
+        document.documentElement.classList.add('vw-pending');
+      }
+    })();
+  </script>
+  <style>html.vw-pending body { visibility: hidden; }</style>
+  <base href="/panel/preview/">
   <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
   <title>Taberna El Norte · Cervecería y raciones en Alcobendas</title>
   <meta name="description" content="Taberna El Norte, cervecería y raciones en Alcobendas. Carta bilingüe con alérgenos, salón y terraza, historia del local y reservas online.">
@@ -34,6 +44,7 @@
   <link rel="preload" href="./assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="./assets/fonts/cormorant-garamond-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="/design.css?v=7">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" media="print" onload="this.media='all'">
   <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"></noscript>
   <style>
@@ -880,7 +891,11 @@
       justify-content: flex-start;
       cursor: grab;
     }
-    #menu-chip-row.is-dragging {
+    #menu-chip-row .tab {
+      cursor: pointer;
+    }
+    #menu-chip-row.is-dragging,
+    #menu-chip-row.is-dragging .tab {
       cursor: grabbing;
       user-select: none;
     }
@@ -2387,8 +2402,12 @@
       <section class="eventos-page mx-auto max-w-3xl px-5 pb-16 pt-6 sm:pt-10">
         <figure class="eventos-hero">
           <img id="eventos-hero-img" alt="" width="1800" height="1200">
-          <video id="eventos-hero-video" muted playsinline preload="none" hidden></video>
-          <video id="eventos-hero-video-b" muted playsinline preload="none" hidden></video>
+          <video id="eventos-hero-video" muted playsinline preload="none" hidden>
+            <source src="./assets/brindis-salon.mp4" type="video/mp4">
+          </video>
+          <video id="eventos-hero-video-b" muted playsinline preload="none" hidden>
+            <source src="./assets/brindis-salon.mp4" type="video/mp4">
+          </video>
           <div class="eventos-hero-copy">
             <p id="eventos-eyebrow" class="eventos-badge"></p>
             <div class="eventos-hero-main">
@@ -2764,8 +2783,16 @@
 
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
   <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
+  <script src="/design.js?v=6"></script>
+  <script src="/restaurant-loader.js?v=7"></script>
   <script src="./data.js"></script>
-  <script src="./app.js"></script>
+  <script>
+    if (window.VisiwebRestaurant && window.VisiwebRestaurant.dynamic === 'web') {
+      window.VisiwebRestaurant.start('web');
+    } else {
+      document.write('<script src="./app.js?v=10"><\/script>');
+    }
+  </script>
   <script>
     (function () {
       var modal = document.getElementById('reserve-options-modal');
