@@ -17,6 +17,13 @@ window.VISIWEB_DEMO = (function () {
     whatsapp: '34608975906'
   };
 
+  /* --- Plan contratado ----------------------------------------------
+     'basico' | 'gastro-premium' | 'digitalizacion-total'
+     Por defecto el plan completo (demo). Cambiar a 'basico' para la
+     One-Page de 120 €.
+  ------------------------------------------------------------------- */
+  const PLAN = 'digitalizacion-total';
+
   /* --- Negocio ------------------------------------------------------ */
   const BUSINESS = {
     name: 'Taberna El Norte',
@@ -964,6 +971,7 @@ window.VISIWEB_DEMO = (function () {
       reserveReady: 'Confirmar mesa',
       bookMissing: 'Faltan apartados por rellenar',
       reserveWhatsApp: 'Reservar mesa por WhatsApp',
+      basicoWaCta: 'Reservar o pedir por WhatsApp',
       reserveOptionsTitle: 'Haz tu reserva',
       reserveOptionsLead: 'Elige cómo quieres reservar.',
       reserveOnline: 'Reservar online',
@@ -1188,6 +1196,7 @@ window.VISIWEB_DEMO = (function () {
       reserveReady: 'Confirm table',
       bookMissing: 'Some fields are still empty',
       reserveWhatsApp: 'Book a table on WhatsApp',
+      basicoWaCta: 'Book or order on WhatsApp',
       reserveOptionsTitle: 'Book your table',
       reserveOptionsLead: 'Choose how you want to book.',
       reserveOnline: 'Book online',
@@ -1285,6 +1294,7 @@ window.VISIWEB_DEMO = (function () {
   };
 
   return {
+    plan: PLAN,
     developer: DEVELOPER,
     business: BUSINESS,
     images: IMAGES,

@@ -8,7 +8,24 @@
 (function () {
   'use strict';
 
+  function normalizePlanId(value) {
+    var raw = String(value || '').toLowerCase().trim();
+    if (raw === '120' || raw === 'basico' || raw === 'básico') return 'basico';
+    if (raw === '390' || raw === 'gastro-premium' || raw === 'gastro_premium') return 'gastro-premium';
+    if (raw === '790' || raw === 'digitalizacion-total' || raw === 'digitalización-total') return 'digitalizacion-total';
+    return 'digitalizacion-total';
+  }
+
+  function peekPlan() {
+    return normalizePlanId(window.VISIWEB_DEMO && window.VISIWEB_DEMO.plan);
+  }
+
+  function isBasicoPlan() {
+    return peekPlan() === 'basico';
+  }
+
   function isQrMesaMode() {
+    if (isBasicoPlan()) return false;
     if (window.FORCE_QR_MESA === true) return true;
     var path = String(window.location.pathname || '').replace(/\/+$/, '') || '/';
     if (path === '/qr' || /\/qr$/i.test(path)) return true;
@@ -52,14 +69,21 @@
   const D = window.VISIWEB_DEMO;
   if (!D) return;
 
+  let PLAN = normalizePlanId(D.plan);
+  D.plan = PLAN;
+  document.documentElement.dataset.plan = PLAN;
+  document.documentElement.classList.toggle('plan-basico', PLAN === 'basico');
+
   const TZ = D.business.timezone;
   const STORE_LANG = 'visiweb-demo-lang';
   const SCHEMA_DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   const WEEK_ORDER = [1, 2, 3, 4, 5, 6, 0];
-  let eventosOn = !!(D.eventos && D.eventos.activo);
-  let PAGES = eventosOn
-    ? ['inicio', 'carta', 'local', 'eventos', 'reservas']
-    : ['inicio', 'carta', 'local', 'reservas'];
+  let eventosOn = PLAN !== 'basico' && !!(D.eventos && D.eventos.activo);
+  let PAGES = PLAN === 'basico'
+    ? []
+    : (eventosOn
+      ? ['inicio', 'carta', 'local', 'eventos', 'reservas']
+      : ['inicio', 'carta', 'local', 'reservas']);
   const allergenFilters = new Set();
   const FILTER_OFF = ['bg-white', 'text-stone-700', 'border-stone-300', 'dark:bg-slate-950', 'dark:text-slate-300', 'dark:border-slate-600'];
   const FILTER_ON = ['filter-chip-on', 'text-white', 'border-transparent'];
@@ -440,9 +464,34 @@
   function renderMenu() {
     const tabs = $('#tabs');
     const panels = $('#panels');
+    if (!tabs || !panels) return;
     tabs.textContent = '';
     panels.textContent = '';
 
+    if (PLAN === 'basico') {
+      panels.classList.add('basico-menu-stack');
+      D.menu.forEach((cat) => {
+        const panel = el('section', 'basico-menu-cat scroll-mt-24 focus:outline-none');
+        panel.id = 'panel-' + cat.id;
+        panel.dataset.basicoAnchor = cat.anchor;
+        panel.setAttribute('aria-labelledby', 'basico-cat-' + cat.id);
+
+        const heading = el('h2', 'basico-menu-cat-title font-serif text-2xl font-semibold tracking-tight text-stone-900 dark:text-stone-100');
+        heading.id = 'basico-cat-' + cat.id;
+        heading.textContent = L(cat.name);
+
+        const desc = el('p', 'basico-menu-cat-desc mt-2 text-sm italic text-stone-500 dark:text-stone-400');
+        desc.textContent = L(cat.desc);
+
+        const list = el('ul', 'basico-menu-list mt-5');
+        cat.items.forEach((item) => list.appendChild(dishNode(item)));
+        panel.append(heading, desc, list);
+        panels.appendChild(panel);
+      });
+      return;
+    }
+
+    panels.classList.remove('basico-menu-stack');
     D.menu.forEach((cat, index) => {
       const tab = el('button', 'tab ' + TAB_CHROME + ' ' + (index === 0 ? TAB_ON : TAB_OFF).join(' '));
       tab.type = 'button';
@@ -666,13 +715,16 @@
 
   function initTabs() {
     const tabs = $('#tabs');
+    if (!tabs) return;
 
     tabs.addEventListener('click', (event) => {
+      if (PLAN === 'basico') return;
       const tab = event.target.closest('[role="tab"]');
       if (tab) selectTab(tab, false);
     });
 
     tabs.addEventListener('keydown', (event) => {
+      if (PLAN === 'basico') return;
       const all = Array.prototype.slice.call(tabs.children);
       const current = all.indexOf(document.activeElement);
       if (current < 0) return;
@@ -692,6 +744,21 @@
   let closeSocialsSheet = function () {};
 
   function showPage(id, opts) {
+    if (PLAN === 'basico') {
+      document.querySelectorAll('[data-page]').forEach((page) => {
+        const keep = page.dataset.page === 'inicio' || page.dataset.page === 'carta';
+        page.hidden = !keep;
+      });
+      if (opts && opts.quiet) return;
+      if (!(opts && opts.keepScroll)) {
+        if (opts && opts.smooth) {
+          if (window.scrollY > 0) window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else {
+          window.scrollTo(0, 0);
+        }
+      }
+      return;
+    }
     if (id !== 'inicio') closeSocialsSheet({ keepHash: true });
     document.querySelectorAll('[data-page]').forEach((page) => {
       page.hidden = page.dataset.page !== id;
@@ -718,11 +785,41 @@
       .filter((node) => node.dataset.anchor === hash)[0];
   }
 
+  function basicoPanelByAnchor(hash) {
+    return document.querySelector('[data-basico-anchor="' + hash + '"]');
+  }
+
   function applyHash(opts) {
     const navOpts = opts || hashNavOpts;
     hashNavOpts = null;
     const quiet = !!(navOpts && navOpts.quiet);
     const hash = decodeURIComponent(window.location.hash.replace('#', ''));
+
+    if (PLAN === 'basico') {
+      showPage('inicio', { quiet: true, keepScroll: true });
+      if (!hash || hash === 'inicio' || hash === 'carta' || hash === 'redes' || hash === 'local' || hash === 'eventos' || hash === 'reservas' || hash === 'historia') {
+        if (!quiet && (!hash || hash === 'inicio')) window.scrollTo(0, 0);
+        else if (!quiet && hash === 'carta') {
+          const carta = document.querySelector('[data-page="carta"]');
+          if (carta) carta.scrollIntoView({ block: 'start' });
+        }
+        return;
+      }
+      if (hash === 'horarios') {
+        const hours = $('#horarios');
+        if (hours && !quiet) hours.scrollIntoView({ block: 'start' });
+        return;
+      }
+      if (hash === 'ubicacion') {
+        const addr = $('#footer-address') || $('footer');
+        if (addr && !quiet) addr.scrollIntoView({ block: 'start' });
+        return;
+      }
+      const panel = basicoPanelByAnchor(hash);
+      if (panel && !quiet) panel.scrollIntoView({ block: 'start' });
+      return;
+    }
+
     if (hash !== 'redes') closeSocialsSheet({ keepHash: true });
     if (!hash || hash === 'inicio') {
       showPage('inicio', navOpts);
@@ -1939,6 +2036,7 @@
   }
 
   function placeAllergenChip() {
+    if (PLAN === 'basico') return;
     const row = $('#menu-chip-row');
     const chip = $('#allergen-chip');
     const slot = $('#allergen-below');
@@ -2978,6 +3076,67 @@
       : 'https://web.whatsapp.com/send?phone=' + telefonoLimpio + '&text=' + mensajeCodificado;
   }
 
+  function updateBasicoCta() {
+    if (PLAN !== 'basico') {
+      const stale = document.getElementById('basico-wa-cta');
+      if (stale) stale.remove();
+      return;
+    }
+    const intro = document.querySelector('.hero-intro');
+    if (!intro) return;
+    let cta = document.getElementById('basico-wa-cta');
+    if (!cta) {
+      cta = document.createElement('a');
+      cta.id = 'basico-wa-cta';
+      cta.className = 'basico-wa-cta btn-whatsapp';
+      cta.target = '_blank';
+      cta.rel = 'noopener';
+      intro.appendChild(cta);
+    }
+    const msg = (D.whatsappText && (D.whatsappText[lang] || D.whatsappText.es)) || '';
+    cta.href = whatsappSendUrl(D.business.whatsapp, msg);
+    cta.textContent = t('basicoWaCta');
+  }
+
+  function syncPlanMode() {
+    PLAN = normalizePlanId(D.plan);
+    D.plan = PLAN;
+    document.documentElement.dataset.plan = PLAN;
+    document.documentElement.classList.toggle('plan-basico', PLAN === 'basico');
+
+    if (PLAN === 'basico') {
+      if (D.eventos) D.eventos.activo = false;
+      eventosOn = false;
+      PAGES = [];
+      closeSocialsSheet({ keepHash: true });
+      document.querySelectorAll('[data-page]').forEach((page) => {
+        const keep = page.dataset.page === 'inicio' || page.dataset.page === 'carta';
+        page.hidden = !keep;
+      });
+      const nav = document.querySelector('.site-nav');
+      if (nav) nav.setAttribute('aria-hidden', 'true');
+      const langBtn = document.getElementById('btn-lang-toggle');
+      if (langBtn) langBtn.hidden = true;
+      document.querySelectorAll('a[data-i18n="mesaLink"], a[data-view="mesa"]').forEach((link) => {
+        link.hidden = true;
+        if (link.parentElement && link.parentElement.tagName === 'P' && link.parentElement.children.length === 1) {
+          link.parentElement.hidden = true;
+        }
+      });
+    } else {
+      const nav = document.querySelector('.site-nav');
+      if (nav) nav.removeAttribute('aria-hidden');
+      const langBtn = document.getElementById('btn-lang-toggle');
+      if (langBtn) langBtn.hidden = false;
+      document.querySelectorAll('a[data-i18n="mesaLink"], a[data-view="mesa"]').forEach((link) => {
+        link.hidden = false;
+        if (link.parentElement) link.parentElement.hidden = false;
+      });
+      const stale = document.getElementById('basico-wa-cta');
+      if (stale) stale.remove();
+    }
+  }
+
   let bookingWaPhone = '';
   let bookingWaText = '';
 
@@ -3289,6 +3448,7 @@
   }
 
   function renderAll() {
+    syncPlanMode();
     applyI18n();
     renderAlternates();
     renderHero();
@@ -3311,6 +3471,7 @@
     applyI18nBookingOptions();
     renderJsonLd();
     applyAllergenFilter();
+    updateBasicoCta();
     syncStickyOffset();
     if (window.VisiwebDesign && window.VISIWEB_DESIGN) window.VisiwebDesign.mountWeb(D, lang);
   }
@@ -3438,6 +3599,7 @@
 
     document.addEventListener('touchstart', (event) => {
       tracking = false;
+      if (PLAN === 'basico') return;
       if (window.innerWidth >= 768 || event.touches.length !== 1) return;
       if (blocksPageSwipe(event.target)) return;
       tracking = true;
@@ -3448,7 +3610,7 @@
     document.addEventListener('touchend', (event) => {
       if (!tracking) return;
       tracking = false;
-      if (window.innerWidth >= 768) return;
+      if (PLAN === 'basico' || window.innerWidth >= 768) return;
       const touch = event.changedTouches[0];
       if (!touch) return;
       const deltaX = touch.clientX - startX;
@@ -3469,6 +3631,7 @@
   }
 
   /* --------------------------------- Arranque ------------------------------ */
+  syncPlanMode();
   initEventos();
   initSocials();
   bindDemoActions();
@@ -3543,10 +3706,16 @@
   }
 
   function syncEventosNav() {
-    eventosOn = !!(D.eventos && D.eventos.activo);
-    PAGES = eventosOn
-      ? ['inicio', 'carta', 'local', 'eventos', 'reservas']
-      : ['inicio', 'carta', 'local', 'reservas'];
+    if (PLAN === 'basico') {
+      eventosOn = false;
+      PAGES = [];
+      if (D.eventos) D.eventos.activo = false;
+    } else {
+      eventosOn = !!(D.eventos && D.eventos.activo);
+      PAGES = eventosOn
+        ? ['inicio', 'carta', 'local', 'eventos', 'reservas']
+        : ['inicio', 'carta', 'local', 'reservas'];
+    }
     var link = document.getElementById('nav-eventos');
     var row = document.querySelector('.site-nav-links');
     var page = document.querySelector('[data-page="eventos"]');
@@ -3580,6 +3749,10 @@
 
   function applyRestaurantData(row) {
     if (!row || typeof row !== 'object') return;
+    if (row.plan_tier || row.plan) {
+      D.plan = normalizePlanId(row.plan_tier || row.plan);
+      PLAN = D.plan;
+    }
     var categories = Array.isArray(row.categories) ? row.categories : (Array.isArray(row.menu) ? row.menu : []);
     var usedAnchors = {};
     var featured = [];
@@ -3672,10 +3845,12 @@
     });
     if (document.title !== undefined) document.title = name + (tagline ? ' · ' + tagline : '');
     if (D.eventos) {
-      var planOk = String(row.plan_tier || '') === '790' || String(row.plan_tier || '') === 'digitalizacion-total' || row.eventos_activo === true || (row.eventos && row.eventos.activo);
+      var planId = normalizePlanId(row.plan_tier || row.plan || D.plan);
+      var planOk = planId === 'digitalizacion-total' || row.eventos_activo === true || (row.eventos && row.eventos.activo);
       var labels = (row.design_config && row.design_config.labels) || (row.design && row.design.labels) || {};
       var evCfg = (row.design_config && row.design_config.eventos) || (row.design && row.design.eventos) || row.eventos || {};
-      if (typeof row.eventos_activo === 'boolean') D.eventos.activo = row.eventos_activo;
+      if (planId === 'basico') D.eventos.activo = false;
+      else if (typeof row.eventos_activo === 'boolean') D.eventos.activo = row.eventos_activo;
       else if (evCfg && typeof evCfg.activo === 'boolean') D.eventos.activo = evCfg.activo;
       else D.eventos.activo = planOk && (labels.vw_events === '1' || !!evCfg.activo);
       if (evCfg.tipoVideo === 'salon' || evCfg.tipoVideo === 'terraza' || evCfg.tipoVideo === 'ninguno') {
@@ -3688,6 +3863,7 @@
       D.eventos.phoneDisplay = phone || D.eventos.phoneDisplay;
       D.eventos.whatsapp = String(row.whatsapp || D.eventos.whatsapp || '').replace(/\D/g, '');
     }
+    syncPlanMode();
     syncEventosNav();
     renderAll();
   }
