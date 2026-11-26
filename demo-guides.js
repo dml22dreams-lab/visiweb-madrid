@@ -21,7 +21,6 @@
       demoCreditLead: 'Web demo desarrollada por',
       demoCreditPlan: '· Realizada con el Plan Digitalización Total',
       demoRibbon: 'Web de demostración',
-      mesaRibbon: 'Carta QR Mesa · demostración',
       planBadge: 'Plan Digitalización Total'
     },
     en: {
@@ -39,7 +38,6 @@
       demoCreditLead: 'Demo website built by',
       demoCreditPlan: '· Built with the Digitalización Total Plan',
       demoRibbon: 'Demo website',
-      mesaRibbon: 'Table QR menu · demo',
       planBadge: 'Digitalización Total Plan'
     }
   };
@@ -154,7 +152,6 @@
       '@media (min-width:640px){.demo-guide-map-hint{position:absolute;right:1rem;top:1rem;z-index:10;margin:0;border-radius:999px;border:1px solid #e7e5e4;background:rgba(255,255,255,.95);padding:.375rem .75rem;color:#44403c;box-shadow:0 1px 2px rgba(0,0,0,.05);backdrop-filter:blur(4px)}.dark .demo-guide-map-hint{border-color:#44403c;background:rgba(28,25,23,.95);color:#e7e5e4}}',
       '#demo-action-note{position:fixed;left:50%;z-index:70;max-width:min(20rem,calc(100vw - 2rem));transform:translateX(-50%);border-radius:999px;background:#1c1917;color:#fff;padding:.55rem .9rem;text-align:center;font-size:.75rem;line-height:1.35;box-shadow:0 10px 30px -12px rgb(0 0 0 / .45);bottom:1.25rem}',
       '@media (max-width:767px){#demo-action-note{bottom:calc(5.25rem + env(safe-area-inset-bottom))}}',
-      '#demo-guide-ribbon{position:fixed;top:max(.65rem,env(safe-area-inset-top));left:50%;z-index:60;transform:translateX(-50%);border-radius:999px;border:1px solid #e7e5e4;background:rgba(250,250,249,.96);padding:.3rem .75rem;font-size:11px;font-weight:600;color:#57534e;pointer-events:none;box-shadow:0 8px 24px -18px rgba(0,0,0,.35)}',
       '.demo-guide-footer-notice{max-width:28rem;margin:0 auto;font-size:11px;line-height:1.6;color:#a3a3a3}',
       '.dark .demo-guide-footer-notice{color:#78716c}',
       '.demo-guide-call-hint{display:block;margin-top:.125rem;font-size:.75rem;color:#78716c}'
@@ -302,13 +299,6 @@
   }
 
   function injectMesa(doc) {
-    ensureNode(doc, 'mesaRibbon', function () {
-      var ribbon = doc.createElement('div');
-      ribbon.id = 'demo-guide-ribbon';
-      ribbon.textContent = t('mesaRibbon');
-      doc.body.appendChild(ribbon);
-      return ribbon;
-    });
     ensureActionNote(doc);
     guardClicks(doc, 'a[href^="tel:"], a[href^="TEL:"]', 'demoCallNote');
     guardClicks(doc, 'a[href*="google.com/maps"], a[href*="maps.apple.com"], a[href*="maps.google"]', 'demoRouteNote');
