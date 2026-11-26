@@ -1049,16 +1049,23 @@
     function bindClipSource(video, clipSrc) {
       if (video.getAttribute('src') === clipSrc) return false;
       video.setAttribute('src', clipSrc);
-      video.setAttribute('preload', 'metadata');
+      video.setAttribute('preload', 'auto');
       try { video.load(); } catch (e) { /* ignore */ }
       return true;
     }
 
-    function prep(video, time, play) {
+    function armHeroAttrs(video) {
       video.muted = true;
+      video.defaultMuted = true;
       video.playsInline = true;
       video.loop = false;
-      video.setAttribute('preload', 'none');
+      video.setAttribute('muted', '');
+      video.setAttribute('playsinline', '');
+      video.removeAttribute('autoplay');
+    }
+
+    function prep(video, time, play) {
+      armHeroAttrs(video);
       let started = false;
       const go = function () {
         if (started || !alive) return;
@@ -1067,6 +1074,7 @@
         seekHeroVideo(video, Math.min(time, limit), function () {
           if (!alive) return;
           if (play) {
+            video.classList.remove('is-out');
             const pending = video.play();
             if (pending && typeof pending.catch === 'function') pending.catch(function () {});
           } else {
@@ -1108,10 +1116,6 @@
     secondary.onerror = fail;
     prep(top, inicio, true);
     prep(under, inicio, false);
-    seekHeroVideo(top, inicio, function () {
-      if (!alive) return;
-      top.classList.remove('is-out');
-    });
 
     function finishFade() {
       if (!alive || !fading) return;
@@ -1191,6 +1195,11 @@
       pauseEventosHero();
       return;
     }
+    const page = document.querySelector('[data-page="eventos"]');
+    if (!page || page.hidden) {
+      pauseEventosHero();
+      return;
+    }
     const heroVideo = $('#eventos-hero-video');
     const heroVideoB = $('#eventos-hero-video-b');
     if (!heroVideo || !heroVideoB) return;
@@ -1200,7 +1209,13 @@
       return;
     }
     const key = clip.src + '|' + clip.inicio + '|' + clip.duracion;
-    if (heroVideo._heroKey === key && heroVideo._heroStop) return;
+    if (heroVideo._heroKey === key && heroVideo._heroStop) {
+      if (heroVideo.paused) {
+        const pending = heroVideo.play();
+        if (pending && typeof pending.catch === 'function') pending.catch(function () {});
+      }
+      return;
+    }
     if (heroVideo._heroStop) heroVideo._heroStop();
     heroVideo._heroKey = key;
     heroVideo._heroStop = startEventHeroLoop(heroVideo, heroVideoB, clip.src, clip.inicio, clip.duracion);
