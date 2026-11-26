@@ -803,7 +803,7 @@
   }
 
   function collabFrameSrc(editor) {
-    return (editor && editor.preview === 'mesa') ? '../mesa/' : './preview/index.html#inicio';
+    return (editor && editor.preview === 'mesa') ? '/mesa/' : '/panel/preview/index.html#inicio';
   }
 
   function openFullscreenPreview() {
@@ -812,8 +812,8 @@
     writePreviewPayload(payload);
     persistActiveLocal();
     var url = state.editor.preview === 'mesa'
-      ? '../mesa/?preview=1'
-      : './preview/index.html?preview=1#inicio';
+      ? '/mesa/?preview=1'
+      : '/panel/preview/index.html?preview=1#inicio';
     window.open(url, '_blank', 'noopener');
   }
 
@@ -1645,7 +1645,7 @@
             '</div>' +
             '<div class="relative flex min-h-0 flex-1 justify-center overflow-auto bg-stone-100 p-4">' +
               '<p id="proposal-empty" class="absolute inset-0 grid place-items-center text-sm text-stone-500">Selecciona una propuesta para revisarla.</p>' +
-              '<iframe id="proposal-preview" title="Vista previa propuesta" src="./preview/index.html#inicio" class="h-full border border-stone-200 bg-white shadow-sm" style="width:390px;max-width:390px"></iframe>' +
+              '<iframe id="proposal-preview" title="Vista previa propuesta" src="/panel/preview/index.html#inicio" class="h-full border border-stone-200 bg-white shadow-sm" style="width:390px;max-width:390px"></iframe>' +
             '</div>' +
           '</section>' +
         '</div>' +
@@ -2206,7 +2206,10 @@
             '<p class="font-serif text-3xl">VisiWeb</p>' +
             '<p class="mt-1 text-sm text-stone-500">' + (admin ? 'Administrador' : 'Colaborador') + ' · ' + esc(state.profile.email || state.session.user.email || '') + '</p>' +
           '</div>' +
-          '<button type="button" id="sign-out" class="rounded-full px-3 py-2 text-sm font-semibold text-stone-500">Salir</button>' +
+          '<div class="flex items-center gap-2">' +
+            '<a href="/panel/preview/index.html" target="_blank" rel="noopener" class="rounded-full px-3 py-2 text-sm font-semibold text-stone-700 ring-1 ring-stone-200 hover:bg-stone-100">Plantilla</a>' +
+            '<button type="button" id="sign-out" class="rounded-full px-3 py-2 text-sm font-semibold text-stone-500">Salir</button>' +
+          '</div>' +
         '</header>' +
         (admin
           ? '<div class="mt-6 flex gap-2 rounded-full bg-stone-100 p-1 text-sm font-semibold">' +

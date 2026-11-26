@@ -145,8 +145,8 @@
 
   function frameSrc() {
     var current = ed();
-    if (current && current.preview === 'mesa') return '../mesa/?editor=1';
-    return './preview/index.html#inicio';
+    if (current && current.preview === 'mesa') return '/mesa/?editor=1';
+    return '/panel/preview/index.html#inicio';
   }
 
   var ICON = {

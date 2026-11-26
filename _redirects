@@ -1,10 +1,28 @@
-# Panel: servir index antes del fallback SPA de Cloudflare Pages
-/panel          /panel/index.html   200
-/panel/         /panel/index.html   200
-/panel/*        /panel/:splat       200
+# Panel: barra final para que CSS/JS relativos resuelvan bien
+/panel                    /panel/                           301
+/panel/                   /panel/index.html                 200
+
+# Preview estáticos PRIMERO: servir el archivo real, nunca HTML
+/panel/preview/style.css  /panel/preview/style.css          200
+/panel/preview/data.js    /panel/preview/data.js            200
+/panel/preview/app.js     /panel/preview/app.js             200
+/panel/preview/assets/*   /panel/preview/assets/:splat      200
+/panel/preview/mesa/*     /panel/preview/mesa/:splat        200
+/panel/preview/qr/*       /panel/preview/qr/:splat          200
+
+# Preview: barra final + index (rutas relativas dentro de panel/preview/)
+/panel/preview            /panel/preview/                   301
+/panel/preview/           /panel/preview/index.html         200
+/panel/preview/index.html /panel/preview/index.html         200
+
+# Resto de estáticos de preview
+/panel/preview/*          /panel/preview/:splat             200
+
+# Resto del panel (canva.js, panel.js, …)
+/panel/*                  /panel/:splat                     200
 
 # /_plantilla-base/* y /clientes/* son estáticas y no se reescriben.
-/r/:slug/mesa   /mesa/index.html   200
-/r/:slug/mesa/  /mesa/index.html   200
-/r/:slug        /panel/preview/index.html   200
-/r/:slug/       /panel/preview/index.html   200
+/r/:slug/mesa             /mesa/index.html                  200
+/r/:slug/mesa/            /mesa/index.html                  200
+/r/:slug                  /panel/preview/index.html         200
+/r/:slug/                 /panel/preview/index.html         200
