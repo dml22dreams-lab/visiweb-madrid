@@ -1506,12 +1506,20 @@
         transform-origin: 68% 64%;
       }
     }
-    .eventos-hero video {
+    .eventos-hero img {
       z-index: 0;
+    }
+    .eventos-hero video {
+      display: block;
+      z-index: 1;
       opacity: 1;
     }
+    .eventos-hero video[hidden] {
+      display: none !important;
+    }
     .eventos-hero video.is-boot { opacity: 1; }
-    .eventos-hero.is-playing > img {
+    .eventos-hero.is-playing > img,
+    .eventos-hero.is-video > img {
       opacity: 0;
       visibility: hidden;
       pointer-events: none;
@@ -1520,13 +1528,13 @@
       content: "";
       position: absolute;
       inset: 0;
-      z-index: 1;
+      z-index: 2;
       background:
         linear-gradient(180deg, rgba(32, 18, 10, 0.55) 0%, rgba(42, 24, 14, 0.12) 34%, rgba(28, 16, 8, 0.9) 100%);
     }
     .eventos-hero-copy {
       position: relative;
-      z-index: 2;
+      z-index: 3;
       display: flex;
       min-height: 26rem;
       flex-direction: column;
@@ -2395,7 +2403,7 @@
       <section class="eventos-page mx-auto max-w-3xl px-5 pb-16 pt-6 sm:pt-10">
         <figure class="eventos-hero">
           <img id="eventos-hero-img" alt="" width="1800" height="1200">
-          <video id="eventos-hero-video" class="eventos-hero-video" muted playsinline loop preload="none" hidden></video>
+          <video id="eventos-hero-video" class="eventos-hero-video" src="./assets/brindis-salon.mp4" muted playsinline loop preload="metadata"></video>
           <div class="eventos-hero-copy">
             <p id="eventos-eyebrow" class="eventos-badge"></p>
             <div class="eventos-hero-main">
@@ -2778,7 +2786,7 @@
     if (window.VisiwebRestaurant && window.VisiwebRestaurant.dynamic === 'web') {
       window.VisiwebRestaurant.start('web');
     } else {
-      document.write('<script src="./app.js?v=10"><\/script>');
+      document.write('<script src="./app.js?v=11"><\/script>');
     }
   </script>
   <script>

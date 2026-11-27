@@ -986,6 +986,14 @@
 
   function showEventosHeroFallback() {
     setEventosHeroPlaying(false);
+    const heroVideo = $('#eventos-hero-video');
+    if (heroVideo) {
+      try { heroVideo.pause(); } catch (e) { /* ignore */ }
+      heroVideo.hidden = true;
+      heroVideo.classList.remove('is-boot', 'is-warm');
+    }
+    const figure = document.querySelector('.eventos-hero');
+    if (figure) figure.classList.remove('is-video');
     const heroImg = $('#eventos-hero-img');
     if (!heroImg || !heroImg.dataset.src) return;
     heroImg.hidden = false;
@@ -997,10 +1005,8 @@
     try { video.pause(); } catch (e) { /* ignore */ }
     video.onerror = null;
     video.onplaying = null;
-    video.removeAttribute('src');
+    /* No quitar el src del HTML: se reutiliza al volver a Eventos. */
     video.removeAttribute('poster');
-    const source = video.querySelector('source');
-    if (source) source.removeAttribute('src');
     try { video.load(); } catch (e) { /* ignore */ }
     video.hidden = true;
     video.classList.remove('is-boot', 'is-warm');
@@ -1009,7 +1015,10 @@
   function setEventosHeroPlaying(on) {
     const figure = document.querySelector('.eventos-hero');
     const heroImg = $('#eventos-hero-img');
-    if (figure) figure.classList.toggle('is-playing', !!on);
+    if (figure) {
+      figure.classList.toggle('is-playing', !!on);
+      figure.classList.toggle('is-video', !!on);
+    }
     if (on && heroImg) heroImg.hidden = true;
   }
 
@@ -1018,13 +1027,14 @@
     const heroVideo = $('#eventos-hero-video');
     if (!heroVideo) return;
     setEventosHeroPlaying(false);
+    try { heroVideo.pause(); } catch (e) { /* ignore */ }
     if (hard) {
       heroVideo._heroKey = '';
       heroVideo._heroWarm = '';
       releaseEventosHeroBuffer(heroVideo);
       return;
     }
-    try { heroVideo.pause(); } catch (e) { /* ignore */ }
+    /* Fuera de Eventos: pausar para no gastar CPU/red en segundo plano. */
     heroVideo.hidden = true;
     heroVideo.classList.remove('is-boot');
     heroVideo.classList.add('is-warm');
@@ -1042,7 +1052,7 @@
     heroVideo._heroWarm = clip.src;
     armEventosHeroAttrs(heroVideo);
     heroVideo.removeAttribute('poster');
-    heroVideo.setAttribute('preload', 'auto');
+    heroVideo.setAttribute('preload', 'metadata');
     heroVideo.classList.add('is-warm');
     heroVideo.hidden = true;
     if (heroVideo.getAttribute('src') !== clip.src) {
@@ -1075,19 +1085,26 @@
     const heroVideo = $('#eventos-hero-video');
     if (!heroVideo) return;
     const clip = eventHeroClip(D.eventos);
-    if (!clip || !clip.src) {
+    const fallbackSrc = heroVideo.getAttribute('src') || '';
+    const src = (clip && clip.src) || fallbackSrc;
+    if (!src) {
       pauseEventosHero({ hard: true });
       showEventosHeroFallback();
       return;
     }
     armEventosHeroAttrs(heroVideo);
     heroVideo.removeAttribute('poster');
-    heroVideo.setAttribute('preload', 'auto');
+    heroVideo.setAttribute('preload', 'metadata');
     heroVideo.hidden = false;
+    heroVideo.style.display = 'block';
+    heroVideo.style.opacity = '1';
+    heroVideo.style.zIndex = '1';
     heroVideo.classList.remove('is-warm');
     heroVideo.classList.add('is-boot');
+    const heroImg = $('#eventos-hero-img');
+    if (heroImg) heroImg.hidden = true;
+    setEventosHeroPlaying(true);
     heroVideo.onerror = function () {
-      releaseEventosHeroBuffer(heroVideo);
       heroVideo._heroKey = '';
       showEventosHeroFallback();
     };
@@ -1104,20 +1121,16 @@
         heroVideo.classList.remove('is-boot');
       });
     };
-    if (heroVideo._heroKey === clip.src && heroVideo.getAttribute('src') === clip.src) {
-      setEventosHeroPlaying(true);
+    if (heroVideo._heroKey === src && heroVideo.getAttribute('src') === src) {
       if (heroVideo.paused) start();
       else heroVideo.classList.remove('is-boot');
       return;
     }
-    heroVideo._heroKey = clip.src;
-    if (heroVideo.getAttribute('src') !== clip.src) {
-      heroVideo.setAttribute('src', clip.src);
-      try { heroVideo.load(); } catch (e) { /* ignore */ }
-    } else {
+    heroVideo._heroKey = src;
+    if (heroVideo.getAttribute('src') !== src) {
+      heroVideo.setAttribute('src', src);
       try { heroVideo.load(); } catch (e) { /* ignore */ }
     }
-    setEventosHeroPlaying(true);
     if (heroVideo.readyState >= 2) start();
     else heroVideo.addEventListener('canplay', start, { once: true });
   }

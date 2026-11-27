@@ -145,17 +145,32 @@ html[data-plan="basico"] [data-page="carta"] .mx-auto.max-w-3xl.px-5 {
   }
 }
 
-/* Eventos hero · arranque instantáneo (sin flash de poster) */
-.eventos-hero.is-playing > img#eventos-hero-img {
+/* Eventos hero · vídeo por encima de la foto estática */
+.eventos-hero img#eventos-hero-img {
+  z-index: 0;
+}
+.eventos-hero video#eventos-hero-video {
+  display: block;
+  z-index: 1;
+  opacity: 1;
+}
+.eventos-hero video#eventos-hero-video[hidden] {
+  display: none !important;
+}
+.eventos-hero.is-playing > img#eventos-hero-img,
+.eventos-hero.is-video > img#eventos-hero-img {
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
 }
 .eventos-hero video.is-boot {
   transition: none !important;
+  display: block !important;
   opacity: 1 !important;
+  z-index: 1 !important;
 }
 .eventos-hero video.is-warm {
+  /* Precarga en segundo plano: no tapar el hero hasta play() */
   opacity: 0;
   pointer-events: none;
 }
