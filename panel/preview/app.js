@@ -970,227 +970,40 @@
     const cap = tipo.charAt(0).toUpperCase() + tipo.slice(1);
     const raw = ev['video' + cap];
     if (!raw) return null;
-    const inicio = Number(ev['video' + cap + 'Inicio']);
-    const duracion = Number(ev['video' + cap + 'Duracion']);
-    return {
-      src: eventImageSrc(raw),
-      inicio: isFinite(inicio) && inicio > 0 ? inicio : 0,
-      duracion: isFinite(duracion) && duracion > 0 ? duracion : 5
-    };
+    return { src: eventImageSrc(raw) };
   }
 
-  function seekHeroVideo(video, time, done) {
-    let settled = false;
-    const finish = function () {
-      if (settled) return;
-      settled = true;
-      video.removeEventListener('seeked', finish);
-      if (done) done();
-    };
-    const apply = function () {
-      if (video.readyState >= 1 && Math.abs(video.currentTime - time) < 0.08) {
-        finish();
-        return;
-      }
-      video.addEventListener('seeked', finish);
-      try { video.currentTime = time; } catch (e) { finish(); }
-    };
-    if (video.readyState >= 1) apply();
-    else video.addEventListener('loadedmetadata', apply, { once: true });
-    setTimeout(function () {
-      if (settled) return;
-      if (video.readyState >= 1 && Math.abs(video.currentTime - time) > 0.3) {
-        try { video.currentTime = time; } catch (e) { finish(); }
-        return;
-      }
-      finish();
-    }, 700);
+  function armEventosHeroAttrs(video) {
+    video.muted = true;
+    video.defaultMuted = true;
+    video.playsInline = true;
+    video.loop = true;
+    video.setAttribute('muted', '');
+    video.setAttribute('playsinline', '');
+    video.setAttribute('loop', '');
+    video.removeAttribute('autoplay');
   }
 
-  function startEventHeroLoop(primary, secondary, src, inicio, duracion) {
-    const LOOP = duracion > 0 ? duracion : 5;
-    const FADE = 1;
-    let alive = true;
-    let fading = false;
-    let top = primary;
-    let under = secondary;
-
-    function onTimeCheck() {
-      if (!alive || fading || !top || top.readyState < 2) return;
-      const duration = isFinite(top.duration) ? top.duration : inicio + LOOP;
-      const end = Math.min(inicio + LOOP, Math.max(inicio, duration - 0.05));
-      if (top.currentTime >= Math.max(inicio, end - FADE)) beginFade();
-    }
-
-    function bindTimeWatch(video, on) {
-      if (!video) return;
-      video.removeEventListener('timeupdate', onTimeCheck);
-      if (on) video.addEventListener('timeupdate', onTimeCheck);
-    }
-
-    function stop() {
-      alive = false;
-      bindTimeWatch(primary, false);
-      bindTimeWatch(secondary, false);
-      primary.onerror = null;
-      secondary.onerror = null;
-      try { primary.pause(); } catch (e) { /* ignore */ }
-      try { secondary.pause(); } catch (e) { /* ignore */ }
-      primary.classList.remove('is-out', 'is-swap', 'is-cover');
-      secondary.classList.remove('is-out', 'is-swap', 'is-cover');
-    }
-
-    function cover(video) {
-      primary.classList.remove('is-cover');
-      secondary.classList.remove('is-cover');
-      video.classList.add('is-cover');
-    }
-
-    function bindClipSource(video, clipSrc) {
-      if (video.getAttribute('src') === clipSrc) return false;
-      video.setAttribute('src', clipSrc);
-      video.setAttribute('preload', 'auto');
-      try { video.load(); } catch (e) { /* ignore */ }
-      return true;
-    }
-
-    function armHeroAttrs(video) {
-      video.muted = true;
-      video.defaultMuted = true;
-      video.playsInline = true;
-      video.loop = false;
-      video.setAttribute('muted', '');
-      video.setAttribute('playsinline', '');
-      video.removeAttribute('autoplay');
-    }
-
-    function prep(video, time, play) {
-      armHeroAttrs(video);
-      let started = false;
-      const go = function () {
-        if (started || !alive) return;
-        started = true;
-        const limit = isFinite(video.duration) ? Math.max(0, video.duration - 0.05) : time;
-        seekHeroVideo(video, Math.min(time, limit), function () {
-          if (!alive) return;
-          if (play) {
-            video.classList.add('is-boot');
-            video.classList.remove('is-out');
-            const pending = video.play();
-            if (pending && typeof pending.catch === 'function') pending.catch(function () {});
-            requestAnimationFrame(function () {
-              video.classList.remove('is-boot');
-            });
-          } else {
-            video.pause();
-          }
-        });
-      };
-      const changed = bindClipSource(video, src);
-      if (changed) {
-        video.addEventListener('loadedmetadata', go, { once: true });
-        if (video.readyState >= 1) go();
-      } else if (video.readyState >= 1) {
-        go();
-      } else {
-        video.addEventListener('loadedmetadata', go, { once: true });
-        try { video.load(); } catch (e) { /* ignore */ }
-      }
-    }
-
-    function fail() {
-      stop();
-      primary.hidden = true;
-      secondary.hidden = true;
-      primary.removeAttribute('src');
-      secondary.removeAttribute('src');
-      [primary, secondary].forEach(function (video) {
-        const source = video.querySelector('source');
-        if (source) source.removeAttribute('src');
-        try { video.load(); } catch (e) { /* ignore */ }
-      });
-      setEventosHeroPlaying(false);
-      const heroImg = $('#eventos-hero-img');
-      if (heroImg && heroImg.dataset.src) {
-        heroImg.hidden = false;
-        if (!heroImg.getAttribute('src')) heroImg.src = heroImg.dataset.src;
-      }
-    }
-
-    primary.hidden = false;
-    secondary.hidden = false;
-    primary.classList.remove('is-warm');
-    secondary.classList.remove('is-warm');
-    primary.classList.add('is-boot');
-    primary.classList.remove('is-out');
-    secondary.classList.add('is-out');
-    cover(top);
-    primary.onerror = fail;
-    secondary.onerror = fail;
-    prep(top, inicio, true);
-    prep(under, inicio, false);
-    requestAnimationFrame(function () {
-      primary.classList.remove('is-boot');
-    });
-
-    function finishFade() {
-      if (!alive || !fading) return;
-      fading = false;
-      const shown = under;
-      under = top;
-      top = shown;
-      cover(top);
-      bindTimeWatch(under, false);
-      bindTimeWatch(top, true);
-      under.classList.add('is-swap');
-      under.classList.remove('is-out');
-      void under.offsetWidth;
-      under.classList.remove('is-swap');
-      under.pause();
-      prep(under, inicio, false);
-    }
-
-    function beginFade() {
-      if (fading) return;
-      fading = true;
-      const outgoing = top;
-      const incoming = under;
-      seekHeroVideo(incoming, inicio, function () {
-        if (!alive) return;
-        incoming.classList.add('is-swap');
-        incoming.classList.remove('is-out');
-        void incoming.offsetWidth;
-        incoming.classList.remove('is-swap');
-        const pending = incoming.play();
-        if (pending && typeof pending.catch === 'function') pending.catch(function () {});
-        outgoing.classList.add('is-out');
-        const done = function (event) {
-          if (event && event.propertyName && event.propertyName !== 'opacity') return;
-          outgoing.removeEventListener('transitionend', done);
-          finishFade();
-        };
-        outgoing.addEventListener('transitionend', done);
-        setTimeout(function () {
-          outgoing.removeEventListener('transitionend', done);
-          finishFade();
-        }, (FADE * 1000) + 120);
-      });
-    }
-
-    bindTimeWatch(top, true);
-    return stop;
+  function showEventosHeroFallback() {
+    setEventosHeroPlaying(false);
+    const heroImg = $('#eventos-hero-img');
+    if (!heroImg || !heroImg.dataset.src) return;
+    heroImg.hidden = false;
+    if (!heroImg.getAttribute('src')) heroImg.src = heroImg.dataset.src;
   }
 
   function releaseEventosHeroBuffer(video) {
     if (!video) return;
     try { video.pause(); } catch (e) { /* ignore */ }
+    video.onerror = null;
+    video.onplaying = null;
     video.removeAttribute('src');
     video.removeAttribute('poster');
     const source = video.querySelector('source');
     if (source) source.removeAttribute('src');
     try { video.load(); } catch (e) { /* ignore */ }
     video.hidden = true;
-    video.classList.remove('is-out', 'is-swap', 'is-cover', 'is-boot', 'is-warm');
+    video.classList.remove('is-boot', 'is-warm');
   }
 
   function setEventosHeroPlaying(on) {
@@ -1200,36 +1013,21 @@
     if (on && heroImg) heroImg.hidden = true;
   }
 
-  function softPauseEventosHeroBuffers() {
-    const heroVideo = $('#eventos-hero-video');
-    const heroVideoB = $('#eventos-hero-video-b');
-    [heroVideo, heroVideoB].forEach(function (video) {
-      if (!video) return;
-      try { video.pause(); } catch (e) { /* ignore */ }
-      video.hidden = true;
-      video.classList.remove('is-out', 'is-swap', 'is-cover', 'is-boot');
-      video.classList.add('is-warm');
-    });
-  }
-
   function pauseEventosHero(opts) {
     const hard = !!(opts && opts.hard);
     const heroVideo = $('#eventos-hero-video');
-    const heroVideoB = $('#eventos-hero-video-b');
     if (!heroVideo) return;
-    if (heroVideo._heroStop) {
-      heroVideo._heroStop();
-      heroVideo._heroStop = null;
-    }
     setEventosHeroPlaying(false);
     if (hard) {
       heroVideo._heroKey = '';
       heroVideo._heroWarm = '';
       releaseEventosHeroBuffer(heroVideo);
-      releaseEventosHeroBuffer(heroVideoB);
       return;
     }
-    softPauseEventosHeroBuffers();
+    try { heroVideo.pause(); } catch (e) { /* ignore */ }
+    heroVideo.hidden = true;
+    heroVideo.classList.remove('is-boot');
+    heroVideo.classList.add('is-warm');
   }
 
   function preloadEventosHero() {
@@ -1239,17 +1037,10 @@
     const clip = eventHeroClip(D.eventos);
     if (!clip || !clip.src) return;
     const heroVideo = $('#eventos-hero-video');
-    if (!heroVideo || heroVideo._heroStop) return;
-    const warmKey = clip.src + '|' + clip.inicio;
-    if (heroVideo._heroWarm === warmKey && heroVideo.getAttribute('src') === clip.src) return;
-    heroVideo._heroWarm = warmKey;
-    heroVideo.muted = true;
-    heroVideo.defaultMuted = true;
-    heroVideo.playsInline = true;
-    heroVideo.loop = false;
-    heroVideo.setAttribute('muted', '');
-    heroVideo.setAttribute('playsinline', '');
-    heroVideo.removeAttribute('autoplay');
+    if (!heroVideo || heroVideo._heroKey) return;
+    if (heroVideo._heroWarm === clip.src && heroVideo.getAttribute('src') === clip.src) return;
+    heroVideo._heroWarm = clip.src;
+    armEventosHeroAttrs(heroVideo);
     heroVideo.removeAttribute('poster');
     heroVideo.setAttribute('preload', 'auto');
     heroVideo.classList.add('is-warm');
@@ -1258,13 +1049,6 @@
       heroVideo.setAttribute('src', clip.src);
       try { heroVideo.load(); } catch (e) { /* ignore */ }
     }
-    const armFrame = function () {
-      seekHeroVideo(heroVideo, clip.inicio, function () {
-        try { heroVideo.pause(); } catch (e) { /* ignore */ }
-      });
-    };
-    if (heroVideo.readyState >= 1) armFrame();
-    else heroVideo.addEventListener('loadedmetadata', armFrame, { once: true });
   }
 
   function scheduleEventosHeroPreload() {
@@ -1289,38 +1073,53 @@
       return;
     }
     const heroVideo = $('#eventos-hero-video');
-    const heroVideoB = $('#eventos-hero-video-b');
-    if (!heroVideo || !heroVideoB) return;
+    if (!heroVideo) return;
     const clip = eventHeroClip(D.eventos);
     if (!clip || !clip.src) {
       pauseEventosHero({ hard: true });
-      const heroImg = $('#eventos-hero-img');
-      if (heroImg && heroImg.dataset.src) {
-        heroImg.hidden = false;
-        if (!heroImg.getAttribute('src')) heroImg.src = heroImg.dataset.src;
-      }
+      showEventosHeroFallback();
       return;
     }
+    armEventosHeroAttrs(heroVideo);
     heroVideo.removeAttribute('poster');
-    heroVideoB.removeAttribute('poster');
-    setEventosHeroPlaying(true);
-    const key = clip.src + '|' + clip.inicio + '|' + clip.duracion;
-    if (heroVideo._heroKey === key && heroVideo._heroStop) {
-      heroVideo.hidden = false;
-      heroVideo.classList.remove('is-warm', 'is-out');
-      heroVideo.classList.add('is-boot', 'is-cover');
-      if (heroVideo.paused) {
-        const pending = heroVideo.play();
-        if (pending && typeof pending.catch === 'function') pending.catch(function () {});
+    heroVideo.setAttribute('preload', 'auto');
+    heroVideo.hidden = false;
+    heroVideo.classList.remove('is-warm');
+    heroVideo.classList.add('is-boot');
+    heroVideo.onerror = function () {
+      releaseEventosHeroBuffer(heroVideo);
+      heroVideo._heroKey = '';
+      showEventosHeroFallback();
+    };
+    heroVideo.onplaying = function () {
+      setEventosHeroPlaying(true);
+      heroVideo.classList.remove('is-boot');
+    };
+    const start = function () {
+      const pending = heroVideo.play();
+      if (pending && typeof pending.catch === 'function') {
+        pending.catch(function () { showEventosHeroFallback(); });
       }
       requestAnimationFrame(function () {
         heroVideo.classList.remove('is-boot');
       });
+    };
+    if (heroVideo._heroKey === clip.src && heroVideo.getAttribute('src') === clip.src) {
+      setEventosHeroPlaying(true);
+      if (heroVideo.paused) start();
+      else heroVideo.classList.remove('is-boot');
       return;
     }
-    if (heroVideo._heroStop) heroVideo._heroStop();
-    heroVideo._heroKey = key;
-    heroVideo._heroStop = startEventHeroLoop(heroVideo, heroVideoB, clip.src, clip.inicio, clip.duracion);
+    heroVideo._heroKey = clip.src;
+    if (heroVideo.getAttribute('src') !== clip.src) {
+      heroVideo.setAttribute('src', clip.src);
+      try { heroVideo.load(); } catch (e) { /* ignore */ }
+    } else {
+      try { heroVideo.load(); } catch (e) { /* ignore */ }
+    }
+    setEventosHeroPlaying(true);
+    if (heroVideo.readyState >= 2) start();
+    else heroVideo.addEventListener('canplay', start, { once: true });
   }
 
   function syncEventosHero(pageId) {
@@ -1482,7 +1281,6 @@
     const lead = $('#eventos-lead');
     const hero = $('#eventos-hero-img');
     const heroVideo = $('#eventos-hero-video');
-    const heroVideoB = $('#eventos-hero-video-b');
     const typesTitle = $('#eventos-types-title');
     const types = $('#eventos-types');
     const readyTitle = $('#eventos-ready-title');
@@ -1523,10 +1321,8 @@
         delete hero.dataset.src;
       }
     }
-    if (heroVideo && heroVideoB) {
-      heroVideoB.setAttribute('preload', 'none');
+    if (heroVideo) {
       heroVideo.removeAttribute('poster');
-      heroVideoB.removeAttribute('poster');
       if (!onEventos) {
         pauseEventosHero();
         if (clip && clip.src) scheduleEventosHeroPreload();

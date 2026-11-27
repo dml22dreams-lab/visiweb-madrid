@@ -669,11 +669,12 @@ window.VISIWEB_DEMO = (function () {
     activo: true,
     /* tipoVideo: "salon" | "terraza" | "ninguno" (solo foto estática) */
     tipoVideo: 'salon',
-    videoSalon: 'assets/brindis-salon.mp4',
-    /* Segundos que se saltan. El bucle empieza aquí y dura videoSalonDuracion. */
-    videoSalonInicio: 2.5,
+    /* Ruta vía VISIWEB_ASSET para que funcione con rewrites de dominio propio. */
+    videoSalon: window.VISIWEB_ASSET('brindis-salon.mp4'),
+    /* El mp4 ya está recortado al tramo del bucle; inicio 0 + loop nativo. */
+    videoSalonInicio: 0,
     videoSalonDuracion: 10,
-    videoTerraza: 'assets/brindis-terraza.mp4',
+    videoTerraza: '',
     /* imagenHero: foto de respaldo si tipoVideo es "ninguno" o el vídeo no carga.
        Admite una URL https, photo('archivo.webp') o ./assets/demo/archivo.webp */
     imagenHero: photo('salon.webp'),
