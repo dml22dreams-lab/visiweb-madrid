@@ -144,3 +144,18 @@ html[data-plan="basico"] [data-page="carta"] .mx-auto.max-w-3xl.px-5 {
     font-size: 1.6rem;
   }
 }
+
+/* Eventos hero · arranque instantáneo (sin flash de poster) */
+.eventos-hero.is-playing > img#eventos-hero-img {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+.eventos-hero video.is-boot {
+  transition: none !important;
+  opacity: 1 !important;
+}
+.eventos-hero video.is-warm {
+  opacity: 0;
+  pointer-events: none;
+}

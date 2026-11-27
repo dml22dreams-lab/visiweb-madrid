@@ -1513,7 +1513,13 @@
     }
     .eventos-hero video.is-cover { z-index: 1; }
     .eventos-hero video.is-out { opacity: 0; }
-    .eventos-hero video.is-swap { transition: none; }
+    .eventos-hero video.is-swap,
+    .eventos-hero video.is-boot { transition: none; opacity: 1; }
+    .eventos-hero.is-playing > img {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
     .eventos-hero::after {
       content: "";
       position: absolute;
@@ -2393,8 +2399,8 @@
       <section class="eventos-page mx-auto max-w-3xl px-5 pb-16 pt-6 sm:pt-10">
         <figure class="eventos-hero">
           <img id="eventos-hero-img" alt="" width="1800" height="1200">
-          <video id="eventos-hero-video" muted playsinline loop preload="none" hidden></video>
-          <video id="eventos-hero-video-b" muted playsinline loop preload="none" hidden></video>
+          <video id="eventos-hero-video" class="eventos-hero-video" muted playsinline preload="none" hidden></video>
+          <video id="eventos-hero-video-b" class="eventos-hero-video" muted playsinline preload="none" hidden></video>
           <div class="eventos-hero-copy">
             <p id="eventos-eyebrow" class="eventos-badge"></p>
             <div class="eventos-hero-main">
